@@ -93,12 +93,10 @@ class DataStore:
         self.datasheets = []
         self.ds_by_id = {}
         self.ds_by_faction = {}
-        self.models = {}
         self.cost = {}
         self.composition = {}
         self.wargear = {}
         self.keywords = {}
-        self.options = {}       # not available in BSData (Wahapedia prose only)
         self.detachments_by_faction = {}
         self.detachment_by_id = {}
         self.enhancements_by_detachment = {}

@@ -86,6 +86,11 @@ def _army_unit_row(c, au):
     store = get_store()
     did = au["datasheet_id"]
     ds = store.ds_by_id.get(did, {})
+    # Normalize old Wahapedia IDs to canonical BSData GUID on access
+    canonical_did = ds.get("id") or did
+    if canonical_did != did:
+        c.execute("UPDATE army_units SET datasheet_id=? WHERE id=?", (canonical_did, au["id"]))
+        did = canonical_did
     bounds = _squad_range_for(did)
     squad_size = _normalise_squad_size(did, au["squad_size"], bounds["min"])
     if squad_size != au["squad_size"]:
@@ -94,7 +99,7 @@ def _army_unit_row(c, au):
     enhancement_id = au["enhancement_id"] or ""
 
     owned = c.execute(
-        "SELECT COUNT(*) cnt FROM minis WHERE datasheet_id=?", (did,)).fetchone()["cnt"]
+        "SELECT COUNT(*) cnt FROM minis WHERE unit_bsdata_id=?", (did,)).fetchone()["cnt"]
     other_assigned = c.execute(
         "SELECT COALESCE(SUM(assigned_count),0) tot FROM army_units WHERE datasheet_id=? AND id!=?",
         (did, au["id"])).fetchone()["tot"]

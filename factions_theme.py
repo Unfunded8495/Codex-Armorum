@@ -1,40 +1,73 @@
 """Per-faction colour schemes and placeholder SVG generation."""
 
-# faction_id -> (primary hex, accent hex, glyph key)
+# Keyed by display name (last segment of BSData faction name after " - ").
+# theme_for() accepts any of: display name, full BSData name, or old short code.
 THEME = {
-    "AS":  ("#7c1224", "#d9c08a", "skull"),       # Adepta Sororitas
-    "AC":  ("#b8902f", "#1a1a1a", "aquila"),       # Adeptus Custodes
-    "AdM": ("#8a1d1d", "#c79a3a", "gear"),         # Adeptus Mechanicus
-    "TL":  ("#5a6066", "#e08a2b", "gear"),         # Adeptus Titanicus
-    "AE":  ("#1f8a8a", "#eef3f2", "blade"),        # Aeldari
-    "AM":  ("#5d6b3a", "#c7b27a", "aquila"),       # Astra Militarum
-    "CD":  ("#7a1030", "#caa1d6", "star"),         # Chaos Daemons
-    "QT":  ("#3a3f44", "#9c2a2a", "star"),         # Chaos Knights
-    "CSM": ("#3f5840", "#b88a3a", "star"),         # Chaos Space Marines
-    "DG":  ("#6f7536", "#3c4a1f", "triskull"),     # Death Guard
-    "DRU": ("#3c2150", "#d9cdb0", "blade"),        # Drukhari
-    "EC":  ("#b0457f", "#e9c6dd", "star"),         # Emperor's Children
-    "GC":  ("#1f6f6a", "#caa23a", "claw"),         # Genestealer Cults
-    "GK":  ("#8a929c", "#3b6ea5", "skull"),        # Grey Knights
-    "AoI": ("#1c1c1f", "#9c2a2a", "skull"),        # Imperial Agents
-    "QI":  ("#23456e", "#c79a3a", "aquila"),       # Imperial Knights
-    "LoV": ("#9c6a2a", "#1f8a8a", "hex"),          # Leagues of Votann
-    "NEC": ("#2f7a3a", "#101a12", "ankh"),         # Necrons
-    "ORK": ("#3f7a2a", "#9c2a2a", "jaw"),          # Orks
-    "SM":  ("#1f3d6e", "#c79a3a", "aquila"),       # Space Marines
-    "TAU": ("#b6863f", "#2aa6c4", "hex"),          # T'au Empire
-    "TS":  ("#1f5e8a", "#c79a3a", "star"),         # Thousand Sons
-    "TYR": ("#5a2d6e", "#d9cdb0", "claw"),         # Tyranids
-    "WE":  ("#7c1018", "#b88a3a", "skull"),        # World Eaters
-    "UN":  ("#4a4a4a", "#cccccc", "skull"),        # Unaligned
-    "UA":  ("#4a4a4a", "#cccccc", "skull"),        # Unbound Adversaries
+    # ── Chaos ──────────────────────────────────────────────────────────────────
+    "Chaos Daemons":        ("#7a1030", "#caa1d6", "star"),
+    "Chaos Knights":        ("#3a3f44", "#9c2a2a", "star"),
+    "Chaos Space Marines":  ("#3f5840", "#b88a3a", "star"),
+    "Death Guard":          ("#6f7536", "#c8b44a", "triskull"),
+    "Emperor's Children":   ("#b0457f", "#e9c6dd", "star"),
+    "Thousand Sons":        ("#1f5e8a", "#c79a3a", "star"),
+    "World Eaters":         ("#7c1018", "#b88a3a", "skull"),
+
+    # ── Imperium – General ─────────────────────────────────────────────────────
+    "Adepta Sororitas":         ("#7c1224", "#d9c08a", "skull"),
+    "Adeptus Custodes":         ("#b8902f", "#1a1a1a", "aquila"),
+    "Adeptus Mechanicus":       ("#8a1d1d", "#c79a3a", "gear"),
+    "Agents of the Imperium":   ("#1c1c1f", "#9c2a2a", "skull"),
+    "Astra Militarum":          ("#5d6b3a", "#c7b27a", "aquila"),
+    "Grey Knights":             ("#8a929c", "#3b6ea5", "skull"),
+    "Imperial Knights":         ("#23456e", "#c79a3a", "aquila"),
+
+    # ── Imperium – Adeptus Astartes chapters ───────────────────────────────────
+    "Space Marines":    ("#1f3d6e", "#c79a3a", "aquila"),   # generic blue
+    "Black Templars":   ("#0d0d0d", "#c79a3a", "aquila"),
+    "Blood Angels":     ("#8c1818", "#c79a3a", "aquila"),
+    "Dark Angels":      ("#1f3d22", "#c79a3a", "aquila"),
+    "Deathwatch":       ("#0d0d0d", "#9c9c9c", "skull"),
+    "Imperial Fists":   ("#c8a432", "#0d0d0d", "aquila"),
+    "Iron Hands":       ("#1a1a1a", "#707070", "gear"),
+    "Raven Guard":      ("#0d0d0d", "#d0d0d0", "blade"),
+    "Salamanders":      ("#1a4a28", "#c79a3a", "aquila"),
+    "Space Wolves":     ("#3a4a6a", "#c7b27a", "skull"),
+    "Ultramarines":     ("#1f3d6e", "#c79a3a", "aquila"),
+    "White Scars":      ("#c8c8d0", "#8a1818", "aquila"),
+
+    # ── Xenos ──────────────────────────────────────────────────────────────────
+    "Aeldari":              ("#1f8a8a", "#eef3f2", "blade"),
+    "Ynnari":               ("#5a2d6e", "#d9cdb0", "blade"),
+    "Drukhari":             ("#3c2150", "#d9cdb0", "blade"),
+    "Genestealer Cults":    ("#1f6f6a", "#caa23a", "claw"),
+    "Leagues of Votann":    ("#9c6a2a", "#1f8a8a", "hex"),
+    "Necrons":              ("#1a2a1a", "#4dcc6e", "ankh"),
+    "Orks":                 ("#3f7a2a", "#9c2a2a", "jaw"),
+    "T'au Empire":          ("#b6863f", "#2aa6c4", "hex"),
+    "Tyranids":             ("#5a2d6e", "#d9cdb0", "claw"),
+
+    # ── Unaligned ──────────────────────────────────────────────────────────────
+    "Unaligned Forces":     ("#4a4a4a", "#cccccc", "skull"),
 }
 
 DEFAULT = ("#4a4a4a", "#cccccc", "skull")
 
 
-def theme_for(fid):
-    return THEME.get(fid, DEFAULT)
+def theme_for(name):
+    """Return (primary, accent, glyph) for a faction name.
+
+    Accepts:
+      - Display name:      "Space Marines"
+      - Full BSData name:  "Imperium - Adeptus Astartes - Space Marines"
+    """
+    if name in THEME:
+        return THEME[name]
+    # Strip BSData prefix hierarchy — try progressively shorter suffixes
+    if " - " in name:
+        short = name.rsplit(" - ", 1)[-1]
+        if short in THEME:
+            return THEME[short]
+    return DEFAULT
 
 
 def _glyph(key, accent):
@@ -96,11 +129,11 @@ def _lighten(hex_color, amount=0.22):
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
-def placeholder_svg(fid, name, did, size=600):
+def placeholder_svg(faction_name, unit_name, did, size=600):
     """Reference-image fallback: a faction-coloured plate with the unit name."""
-    primary, accent, glyph = theme_for(fid)
+    primary, accent, glyph = theme_for(faction_name)
     inner = _glyph(glyph, accent)
-    safe = (name or "").replace("&", "&amp;").replace("<", "&lt;")
+    safe = (unit_name or "").replace("&", "&amp;").replace("<", "&lt;")
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="{size}" height="{size}">
   <defs>
     <linearGradient id="p{did}" x1="0" y1="0" x2="0" y2="1">

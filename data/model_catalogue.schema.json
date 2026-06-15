@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.codex-armorum/model_catalogue.schema.json",
+  "title": "Codex Armorum model release catalogue",
+  "type": "object",
+  "required": ["schema_version", "source", "model_releases"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "source": {
+      "type": "object"
+    },
+    "model_releases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "faction_label",
+          "faction_id",
+          "release_date",
+          "release_year",
+          "status",
+          "datasheet_links",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^MD-\\d{5,}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "faction_label": {
+            "type": "string"
+          },
+          "faction_id": {
+            "type": "string"
+          },
+          "release_date": {
+            "type": "string",
+            "pattern": "^$|^[0-9]{4}-[0-9]{2}$"
+          },
+          "release_year": {
+            "type": "integer"
+          },
+          "material": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["current_or_unknown", "discontinued"]
+          },
+          "note": {
+            "type": "string"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "datasheet_links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["datasheet_id", "datasheet_name", "faction_id", "matched_from", "confidence"],
+              "properties": {
+                "datasheet_id": {
+                  "type": "string"
+                },
+                "datasheet_name": {
+                  "type": "string"
+                },
+                "faction_id": {
+                  "type": "string"
+                },
+                "matched_from": {
+                  "type": "string",
+                  "enum": ["datasheet", "statline", "composition"]
+                },
+                "matched_name": {
+                  "type": "string"
+                },
+                "confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "match_method": {
+                  "type": "string"
+                },
+                "cross_faction": {
+                  "type": "boolean",
+                  "description": "True when the physical kit belongs to a different faction but this datasheet uses the same model"
+                }
+              }
+            }
+          },
+          "source": {
+            "type": "object",
+            "required": ["workbook", "sheet", "row"],
+            "properties": {
+              "workbook": {
+                "type": "string"
+              },
+              "sheet": {
+                "type": "string"
+              },
+              "row": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

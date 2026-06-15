@@ -65,6 +65,7 @@ function factionCard(f, i, extraClass=''){
   const bought=f.bought_minis||0;
   const finished=f.finished_minis||0;
   const pct=bought>0?Math.round(finished/bought*100):0;
+  const dname = f.display_name || f.name;
   const progressBar = bought > 0
     ? `<div class="fc-bar" title="${finished} of ${bought} finished">
          <div class="fc-bar-fill" style="width:${pct}%"></div>
@@ -75,15 +76,16 @@ function factionCard(f, i, extraClass=''){
     : `${f.unit_count} datasheets`;
   const emblemHtml = f.icon_url
     ? `<img src="${esc(f.icon_url)}" alt="" loading="lazy">`
-    : `<span class="emblem-watermark-letter">${esc(f.initial||f.name?.[0]||'?')}</span>`;
+    : `<span class="emblem-watermark-letter">${esc(f.initial||dname[0]||'?')}</span>`;
   return `<div class="faction-card ${extraClass} ${fav?'is-favourite':''}" style="--cardarmy:${f.primary};--cardaccent:${f.accent};--cardglow:${f.accent};animation-delay:${i*0.03}s"
      onclick="location.hash='/faction/${f.id}'">
     <div class="emblem-watermark" aria-hidden="true">${emblemHtml}</div>
     <button class="fav-toggle ${fav?'is-on':''}" type="button" data-fav-fid="${esc(f.id)}"
             title="${fav?'Remove from favourites':'Add to favourites'}"
-            aria-label="${fav?'Remove '+esc(f.name)+' from favourites':'Add '+esc(f.name)+' to favourites'}"
+            aria-label="${fav?'Remove '+esc(dname)+' from favourites':'Add '+esc(dname)+' to favourites'}"
             >${fav?'★':'☆'}</button>
-    <div class="fname">${esc(f.name)}</div>
+    <div class="fname">${esc(dname)}</div>
+    ${f.group?`<div class="fname-group">${esc(f.group)}</div>`:''}
     ${progressBar}
     <div class="fmeta">${meta}</div>
   </div>`;
@@ -119,7 +121,7 @@ export async function showFaction(fid, browseAll=false){
   }
   const accent  = fac?.accent  || 'var(--gold)';
   const primary = fac?.primary || 'var(--panel)';
-  const facName = fac?.name    || fid;
+  const facName = fac?.display_name || fac?.name || fid;
   const facMark = fac?.icon_url
     ? `<img src="${esc(fac.icon_url)}" alt="" loading="lazy">`
     : `<span class="faction-bg-letter">${esc(facName?.[0]||'?')}</span>`;

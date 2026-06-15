@@ -1,0 +1,4482 @@
+{
+  "schema_version": 1,
+  "source": {
+    "site": "Lexicanum",
+    "base_url": "https://wh40k.lexicanum.com",
+    "crawl_delay_seconds": 5.0
+  },
+  "summary": {
+    "image_records": 194,
+    "matched_this_run": 15,
+    "downloaded_this_run": 15,
+    "skipped_pages_this_run": []
+  },
+  "images": [
+    {
+      "catalogue_model_id": "MD-50002",
+      "local_path": "cache/images/catalogue/MD-50002.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50003",
+      "local_path": "cache/images/catalogue/MD-50003.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50012",
+      "local_path": "cache/images/catalogue/MD-50012.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50026",
+      "local_path": "cache/images/catalogue/MD-50026.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50027",
+      "local_path": "cache/images/catalogue/MD-50027.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50029",
+      "local_path": "cache/images/catalogue/MD-50029.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50030",
+      "local_path": "cache/images/catalogue/MD-50030.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50033",
+      "local_path": "cache/images/catalogue/MD-50033.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50034",
+      "local_path": "cache/images/catalogue/MD-50034.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50035",
+      "local_path": "cache/images/catalogue/MD-50035.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50036",
+      "local_path": "cache/images/catalogue/MD-50036.webp",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50037",
+      "local_path": "cache/images/catalogue/MD-50037.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50039",
+      "local_path": "cache/images/catalogue/MD-50039.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50040",
+      "local_path": "cache/images/catalogue/MD-50040.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50045",
+      "local_path": "cache/images/catalogue/MD-50045.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50046",
+      "local_path": "cache/images/catalogue/MD-50046.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50052",
+      "local_path": "cache/images/catalogue/MD-50052.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50053",
+      "local_path": "cache/images/catalogue/MD-50053.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50054",
+      "local_path": "cache/images/catalogue/MD-50054.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50055",
+      "local_path": "cache/images/catalogue/MD-50055.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50056",
+      "local_path": "cache/images/catalogue/MD-50056.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50061",
+      "local_path": "cache/images/catalogue/MD-50061.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50062",
+      "local_path": "cache/images/catalogue/MD-50062.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50063",
+      "local_path": "cache/images/catalogue/MD-50063.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50068",
+      "local_path": "cache/images/catalogue/MD-50068.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50069",
+      "local_path": "cache/images/catalogue/MD-50069.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50078",
+      "local_path": "cache/images/catalogue/MD-50078.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50079",
+      "local_path": "cache/images/catalogue/MD-50079.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50085",
+      "model_name": "Baneblade",
+      "faction_label": "Astra Militarum",
+      "release_year": 2007,
+      "match_confidence": 1.0,
+      "caption": "[[Baneblade]] (plastic)",
+      "caption_names": [
+        "Baneblade",
+        "Baneblade (plastic)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "BanebladeGW.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:BanebladeGW.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/b2/BanebladeGW.jpg/120px-BanebladeGW.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b2/BanebladeGW.jpg",
+      "local_path": "cache/images/catalogue/MD-50085-2d719e46.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50087",
+      "model_name": "Hellhammer",
+      "faction_label": "Astra Militarum",
+      "release_year": 2007,
+      "match_confidence": 1.0,
+      "caption": "[[Hellhammer]] (plastic)",
+      "caption_names": [
+        "Hellhammer",
+        "Hellhammer (plastic)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Hellhammer_tank.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Hellhammer_tank.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/6f/Hellhammer_tank.jpg/120px-Hellhammer_tank.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/6f/Hellhammer_tank.jpg",
+      "local_path": "cache/images/catalogue/MD-50087-ed00c2fd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50089",
+      "model_name": "Banehammer",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Banehammer]]",
+      "caption_names": [
+        "Banehammer",
+        "Banehammer"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Banehammer.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Banehammer.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e2/Banehammer.jpg/120px-Banehammer.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e2/Banehammer.jpg",
+      "local_path": "cache/images/catalogue/MD-50089-0b638ed3.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50090",
+      "model_name": "Banesword",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Banesword]]",
+      "caption_names": [
+        "Banesword",
+        "Banesword"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Banesword.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Banesword.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f5/Banesword.jpg/120px-Banesword.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f5/Banesword.jpg",
+      "local_path": "cache/images/catalogue/MD-50090-2d04408d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50091",
+      "model_name": "Doomhammer",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Doomhammer]]",
+      "caption_names": [
+        "Doomhammer",
+        "Doomhammer"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Doomhammer.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Doomhammer.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/8d/Doomhammer.jpg/120px-Doomhammer.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/8d/Doomhammer.jpg",
+      "local_path": "cache/images/catalogue/MD-50091-a681fd71.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50092",
+      "model_name": "Shadowsword",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Shadowsword]]",
+      "caption_names": [
+        "Shadowsword",
+        "Shadowsword"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Shadowsword99120105051.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Shadowsword99120105051.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/3a/Shadowsword99120105051.jpg/120px-Shadowsword99120105051.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/3a/Shadowsword99120105051.jpg",
+      "local_path": "cache/images/catalogue/MD-50092-4db3b61e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50093",
+      "model_name": "Stormlord",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Stormlord]]",
+      "caption_names": [
+        "Stormlord",
+        "Stormlord"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "StormLord.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:StormLord.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/40/StormLord.jpg/120px-StormLord.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/40/StormLord.jpg",
+      "local_path": "cache/images/catalogue/MD-50093-547668a8.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50094",
+      "model_name": "Stormsword",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Stormsword]]",
+      "caption_names": [
+        "Stormsword",
+        "Stormsword"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Stormsword99120105051.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Stormsword99120105051.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/ab/Stormsword99120105051.jpg/120px-Stormsword99120105051.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/ab/Stormsword99120105051.jpg",
+      "local_path": "cache/images/catalogue/MD-50094-837c6ad7.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50095",
+      "local_path": "cache/images/catalogue/MD-50095.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50096",
+      "local_path": "cache/images/catalogue/MD-50096.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50097",
+      "model_name": "Primaris Psyker",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Primaris Psyker]] (2019)",
+      "caption_names": [
+        "Primaris Psyker",
+        "Primaris Psyker (2019)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "ArenaPsyker.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ArenaPsyker.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/3b/ArenaPsyker.jpg/120px-ArenaPsyker.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/3b/ArenaPsyker.jpg",
+      "local_path": "cache/images/catalogue/MD-50097-e723526d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50098",
+      "model_name": "Ratlings",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Ratling]]s",
+      "caption_names": [
+        "Ratling",
+        "Ratlings"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "RatlingsKT.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:RatlingsKT.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/66/RatlingsKT.jpg/120px-RatlingsKT.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/66/RatlingsKT.jpg",
+      "local_path": "cache/images/catalogue/MD-50098-80901670.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50100",
+      "model_name": "Scout Sentinel",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Scout Sentinel]]",
+      "caption_names": [
+        "Scout Sentinel",
+        "Scout Sentinel"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "ScoutSentinel.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ScoutSentinel.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/6f/ScoutSentinel.jpg/91px-ScoutSentinel.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/6f/ScoutSentinel.jpg",
+      "local_path": "cache/images/catalogue/MD-50100-268ab20f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50102",
+      "model_name": "Valkyrie",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Valkyrie]]",
+      "caption_names": [
+        "Valkyrie",
+        "Valkyrie"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "IGValkyrie.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:IGValkyrie.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f6/IGValkyrie.jpg/120px-IGValkyrie.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f6/IGValkyrie.jpg",
+      "local_path": "cache/images/catalogue/MD-50102-98ba5166.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50103",
+      "model_name": "Hellhound",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Hellhound]]",
+      "caption_names": [
+        "Hellhound",
+        "Hellhound"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "IGHellhound_873x627.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:IGHellhound_873x627.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/99/IGHellhound_873x627.jpg/120px-IGHellhound_873x627.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/99/IGHellhound_873x627.jpg",
+      "local_path": "cache/images/catalogue/MD-50103-a81d762e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50104",
+      "model_name": "Leman Russ Demolisher",
+      "faction_label": "Astra Militarum",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Leman Russ Demolisher]]",
+      "caption_names": [
+        "Leman Russ Demolisher",
+        "Leman Russ Demolisher"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Demolisher1.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Demolisher1.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/0e/Demolisher1.jpg/120px-Demolisher1.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/0e/Demolisher1.jpg",
+      "local_path": "cache/images/catalogue/MD-50104-8b38153e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50107",
+      "model_name": "Basilisk",
+      "faction_label": "Astra Militarum",
+      "release_year": 2010,
+      "match_confidence": 1.0,
+      "caption": "[[Basilisk]] (chassis update)",
+      "caption_names": [
+        "Basilisk",
+        "Basilisk (chassis update)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "IGBasiliskNew1_873x627.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:IGBasiliskNew1_873x627.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a5/IGBasiliskNew1_873x627.jpg/120px-IGBasiliskNew1_873x627.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a5/IGBasiliskNew1_873x627.jpg",
+      "local_path": "cache/images/catalogue/MD-50107-21b3a173.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50108",
+      "model_name": "Chimera",
+      "faction_label": "Astra Militarum",
+      "release_year": 2010,
+      "match_confidence": 1.0,
+      "caption": "[[Chimera]]",
+      "caption_names": [
+        "Chimera",
+        "Chimera"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "IGChimera5th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:IGChimera5th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/b0/IGChimera5th.jpg/120px-IGChimera5th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b0/IGChimera5th.jpg",
+      "local_path": "cache/images/catalogue/MD-50108-9395b4da.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50111",
+      "model_name": "Leman Russ",
+      "faction_label": "Astra Militarum",
+      "release_year": 2010,
+      "match_confidence": 0.95,
+      "caption": "[[Leman Russ Exterminator]] (additional sprue)",
+      "caption_names": [
+        "Leman Russ Exterminator",
+        "Leman Russ Exterminator (additional sprue)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Leman_Russ_Exterminator.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Leman_Russ_Exterminator.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/3c/Leman_Russ_Exterminator.jpg/120px-Leman_Russ_Exterminator.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/3c/Leman_Russ_Exterminator.jpg",
+      "local_path": "cache/images/catalogue/MD-50111-d2b704f3.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50112",
+      "model_name": "Manticore",
+      "faction_label": "Astra Militarum",
+      "release_year": 2010,
+      "match_confidence": 1.0,
+      "caption": "[[Manticore (Tank)|Manticore]]",
+      "caption_names": [
+        "Manticore",
+        "Manticore"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Manticore_5th_ed.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Manticore_5th_ed.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/7f/Manticore_5th_ed.jpg/120px-Manticore_5th_ed.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/7f/Manticore_5th_ed.jpg",
+      "local_path": "cache/images/catalogue/MD-50112-ff6119a3.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50113",
+      "model_name": "Taurox",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Taurox]]",
+      "caption_names": [
+        "Taurox",
+        "Taurox"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Taurox2.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Taurox2.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/31/Taurox2.jpg/120px-Taurox2.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/31/Taurox2.jpg",
+      "local_path": "cache/images/catalogue/MD-50113-cd5c4faa.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50114",
+      "model_name": "Tempestus Command Squad",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Tempestus Scions]] Command Squad",
+      "caption_names": [
+        "Tempestus Scions",
+        "Tempestus Scions Command Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "ScionsCommand.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ScionsCommand.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/36/ScionsCommand.jpg/120px-ScionsCommand.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/36/ScionsCommand.jpg",
+      "local_path": "cache/images/catalogue/MD-50114-355b4139.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50115",
+      "model_name": "Tempestus Scions",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Tempestus Scions]]",
+      "caption_names": [
+        "Tempestus Scions",
+        "Tempestus Scions"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "TempestusScionSquad.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TempestusScionSquad.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/ce/TempestusScionSquad.jpg/120px-TempestusScionSquad.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/ce/TempestusScionSquad.jpg",
+      "local_path": "cache/images/catalogue/MD-50115-4bcfd8a7.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50116",
+      "model_name": "Bullgryns",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Bullgryn]]s",
+      "caption_names": [
+        "Bullgryn",
+        "Bullgryns"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Bullgryns.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Bullgryns.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f1/Bullgryns.jpg/120px-Bullgryns.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f1/Bullgryns.jpg",
+      "local_path": "cache/images/catalogue/MD-50116-3f873f89.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50117",
+      "model_name": "Hydra",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Hydra]] [FW]",
+      "caption_names": [
+        "Hydra",
+        "Hydra [FW]"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "HydraFT.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:HydraFT.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e0/HydraFT.jpg/120px-HydraFT.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e0/HydraFT.jpg",
+      "local_path": "cache/images/catalogue/MD-50117-5924c4a6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50118",
+      "model_name": "Nork Deddog",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Nork Deddog]]",
+      "caption_names": [
+        "Nork Deddog",
+        "Nork Deddog"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Nork2.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Nork2.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/cd/Nork2.jpg/101px-Nork2.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/cd/Nork2.jpg",
+      "local_path": "cache/images/catalogue/MD-50118-07fa9d16.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50119",
+      "model_name": "Ogryns",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Ogryns]]",
+      "caption_names": [
+        "Ogryns",
+        "Ogryns"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Ogryns6th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Ogryns6th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/5f/Ogryns6th.jpg/120px-Ogryns6th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/5f/Ogryns6th.jpg",
+      "local_path": "cache/images/catalogue/MD-50119-c8056e3e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50121",
+      "model_name": "Wyvern",
+      "faction_label": "Astra Militarum",
+      "release_year": 2014,
+      "match_confidence": 1.0,
+      "caption": "[[Wyvern]]",
+      "caption_names": [
+        "Wyvern",
+        "Wyvern"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Wyvern.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Wyvern.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e8/Wyvern.jpg/120px-Wyvern.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e8/Wyvern.jpg",
+      "local_path": "cache/images/catalogue/MD-50121-d4897439.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50123",
+      "model_name": "Gaunt's Ghosts",
+      "faction_label": "Astra Militarum",
+      "release_year": 2021,
+      "match_confidence": 1.0,
+      "caption": "[[Gaunt's Ghosts]]",
+      "caption_names": [
+        "Gaunt's Ghosts",
+        "Gaunt's Ghosts"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "TanithMinis9th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TanithMinis9th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f7/TanithMinis9th.jpg/120px-TanithMinis9th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f7/TanithMinis9th.jpg",
+      "local_path": "cache/images/catalogue/MD-50123-4c38298d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50125",
+      "local_path": "cache/images/catalogue/MD-50125.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50126",
+      "local_path": "cache/images/catalogue/MD-50126.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50127",
+      "model_name": "Cadian Command Squad",
+      "faction_label": "Astra Militarum",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Cadian Shock Troopers|Cadian]] [[Imperial Guard Command Squad|Command Squad]]",
+      "caption_names": [
+        "Cadian",
+        "Command Squad",
+        "Cadian Command Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Cadians9th3.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Cadians9th3.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/73/Cadians9th3.jpg/120px-Cadians9th3.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/73/Cadians9th3.jpg",
+      "local_path": "cache/images/catalogue/MD-50127-2353cfa2.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50128",
+      "local_path": "cache/images/catalogue/MD-50128.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50129",
+      "model_name": "Field Ordnance Battery",
+      "faction_label": "Astra Militarum",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Cadian Shock Troopers|Cadian]] [[Field Ordnance Battery]] with [[Bombast Cannon]]",
+      "caption_names": [
+        "Cadian",
+        "Field Ordnance Battery",
+        "Bombast Cannon",
+        "Cadian Field Ordnance Battery with Bombast Cannon"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "BombastCannon.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:BombastCannon.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/2/2f/BombastCannon.jpg/120px-BombastCannon.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/2/2f/BombastCannon.jpg",
+      "local_path": "cache/images/catalogue/MD-50129-136fdfdb.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50130",
+      "model_name": "Heavy Weapon Squad",
+      "faction_label": "Astra Militarum",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Death Korps of Krieg]] [[Heavy Weapons Squad]]",
+      "caption_names": [
+        "Death Korps of Krieg",
+        "Heavy Weapons Squad",
+        "Death Korps of Krieg Heavy Weapons Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "KriegHeavyWeapons10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KriegHeavyWeapons10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/dc/KriegHeavyWeapons10th.jpg/120px-KriegHeavyWeapons10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/dc/KriegHeavyWeapons10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50130-eab3b71e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50132",
+      "model_name": "Minka Lesk",
+      "faction_label": "Astra Militarum",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Minka Lesk]] (Black Library miniature)",
+      "caption_names": [
+        "Minka Lesk",
+        "Minka Lesk (Black Library miniature)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "MinaMini.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:MinaMini.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/03/MinaMini.jpg/120px-MinaMini.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/03/MinaMini.jpg",
+      "local_path": "cache/images/catalogue/MD-50132-2a2a78d4.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50133",
+      "model_name": "Rogal Dorn Battle Tank",
+      "faction_label": "Astra Militarum",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Rogal Dorn Battle Tank]]",
+      "caption_names": [
+        "Rogal Dorn Battle Tank",
+        "Rogal Dorn Battle Tank"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "RogalDornBattleTank1.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:RogalDornBattleTank1.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/ad/RogalDornBattleTank1.jpg/120px-RogalDornBattleTank1.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/ad/RogalDornBattleTank1.jpg",
+      "local_path": "cache/images/catalogue/MD-50133-47107bea.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50134",
+      "model_name": "Ratlings",
+      "faction_label": "Astra Militarum",
+      "release_year": 2024,
+      "match_confidence": 1.0,
+      "caption": "[[Ratling]]s",
+      "caption_names": [
+        "Ratling",
+        "Ratlings"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "RatlingsKT.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:RatlingsKT.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/66/RatlingsKT.jpg/120px-RatlingsKT.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/66/RatlingsKT.jpg",
+      "local_path": "cache/images/catalogue/MD-50134-80901670.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50135",
+      "model_name": "Tempestus Aquilons",
+      "faction_label": "Astra Militarum",
+      "release_year": 2024,
+      "match_confidence": 1.0,
+      "caption": "[[Tempestus Aquilons]]",
+      "caption_names": [
+        "Tempestus Aquilons",
+        "Tempestus Aquilons"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "KTAquilons.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KTAquilons.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/d4/KTAquilons.jpg/114px-KTAquilons.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/d4/KTAquilons.jpg",
+      "local_path": "cache/images/catalogue/MD-50135-bbf66610.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50136",
+      "model_name": "Ratlings Snipers",
+      "faction_label": "Astra Militarum",
+      "release_year": 2024,
+      "match_confidence": 1.0,
+      "caption": "[[Ratling Sniper]]s",
+      "caption_names": [
+        "Ratling Sniper",
+        "Ratling Snipers"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "RatlingSnipers1995.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:RatlingSnipers1995.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/c1/RatlingSnipers1995.jpg/120px-RatlingSnipers1995.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/c1/RatlingSnipers1995.jpg",
+      "local_path": "cache/images/catalogue/MD-50136-75124379.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50137",
+      "model_name": "Artillery Team with Heavy Mortar",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Artillery Team]] with [[Heavy Mortar]]",
+      "caption_names": [
+        "Artillery Team",
+        "Heavy Mortar",
+        "Artillery Team with Heavy Mortar"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "KriegHeavyMortar.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KriegHeavyMortar.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f3/KriegHeavyMortar.jpg/120px-KriegHeavyMortar.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f3/KriegHeavyMortar.jpg",
+      "local_path": "cache/images/catalogue/MD-50137-09b03d19.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50138",
+      "model_name": "Artillery Team with Heavy Quad-Launcher",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Artillery Team]] with [[Heavy Quad-Launcher]]",
+      "caption_names": [
+        "Artillery Team",
+        "Heavy Quad-Launcher",
+        "Artillery Team with Heavy Quad-Launcher"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "KriegQuad.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KriegQuad.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/cf/KriegQuad.jpg/120px-KriegQuad.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/cf/KriegQuad.jpg",
+      "local_path": "cache/images/catalogue/MD-50138-3582f665.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50139",
+      "model_name": "Artillery Team with Multiple Rocket Launcher",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Artillery Team]] with [[Multiple Rocket Launcher]]",
+      "caption_names": [
+        "Artillery Team",
+        "Multiple Rocket Launcher",
+        "Artillery Team with Multiple Rocket Launcher"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "KriegMLRS.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KriegMLRS.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e4/KriegMLRS.jpg/120px-KriegMLRS.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e4/KriegMLRS.jpg",
+      "local_path": "cache/images/catalogue/MD-50139-e7f9ef93.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50140",
+      "model_name": "Artillery Team with Siege Cannon",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Artillery Team]] with [[Siege Cannon]]",
+      "caption_names": [
+        "Artillery Team",
+        "Siege Cannon",
+        "Artillery Team with Siege Cannon"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "SiegeCannon.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SiegeCannon.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/37/SiegeCannon.jpg/120px-SiegeCannon.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/37/SiegeCannon.jpg",
+      "local_path": "cache/images/catalogue/MD-50140-e1df2377.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50141",
+      "model_name": "Cadian 101st",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Cadian 101st]]",
+      "caption_names": [
+        "Cadian 101st",
+        "Cadian 101st"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Cadian-101st.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Cadian-101st.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/b4/Cadian-101st.jpg/120px-Cadian-101st.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b4/Cadian-101st.jpg",
+      "local_path": "cache/images/catalogue/MD-50141-e69a9b3c.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50142",
+      "model_name": "Death Korps of Krieg Combat Engineers",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 0.9,
+      "caption": "[[Death Korps of Krieg]] [[Imperial Guard Command Squad|Command Squad]]",
+      "caption_names": [
+        "Death Korps of Krieg",
+        "Command Squad",
+        "Death Korps of Krieg Command Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "KriegCommand10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KriegCommand10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a9/KriegCommand10th.jpg/120px-KriegCommand10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a9/KriegCommand10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50142-3f212132.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50144",
+      "model_name": "Death Korps of Krieg Heavy Weapons Squad",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Death Korps of Krieg]] [[Heavy Weapons Squad]]",
+      "caption_names": [
+        "Death Korps of Krieg",
+        "Heavy Weapons Squad",
+        "Death Korps of Krieg Heavy Weapons Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "KriegHeavyWeapons10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KriegHeavyWeapons10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/dc/KriegHeavyWeapons10th.jpg/120px-KriegHeavyWeapons10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/dc/KriegHeavyWeapons10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50144-eab3b71e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50145",
+      "model_name": "Death Riders",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Death Rider]]s",
+      "caption_names": [
+        "Death Rider",
+        "Death Riders"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "DeathRiders10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:DeathRiders10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e5/DeathRiders10th.jpg/120px-DeathRiders10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e5/DeathRiders10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50145-1e5a18b7.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50146",
+      "model_name": "Varnan Dreir",
+      "faction_label": "Astra Militarum",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Varnan Dreir]]",
+      "caption_names": [
+        "Varnan Dreir",
+        "Varnan Dreir"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "VarnanDreir.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:VarnanDreir.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/6d/VarnanDreir.jpg/120px-VarnanDreir.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/6d/VarnanDreir.jpg",
+      "local_path": "cache/images/catalogue/MD-50146-762893dd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50147",
+      "model_name": "Cadian Castellan",
+      "faction_label": "Astra Militarum",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Cadian Castellan]]",
+      "caption_names": [
+        "Cadian Castellan",
+        "Cadian Castellan"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "CastellanUnbroken.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CastellanUnbroken.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e3/CastellanUnbroken.jpg/79px-CastellanUnbroken.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e3/CastellanUnbroken.jpg",
+      "local_path": "cache/images/catalogue/MD-50147-af200d1f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50148",
+      "model_name": "Centaur RSV",
+      "faction_label": "Astra Militarum",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Centaur RSV]]",
+      "caption_names": [
+        "Centaur RSV",
+        "Centaur RSV"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "CentaurMini.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CentaurMini.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/02/CentaurMini.jpg/120px-CentaurMini.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/02/CentaurMini.jpg",
+      "local_path": "cache/images/catalogue/MD-50148-e2951954.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50149",
+      "model_name": "Commissar Cain and Jurgen",
+      "faction_label": "Astra Militarum",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Commissar Cain]] and [[Jurgen]]",
+      "caption_names": [
+        "Commissar Cain",
+        "Jurgen",
+        "Commissar Cain and Jurgen"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "CainJurgenMini.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CainJurgenMini.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/18/CainJurgenMini.jpg/120px-CainJurgenMini.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/18/CainJurgenMini.jpg",
+      "local_path": "cache/images/catalogue/MD-50149-07f3a13c.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50150",
+      "model_name": "Commissar Yarrick",
+      "faction_label": "Astra Militarum",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Commissar Yarrick]]",
+      "caption_names": [
+        "Commissar Yarrick",
+        "Commissar Yarrick"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "Yarrick_Old.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Yarrick_Old.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/84/Yarrick_Old.jpg/74px-Yarrick_Old.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/84/Yarrick_Old.jpg",
+      "local_path": "cache/images/catalogue/MD-50150-44ae88c9.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50151",
+      "model_name": "Hippogriff AFV",
+      "faction_label": "Astra Militarum",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Hippogriff AFV]]",
+      "caption_names": [
+        "Hippogriff AFV",
+        "Hippogriff AFV"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "HippogriffMini.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:HippogriffMini.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/77/HippogriffMini.jpg/120px-HippogriffMini.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/77/HippogriffMini.jpg",
+      "local_path": "cache/images/catalogue/MD-50151-ac45d192.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50152",
+      "model_name": "Spectre Squad",
+      "faction_label": "Astra Militarum",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Spectre Squad]]",
+      "caption_names": [
+        "Spectre Squad",
+        "Spectre Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "SpectreClean.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SpectreClean.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/02/SpectreClean.jpg/120px-SpectreClean.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/02/SpectreClean.jpg",
+      "local_path": "cache/images/catalogue/MD-50152-e51c5716.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50153",
+      "model_name": "Commissar Graves",
+      "faction_label": "Astra Militarum",
+      "release_year": 2026,
+      "match_confidence": 0.909,
+      "caption": "[[Commissar Cain]] and [[Jurgen]]",
+      "caption_names": [
+        "Commissar Cain",
+        "Jurgen",
+        "Commissar Cain and Jurgen"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
+      "lexicanum_file": "CainJurgenMini.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CainJurgenMini.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/18/CainJurgenMini.jpg/120px-CainJurgenMini.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/18/CainJurgenMini.jpg",
+      "local_path": "cache/images/catalogue/MD-50153-07f3a13c.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50222",
+      "local_path": "cache/images/catalogue/MD-50222.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50223",
+      "local_path": "cache/images/catalogue/MD-50223.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50224",
+      "local_path": "cache/images/catalogue/MD-50224.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50229",
+      "local_path": "cache/images/catalogue/MD-50229.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50231",
+      "local_path": "cache/images/catalogue/MD-50231.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50237",
+      "local_path": "cache/images/catalogue/MD-50237.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50242",
+      "local_path": "cache/images/catalogue/MD-50242.webp",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50245",
+      "local_path": "cache/images/catalogue/MD-50245.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50250",
+      "local_path": "cache/images/catalogue/MD-50250.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50255",
+      "local_path": "cache/images/catalogue/MD-50255.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50258",
+      "local_path": "cache/images/catalogue/MD-50258.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50260",
+      "local_path": "cache/images/catalogue/MD-50260.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50264",
+      "local_path": "cache/images/catalogue/MD-50264.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50273",
+      "local_path": "cache/images/catalogue/MD-50273.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50278",
+      "local_path": "cache/images/catalogue/MD-50278.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50286",
+      "local_path": "cache/images/catalogue/MD-50286.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50289",
+      "local_path": "cache/images/catalogue/MD-50289.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50296",
+      "local_path": "cache/images/catalogue/MD-50296.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50299",
+      "local_path": "cache/images/catalogue/MD-50299.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50319",
+      "local_path": "cache/images/catalogue/MD-50319.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50320",
+      "local_path": "cache/images/catalogue/MD-50320.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50321",
+      "local_path": "cache/images/catalogue/MD-50321.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50333",
+      "local_path": "cache/images/catalogue/MD-50333.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50334",
+      "local_path": "cache/images/catalogue/MD-50334.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50335",
+      "local_path": "cache/images/catalogue/MD-50335.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50338",
+      "local_path": "cache/images/catalogue/MD-50338.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50339",
+      "local_path": "cache/images/catalogue/MD-50339.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50340",
+      "local_path": "cache/images/catalogue/MD-50340.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50341",
+      "local_path": "cache/images/catalogue/MD-50341.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50351",
+      "local_path": "cache/images/catalogue/MD-50351.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50354",
+      "local_path": "cache/images/catalogue/MD-50354.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50367",
+      "local_path": "cache/images/catalogue/MD-50367.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50401",
+      "local_path": "cache/images/catalogue/MD-50401.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50404",
+      "local_path": "cache/images/catalogue/MD-50404.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50405",
+      "local_path": "cache/images/catalogue/MD-50405.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50406",
+      "local_path": "cache/images/catalogue/MD-50406.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50407",
+      "local_path": "cache/images/catalogue/MD-50407.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50408",
+      "local_path": "cache/images/catalogue/MD-50408.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50409",
+      "local_path": "cache/images/catalogue/MD-50409.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50423",
+      "local_path": "cache/images/catalogue/MD-50423.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50472",
+      "local_path": "cache/images/catalogue/MD-50472.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50557",
+      "local_path": "cache/images/catalogue/MD-50557.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50559",
+      "local_path": "cache/images/catalogue/MD-50559.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50560",
+      "local_path": "cache/images/catalogue/MD-50560.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50566",
+      "local_path": "cache/images/catalogue/MD-50566.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50567",
+      "local_path": "cache/images/catalogue/MD-50567.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50568",
+      "local_path": "cache/images/catalogue/MD-50568.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50569",
+      "local_path": "cache/images/catalogue/MD-50569.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50570",
+      "local_path": "cache/images/catalogue/MD-50570.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50581",
+      "model_name": "Terminator Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2005,
+      "match_confidence": 1.0,
+      "caption": "[[Terminator Squad]]",
+      "caption_names": [
+        "Terminator Squad",
+        "Terminator Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Wd182pg42.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Wd182pg42.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/ad/Wd182pg42.jpg/120px-Wd182pg42.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/ad/Wd182pg42.jpg",
+      "local_path": "cache/images/catalogue/MD-50581-c0125fc7.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50582",
+      "model_name": "Terminator Close Combat Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2005,
+      "match_confidence": 0.867,
+      "caption": "[[Terminator Assault Squad]]",
+      "caption_names": [
+        "Terminator Assault Squad",
+        "Terminator Assault Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TerminatorAssaulSquad.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TerminatorAssaulSquad.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/fc/TerminatorAssaulSquad.jpg/116px-TerminatorAssaulSquad.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/fc/TerminatorAssaulSquad.jpg",
+      "local_path": "cache/images/catalogue/MD-50582-71df207e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50583",
+      "model_name": "Scouts",
+      "faction_label": "Space Marines",
+      "release_year": 2005,
+      "match_confidence": 1.0,
+      "caption": "[[Scout]]s",
+      "caption_names": [
+        "Scout",
+        "Scouts"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "ScoutsKTSalvation.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ScoutsKTSalvation.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/14/ScoutsKTSalvation.jpg/120px-ScoutsKTSalvation.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/14/ScoutsKTSalvation.jpg",
+      "local_path": "cache/images/catalogue/MD-50583-f18e7861.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50584",
+      "model_name": "Scouts with Sniper Rifles",
+      "faction_label": "Space Marines",
+      "release_year": 2006,
+      "match_confidence": 1.0,
+      "caption": "[[Scout]]s with [[Sniper Rifle]]s",
+      "caption_names": [
+        "Scout",
+        "Sniper Rifle",
+        "Scouts with Sniper Rifles"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "5thEdScouts2.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:5thEdScouts2.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f5/5thEdScouts2.jpg/116px-5thEdScouts2.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f5/5thEdScouts2.jpg",
+      "local_path": "cache/images/catalogue/MD-50584-a683b01e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50585",
+      "model_name": "Vindicator",
+      "faction_label": "Space Marines",
+      "release_year": 2007,
+      "match_confidence": 1.0,
+      "caption": "[[Vindicator]]",
+      "caption_names": [
+        "Vindicator",
+        "Vindicator"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Ultramarines-Vindicator.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Ultramarines-Vindicator.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/53/Ultramarines-Vindicator.jpg/120px-Ultramarines-Vindicator.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/53/Ultramarines-Vindicator.jpg",
+      "local_path": "cache/images/catalogue/MD-50585-3fba203b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50586",
+      "model_name": "Drop Pod",
+      "faction_label": "Space Marines",
+      "release_year": 2008,
+      "match_confidence": 1.0,
+      "caption": "[[Drop Pod]]",
+      "caption_names": [
+        "Drop Pod",
+        "Drop Pod"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Drop-Pod-2025.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Drop-Pod-2025.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a0/Drop-Pod-2025.jpg/120px-Drop-Pod-2025.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a0/Drop-Pod-2025.jpg",
+      "local_path": "cache/images/catalogue/MD-50586-0a8bf741.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50587",
+      "model_name": "Land Raider Crusader",
+      "faction_label": "Space Marines",
+      "release_year": 2008,
+      "match_confidence": 1.0,
+      "caption": "[[Land Raider Crusader]] (plastic upgrade frame)",
+      "caption_names": [
+        "Land Raider Crusader",
+        "Land Raider Crusader (plastic upgrade frame)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "LRCrusaderModel.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:LRCrusaderModel.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/2/2c/LRCrusaderModel.jpg/120px-LRCrusaderModel.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/2/2c/LRCrusaderModel.jpg",
+      "local_path": "cache/images/catalogue/MD-50587-4e16a008.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50588",
+      "model_name": "Land Raider Redeemer",
+      "faction_label": "Space Marines",
+      "release_year": 2008,
+      "match_confidence": 1.0,
+      "caption": "[[Land Raider Redeemer]] (plastic upgrade frame)",
+      "caption_names": [
+        "Land Raider Redeemer",
+        "Land Raider Redeemer (plastic upgrade frame)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SM-redeemer.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SM-redeemer.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/16/SM-redeemer.jpg/120px-SM-redeemer.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/16/SM-redeemer.jpg",
+      "local_path": "cache/images/catalogue/MD-50588-c20cb75a.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50590",
+      "model_name": "Scout Bike",
+      "faction_label": "Space Marines",
+      "release_year": 2008,
+      "match_confidence": 1.0,
+      "caption": "[[Scout Bike]]",
+      "caption_names": [
+        "Scout Bike",
+        "Scout Bike"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Scout_Bike.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Scout_Bike.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/b5/Scout_Bike.jpg/120px-Scout_Bike.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b5/Scout_Bike.jpg",
+      "local_path": "cache/images/catalogue/MD-50590-d97091b6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50591",
+      "model_name": "Ironclad Dreadnought",
+      "faction_label": "Space Marines",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Ironclad Dreadnought]]",
+      "caption_names": [
+        "Ironclad Dreadnought",
+        "Ironclad Dreadnought"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Ironclad2.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Ironclad2.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/2/21/Ironclad2.jpg/120px-Ironclad2.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/2/21/Ironclad2.jpg",
+      "local_path": "cache/images/catalogue/MD-50591-6ae7f8cf.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50592",
+      "model_name": "Land Speeder Storm",
+      "faction_label": "Space Marines",
+      "release_year": 2009,
+      "match_confidence": 1.0,
+      "caption": "[[Land Speeder Storm]]",
+      "caption_names": [
+        "Land Speeder Storm",
+        "Land Speeder Storm"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "LandSpeederStorm.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:LandSpeederStorm.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9c/LandSpeederStorm.jpg/120px-LandSpeederStorm.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9c/LandSpeederStorm.jpg",
+      "local_path": "cache/images/catalogue/MD-50592-7bdee4ff.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50593",
+      "model_name": "Venerable Dreadnought",
+      "faction_label": "Space Marines",
+      "release_year": 2010,
+      "match_confidence": 1.0,
+      "caption": "[[Venerable Dreadnought]]",
+      "caption_names": [
+        "Venerable Dreadnought",
+        "Venerable Dreadnought"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Venerable_Dreadnought_5th_ed.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Venerable_Dreadnought_5th_ed.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/54/Venerable_Dreadnought_5th_ed.jpg/120px-Venerable_Dreadnought_5th_ed.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/54/Venerable_Dreadnought_5th_ed.jpg",
+      "local_path": "cache/images/catalogue/MD-50593-c1112485.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50594",
+      "model_name": "Stormraven Gunship",
+      "faction_label": "Space Marines",
+      "release_year": 2011,
+      "match_confidence": 0.864,
+      "caption": "[[Stormraven]]",
+      "caption_names": [
+        "Stormraven",
+        "Stormraven"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Stormraven_5th_ed.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Stormraven_5th_ed.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/74/Stormraven_5th_ed.jpg/120px-Stormraven_5th_ed.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/74/Stormraven_5th_ed.jpg",
+      "local_path": "cache/images/catalogue/MD-50594-92e9a977.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50598",
+      "model_name": "Hunter",
+      "faction_label": "Space Marines",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Hunter]]",
+      "caption_names": [
+        "Hunter",
+        "Hunter"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Hunter6.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Hunter6.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/cb/Hunter6.jpg/120px-Hunter6.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/cb/Hunter6.jpg",
+      "local_path": "cache/images/catalogue/MD-50598-91488dd4.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50599",
+      "model_name": "Librarian",
+      "faction_label": "Space Marines",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Librarian]]",
+      "caption_names": [
+        "Librarian",
+        "Librarian"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMLibrarian11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMLibrarian11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f5/SMLibrarian11th.jpg/120px-SMLibrarian11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f5/SMLibrarian11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50599-e49dbe6f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50600",
+      "model_name": "Space Marine Captain",
+      "faction_label": "Space Marines",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Captain|Captain]]",
+      "caption_names": [
+        "Captain",
+        "Captain"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMCaptain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMCaptain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/d0/SMCaptain11th.jpg/120px-SMCaptain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/d0/SMCaptain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50600-cbe9a5cd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50601",
+      "model_name": "Space Marines Chaplain",
+      "faction_label": "Space Marines",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Chaplain]] with [[Jump Pack]]",
+      "caption_names": [
+        "Chaplain",
+        "Jump Pack",
+        "Chaplain with Jump Pack"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Chaplain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Chaplain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/36/Chaplain11th.jpg/64px-Chaplain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/36/Chaplain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50601-dc39adf6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50603",
+      "model_name": "Sternguard Veteran Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Vanguard Veteran]]s",
+      "caption_names": [
+        "Vanguard Veteran",
+        "Vanguard Veterans"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Vanguard_6th_Edition.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Vanguard_6th_Edition.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/31/Vanguard_6th_Edition.jpg/120px-Vanguard_6th_Edition.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/31/Vanguard_6th_Edition.jpg",
+      "local_path": "cache/images/catalogue/MD-50603-d768e277.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50604",
+      "model_name": "Tactical Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Tactical Squad]]",
+      "caption_names": [
+        "Tactical Squad",
+        "Tactical Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TacticalSquad7th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TacticalSquad7th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e4/TacticalSquad7th.jpg/120px-TacticalSquad7th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e4/TacticalSquad7th.jpg",
+      "local_path": "cache/images/catalogue/MD-50604-e4894d33.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50605",
+      "model_name": "Vanguard Veteran Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Vanguard Veteran]]s",
+      "caption_names": [
+        "Vanguard Veteran",
+        "Vanguard Veterans"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Vanguard_6th_Edition.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Vanguard_6th_Edition.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/31/Vanguard_6th_Edition.jpg/120px-Vanguard_6th_Edition.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/31/Vanguard_6th_Edition.jpg",
+      "local_path": "cache/images/catalogue/MD-50605-d768e277.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50606",
+      "model_name": "Assault Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[Assault Squad]]",
+      "caption_names": [
+        "Assault Squad",
+        "Assault Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "99120101126_SpaceMarineAssaultSquadUltra01.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:99120101126_SpaceMarineAssaultSquadUltra01.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/49/99120101126_SpaceMarineAssaultSquadUltra01.jpg/120px-99120101126_SpaceMarineAssaultSquadUltra01.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/49/99120101126_SpaceMarineAssaultSquadUltra01.jpg",
+      "local_path": "cache/images/catalogue/MD-50606-8e621787.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50607",
+      "model_name": "Devastator Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[Devastator]]s",
+      "caption_names": [
+        "Devastator",
+        "Devastators"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Devastators7th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Devastators7th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/81/Devastators7th.jpg/116px-Devastators7th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/81/Devastators7th.jpg",
+      "local_path": "cache/images/catalogue/MD-50607-0b840853.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50608",
+      "model_name": "Librarian in Terminator Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[Librarian]] in [[Terminator Armour]]",
+      "caption_names": [
+        "Librarian",
+        "Terminator Armour",
+        "Librarian in Terminator Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "10thLibratianinTerminator.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:10thLibratianinTerminator.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/1d/10thLibratianinTerminator.jpg/120px-10thLibratianinTerminator.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/1d/10thLibratianinTerminator.jpg",
+      "local_path": "cache/images/catalogue/MD-50608-9b75a1c1.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50610",
+      "model_name": "Contemptor Dreadnought",
+      "faction_label": "Space Marines",
+      "release_year": 2015,
+      "match_confidence": 0.837,
+      "caption": "[[Redemptor Dreadnought]]",
+      "caption_names": [
+        "Redemptor Dreadnought",
+        "Redemptor Dreadnought"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisDread.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisDread.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9d/PrimarisDread.jpg/120px-PrimarisDread.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9d/PrimarisDread.jpg",
+      "local_path": "cache/images/catalogue/MD-50610-554f151a.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50611",
+      "model_name": "Mark IV Space Marines",
+      "faction_label": "Space Marines",
+      "release_year": 2015,
+      "match_confidence": 0.842,
+      "caption": "[[MKVII]] [[Space Marines]]",
+      "caption_names": [
+        "MKVII",
+        "Space Marines",
+        "MKVII Space Marines"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Spacemarines1990.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Spacemarines1990.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/37/Spacemarines1990.jpg/120px-Spacemarines1990.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/37/Spacemarines1990.jpg",
+      "local_path": "cache/images/catalogue/MD-50611-3b13d72f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50612",
+      "model_name": "Space Marine Heroes (2)",
+      "faction_label": "Space Marines",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[Terminator]]s from [[Space_Marine_Heroes#Blood_Angels|Space Marine Heroes]]",
+      "caption_names": [
+        "Terminator",
+        "Space Marine Heroes",
+        "Terminators from Space Marine Heroes"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TerminatorSquadMTO.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TerminatorSquadMTO.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/4e/TerminatorSquadMTO.jpg/120px-TerminatorSquadMTO.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/4e/TerminatorSquadMTO.jpg",
+      "local_path": "cache/images/catalogue/MD-50612-483ffb2b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50613",
+      "model_name": "Command Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2016,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Command Squad|Command Squad]]",
+      "caption_names": [
+        "Command Squad",
+        "Command Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMCommand.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMCommand.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/8e/SMCommand.jpg/120px-SMCommand.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/8e/SMCommand.jpg",
+      "local_path": "cache/images/catalogue/MD-50613-7fc0e62d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50615",
+      "model_name": "Space Marine Heroes (3)",
+      "faction_label": "Space Marines",
+      "release_year": 2016,
+      "match_confidence": 1.0,
+      "caption": "[[Terminator]]s from [[Space_Marine_Heroes#Blood_Angels|Space Marine Heroes]]",
+      "caption_names": [
+        "Terminator",
+        "Space Marine Heroes",
+        "Terminators from Space Marine Heroes"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TerminatorSquadMTO.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TerminatorSquadMTO.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/4e/TerminatorSquadMTO.jpg/120px-TerminatorSquadMTO.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/4e/TerminatorSquadMTO.jpg",
+      "local_path": "cache/images/catalogue/MD-50615-483ffb2b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50616",
+      "model_name": "Stormhawk Interceptor",
+      "faction_label": "Space Marines",
+      "release_year": 2016,
+      "match_confidence": 1.0,
+      "caption": "[[Stormhawk Interceptor]]",
+      "caption_names": [
+        "Stormhawk Interceptor",
+        "Stormhawk Interceptor"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Stormhawk.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Stormhawk.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f9/Stormhawk.jpg/120px-Stormhawk.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f9/Stormhawk.jpg",
+      "local_path": "cache/images/catalogue/MD-50616-672d551b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50617",
+      "model_name": "Mark III Space Marines",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 0.872,
+      "caption": "[[MKVII]] [[Space Marines]]",
+      "caption_names": [
+        "MKVII",
+        "Space Marines",
+        "MKVII Space Marines"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Spacemarines1990.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Spacemarines1990.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/37/Spacemarines1990.jpg/120px-Spacemarines1990.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/37/Spacemarines1990.jpg",
+      "local_path": "cache/images/catalogue/MD-50617-3b13d72f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50619",
+      "model_name": "Hellblaster Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Hellblaster]]s",
+      "caption_names": [
+        "Hellblaster",
+        "Hellblasters"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisHellblasters.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisHellblasters.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/13/PrimarisHellblasters.jpg/116px-PrimarisHellblasters.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/13/PrimarisHellblasters.jpg",
+      "local_path": "cache/images/catalogue/MD-50619-51972f8d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50620",
+      "model_name": "Inceptor Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 0.983,
+      "caption": "[[Inceptor]]s",
+      "caption_names": [
+        "Inceptor",
+        "Inceptors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisInceptors02.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisInceptors02.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/02/PrimarisInceptors02.jpg/120px-PrimarisInceptors02.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/02/PrimarisInceptors02.jpg",
+      "local_path": "cache/images/catalogue/MD-50620-842e4e8c.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50621",
+      "model_name": "Intercessor Squads",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Intercessor]]s",
+      "caption_names": [
+        "Intercessor",
+        "Intercessors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisIntercessors.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisIntercessors.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/37/PrimarisIntercessors.jpg/116px-PrimarisIntercessors.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/37/PrimarisIntercessors.jpg",
+      "local_path": "cache/images/catalogue/MD-50621-e8ae77aa.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50622",
+      "model_name": "Primaris Ancient",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Ancient]]",
+      "caption_names": [
+        "Ancient",
+        "Ancient"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMAncient11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMAncient11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/75/SMAncient11th.jpg/74px-SMAncient11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/75/SMAncient11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50622-87cdb7ff.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50623",
+      "model_name": "Primaris Captain in Gravis Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Captain|Captain]] in [[Gravis Armour]]",
+      "caption_names": [
+        "Captain",
+        "Gravis Armour",
+        "Captain in Gravis Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Graviscaptain.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Graviscaptain.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/86/Graviscaptain.jpg/120px-Graviscaptain.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/86/Graviscaptain.jpg",
+      "local_path": "cache/images/catalogue/MD-50623-eda8fab2.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50624",
+      "model_name": "Primaris Lieutenant 1",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Lieutenant (Space Marine)|Lieutenant]]",
+      "caption_names": [
+        "Lieutenant",
+        "Lieutenant"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PL10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PL10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/96/PL10th.jpg/111px-PL10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/96/PL10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50624-d9b57467.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50625",
+      "model_name": "Primaris Lieutenant 2",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Lieutenant (Space Marine)|Lieutenant]]",
+      "caption_names": [
+        "Lieutenant",
+        "Lieutenant"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PL10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PL10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/96/PL10th.jpg/111px-PL10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/96/PL10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50625-d9b57467.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50626",
+      "model_name": "Easy To Build: Primaris Intercessors",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "Easy-to-Build [[Intercessor]]s",
+      "caption_names": [
+        "Intercessor",
+        "Easy-to-Build Intercessors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "ETBIntercessorSquad.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ETBIntercessorSquad.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/0d/ETBIntercessorSquad.jpg/120px-ETBIntercessorSquad.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/0d/ETBIntercessorSquad.jpg",
+      "local_path": "cache/images/catalogue/MD-50626-40930a88.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50627",
+      "model_name": "Easy To Build: Primaris Reivers",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "Easy-to-Build [[Reiver]]s",
+      "caption_names": [
+        "Reiver",
+        "Easy-to-Build Reivers"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "ReiversETB.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ReiversETB.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/78/ReiversETB.jpg/120px-ReiversETB.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/78/ReiversETB.jpg",
+      "local_path": "cache/images/catalogue/MD-50627-82e9941a.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50628",
+      "model_name": "Primaris Captain",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Captain|Captain]]",
+      "caption_names": [
+        "Captain",
+        "Captain"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMCaptain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMCaptain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/d0/SMCaptain11th.jpg/120px-SMCaptain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/d0/SMCaptain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50628-cbe9a5cd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50629",
+      "model_name": "Primaris Librarian",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Librarian]]",
+      "caption_names": [
+        "Librarian",
+        "Librarian"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMLibrarian11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMLibrarian11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f5/SMLibrarian11th.jpg/120px-SMLibrarian11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f5/SMLibrarian11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50629-e49dbe6f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50630",
+      "model_name": "Primaris Aggressors",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 0.996,
+      "caption": "[[Aggressor]]s",
+      "caption_names": [
+        "Aggressor",
+        "Aggressors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Aggressors.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Aggressors.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/b4/Aggressors.jpg/120px-Aggressors.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b4/Aggressors.jpg",
+      "local_path": "cache/images/catalogue/MD-50630-1a75d1fb.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50631",
+      "model_name": "Primaris Apothecary",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Apothecary]]",
+      "caption_names": [
+        "Apothecary",
+        "Apothecary"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisApothecary.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisApothecary.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a9/PrimarisApothecary.jpg/120px-PrimarisApothecary.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a9/PrimarisApothecary.jpg",
+      "local_path": "cache/images/catalogue/MD-50631-d35e4edd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50632",
+      "model_name": "Primaris Chaplain",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Chaplain]] with [[Jump Pack]]",
+      "caption_names": [
+        "Chaplain",
+        "Jump Pack",
+        "Chaplain with Jump Pack"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Chaplain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Chaplain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/36/Chaplain11th.jpg/64px-Chaplain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/36/Chaplain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50632-dc39adf6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50633",
+      "model_name": "Primaris Hellblasters",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Hellblaster]]s",
+      "caption_names": [
+        "Hellblaster",
+        "Hellblasters"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisHellblasters.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisHellblasters.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/13/PrimarisHellblasters.jpg/116px-PrimarisHellblasters.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/13/PrimarisHellblasters.jpg",
+      "local_path": "cache/images/catalogue/MD-50633-51972f8d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50634",
+      "model_name": "Primaris Inceptors",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 0.983,
+      "caption": "[[Inceptor]]s",
+      "caption_names": [
+        "Inceptor",
+        "Inceptors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisInceptors02.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisInceptors02.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/02/PrimarisInceptors02.jpg/120px-PrimarisInceptors02.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/02/PrimarisInceptors02.jpg",
+      "local_path": "cache/images/catalogue/MD-50634-842e4e8c.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50635",
+      "model_name": "Primaris Intercessors",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Intercessor]]s",
+      "caption_names": [
+        "Intercessor",
+        "Intercessors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisIntercessors.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisIntercessors.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/37/PrimarisIntercessors.jpg/116px-PrimarisIntercessors.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/37/PrimarisIntercessors.jpg",
+      "local_path": "cache/images/catalogue/MD-50635-e8ae77aa.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50636",
+      "model_name": "Primaris Reivers",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 0.95,
+      "caption": "[[Reiver]]s",
+      "caption_names": [
+        "Reiver",
+        "Reivers"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "ReiverSquad.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ReiverSquad.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9d/ReiverSquad.jpg/116px-ReiverSquad.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9d/ReiverSquad.jpg",
+      "local_path": "cache/images/catalogue/MD-50636-c0a03ae5.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50637",
+      "model_name": "Primaris Repulsor",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Repulsor]]",
+      "caption_names": [
+        "Repulsor",
+        "Repulsor"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Repulsor.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Repulsor.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/05/Repulsor.jpg/120px-Repulsor.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/05/Repulsor.jpg",
+      "local_path": "cache/images/catalogue/MD-50637-053ba958.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50638",
+      "model_name": "Redemptor Dreadnought",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "[[Redemptor Dreadnought]]",
+      "caption_names": [
+        "Redemptor Dreadnought",
+        "Redemptor Dreadnought"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisDread.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisDread.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9d/PrimarisDread.jpg/120px-PrimarisDread.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9d/PrimarisDread.jpg",
+      "local_path": "cache/images/catalogue/MD-50638-554f151a.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50639",
+      "model_name": "Easy To Build: Primaris Aggressors",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "Easy-to-Build [[Aggressor]]s",
+      "caption_names": [
+        "Aggressor",
+        "Easy-to-Build Aggressors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "ETBPrimarisAgressors.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ETBPrimarisAgressors.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/b1/ETBPrimarisAgressors.jpg/120px-ETBPrimarisAgressors.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b1/ETBPrimarisAgressors.jpg",
+      "local_path": "cache/images/catalogue/MD-50639-e96308e9.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50640",
+      "model_name": "Easy To Build: Redemptor Dreadnought",
+      "faction_label": "Space Marines",
+      "release_year": 2017,
+      "match_confidence": 1.0,
+      "caption": "Easy-to-Build [[Redemptor Dreadnought]]",
+      "caption_names": [
+        "Redemptor Dreadnought",
+        "Easy-to-Build Redemptor Dreadnought"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "ETBPrimarisRedemptor.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ETBPrimarisRedemptor.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9e/ETBPrimarisRedemptor.jpg/120px-ETBPrimarisRedemptor.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9e/ETBPrimarisRedemptor.jpg",
+      "local_path": "cache/images/catalogue/MD-50640-ceb6c406.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50642",
+      "model_name": "Primaris Repulsor Executioner",
+      "faction_label": "Space Marines",
+      "release_year": 2019,
+      "match_confidence": 1.0,
+      "caption": "[[Repulsor Executioner]]",
+      "caption_names": [
+        "Repulsor Executioner",
+        "Repulsor Executioner"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Repulsor-Executioner.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Repulsor-Executioner.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/0c/Repulsor-Executioner.jpg/120px-Repulsor-Executioner.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/0c/Repulsor-Executioner.jpg",
+      "local_path": "cache/images/catalogue/MD-50642-01e97f0b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50643",
+      "model_name": "Primaris Captain in Phobos armour",
+      "faction_label": "Space Marines",
+      "release_year": 2019,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Captain|Captain]] in [[Phobos Armour]]",
+      "caption_names": [
+        "Captain",
+        "Phobos Armour",
+        "Captain in Phobos Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "AcheranMini.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:AcheranMini.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9f/AcheranMini.jpg/120px-AcheranMini.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9f/AcheranMini.jpg",
+      "local_path": "cache/images/catalogue/MD-50643-7e8f35bc.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50644",
+      "model_name": "Primaris Invictor Tactical Warsuit",
+      "faction_label": "Space Marines",
+      "release_year": 2019,
+      "match_confidence": 1.0,
+      "caption": "[[Invictor Tactical Warsuit]]",
+      "caption_names": [
+        "Invictor Tactical Warsuit",
+        "Invictor Tactical Warsuit"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Invictor_Tactical_Warsuit.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Invictor_Tactical_Warsuit.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/c5/Invictor_Tactical_Warsuit.jpg/107px-Invictor_Tactical_Warsuit.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/c5/Invictor_Tactical_Warsuit.jpg",
+      "local_path": "cache/images/catalogue/MD-50644-a15ba4b6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50645",
+      "model_name": "Primaris Librarian in Phobos Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2019,
+      "match_confidence": 0.9,
+      "caption": "[[Space Marine Captain|Captain]] in [[Phobos Armour]]",
+      "caption_names": [
+        "Captain",
+        "Phobos Armour",
+        "Captain in Phobos Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "AcheranMini.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:AcheranMini.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9f/AcheranMini.jpg/120px-AcheranMini.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9f/AcheranMini.jpg",
+      "local_path": "cache/images/catalogue/MD-50645-7e8f35bc.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50646",
+      "model_name": "Primaris Impulsor",
+      "faction_label": "Space Marines",
+      "release_year": 2019,
+      "match_confidence": 1.0,
+      "caption": "[[Impulsor]]",
+      "caption_names": [
+        "Impulsor",
+        "Impulsor"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Impulsor.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Impulsor.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/c2/Impulsor.jpg/120px-Impulsor.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/c2/Impulsor.jpg",
+      "local_path": "cache/images/catalogue/MD-50646-448d36b2.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50647",
+      "model_name": "Primaris Incursors",
+      "faction_label": "Space Marines",
+      "release_year": 2019,
+      "match_confidence": 0.983,
+      "caption": "[[Incursor]]s",
+      "caption_names": [
+        "Incursor",
+        "Incursors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisIncursors.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisIncursors.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/4a/PrimarisIncursors.jpg/116px-PrimarisIncursors.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/4a/PrimarisIncursors.jpg",
+      "local_path": "cache/images/catalogue/MD-50647-0c2e1892.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50648",
+      "model_name": "Primaris Infiltrators",
+      "faction_label": "Space Marines",
+      "release_year": 2019,
+      "match_confidence": 0.936,
+      "caption": "[[Vanguard Infiltrator|Infiltrator]]s",
+      "caption_names": [
+        "Infiltrator",
+        "Infiltrators"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisInfiltrators.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisInfiltrators.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/33/PrimarisInfiltrators.jpg/116px-PrimarisInfiltrators.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/33/PrimarisInfiltrators.jpg",
+      "local_path": "cache/images/catalogue/MD-50648-5f4bf05e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50649",
+      "model_name": "Assault Intercessor Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Assault Intercessor]]s",
+      "caption_names": [
+        "Assault Intercessor",
+        "Assault Intercessors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "AssaultIntercessorsset.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:AssaultIntercessorsset.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/2/28/AssaultIntercessorsset.jpg/116px-AssaultIntercessorsset.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/2/28/AssaultIntercessorsset.jpg",
+      "local_path": "cache/images/catalogue/MD-50649-a75d7c8d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50650",
+      "model_name": "Bladeguard Ancient",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Bladeguard Ancient]]",
+      "caption_names": [
+        "Bladeguard Ancient",
+        "Bladeguard Ancient"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "BladeguardAncient.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:BladeguardAncient.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e6/BladeguardAncient.jpg/56px-BladeguardAncient.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e6/BladeguardAncient.jpg",
+      "local_path": "cache/images/catalogue/MD-50650-23f68047.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50651",
+      "model_name": "Bladeguard Veterans",
+      "faction_label": "Space Marines",
+      "release_year": 2021,
+      "match_confidence": 1.0,
+      "caption": "[[Bladeguard Veteran]]s",
+      "caption_names": [
+        "Bladeguard Veteran",
+        "Bladeguard Veterans"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "BladeguardVeteransset.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:BladeguardVeteransset.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/93/BladeguardVeteransset.jpg/116px-BladeguardVeteransset.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/93/BladeguardVeteransset.jpg",
+      "local_path": "cache/images/catalogue/MD-50651-5d899ea3.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50652",
+      "model_name": "Eradicators",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Eradicators]]",
+      "caption_names": [
+        "Eradicators",
+        "Eradicators"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Eradicators11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Eradicators11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/85/Eradicators11th.jpg/120px-Eradicators11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/85/Eradicators11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50652-49dc2a75.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50653",
+      "model_name": "Judiciar",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Judiciar]]",
+      "caption_names": [
+        "Judiciar",
+        "Judiciar"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Judicar.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Judicar.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/13/Judicar.jpg/120px-Judicar.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/13/Judicar.jpg",
+      "local_path": "cache/images/catalogue/MD-50653-ab59be7d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50656",
+      "model_name": "Primaris Chaplain",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Chaplain]] with [[Jump Pack]]",
+      "caption_names": [
+        "Chaplain",
+        "Jump Pack",
+        "Chaplain with Jump Pack"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Chaplain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Chaplain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/36/Chaplain11th.jpg/64px-Chaplain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/36/Chaplain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50656-dc39adf6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50657",
+      "model_name": "Primaris Lieutenant - Gun & Shield",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 0.842,
+      "caption": "[[Lieutenant (Space Marine)|Lieutenant]] with [[Storm Shield]]",
+      "caption_names": [
+        "Lieutenant",
+        "Storm Shield",
+        "Lieutenant with Storm Shield"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisLT9th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisLT9th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/93/PrimarisLT9th.jpg/120px-PrimarisLT9th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/93/PrimarisLT9th.jpg",
+      "local_path": "cache/images/catalogue/MD-50657-352e6953.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50658",
+      "model_name": "Firestrike Servo-turret",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Firestrike Servo-turret]]",
+      "caption_names": [
+        "Firestrike Servo-turret",
+        "Firestrike Servo-turret"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Firestrike_Servo-turret.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Firestrike_Servo-turret.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/74/Firestrike_Servo-turret.jpg/120px-Firestrike_Servo-turret.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/74/Firestrike_Servo-turret.jpg",
+      "local_path": "cache/images/catalogue/MD-50658-716aec4e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50659",
+      "model_name": "Hammerfall Bunker",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Hammerfall Bunker]]",
+      "caption_names": [
+        "Hammerfall Bunker",
+        "Hammerfall Bunker"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "HammerfallBunker.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:HammerfallBunker.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9f/HammerfallBunker.jpg/120px-HammerfallBunker.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9f/HammerfallBunker.jpg",
+      "local_path": "cache/images/catalogue/MD-50659-287439a6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50660",
+      "model_name": "Invader ATV",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Invader ATV]]",
+      "caption_names": [
+        "Invader ATV",
+        "Invader ATV"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Invader_ATV.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Invader_ATV.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/03/Invader_ATV.jpg/120px-Invader_ATV.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/03/Invader_ATV.jpg",
+      "local_path": "cache/images/catalogue/MD-50660-a90f0966.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50661",
+      "model_name": "Primaris Chaplain on Bike",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "[[Suboden Khan]]",
+      "caption_names": [
+        "Suboden Khan",
+        "Suboden Khan"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SubodenKhan.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SubodenKhan.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/bc/SubodenKhan.jpg/120px-SubodenKhan.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/bc/SubodenKhan.jpg",
+      "local_path": "cache/images/catalogue/MD-50661-fa88f50b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50662",
+      "model_name": "Primaris Techmarine",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 1.0,
+      "caption": "Primaris [[Techmarine]]",
+      "caption_names": [
+        "Techmarine",
+        "Primaris Techmarine"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisTechmarine.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisTechmarine.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/2/28/PrimarisTechmarine.jpg/120px-PrimarisTechmarine.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/2/28/PrimarisTechmarine.jpg",
+      "local_path": "cache/images/catalogue/MD-50662-ee21c071.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50663",
+      "model_name": "Gladiator Lancer",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 0.87,
+      "caption": "[[Gladiator (Battle Tank)]]",
+      "caption_names": [
+        "Gladiator (Battle Tank)",
+        "Gladiator (Battle Tank)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Gladiator_Lancer.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Gladiator_Lancer.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/c7/Gladiator_Lancer.jpg/120px-Gladiator_Lancer.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/c7/Gladiator_Lancer.jpg",
+      "local_path": "cache/images/catalogue/MD-50663-824aa535.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50664",
+      "model_name": "Gladiator Reaper",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 0.87,
+      "caption": "[[Gladiator (Battle Tank)]]",
+      "caption_names": [
+        "Gladiator (Battle Tank)",
+        "Gladiator (Battle Tank)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Gladiator_Lancer.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Gladiator_Lancer.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/c7/Gladiator_Lancer.jpg/120px-Gladiator_Lancer.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/c7/Gladiator_Lancer.jpg",
+      "local_path": "cache/images/catalogue/MD-50664-824aa535.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50665",
+      "model_name": "Gladiator Valiant",
+      "faction_label": "Space Marines",
+      "release_year": 2020,
+      "match_confidence": 0.842,
+      "caption": "[[Gladiator (Battle Tank)]]",
+      "caption_names": [
+        "Gladiator (Battle Tank)",
+        "Gladiator (Battle Tank)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Gladiator_Lancer.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Gladiator_Lancer.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/c7/Gladiator_Lancer.jpg/120px-Gladiator_Lancer.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/c7/Gladiator_Lancer.jpg",
+      "local_path": "cache/images/catalogue/MD-50665-824aa535.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50667",
+      "model_name": "Primaris Eradicators",
+      "faction_label": "Space Marines",
+      "release_year": 2021,
+      "match_confidence": 1.0,
+      "caption": "[[Eradicator Squad|Eradicators]]",
+      "caption_names": [
+        "Eradicators",
+        "Eradicators"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "PrimarisEradicatorsset.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:PrimarisEradicatorsset.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/e/e6/PrimarisEradicatorsset.jpg/116px-PrimarisEradicatorsset.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/e/e6/PrimarisEradicatorsset.jpg",
+      "local_path": "cache/images/catalogue/MD-50667-4c6f02ba.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50668",
+      "model_name": "Storm Speeder Hailstrike",
+      "faction_label": "Space Marines",
+      "release_year": 2021,
+      "match_confidence": 0.85,
+      "caption": "[[Storm Speeder]]",
+      "caption_names": [
+        "Storm Speeder",
+        "Storm Speeder"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Storm_Speeder_Hailstrike.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Storm_Speeder_Hailstrike.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/76/Storm_Speeder_Hailstrike.jpg/120px-Storm_Speeder_Hailstrike.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/76/Storm_Speeder_Hailstrike.jpg",
+      "local_path": "cache/images/catalogue/MD-50668-0e629d59.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50669",
+      "model_name": "Storm Speeder Hammerstrike",
+      "faction_label": "Space Marines",
+      "release_year": 2021,
+      "match_confidence": 0.85,
+      "caption": "[[Storm Speeder]]",
+      "caption_names": [
+        "Storm Speeder",
+        "Storm Speeder"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Storm_Speeder_Hailstrike.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Storm_Speeder_Hailstrike.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/76/Storm_Speeder_Hailstrike.jpg/120px-Storm_Speeder_Hailstrike.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/76/Storm_Speeder_Hailstrike.jpg",
+      "local_path": "cache/images/catalogue/MD-50669-0e629d59.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50670",
+      "model_name": "Storm Speeder Thunderstrike",
+      "faction_label": "Space Marines",
+      "release_year": 2021,
+      "match_confidence": 0.85,
+      "caption": "[[Storm Speeder]]",
+      "caption_names": [
+        "Storm Speeder",
+        "Storm Speeder"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Storm_Speeder_Hailstrike.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Storm_Speeder_Hailstrike.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/76/Storm_Speeder_Hailstrike.jpg/120px-Storm_Speeder_Hailstrike.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/76/Storm_Speeder_Hailstrike.jpg",
+      "local_path": "cache/images/catalogue/MD-50670-0e629d59.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50671",
+      "model_name": "Heavy Intercessor Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2021,
+      "match_confidence": 1.0,
+      "caption": "[[Heavy Intercessors]]",
+      "caption_names": [
+        "Heavy Intercessors",
+        "Heavy Intercessors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "HeavyIntercessors.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:HeavyIntercessors.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a6/HeavyIntercessors.jpg/120px-HeavyIntercessors.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a6/HeavyIntercessors.jpg",
+      "local_path": "cache/images/catalogue/MD-50671-2ab7ce1d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50673",
+      "model_name": "Apothecary Biologis",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Apothecary Biologis]]",
+      "caption_names": [
+        "Apothecary Biologis",
+        "Apothecary Biologis"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Apothecarybiologis.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Apothecarybiologis.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/46/Apothecarybiologis.jpg/120px-Apothecarybiologis.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/46/Apothecarybiologis.jpg",
+      "local_path": "cache/images/catalogue/MD-50673-3c71ba43.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50674",
+      "model_name": "Ballistus Dreadnought",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Ballistus Dreadnought]]",
+      "caption_names": [
+        "Ballistus Dreadnought",
+        "Ballistus Dreadnought"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Ballistusdreadnought2023.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Ballistusdreadnought2023.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/95/Ballistusdreadnought2023.jpg/120px-Ballistusdreadnought2023.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/95/Ballistusdreadnought2023.jpg",
+      "local_path": "cache/images/catalogue/MD-50674-34e840c5.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50675",
+      "model_name": "Captain in Terminator Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Captain|Captain]] in [[Terminator Armour]]",
+      "caption_names": [
+        "Captain",
+        "Terminator Armour",
+        "Captain in Terminator Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TermieCaptain.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TermieCaptain.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/62/TermieCaptain.jpg/120px-TermieCaptain.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/62/TermieCaptain.jpg",
+      "local_path": "cache/images/catalogue/MD-50675-573abb7f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50676",
+      "model_name": "Infernus Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Infernus Squad]]",
+      "caption_names": [
+        "Infernus Squad",
+        "Infernus Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Infernus_Squad.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Infernus_Squad.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/39/Infernus_Squad.jpg/116px-Infernus_Squad.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/39/Infernus_Squad.jpg",
+      "local_path": "cache/images/catalogue/MD-50676-dc82ed84.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50677",
+      "model_name": "Librarian in Terminator Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Librarian]] in [[Terminator Armour]]",
+      "caption_names": [
+        "Librarian",
+        "Terminator Armour",
+        "Librarian in Terminator Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "10thLibratianinTerminator.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:10thLibratianinTerminator.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/1d/10thLibratianinTerminator.jpg/120px-10thLibratianinTerminator.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/1d/10thLibratianinTerminator.jpg",
+      "local_path": "cache/images/catalogue/MD-50677-9b75a1c1.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50679",
+      "model_name": "Sternguard Veteran Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Sternguard Veteran]]s",
+      "caption_names": [
+        "Sternguard Veteran",
+        "Sternguard Veterans"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Sternguard10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Sternguard10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f6/Sternguard10th.jpg/120px-Sternguard10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f6/Sternguard10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50679-1ab655d9.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50680",
+      "model_name": "Terminator Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Terminator]]s",
+      "caption_names": [
+        "Terminator",
+        "Terminators"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Terminators2023nova.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Terminators2023nova.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/3b/Terminators2023nova.jpg/120px-Terminators2023nova.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/3b/Terminators2023nova.jpg",
+      "local_path": "cache/images/catalogue/MD-50680-23c840f7.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50682",
+      "model_name": "Desolation Squad",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Desolation Squad]]",
+      "caption_names": [
+        "Desolation Squad",
+        "Desolation Squad"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "DesolationSquad.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:DesolationSquad.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/4c/DesolationSquad.jpg/120px-DesolationSquad.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/4c/DesolationSquad.jpg",
+      "local_path": "cache/images/catalogue/MD-50682-58025976.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50683",
+      "model_name": "Captain with Jump Pack",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Chaplain]] with [[Jump Pack]]",
+      "caption_names": [
+        "Chaplain",
+        "Jump Pack",
+        "Chaplain with Jump Pack"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Chaplain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Chaplain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/36/Chaplain11th.jpg/64px-Chaplain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/36/Chaplain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50683-dc39adf6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50684",
+      "model_name": "Chaplain in Terminator Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Chaplain]] in [[Terminator Armour]]",
+      "caption_names": [
+        "Chaplain",
+        "Terminator Armour",
+        "Chaplain in Terminator Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TermieChaplain.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TermieChaplain.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/5d/TermieChaplain.jpg/120px-TermieChaplain.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/5d/TermieChaplain.jpg",
+      "local_path": "cache/images/catalogue/MD-50684-295c1c6e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50685",
+      "model_name": "Company Heroes",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Command Squad|Company Heroes]]",
+      "caption_names": [
+        "Company Heroes",
+        "Company Heroes"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "CommandSquad10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CommandSquad10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/55/CommandSquad10th.jpg/120px-CommandSquad10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/55/CommandSquad10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50685-2a30a923.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50686",
+      "model_name": "Jump Pack Intercessors",
+      "faction_label": "Space Marines",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Jump Pack Intercessors]]",
+      "caption_names": [
+        "Jump Pack Intercessors",
+        "Jump Pack Intercessors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "JumpIntercessors.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:JumpIntercessors.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/85/JumpIntercessors.jpg/120px-JumpIntercessors.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/85/JumpIntercessors.jpg",
+      "local_path": "cache/images/catalogue/MD-50686-1e6dc823.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50687",
+      "model_name": "Scouts",
+      "faction_label": "Space Marines",
+      "release_year": 2024,
+      "match_confidence": 1.0,
+      "caption": "[[Scout]]s",
+      "caption_names": [
+        "Scout",
+        "Scouts"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "ScoutsKTSalvation.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:ScoutsKTSalvation.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/14/ScoutsKTSalvation.jpg/120px-ScoutsKTSalvation.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/14/ScoutsKTSalvation.jpg",
+      "local_path": "cache/images/catalogue/MD-50687-f18e7861.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50688",
+      "model_name": "Infernus Sergeant",
+      "faction_label": "Space Marines",
+      "release_year": 2024,
+      "match_confidence": 1.0,
+      "caption": "[[Infernus Squad|Infernus]] [[Space Marine Sergeant|Sergeant]] (limited Edition)",
+      "caption_names": [
+        "Infernus",
+        "Sergeant",
+        "Infernus Sergeant (limited Edition)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "InfernusSergeant.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:InfernusSergeant.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/3d/InfernusSergeant.jpg/120px-InfernusSergeant.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/3d/InfernusSergeant.jpg",
+      "local_path": "cache/images/catalogue/MD-50688-7ecc7fdb.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50689",
+      "model_name": "Captain in Terminator Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2024,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Captain|Captain]] in [[Terminator Armour]]",
+      "caption_names": [
+        "Captain",
+        "Terminator Armour",
+        "Captain in Terminator Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TermieCaptain.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TermieCaptain.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/62/TermieCaptain.jpg/120px-TermieCaptain.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/62/TermieCaptain.jpg",
+      "local_path": "cache/images/catalogue/MD-50689-573abb7f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50690",
+      "model_name": "Aethon Shaan",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Aethon Shaan]]",
+      "caption_names": [
+        "Aethon Shaan",
+        "Aethon Shaan"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "AethonShaan.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:AethonShaan.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/00/AethonShaan.jpg/120px-AethonShaan.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/00/AethonShaan.jpg",
+      "local_path": "cache/images/catalogue/MD-50690-5f5caa11.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50691",
+      "model_name": "Ancient in Terminator Armour",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Chapter Ancient|Ancient]] in [[Terminator Armour]]",
+      "caption_names": [
+        "Ancient",
+        "Terminator Armour",
+        "Ancient in Terminator Armour"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "TermieAncient.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TermieAncient.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/59/TermieAncient.jpg/120px-TermieAncient.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/59/TermieAncient.jpg",
+      "local_path": "cache/images/catalogue/MD-50691-63ea65dc.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50692",
+      "model_name": "Assault Terminators",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Assault Terminator]]s",
+      "caption_names": [
+        "Assault Terminator",
+        "Assault Terminators"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "AssaultTermies10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:AssaultTermies10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/08/AssaultTermies10th.jpg/116px-AssaultTermies10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/08/AssaultTermies10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50692-12873181.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50693",
+      "model_name": "Caanok Var",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Caanok Var]]",
+      "caption_names": [
+        "Caanok Var",
+        "Caanok Var"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "CaanokVar.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CaanokVar.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/86/CaanokVar.jpg/104px-CaanokVar.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/86/CaanokVar.jpg",
+      "local_path": "cache/images/catalogue/MD-50693-c4c0d83c.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50694",
+      "model_name": "Captain Centos",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Centos|Captain Centos]]",
+      "caption_names": [
+        "Captain Centos",
+        "Captain Centos"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "CaptainCentos2025.jpeg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CaptainCentos2025.jpeg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/1c/CaptainCentos2025.jpeg/120px-CaptainCentos2025.jpeg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/1c/CaptainCentos2025.jpeg",
+      "local_path": "cache/images/catalogue/MD-50694-f0968a7f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50695",
+      "model_name": "Captain with Jump Pack",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Chaplain]] with [[Jump Pack]]",
+      "caption_names": [
+        "Chaplain",
+        "Jump Pack",
+        "Chaplain with Jump Pack"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Chaplain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Chaplain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/36/Chaplain11th.jpg/64px-Chaplain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/36/Chaplain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50695-dc39adf6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50696",
+      "model_name": "Darnath Lysander",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Darnath Lysander]]",
+      "caption_names": [
+        "Darnath Lysander",
+        "Darnath Lysander"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Lysander10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Lysander10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/57/Lysander10th.jpg/120px-Lysander10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/57/Lysander10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50696-86ff9a0d.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50697",
+      "model_name": "Drop Pod",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Drop Pod]]",
+      "caption_names": [
+        "Drop Pod",
+        "Drop Pod"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Drop-Pod-2025.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Drop-Pod-2025.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a0/Drop-Pod-2025.jpg/120px-Drop-Pod-2025.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a0/Drop-Pod-2025.jpg",
+      "local_path": "cache/images/catalogue/MD-50697-0a8bf741.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50699",
+      "model_name": "Suboden Khan",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Suboden Khan]]",
+      "caption_names": [
+        "Suboden Khan",
+        "Suboden Khan"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SubodenKhan.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SubodenKhan.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/bc/SubodenKhan.jpg/120px-SubodenKhan.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/bc/SubodenKhan.jpg",
+      "local_path": "cache/images/catalogue/MD-50699-fa88f50b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50700",
+      "model_name": "Vulkan He'stan",
+      "faction_label": "Space Marines",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[Vulkan He'stan]]",
+      "caption_names": [
+        "Vulkan He'stan",
+        "Vulkan He'stan"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "VulkanHestan10th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:VulkanHestan10th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/ca/VulkanHestan10th.jpg/120px-VulkanHestan10th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/ca/VulkanHestan10th.jpg",
+      "local_path": "cache/images/catalogue/MD-50700-8edf1853.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50701",
+      "model_name": "Ancient",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Ancient]]",
+      "caption_names": [
+        "Ancient",
+        "Ancient"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMAncient11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMAncient11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/75/SMAncient11th.jpg/74px-SMAncient11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/75/SMAncient11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50701-87cdb7ff.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50702",
+      "model_name": "Captain",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Space Marine Captain|Captain]]",
+      "caption_names": [
+        "Captain",
+        "Captain"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMCaptain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMCaptain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/d0/SMCaptain11th.jpg/120px-SMCaptain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/d0/SMCaptain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50702-cbe9a5cd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50703",
+      "model_name": "Chaplain with Jump Pack",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Chaplain]] with [[Jump Pack]]",
+      "caption_names": [
+        "Chaplain",
+        "Jump Pack",
+        "Chaplain with Jump Pack"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Chaplain11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Chaplain11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/36/Chaplain11th.jpg/64px-Chaplain11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/36/Chaplain11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50703-dc39adf6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50704",
+      "model_name": "Eradicators",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Eradicators]]",
+      "caption_names": [
+        "Eradicators",
+        "Eradicators"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Eradicators11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Eradicators11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/85/Eradicators11th.jpg/120px-Eradicators11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/85/Eradicators11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50704-49dc2a75.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50705",
+      "model_name": "Intercessors",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Intercessors]]",
+      "caption_names": [
+        "Intercessors",
+        "Intercessors"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Intercessors11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Intercessors11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/bc/Intercessors11th.jpg/120px-Intercessors11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/bc/Intercessors11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50705-4e7f7135.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50706",
+      "model_name": "Land Speeder",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Landspeeder]]",
+      "caption_names": [
+        "Landspeeder",
+        "Landspeeder"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "Landspeeders11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Landspeeders11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/44/Landspeeders11th.jpg/111px-Landspeeders11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/44/Landspeeders11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50706-3153da2a.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50707",
+      "model_name": "Librarian",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Librarian]]",
+      "caption_names": [
+        "Librarian",
+        "Librarian"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "SMLibrarian11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SMLibrarian11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f5/SMLibrarian11th.jpg/120px-SMLibrarian11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f5/SMLibrarian11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50707-e49dbe6f.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50708",
+      "model_name": "Vanguard Veterans",
+      "faction_label": "Space Marines",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Vanguard Veteran]]s",
+      "caption_names": [
+        "Vanguard Veteran",
+        "Vanguard Veterans"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Space_Marines",
+      "lexicanum_file": "VanguardVeterans11th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:VanguardVeterans11th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a9/VanguardVeterans11th.jpg/120px-VanguardVeterans11th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a9/VanguardVeterans11th.jpg",
+      "local_path": "cache/images/catalogue/MD-50708-f6a7f948.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50719",
+      "local_path": "cache/images/catalogue/MD-50719.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50763",
+      "model_name": "TX4 Piranha",
+      "faction_label": "Tau Empire",
+      "release_year": 2006,
+      "match_confidence": 1.0,
+      "caption": "[[TX42 Piranha]]",
+      "caption_names": [
+        "TX42 Piranha",
+        "TX42 Piranha"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "TX42.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TX42.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/02/TX42.jpg/120px-TX42.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/02/TX42.jpg",
+      "local_path": "cache/images/catalogue/MD-50763-76201a56.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50764",
+      "model_name": "TX78 Sky Ray Gunship",
+      "faction_label": "Tau Empire",
+      "release_year": 2006,
+      "match_confidence": 1.0,
+      "caption": "[[Sky Ray Gunship]]",
+      "caption_names": [
+        "Sky Ray Gunship",
+        "Sky Ray Gunship"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Skyray_tan.gif",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Skyray_tan.gif",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/39/Skyray_tan.gif/120px-Skyray_tan.gif",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/39/Skyray_tan.gif",
+      "local_path": "cache/images/catalogue/MD-50764-1506f4fc.gif",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50765",
+      "model_name": "XV25 Stealth Suits",
+      "faction_label": "Tau Empire",
+      "release_year": 2006,
+      "match_confidence": 1.0,
+      "caption": "[[XV25 Stealth Battlesuit]]s Team",
+      "caption_names": [
+        "XV25 Stealth Battlesuit",
+        "XV25 Stealth Battlesuits Team"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "TauXV25StealthTeam.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TauXV25StealthTeam.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/4/41/TauXV25StealthTeam.jpg/116px-TauXV25StealthTeam.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/4/41/TauXV25StealthTeam.jpg",
+      "local_path": "cache/images/catalogue/MD-50765-73088d70.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50766",
+      "model_name": "Cadre Fireblade",
+      "faction_label": "Tau Empire",
+      "release_year": 2013,
+      "match_confidence": 0.9,
+      "caption": "[[Fireblade]]",
+      "caption_names": [
+        "Fireblade",
+        "Fireblade"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Fireblade.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Fireblade.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/d7/Fireblade.jpg/120px-Fireblade.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/d7/Fireblade.jpg",
+      "local_path": "cache/images/catalogue/MD-50766-780017f7.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50768",
+      "model_name": "Pathfinder Team",
+      "faction_label": "Tau Empire",
+      "release_year": 2013,
+      "match_confidence": 0.86,
+      "caption": "[[Tau Pathfinder]]s",
+      "caption_names": [
+        "Tau Pathfinder",
+        "Tau Pathfinders"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Pathfinders7th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Pathfinders7th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/ad/Pathfinders7th.jpg/116px-Pathfinders7th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/ad/Pathfinders7th.jpg",
+      "local_path": "cache/images/catalogue/MD-50768-d6e41042.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50769",
+      "model_name": "Razorshark Fighter",
+      "faction_label": "Tau Empire",
+      "release_year": 2013,
+      "match_confidence": 0.864,
+      "caption": "[[Razorshark]]",
+      "caption_names": [
+        "Razorshark",
+        "Razorshark"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "RazorsharkFighter.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:RazorsharkFighter.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/51/RazorsharkFighter.jpg/120px-RazorsharkFighter.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/51/RazorsharkFighter.jpg",
+      "local_path": "cache/images/catalogue/MD-50769-94e6eccd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50770",
+      "model_name": "Sky Ray Gunship",
+      "faction_label": "Tau Empire",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[Sky Ray Gunship]]",
+      "caption_names": [
+        "Sky Ray Gunship",
+        "Sky Ray Gunship"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Skyray_tan.gif",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Skyray_tan.gif",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/39/Skyray_tan.gif/120px-Skyray_tan.gif",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/39/Skyray_tan.gif",
+      "local_path": "cache/images/catalogue/MD-50770-1506f4fc.gif",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50771",
+      "model_name": "Sun Shark Bomber",
+      "faction_label": "Tau Empire",
+      "release_year": 2013,
+      "match_confidence": 0.95,
+      "caption": "[[Sun Shark]]",
+      "caption_names": [
+        "Sun Shark",
+        "Sun Shark"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "SunShark.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:SunShark.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/ab/SunShark.jpg/120px-SunShark.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/ab/SunShark.jpg",
+      "local_path": "cache/images/catalogue/MD-50771-5bc565aa.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50772",
+      "model_name": "XV104 Riptide Battlesuit",
+      "faction_label": "Tau Empire",
+      "release_year": 2013,
+      "match_confidence": 0.95,
+      "caption": "[[XV104 Riptide]]",
+      "caption_names": [
+        "XV104 Riptide",
+        "XV104 Riptide"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Riptide1.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Riptide1.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/f/f8/Riptide1.jpg/120px-Riptide1.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/f/f8/Riptide1.jpg",
+      "local_path": "cache/images/catalogue/MD-50772-dbe21e25.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50773",
+      "model_name": "XV88 Broadside Battlesuit",
+      "faction_label": "Tau Empire",
+      "release_year": 2013,
+      "match_confidence": 1.0,
+      "caption": "[[XV88 Broadside Battlesuit]]",
+      "caption_names": [
+        "XV88 Broadside Battlesuit",
+        "XV88 Broadside Battlesuit"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Broadside1.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Broadside1.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/11/Broadside1.jpg/120px-Broadside1.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/11/Broadside1.jpg",
+      "local_path": "cache/images/catalogue/MD-50773-a43c132a.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50774",
+      "model_name": "Ethereal",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "Invocation of the Elements, [[Ethereal]]' Store Anniversaries miniature",
+      "caption_names": [
+        "Ethereal",
+        "Invocation of the Elements, Ethereal' Store Anniversaries miniature"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Ethereal2024.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Ethereal2024.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a2/Ethereal2024.jpg/120px-Ethereal2024.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a2/Ethereal2024.jpg",
+      "local_path": "cache/images/catalogue/MD-50774-4cad5f83.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50775",
+      "model_name": "Fire Warriors Breacher Team",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[Fire Warrior]] Breacher Team",
+      "caption_names": [
+        "Fire Warrior",
+        "Fire Warrior Breacher Team"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "FWBreacherTeam.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:FWBreacherTeam.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/d/dd/FWBreacherTeam.jpg/120px-FWBreacherTeam.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/d/dd/FWBreacherTeam.jpg",
+      "local_path": "cache/images/catalogue/MD-50775-ba392593.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50776",
+      "model_name": "Fire Warriors Strike Team",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[Fire Warrior]] Strike Team",
+      "caption_names": [
+        "Fire Warrior",
+        "Fire Warrior Strike Team"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "FWStrikeTeam.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:FWStrikeTeam.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/ad/FWStrikeTeam.jpg/120px-FWStrikeTeam.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/ad/FWStrikeTeam.jpg",
+      "local_path": "cache/images/catalogue/MD-50776-fb0467fb.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50777",
+      "model_name": "KV128 Stormsurge",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[KV128 Stormsurge]]",
+      "caption_names": [
+        "KV128 Stormsurge",
+        "KV128 Stormsurge"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "KV128.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KV128.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/18/KV128.jpg/112px-KV128.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/18/KV128.jpg",
+      "local_path": "cache/images/catalogue/MD-50777-3d37b14e.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50778",
+      "model_name": "T'au Empire Commander XV85",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 0.834,
+      "caption": "[[Tau Commander]] in [[XV85 Battlesuit]]",
+      "caption_names": [
+        "Tau Commander",
+        "XV85 Battlesuit",
+        "Tau Commander in XV85 Battlesuit"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "XV85.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:XV85.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9e/XV85.jpg/92px-XV85.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9e/XV85.jpg",
+      "local_path": "cache/images/catalogue/MD-50778-2d93fb38.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50779",
+      "model_name": "T'au Empire Commander XV86 Coldstar",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 0.877,
+      "caption": "[[Tau Commander]] in [[XV86 Coldstar]] Battlesuit",
+      "caption_names": [
+        "Tau Commander",
+        "XV86 Coldstar",
+        "Tau Commander in XV86 Coldstar Battlesuit"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Coldstar.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Coldstar.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/6b/Coldstar.jpg/101px-Coldstar.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/6b/Coldstar.jpg",
+      "local_path": "cache/images/catalogue/MD-50779-02803ecd.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50781",
+      "model_name": "XV8 Crisis Battlesuits",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 1.0,
+      "caption": "[[XV8 Crisis Battlesuit Team]]",
+      "caption_names": [
+        "XV8 Crisis Battlesuit Team",
+        "XV8 Crisis Battlesuit Team"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "TauCrisisBattlesuits.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TauCrisisBattlesuits.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/5c/TauCrisisBattlesuits.jpg/116px-TauCrisisBattlesuits.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/5c/TauCrisisBattlesuits.jpg",
+      "local_path": "cache/images/catalogue/MD-50781-36e12863.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50782",
+      "model_name": "XV95 Ghostkeel Battlesuit",
+      "faction_label": "Tau Empire",
+      "release_year": 2015,
+      "match_confidence": 0.95,
+      "caption": "[[XV95 Ghostkeel]]",
+      "caption_names": [
+        "XV95 Ghostkeel",
+        "XV95 Ghostkeel"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "XV95.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:XV95.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/af/XV95.jpg/120px-XV95.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/af/XV95.jpg",
+      "local_path": "cache/images/catalogue/MD-50782-29404d9b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50785",
+      "model_name": "Kill Team: T’au Pathfinders",
+      "faction_label": "Tau Empire",
+      "release_year": 2022,
+      "match_confidence": 1.0,
+      "caption": "[[T'au Pathfinders Kill Team]] (2021)",
+      "caption_names": [
+        "T'au Pathfinders Kill Team",
+        "T'au Pathfinders Kill Team (2021)"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Pathfinders9th.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Pathfinders9th.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/9/9a/Pathfinders9th.jpg/120px-Pathfinders9th.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/9/9a/Pathfinders9th.jpg",
+      "local_path": "cache/images/catalogue/MD-50785-d4f8810b.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50786",
+      "model_name": "Flesh Shaper",
+      "faction_label": "Tau Empire",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Flesh Shaper]]",
+      "caption_names": [
+        "Flesh Shaper",
+        "Flesh Shaper"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "FleshShaper.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:FleshShaper.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/8/88/FleshShaper.jpg/120px-FleshShaper.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/8/88/FleshShaper.jpg",
+      "local_path": "cache/images/catalogue/MD-50786-7ecbfa39.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50787",
+      "model_name": "Kroot Carnivores",
+      "faction_label": "Tau Empire",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "The Hunter Strikes, [[Kroot Carnivore]] Warhammer Events miniature",
+      "caption_names": [
+        "Kroot Carnivore",
+        "The Hunter Strikes, Kroot Carnivore Warhammer Events miniature"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "TheHunterStrikes2024.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TheHunterStrikes2024.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/7/78/TheHunterStrikes2024.jpg/120px-TheHunterStrikes2024.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/7/78/TheHunterStrikes2024.jpg",
+      "local_path": "cache/images/catalogue/MD-50787-4b15ec16.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50789",
+      "model_name": "Kroot Rampagers",
+      "faction_label": "Tau Empire",
+      "release_year": 2023,
+      "match_confidence": 1.0,
+      "caption": "[[Krootox Rampager]]s",
+      "caption_names": [
+        "Krootox Rampager",
+        "Krootox Rampagers"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "KrootoxRampagers.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KrootoxRampagers.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/c/cd/KrootoxRampagers.jpg/120px-KrootoxRampagers.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/c/cd/KrootoxRampagers.jpg",
+      "local_path": "cache/images/catalogue/MD-50789-80e1883a.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50792",
+      "model_name": "T'au Ethereal",
+      "faction_label": "Tau Empire",
+      "release_year": 2024,
+      "match_confidence": 0.95,
+      "caption": "Invocation of the Elements, [[Ethereal]]' Store Anniversaries miniature",
+      "caption_names": [
+        "Ethereal",
+        "Invocation of the Elements, Ethereal' Store Anniversaries miniature"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "Ethereal2024.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Ethereal2024.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/a/a2/Ethereal2024.jpg/120px-Ethereal2024.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/a/a2/Ethereal2024.jpg",
+      "local_path": "cache/images/catalogue/MD-50792-4cad5f83.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50794",
+      "model_name": "XV26 Stealth Battlesuit",
+      "faction_label": "Tau Empire",
+      "release_year": 2025,
+      "match_confidence": 1.0,
+      "caption": "[[XV26 Stealth Battlesuit]]",
+      "caption_names": [
+        "XV26 Stealth Battlesuit",
+        "XV26 Stealth Battlesuit"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "KTDS1.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:KTDS1.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/5/50/KTDS1.jpg/113px-KTDS1.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/5/50/KTDS1.jpg",
+      "local_path": "cache/images/catalogue/MD-50794-333beeb6.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50795",
+      "model_name": "Twin Lance",
+      "faction_label": "Tau Empire",
+      "release_year": 2026,
+      "match_confidence": 1.0,
+      "caption": "[[Twin Lance]]",
+      "caption_names": [
+        "Twin Lance",
+        "Twin Lance"
+      ],
+      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Tau",
+      "lexicanum_file": "TwinLance.jpg",
+      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:TwinLance.jpg",
+      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/6/6f/TwinLance.jpg/120px-TwinLance.jpg",
+      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/6/6f/TwinLance.jpg",
+      "local_path": "cache/images/catalogue/MD-50795-ca414933.jpg",
+      "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50800",
+      "local_path": "cache/images/catalogue/MD-50800.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50808",
+      "local_path": "cache/images/catalogue/MD-50808.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50811",
+      "local_path": "cache/images/catalogue/MD-50811.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50816",
+      "local_path": "cache/images/catalogue/MD-50816.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50836",
+      "local_path": "cache/images/catalogue/MD-50836.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50837",
+      "local_path": "cache/images/catalogue/MD-50837.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50838",
+      "local_path": "cache/images/catalogue/MD-50838.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50839",
+      "local_path": "cache/images/catalogue/MD-50839.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50840",
+      "local_path": "cache/images/catalogue/MD-50840.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50841",
+      "local_path": "cache/images/catalogue/MD-50841.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50842",
+      "local_path": "cache/images/catalogue/MD-50842.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50843",
+      "local_path": "cache/images/catalogue/MD-50843.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50847",
+      "local_path": "cache/images/catalogue/MD-50847.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50854",
+      "local_path": "cache/images/catalogue/MD-50854.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50858",
+      "local_path": "cache/images/catalogue/MD-50858.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50859",
+      "local_path": "cache/images/catalogue/MD-50859.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50860",
+      "local_path": "cache/images/catalogue/MD-50860.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50861",
+      "local_path": "cache/images/catalogue/MD-50861.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50870",
+      "local_path": "cache/images/catalogue/MD-50870.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50875",
+      "local_path": "cache/images/catalogue/MD-50875.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50876",
+      "local_path": "cache/images/catalogue/MD-50876.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50877",
+      "local_path": "cache/images/catalogue/MD-50877.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50878",
+      "local_path": "cache/images/catalogue/MD-50878.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50879",
+      "local_path": "cache/images/catalogue/MD-50879.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50884",
+      "local_path": "cache/images/catalogue/MD-50884.webp",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50885",
+      "local_path": "cache/images/catalogue/MD-50885.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50886",
+      "local_path": "cache/images/catalogue/MD-50886.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50887",
+      "local_path": "cache/images/catalogue/MD-50887.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50903",
+      "local_path": "cache/images/catalogue/MD-50903.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50930",
+      "local_path": "cache/images/catalogue/MD-50930.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50938",
+      "local_path": "cache/images/catalogue/MD-50938.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50941",
+      "local_path": "cache/images/catalogue/MD-50941.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50945",
+      "local_path": "cache/images/catalogue/MD-50945.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50947",
+      "local_path": "cache/images/catalogue/MD-50947.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50948",
+      "local_path": "cache/images/catalogue/MD-50948.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50949",
+      "local_path": "cache/images/catalogue/MD-50949.webp",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50950",
+      "local_path": "cache/images/catalogue/MD-50950.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50951",
+      "local_path": "cache/images/catalogue/MD-50951.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50952",
+      "local_path": "cache/images/catalogue/MD-50952.gif",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50953",
+      "local_path": "cache/images/catalogue/MD-50953.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50954",
+      "local_path": "cache/images/catalogue/MD-50954.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50955",
+      "local_path": "cache/images/catalogue/MD-50955.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50956",
+      "local_path": "cache/images/catalogue/MD-50956.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50957",
+      "local_path": "cache/images/catalogue/MD-50957.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50958",
+      "local_path": "cache/images/catalogue/MD-50958.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50959",
+      "local_path": "cache/images/catalogue/MD-50959.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50960",
+      "local_path": "cache/images/catalogue/MD-50960.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50961",
+      "local_path": "cache/images/catalogue/MD-50961.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50962",
+      "local_path": "cache/images/catalogue/MD-50962.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50963",
+      "local_path": "cache/images/catalogue/MD-50963.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50964",
+      "local_path": "cache/images/catalogue/MD-50964.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50965",
+      "local_path": "cache/images/catalogue/MD-50965.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50966",
+      "local_path": "cache/images/catalogue/MD-50966.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50967",
+      "local_path": "cache/images/catalogue/MD-50967.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50968",
+      "local_path": "cache/images/catalogue/MD-50968.webp",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50969",
+      "local_path": "cache/images/catalogue/MD-50969.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50970",
+      "local_path": "cache/images/catalogue/MD-50970.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50971",
+      "local_path": "cache/images/catalogue/MD-50971.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50972",
+      "local_path": "cache/images/catalogue/MD-50972.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50973",
+      "local_path": "cache/images/catalogue/MD-50973.webp",
+      "source": "user",
+      "caption": ""
+    }
+  ]
+}

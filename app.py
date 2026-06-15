@@ -60,6 +60,26 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(BOX_IMAGE_DIR, exist_ok=True)
 
 
+_ALIGNMENT_WORDS = {"Imperium", "Chaos", "Xenos", "Unaligned"}
+
+
+def _faction_display_name(full_name):
+    """Strip BSData alignment prefix; return (display_name, group).
+
+    "Xenos - Aeldari"                             → ("Aeldari", "")
+    "Imperium - Adeptus Astartes - Space Marines" → ("Space Marines", "Adeptus Astartes")
+    "Chaos - Emperor's Children"                  → ("Emperor's Children", "")
+    "Aeldari - Ynnari"                            → ("Ynnari", "Aeldari")
+    """
+    parts = [p.strip() for p in full_name.split(" - ")]
+    if len(parts) <= 1:
+        return full_name, ""
+    display = parts[-1]
+    parent = parts[-2]
+    group = "" if parent in _ALIGNMENT_WORDS else parent
+    return display, group
+
+
 def _box_ref_path(box_id):
     slug = re.sub(r"[^a-z0-9_-]+", "_", box_id.lower()).strip("_")
     for ext in (".jpg", ".jpeg", ".png", ".webp", ".gif"):
@@ -89,7 +109,11 @@ init_arsenal(app)
 
 # ---------------------------------------------------------------- icon helpers
 def _faction_icon_url(fid, name):
-    keys = {_icon_key(fid), _icon_key(name), _icon_key(_slug(name))}
+    short, _ = _faction_display_name(name)
+    keys = {
+        _icon_key(fid), _icon_key(name), _icon_key(_slug(name)),
+        _icon_key(short), _icon_key(_slug(short)),
+    }
     try:
         filenames = os.listdir(ICON_DIR)
     except OSError:
@@ -219,7 +243,7 @@ def _factions_payload(info=None, owned=None):
             ul_by_faction[fid]            = ul_by_faction.get(fid, 0) + ul_map.get(did, 0)
 
     for f in factions:
-        primary, accent, _ = ft.theme_for(f["id"])
+        primary, accent, _ = ft.theme_for(f["name"])
         f["primary"] = primary
         f["accent"]  = accent
         f["owned_units"]      = by_faction.get(f["id"], 0)
@@ -234,7 +258,10 @@ def _factions_payload(info=None, owned=None):
             f["icon_url"] = f"/api/factions/{f['id']}/icon"
         else:
             f["icon_url"] = raw_icon
-        f["initial"] = (f["name"] or "?").strip()[:1].upper() or "?"
+        dn, group = _faction_display_name(f["name"])
+        f["display_name"] = dn
+        f["group"] = group
+        f["initial"] = dn[:1].upper() or "?"
         f["favourite"] = f["id"] in favourites
     return factions
 
@@ -287,7 +314,7 @@ def faction_icon(fid):
     fac = store.faction_by_id.get(fid)
     if not fac:
         abort(404)
-    _, accent, _ = ft.theme_for(fid)
+    _, accent, _ = ft.theme_for(fac.get("name", ""))
     raw_url = _faction_icon_url(fid, fac.get("name", ""))
     if not raw_url or not raw_url.lower().endswith(".svg"):
         abort(404)
@@ -335,9 +362,10 @@ def api_faction_units(fid):
             {"key": gkey, "members": info["groups"].get(gkey, {}).get("members", [])}
             for gkey in info["did_groups"].get(u["id"], [])
         ]
-    primary, accent, _ = ft.theme_for(fid)
+    primary, accent, _ = ft.theme_for(faction["name"])
+    dn, _ = _faction_display_name(faction["name"])
     return jsonify({
-        "faction": {"id": fid, "name": faction["name"], "primary": primary, "accent": accent},
+        "faction": {"id": fid, "name": faction["name"], "display_name": dn, "primary": primary, "accent": accent},
         "units": units,
     })
 
@@ -399,7 +427,7 @@ def api_unit(did):
                     alts.append({"id": mid, "name": ds.get("name", mid)})
     detail["multikit_alternatives"] = alts
     detail["squad_suggestions"] = _squad_suggestions(len(minis), comp_range)
-    primary, accent, _ = ft.theme_for(detail["faction_id"])
+    primary, accent, _ = ft.theme_for(detail.get("faction_name", ""))
     detail["primary"] = primary
     detail["accent"] = accent
     detail["has_reference"] = _ref_path(did) is not None
@@ -412,6 +440,8 @@ def _create_minis(datasheet_id, catalogue_model_id, label, wargear, count, multi
     """Insert `count` mini rows and return the created dicts."""
     from db import db
     import uuid as _uuid
+    # Resolve to canonical BSData GUID (handles both GUIDs and Wahapedia aliases)
+    unit_bsdata_id = store.ds_by_id.get(datasheet_id, {}).get("id")
     now = time.time()
     created = []
     with db() as c:
@@ -419,9 +449,11 @@ def _create_minis(datasheet_id, catalogue_model_id, label, wargear, count, multi
             mid = _uuid.uuid4().hex
             c.execute(
                 """INSERT INTO minis
-                       (id, datasheet_id, catalogue_model_id, label, wargear, notes, finished, stage, multikit_group, created_at)
-                   VALUES (?,?,?,?,?,?,?,?,?,?)""",
-                (mid, datasheet_id, catalogue_model_id, label, json.dumps(wargear), "", 0, "unbuilt", multikit_group, now),
+                       (id, datasheet_id, unit_bsdata_id, catalogue_model_id,
+                        label, wargear, notes, finished, stage, multikit_group, created_at)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                (mid, datasheet_id, unit_bsdata_id, catalogue_model_id,
+                 label, json.dumps(wargear), "", 0, "unbuilt", multikit_group, now),
             )
             created.append({
                 "id": mid,
@@ -479,8 +511,6 @@ def api_update_mini(mid):
         if not row:
             abort(404)
         data = request.get_json(force=True)
-        _VALID_STAGES = ['unbuilt', 'assembled', 'primed', 'base_coated', 'washed',
-                         'highlighted', 'finished', 'display']
         label = str(data.get("label", row["label"]))[:120] if "label" in data else row["label"]
         notes = str(data.get("notes", row["notes"]))[:2000] if "notes" in data else row["notes"]
         if "wargear" in data and isinstance(data["wargear"], list):
@@ -517,19 +547,22 @@ def api_delete_mini(mid):
         photos = c.execute("SELECT filename FROM photos WHERE mini_id=?", (mid,)).fetchall()
         c.execute("DELETE FROM photos WHERE mini_id=?", (mid,))
         c.execute("DELETE FROM minis WHERE id=?", (mid,))
-        did = row["datasheet_id"]
+        old_did = row["datasheet_id"]
         unit_bid = row["unit_bsdata_id"]
         total_remaining = c.execute(
             "SELECT COUNT(*) cnt FROM minis WHERE unit_bsdata_id=?",
             (unit_bid,)).fetchone()["cnt"] if unit_bid else 0
+        # Query army_units with both ID variants to handle rows created before/after BSData migration
+        id_variants = list({x for x in [unit_bid, old_did] if x})
+        ph = ",".join("?" * len(id_variants))
         total_assigned = c.execute(
-            "SELECT COALESCE(SUM(assigned_count),0) tot FROM army_units WHERE datasheet_id=?",
-            (did,)).fetchone()["tot"]
+            f"SELECT COALESCE(SUM(assigned_count),0) tot FROM army_units WHERE datasheet_id IN ({ph})",
+            id_variants).fetchone()["tot"] if id_variants else 0
         if total_assigned > total_remaining:
             overage = total_assigned - total_remaining
             for au in c.execute(
-                    "SELECT id, assigned_count FROM army_units WHERE datasheet_id=? AND assigned_count>0 ORDER BY assigned_count DESC",
-                    (did,)).fetchall():
+                    f"SELECT id, assigned_count FROM army_units WHERE datasheet_id IN ({ph}) AND assigned_count>0 ORDER BY assigned_count DESC",
+                    id_variants).fetchall():
                 if overage <= 0:
                     break
                 reduce = min(overage, au["assigned_count"])
@@ -564,9 +597,10 @@ def api_duplicate_mini(mid):
         src_stage = row["stage"] if "stage" in row.keys() else "unbuilt"
         c.execute(
             """INSERT INTO minis
-                   (id, datasheet_id, catalogue_model_id, label, wargear, notes, finished, stage, created_at)
-               VALUES (?,?,?,?,?,?,?,?,?)""",
-            (new_id, row["datasheet_id"], row["catalogue_model_id"], label,
+                   (id, datasheet_id, unit_bsdata_id, catalogue_model_id,
+                    label, wargear, notes, finished, stage, created_at)
+               VALUES (?,?,?,?,?,?,?,?,?,?)""",
+            (new_id, row["datasheet_id"], row["unit_bsdata_id"], row["catalogue_model_id"], label,
              row["wargear"], "", 1 if src_stage == "finished" else 0, src_stage, now),
         )
         cid = row["catalogue_model_id"]
@@ -650,7 +684,8 @@ def api_unit_image(did):
         resp = send_file(p)
         resp.headers["Cache-Control"] = "no-cache"
         return resp
-    svg = ft.placeholder_svg(d["faction_id"], d["name"], did)
+    faction_name = store.faction_by_id.get(d["faction_id"], {}).get("name", "")
+    svg = ft.placeholder_svg(faction_name, d["name"], did)
     resp = Response(svg, mimetype="image/svg+xml")
     resp.headers["Cache-Control"] = "no-store"
     return resp
@@ -779,7 +814,7 @@ def api_list_armies():
                 _enhancement_cost(u["enhancement_id"], r["detachment_id"] or "")
                 for u in units)
             fac = store.faction_by_id.get(r["faction_id"], {})
-            primary, accent, _ = ft.theme_for(r["faction_id"])
+            primary, accent, _ = ft.theme_for(fac.get("name", ""))
             dt = store.detachment_by_id.get(r["detachment_id"] or "", {})
             out.append({
                 "id": r["id"],
@@ -831,7 +866,7 @@ def api_get_army(aid):
         units = [_army_unit_row(c, u) for u in units_rows]
     total_pts = sum(u["points"] + (u["enhancement_cost"] or 0) for u in units)
     fac = store.faction_by_id.get(row["faction_id"], {})
-    primary, accent, _ = ft.theme_for(row["faction_id"])
+    primary, accent, _ = ft.theme_for(fac.get("name", ""))
     dt = store.detachment_by_id.get(row["detachment_id"] or "", {})
     return jsonify({
         "id": row["id"],
@@ -894,6 +929,7 @@ def api_add_army_unit(aid):
     did = str(data.get("datasheet_id", ""))
     if did not in store.ds_by_id:
         return jsonify({"ok": False, "error": "Unknown datasheet"}), 400
+    did = store.ds_by_id[did]["id"]  # Normalize to canonical BSData GUID
     if not _datasheet_in_faction(did, army["faction_id"]):
         return jsonify({"ok": False, "error": "Unit does not belong to this army's faction"}), 400
     comp_range = _parse_comp_range(store.composition.get(did, []))
@@ -924,6 +960,11 @@ def api_update_army_unit(auid):
         army = c.execute("SELECT * FROM army_lists WHERE id=?", (row["army_list_id"],)).fetchone()
         if not army:
             abort(404)
+        # Normalize old Wahapedia IDs to canonical BSData GUID
+        canonical_did = store.ds_by_id.get(did, {}).get("id") or did
+        if canonical_did != did:
+            c.execute("UPDATE army_units SET datasheet_id=? WHERE id=?", (canonical_did, auid))
+            did = canonical_did
 
         squad_size = _normalise_squad_size(
             did, data.get("squad_size", row["squad_size"]), row["squad_size"])
@@ -933,7 +974,7 @@ def api_update_army_unit(auid):
         notes = str(data.get("notes", row["notes"] or ""))[:2000]
 
         owned = c.execute(
-            "SELECT COUNT(*) cnt FROM minis WHERE datasheet_id=?", (did,)).fetchone()["cnt"]
+            "SELECT COUNT(*) cnt FROM minis WHERE unit_bsdata_id=?", (did,)).fetchone()["cnt"]
         other_assigned = c.execute(
             "SELECT COALESCE(SUM(assigned_count),0) tot FROM army_units WHERE datasheet_id=? AND id!=?",
             (did, auid)).fetchone()["tot"]
@@ -1202,7 +1243,7 @@ def api_search_units():
     q = (request.args.get("q", "") or "").strip().lower()
     expand_catalogue = (request.args.get("catalogue", "") or "").lower() in {"1", "true", "yes"}
     if fid and fid not in store.faction_by_id:
-        abort(404)
+        return jsonify([])
     sheets = _unit_search_pool(fid)
     if fid:
         for u in sheets:
@@ -1548,9 +1589,10 @@ def api_update_mini_stage(mid):
 
         finished = 1 if stage == "finished" else 0
         if new_datasheet_id:
+            new_unit_bsdata_id = store.ds_by_id.get(new_datasheet_id, {}).get("id") or new_datasheet_id
             c.execute(
-                "UPDATE minis SET stage=?, finished=?, datasheet_id=?, multikit_group=NULL WHERE id=?",
-                (stage, finished, new_datasheet_id, mid),
+                "UPDATE minis SET stage=?, finished=?, datasheet_id=?, unit_bsdata_id=?, multikit_group=NULL WHERE id=?",
+                (stage, finished, new_datasheet_id, new_unit_bsdata_id, mid),
             )
         else:
             c.execute("UPDATE minis SET stage=?, finished=? WHERE id=?", (stage, finished, mid))

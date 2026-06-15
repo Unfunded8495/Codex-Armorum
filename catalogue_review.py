@@ -194,7 +194,7 @@ def catalogue_payload():
     store = get_store()
     for fid, faction in factions.items():
         name = store.faction_by_id.get(fid, {}).get("name", faction["name"])
-        primary, accent, _ = ft.theme_for(fid)
+        primary, accent, _ = ft.theme_for(name)
         faction["name"] = name
         faction["primary"] = primary
         faction["accent"] = accent
@@ -305,6 +305,23 @@ def _catalogue_models_by_datasheet():
 
     for entries in by_datasheet.values():
         entries.sort(key=lambda e: (e.get("release_year") or 0, e.get("name", "")))
+
+    # Also index each entry under its BSData GUID so lookups with BSData GUIDs
+    # find model catalogue entries that were imported with Wahapedia IDs.
+    try:
+        from data_store import get_store as _get_store
+        _store = _get_store()
+        bsdata_additions = {}
+        for wahapedia_id, entries in by_datasheet.items():
+            unit = _store.ds_by_id.get(wahapedia_id)
+            if unit:
+                bsdata_id = unit.get("id")
+                if bsdata_id and bsdata_id not in by_datasheet:
+                    bsdata_additions[bsdata_id] = entries
+        by_datasheet.update(bsdata_additions)
+    except Exception:
+        pass  # fail silently; model catalogue will just show no linked models
+
     _CACHE[key] = by_datasheet
     return by_datasheet
 

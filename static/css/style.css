@@ -319,6 +319,13 @@ main{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:32px 30p
   min-height:34px;display:flex;align-items:center;justify-content:center;
   color:#f3ead5;text-shadow:0 2px 8px rgba(0,0,0,.98),0 0 18px rgba(0,0,0,.72);
 }
+.faction-card .fname-group{
+  position:relative;z-index:2;
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.7px;
+  color:color-mix(in srgb,var(--parch-dim) 75%,transparent);
+  text-transform:uppercase;margin-top:1px;
+  text-shadow:0 2px 6px rgba(0,0,0,.9);
+}
 .faction-card .fmeta{
   position:relative;z-index:2;
   font-family:'Oswald',sans-serif;

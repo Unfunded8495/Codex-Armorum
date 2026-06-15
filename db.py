@@ -299,6 +299,24 @@ def init_db():
         if "unit_bsdata_id" not in _columns(c, "arsenal_weapon_datasheet"):
             c.execute("ALTER TABLE arsenal_weapon_datasheet ADD COLUMN unit_bsdata_id TEXT")
 
+        # Backfill unit_bsdata_id for any minis that have a resolvable datasheet_id
+        # but NULL unit_bsdata_id. Handles minis created before Bug 1 was fixed.
+        from data_store import get_store as _get_store
+        try:
+            _store = _get_store()
+            null_rows = c.execute(
+                'SELECT id, datasheet_id FROM minis WHERE unit_bsdata_id IS NULL'
+            ).fetchall()
+            for row in null_rows:
+                unit = _store.ds_by_id.get(row['datasheet_id'])
+                if unit:
+                    c.execute(
+                        'UPDATE minis SET unit_bsdata_id=? WHERE id=?',
+                        (unit['id'], row['id'])
+                    )
+        except Exception:
+            pass  # data_store may not be ready on first run before catalogue import
+
         # Migration: add composition and leader target columns to catalogue_units
         for stmt in [
             "ALTER TABLE catalogue_units ADD COLUMN composition_json TEXT",

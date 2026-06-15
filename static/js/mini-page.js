@@ -1204,7 +1204,8 @@ function mpCatCloseLinkEditor(){
 
 function mpCatRenderLinkSection(item, defaultFid){
   mpCatEd.cid = item.id;
-  mpCatEd.factionId = defaultFid || item.faction_id || '';
+  const firstLinkedFid = (item.datasheet_links || [])[0]?.faction_id || '';
+  mpCatEd.factionId = defaultFid || firstLinkedFid || '';
   mpCatEd.selected = (item.datasheet_links || []).map(l => ({...l}));
 
   const factionOptions = [

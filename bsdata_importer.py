@@ -312,6 +312,58 @@ def parse_cat(cat_path, gst_data):
                         unit_weapon_links.append(key)
                         seen_links.add(key)
 
+        # Collect inline weapon profiles directly on this unit/model entry.
+        # BSData frequently defines weapons as profiles rather than linked entries,
+        # particularly for characters and library-catalogue units.
+        # Deduplicate within this unit by (name, weapon_type) to avoid duplicate
+        # display rows when BSData defines the same weapon for multiple model variants.
+        seen_inline = set()
+        for profile in se.findall('.//bs:profile', NS_CAT):
+            type_name = profile.get('typeName', '')
+            if type_name not in ('Ranged Weapons', 'Melee Weapons'):
+                continue
+
+            profile_id = profile.get('id')
+            if not profile_id:
+                continue
+
+            weapon_name = profile.get('name', '').strip()
+            if not weapon_name:
+                continue
+
+            weapon_type = 'ranged' if type_name == 'Ranged Weapons' else 'melee'
+            dedup_key = (weapon_name.lower(), weapon_type)
+            if dedup_key in seen_inline:
+                continue
+            seen_inline.add(dedup_key)
+
+            chars = {
+                ch.get('name', ''): ch.text
+                for ch in profile.findall('.//bs:characteristic', NS_CAT)
+            }
+
+            weapon = {
+                'bsdata_id':   profile_id,
+                'faction_id':  faction['bsdata_id'],
+                'name':        weapon_name,
+                'weapon_type': weapon_type,
+                'range':       chars.get('Range'),
+                'attacks':     chars.get('A'),
+                'skill':       chars.get('BS') if weapon_type == 'ranged' else chars.get('WS'),
+                'strength':    chars.get('S'),
+                'ap':          chars.get('AP'),
+                'damage':      chars.get('D'),
+                'keywords':    chars.get('Keywords'),
+            }
+            if profile_id not in weapon_ids:
+                weapons.append(weapon)
+                weapon_ids.add(profile_id)
+
+            key = (se_id, profile_id)
+            if key not in seen_links:
+                unit_weapon_links.append(key)
+                seen_links.add(key)
+
     return {
         'faction':           faction,
         'units':             units,
