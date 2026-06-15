@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Rapid Fire",
+    "pattern": "\\brapid fire (\\d+)\\b",
+    "tip": "Within half range, makes $1 additional attack(s) when shooting."
+  },
+  {
+    "name": "Sustained Hits",
+    "pattern": "\\bsustained hits (\\d+)\\b",
+    "tip": "Each Critical Hit scores $1 extra hit(s)."
+  },
+  {
+    "name": "Melta",
+    "pattern": "\\bmelta (\\d+)\\b",
+    "tip": "Within half range, add $1 to the Damage characteristic."
+  },
+  {
+    "name": "Anti-keyword",
+    "pattern": "\\banti-([\\w-]+) (\\d)\\+",
+    "tip": "Against $1 units, a Critical Wound is scored on an unmodified Wound roll of $2+."
+  },
+  {
+    "name": "Devastating Wounds",
+    "pattern": "\\bdevastating wounds\\b",
+    "tip": "A Critical Wound inflicts mortal wounds equal to the Damage characteristic. The attack sequence ends — no saving throw is made."
+  },
+  {
+    "name": "Lethal Hits",
+    "pattern": "\\blethal hits\\b",
+    "tip": "Each Critical Hit automatically wounds the target — no Wound roll is made."
+  },
+  {
+    "name": "Twin-linked",
+    "pattern": "\\btwin-linked\\b",
+    "tip": "Each time an attack is made with this weapon, you can re-roll the Wound roll."
+  },
+  {
+    "name": "Indirect Fire",
+    "pattern": "\\bindirect fire\\b",
+    "tip": "Can target units not visible to the bearer, but those attacks suffer −1 to the Hit roll."
+  },
+  {
+    "name": "Ignores Cover",
+    "pattern": "\\bignores cover\\b",
+    "tip": "The target cannot use Cover to improve its saving throw against attacks with this weapon."
+  },
+  {
+    "name": "Torrent",
+    "pattern": "\\btorrent\\b",
+    "tip": "This weapon automatically hits its target — no Hit roll is made."
+  },
+  {
+    "name": "Heavy",
+    "pattern": "\\bheavy\\b",
+    "tip": "Add 1 to the Hit roll if the bearer's unit Remained Stationary this phase."
+  },
+  {
+    "name": "Blast",
+    "pattern": "\\bblast\\b",
+    "tip": "Add 1 attack for every 5 models in the target unit (before any dice are rolled)."
+  },
+  {
+    "name": "Hazardous",
+    "pattern": "\\bhazardous\\b",
+    "tip": "After firing, roll one D6: on a 1, the bearer's unit suffers 1 mortal wound (D3 if the bearer is a Vehicle or Monster)."
+  },
+  {
+    "name": "Pistol",
+    "pattern": "\\bpistol\\b",
+    "tip": "The bearer can make attacks with this weapon even while its unit is within Engagement Range of an enemy."
+  },
+  {
+    "name": "Assault",
+    "pattern": "\\bassault\\b",
+    "tip": "The bearer can still shoot with this weapon after making an Advance move this phase."
+  },
+  {
+    "name": "Lance",
+    "pattern": "\\blance\\b",
+    "tip": "Add 1 to the Wound roll if the bearer made a Charge move this phase."
+  },
+  {
+    "name": "Precision",
+    "pattern": "\\bprecision\\b",
+    "tip": "When an attack wounds an Attached unit, you can bypass Look Out, Sir and allocate the attack to any model in that unit."
+  },
+  {
+    "name": "Psychic",
+    "pattern": "\\bpsychic\\b",
+    "tip": "Invulnerable saving throws cannot be made against attacks with this weapon."
+  }
+]

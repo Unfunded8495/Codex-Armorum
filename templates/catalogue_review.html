@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Catalogue · Codex Armorum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+    {% include "_topbar.html" %}
+  <main class="review-page">
+    <section class="review-head">
+      <div>
+        <h2 class="view-title">Model Catalogue</h2>
+        <p class="view-sub">Browse resolved model releases by army</p>
+      </div>
+      <div class="review-progress" id="reviewProgress"></div>
+    </section>
+    <section class="review-rules">
+      <span>Each release keeps its own year</span>
+      <span>Models can link to multiple datasheets</span>
+      <span>Datasheet links can cross armies</span>
+      <span>Excluded rows and accessories are hidden</span>
+    </section>
+    <section class="review-toolbar">
+      <input id="catalogueSearch" type="search" placeholder="Search model, release note, datasheet">
+      <select id="catalogueArmy"></select>
+      <select id="catalogueLinkFilter">
+        <option value="all">All links</option>
+        <option value="linked">Linked only</option>
+        <option value="unlinked">No current datasheet</option>
+      </select>
+      <button class="btn-primary" id="addModelBtn">+ Add Model</button>
+    </section>
+    <section class="catalogue-list" id="catalogueList"></section>
+  </main>
+
+  <!-- Add New Model modal -->
+  <div class="am-backdrop" id="addModelBackdrop" hidden>
+    <div class="am-box" role="dialog" aria-modal="true" aria-labelledby="amTitle">
+      <div class="am-head">
+        <span class="am-title" id="amTitle">Add New Model</span>
+        <button class="am-close" id="addModelClose" title="Close">&times;</button>
+      </div>
+      <div class="am-body">
+        <div class="am-field am-field--full">
+          <label class="am-label" for="amName">Model Name *</label>
+          <input class="am-input" id="amName" type="text" placeholder="e.g. Saint Celestine" autocomplete="off">
+        </div>
+        <div class="am-row">
+          <div class="am-field">
+            <label class="am-label" for="amFactionLabel">Faction</label>
+            <select class="am-input" id="amFactionLabel">
+              <option value="">&mdash; None &mdash;</option>
+            </select>
+          </div>
+          <div class="am-field">
+            <label class="am-label" for="amFactionId">Faction ID</label>
+            <input class="am-input" id="amFactionId" type="text" readonly
+                   style="opacity:0.55;cursor:default" autocomplete="off">
+          </div>
+        </div>
+        <div class="am-row">
+          <div class="am-field">
+            <label class="am-label" for="amReleaseDate">Release Date</label>
+            <input class="am-input" id="amReleaseDate" type="text" placeholder="YYYY or YYYY-MM" maxlength="7" autocomplete="off">
+          </div>
+          <div class="am-field">
+            <label class="am-label" for="amMaterial">Material</label>
+            <select class="am-input" id="amMaterial">
+              <option value="Plastic">Plastic</option>
+              <option value="Resin">Resin</option>
+              <option value="Metal">Metal</option>
+              <option value="Finecast">Finecast</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="am-row">
+          <div class="am-field">
+            <label class="am-label" for="amStatus">Status</label>
+            <select class="am-input" id="amStatus">
+              <option value="current_or_unknown">Current / Unknown</option>
+              <option value="discontinued">Discontinued</option>
+            </select>
+          </div>
+          <div class="am-field">
+            <label class="am-label" for="amNote">Notes</label>
+            <input class="am-input" id="amNote" type="text" placeholder="Optional release note" autocomplete="off">
+          </div>
+        </div>
+        <p class="am-err" id="amErr" hidden></p>
+      </div>
+      <div class="am-foot">
+        <button class="btn-primary" id="amSave">Save Model</button>
+        <button class="btn-ghost" id="amCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <img id="lightboxImg" alt="">
+    <p id="lightboxCap"></p>
+  </div>
+
+  <script type="module" src="{{ url_for('static', filename='js/catalogue-review.js') }}"></script>
+</body>
+</html>
+

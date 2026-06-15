@@ -1,0 +1,5 @@
+<datalist id="arsenalWeaponChoices">
+  {% for weapon in weapons %}
+    <option value="{{ weapon.id }}" label="{{ weapon.name }}{% if weapon.faction_name %} - {{ weapon.faction_name }}{% endif %}"></option>
+  {% endfor %}
+</datalist>

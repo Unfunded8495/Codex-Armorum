@@ -1,0 +1,45 @@
+{% extends "arsenal/base.html" %}
+{% block title %}{% if mode == "edit" %}Edit{% else %}Add{% endif %} Weapon - The Arsenal{% endblock %}
+{% block content %}
+<a class="btn-back" href="{{ url_for('arsenal.loadouts') }}">Back to Weapon Loadouts</a>
+<section class="arsenal-head">
+  <div>
+    <h2 class="view-title">{% if mode == "edit" %}Edit Weapon{% else %}Add Weapon{% endif %}</h2>
+    <p class="view-sub">Edit the generated weapon entry and your own notes</p>
+  </div>
+</section>
+
+<form class="arsenal-form" method="post">
+  <label>Name
+    <input name="name" value="{{ weapon.name or '' }}" required>
+    {% if errors.name %}<span class="arsenal-error">{{ errors.name }}</span>{% endif %}
+  </label>
+  <div class="arsenal-form-row">
+    <label>Category
+      <select name="category">
+        {% for category in categories %}
+          <option value="{{ category }}" {% if (weapon.category or 'ranged') == category %}selected{% endif %}>{{ category|title }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.category %}<span class="arsenal-error">{{ errors.category }}</span>{% endif %}
+    </label>
+    <label>Faction Label
+      <input name="faction_name" value="{{ weapon.faction_name or '' }}" placeholder="blank means generic">
+    </label>
+  </div>
+  <label>Description
+    <textarea name="spotting_notes" rows="5">{{ weapon.spotting_notes or '' }}</textarea>
+  </label>
+  <label>Telling it apart
+    <textarea name="distinguishing" rows="5">{{ weapon.distinguishing or '' }}</textarea>
+  </label>
+  <div class="arsenal-actions">
+    <button class="btn-primary" type="submit">Save Weapon</button>
+    {% if mode == "edit" %}
+      <a class="btn-ghost" href="{{ url_for('arsenal.weapon_detail', weapon_id=weapon.id) }}">Cancel</a>
+    {% else %}
+      <a class="btn-ghost" href="{{ url_for('arsenal.loadouts') }}">Cancel</a>
+    {% endif %}
+  </div>
+</form>
+{% endblock %}

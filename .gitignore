@@ -1,0 +1,16 @@
+# BSData catalogue repo — cloned locally, not tracked here
+bsdata/
+
+# SQLite database and backups
+collection.db
+collection.db.backup
+*.db-journal
+
+# Python
+__pycache__/
+*.pyc
+
+# Runtime / generated
+cache/
+uploads/
+*.log

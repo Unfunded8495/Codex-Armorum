@@ -1,0 +1,95 @@
+{% extends "arsenal/base.html" %}
+{% block title %}{{ weapon.name }} - The Arsenal{% endblock %}
+{% block content %}
+<a class="btn-back" href="{{ url_for('arsenal.loadouts') }}">Back to Weapon Loadouts</a>
+<section class="arsenal-detail-head">
+  <div>
+    <h2 class="view-title">{{ weapon.name }}</h2>
+    <p class="view-sub">{{ weapon.category|title }}{% if weapon.faction_name %} &middot; {{ weapon.faction_name }}{% else %} &middot; Generic{% endif %}</p>
+  </div>
+  <div class="arsenal-actions">
+    <a class="btn-secondary" href="{{ url_for('arsenal.weapon_edit', weapon_id=weapon.id) }}">Edit</a>
+    <form method="post" action="{{ url_for('arsenal.weapon_delete', weapon_id=weapon.id) }}" onsubmit="return confirm('Delete this Arsenal entry?')">
+      <button class="btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</section>
+
+<section class="arsenal-detail-grid">
+  <article class="arsenal-panel">
+    <h3>Description</h3>
+    <p>{{ weapon.spotting_notes or "No description yet." }}</p>
+    {% if weapon.source_url %}
+      <a class="arsenal-source-link" href="{{ weapon.source_url }}" target="_blank" rel="noopener">Source</a>
+    {% elif weapon.source %}
+      <small class="arsenal-source-text">Source: {{ weapon.source }}</small>
+    {% endif %}
+    {% set control = weapon.wiki_control %}
+    <div class="arsenal-manual-ref">
+      {% if control.muted_label %}
+        <small class="arsenal-muted-label">{{ control.muted_label }}</small>
+      {% endif %}
+      {% if control.href %}
+        <a class="arsenal-source-link" href="{{ control.href }}" target="_blank" rel="noopener">{{ control.label }}</a>
+      {% endif %}
+      {% if control.note %}
+        <small class="arsenal-source-text">{{ control.note }}</small>
+      {% endif %}
+    </div>
+  </article>
+  <article class="arsenal-panel">
+    <h3>Telling it apart</h3>
+    <p>{{ weapon.distinguishing or "No contrast notes yet." }}</p>
+  </article>
+</section>
+
+<section class="arsenal-section">
+  <div class="arsenal-section-head">
+    <h3>Photo Gallery</h3>
+    <form class="arsenal-upload" method="post" action="{{ url_for('arsenal.weapon_photo_upload', weapon_id=weapon.id) }}" enctype="multipart/form-data">
+      <input type="file" name="photo" accept=".jpg,.jpeg,.png,.webp,.gif" required>
+      <input type="text" name="caption" placeholder="Caption">
+      <button class="btn-secondary" type="submit">Upload</button>
+    </form>
+  </div>
+  {% if weapon.photos %}
+    <div class="arsenal-gallery">
+      {% for photo in weapon.photos %}
+        <figure class="arsenal-photo">
+          <img src="{{ photo.url }}" alt="{{ photo.caption or weapon.name }}">
+          <figcaption>
+            {{ photo.caption or "Personal photo" }}
+            {% if photo.source_url %}
+              <a href="{{ photo.source_url }}" target="_blank" rel="noopener">Source</a>
+            {% endif %}
+          </figcaption>
+          {% if photo.is_primary %}<span class="arsenal-badge">Primary</span>{% endif %}
+          <div class="arsenal-photo-actions">
+            {% if not photo.is_primary %}
+              <form method="post" action="{{ url_for('arsenal.photo_primary', weapon_id=weapon.id, photo_id=photo.id) }}">
+                <button class="link-btn" type="submit">Set primary</button>
+              </form>
+            {% endif %}
+            <form method="post" action="{{ url_for('arsenal.photo_delete', weapon_id=weapon.id, photo_id=photo.id) }}" onsubmit="return confirm('Delete this photo?')">
+              <button class="link-btn danger" type="submit">Delete</button>
+            </form>
+          </div>
+        </figure>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-note">No photos yet.</p>
+  {% endif %}
+</section>
+
+{% if weapon.datasheets %}
+<section class="arsenal-section">
+  <h3>Fielded By</h3>
+  <div class="arsenal-link-list">
+    {% for row in weapon.datasheets %}
+      <a href="{{ url_for('arsenal.unit_loadout', datasheet_id=row.datasheet_id) }}">{{ row.faction_name }} &middot; {{ row.unit_name }} <span>{{ row.loadout_role }}</span></a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

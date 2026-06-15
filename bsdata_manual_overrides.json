@@ -1,0 +1,4 @@
+{
+  "_comment": "Maps Wahapedia unit names to BSData GUIDs for units that cannot be matched automatically. Use null to mark a unit as intentionally absent from BSData.",
+  "Inquisitor Ostromandeus": null
+}

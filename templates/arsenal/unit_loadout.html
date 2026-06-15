@@ -1,0 +1,32 @@
+{% extends "arsenal/base.html" %}
+{% block title %}{{ data.datasheet.name }} Loadout - The Arsenal{% endblock %}
+{% block content %}
+<a class="btn-back" href="{{ url_for('arsenal.loadouts') }}">Back to Weapon Loadouts</a>
+<section class="arsenal-head">
+  <div>
+    <h2 class="view-title">{{ data.datasheet.name }}</h2>
+    <p class="view-sub">{{ data.faction.name }} &middot; Datasheet weapons</p>
+  </div>
+</section>
+
+{% for group in data.groups %}
+  <section class="arsenal-section">
+    <h3>{{ group.role|title }}</h3>
+    <div class="arsenal-loadout-rows">
+      {% for row in group.rows %}
+        <article class="arsenal-loadout-row">
+          <div class="arsenal-mini-thumb">
+            {% if row.primary_url %}<img src="{{ row.primary_url }}" alt="{{ row.name }}">{% else %}<span>No photo</span>{% endif %}
+          </div>
+          <div>
+            <strong>{{ row.name }}</strong>
+            <small>{{ row.raw_name }}</small>
+            <p>{{ row.spotting_notes or "No description yet." }}</p>
+          </div>
+          <a class="link-btn" href="{{ url_for('arsenal.weapon_detail', weapon_id=row.weapon_id) }}">Entry</a>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+{% endblock %}

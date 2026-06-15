@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codex Armorum - 40K Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+    {% include "_topbar.html" %}
+
+  <main id="view"></main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <img id="lightboxImg" alt="">
+    <p id="lightboxCap"></p>
+  </div>
+
+  <footer class="footer">
+    <p>For the Emperor &mdash; and for everyone else too. A local tool for cataloguing your miniatures.
+    Unit data from the Wahapedia export you provided. Model photos, where present, are the property of Games Workshop and shown for personal reference.</p>
+  </footer>
+
+  <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+

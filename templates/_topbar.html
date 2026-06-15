@@ -1,0 +1,66 @@
+<header class="topbar">
+  <a class="brand" id="homeBtn" href="/">
+    <span class="brand-mark">&#10016;</span>
+    <div class="brand-text">
+      <h1>Codex Armorum</h1>
+      <p>Personal Battle-Roster &amp; Reliquary</p>
+    </div>
+  </a>
+  <nav class="breadcrumb addressbar" id="breadcrumb" aria-label="Current location">
+    {% if breadcrumb is defined and breadcrumb %}
+      {% for item in breadcrumb %}
+        {% if not loop.first %}<span class="sep">&gt;</span>{% endif %}
+        {% if item.href is defined %}
+          <a class="crumb" href="{{ item.href }}">{{ item.label }}</a>
+        {% else %}
+          <span class="cur">{{ item.label }}</span>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </nav>
+  <div class="ledger" id="ledger"></div>
+  <nav class="top-actions top-actions--primary" aria-label="Primary navigation">
+    <a href="/" data-nav-page="armies" class="nav-army-btn{% if active_page == 'armies' %} is-current{% endif %}">My Armies</a>
+    <a href="/#/purchases" data-nav-page="purchases" class="nav-army-btn{% if active_page == 'purchases' %} is-current{% endif %}">Purchases</a>
+    <a href="/collection" data-nav-page="collection" class="nav-army-btn nav-collection-btn{% if active_page == 'collection' %} is-current{% endif %}">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="vertical-align:-1px;margin-right:4px">
+        <rect x="1" y="1" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="8" y="1" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="1" y="8" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="8" y="8" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      Paint Progress
+    </a>
+  </nav>
+  <span class="topbar-divider" aria-hidden="true"></span>
+  <nav class="top-actions top-actions--secondary" id="secondaryNav" aria-label="Tools">
+    <a href="/army-builder" data-nav-page="army_builder" class="nav-army-btn{% if active_page == 'army_builder' %} is-current{% endif %}">Army Builder</a>
+    <a href="/arsenal/loadouts" data-nav-page="arsenal_loadouts" class="nav-army-btn{% if active_page == 'arsenal_loadouts' %} is-current{% endif %}">Weapon Loadouts</a>
+    <a href="/catalogue-review" data-nav-page="catalogue" class="nav-army-btn{% if active_page == 'catalogue' %} is-current{% endif %}">Model Catalogue</a>
+  </nav>
+  <div class="topbar-vault">
+    <button class="tools-toggle nav-army-btn" id="toolsToggle"
+            aria-expanded="false" aria-controls="secondaryNav"
+            title="More tools">
+      &#9776; Tools
+    </button>
+    <button type="button" class="nav-army-btn shutdown-btn" data-shutdown-btn title="Stop Codex Armorum">Seal Vault</button>
+  </div>
+</header>
+<script>
+  const toolsToggle = document.getElementById('toolsToggle');
+  const secondaryNav = document.getElementById('secondaryNav');
+  if (toolsToggle && secondaryNav) {
+    toolsToggle.addEventListener('click', () => {
+      const open = secondaryNav.classList.toggle('is-open');
+      toolsToggle.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!toolsToggle.contains(e.target) && !secondaryNav.contains(e.target)) {
+        secondaryNav.classList.remove('is-open');
+        toolsToggle.setAttribute('aria-expanded', false);
+      }
+    });
+  }
+</script>
+<script type="module" src="{{ url_for('static', filename='js/shutdown.js') }}"></script>

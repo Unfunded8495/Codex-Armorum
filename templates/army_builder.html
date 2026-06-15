@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Army Builder · Codex Armorum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    /* ---- Army Builder specific styles ---- */
+    .ab-topbar-extra { display:flex; align-items:center; gap:16px; }
+    .ab-back { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--parch-dim); text-decoration:none; transition:color .2s; }
+    .ab-back:hover { color:var(--gold); }
+
+    /* Army list grid */
+    .army-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; margin-top:20px; }
+    .army-tile {
+      border:2px solid var(--cardarmy,var(--edge)); padding:18px; cursor:pointer;
+      transition:border-color .2s,transform .2s,box-shadow .2s; position:relative; overflow:hidden;
+    }
+    .army-tile::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; z-index:2;
+      background:var(--at-accent,var(--gold)); }
+    .army-tile:hover { border-color:var(--cardarmy,var(--gold)); transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.55),0 0 0 1px var(--at-accent,var(--gold)); }
+    .army-tile-mark { left:82%; top:48%; width:220px; opacity:.16; }
+    .army-tile:hover .army-tile-mark { opacity:.26; }
+    .army-tile-name { font-family:'Cinzel',serif; font-weight:700; font-size:16px; color:#f3ead5; margin:0 0 4px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
+    .army-tile-meta { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; color:var(--gold); margin:0 0 10px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
+    .army-tile-pts { font-family:'Oswald',sans-serif; font-size:13px; color:var(--parch-dim); text-shadow:0 2px 8px rgba(0,0,0,.92); }
+    .army-tile-pts b { color:var(--gold-bright); }
+    .army-tile-del { position:absolute; top:10px; right:10px; background:none; border:none;
+      color:var(--parch-dim); font-size:18px; cursor:pointer; line-height:1; opacity:.4; transition:opacity .2s,color .2s; }
+    .army-tile-del:hover { opacity:1; color:var(--blood-bright); }
+
+    .new-army-btn {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      background:transparent; border:1px dashed rgba(199,154,58,.4); color:var(--gold);
+      font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase;
+      padding:18px; cursor:pointer; width:100%; transition:all .2s; margin-top:18px;
+    }
+    .new-army-btn:hover { background:rgba(199,154,58,.05); border-color:rgba(199,154,58,.7); }
+
+    /* Create army form */
+    .create-army-form { background:var(--ink-2); border:1px solid rgba(199,154,58,.4); padding:20px; margin-top:18px; }
+    .create-army-form h3 { font-family:'Cinzel',serif; color:var(--gold-bright); margin:0 0 16px; font-size:15px; letter-spacing:1px; }
+    .caf-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:600px){.caf-grid{grid-template-columns:1fr;}}
+    .caf-field { display:flex; flex-direction:column; gap:5px; }
+    .caf-field label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.85; }
+    .caf-field select, .caf-field input[type=number], .caf-field input[type=text] {
+      background:var(--panel); border:1px solid var(--edge); color:var(--parch);
+      font-family:'EB Garamond',serif; font-size:15px; padding:8px 12px; transition:border-color .2s;
+    }
+    .caf-field select:focus, .caf-field input:focus { outline:none; border-color:rgba(199,154,58,.6); }
+    .caf-field select option { background:var(--panel); }
+
+    /* Army detail layout */
+    .ab-detail { display:grid; grid-template-columns:300px 1fr; gap:28px; align-items:start; }
+    @media(max-width:900px){ .ab-detail { grid-template-columns:1fr; } }
+    .ab-sidebar { position:sticky; top:80px; }
+    @media(max-width:900px){ .ab-sidebar { position:static; } }
+
+    /* Sidebar card */
+    .ab-card { background:linear-gradient(160deg,var(--panel-2),var(--panel)); border:1px solid var(--edge); padding:18px; margin-bottom:14px; }
+    .ab-card-title { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--gold); opacity:.7; margin:0 0 12px; }
+    .ab-name-input { width:100%; background:transparent; border:none; border-bottom:1px solid rgba(199,154,58,.4);
+      color:var(--parch); font-family:'Cinzel',serif; font-weight:700; font-size:18px; padding:4px 0;
+      transition:border-color .2s; }
+    .ab-name-input:focus { outline:none; border-bottom-color:var(--gold); }
+    .ab-meta-row { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+    .ab-meta-item { display:flex; flex-direction:column; gap:4px; }
+    .ab-meta-item label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.7; }
+    .ab-meta-item select, .ab-meta-item input[type=number] {
+      background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
+      font-family:'EB Garamond',serif; font-size:15px; padding:6px 10px;
+    }
+    .ab-meta-item select:focus, .ab-meta-item input:focus { outline:none; border-color:rgba(199,154,58,.5); }
+
+    /* Points bar */
+    .pts-bar-wrap { margin-top:0; }
+    .pts-bar-nums { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+    .pts-used { font-family:'Oswald',sans-serif; font-size:26px; font-weight:600; color:var(--gold-bright); line-height:1; }
+    .pts-used.is-over { color:var(--blood-bright); }
+    .pts-limit-label { font-family:'Oswald',sans-serif; font-size:12px; color:var(--parch-dim); letter-spacing:.5px; }
+    .pts-bar-track { height:6px; background:rgba(44,42,53,.8); position:relative; }
+    .pts-bar-fill { height:100%; background:var(--gold); transition:width .3s ease; max-width:100%; }
+    .pts-bar-fill.is-over { background:var(--blood-bright); }
+    .pts-over-msg { font-family:'Oswald',sans-serif; font-size:11px; color:var(--blood-bright); letter-spacing:.5px; margin-top:5px; }
+
+    /* Validation block in sidebar */
+    .ab-validation { margin-top:0; }
+    .ab-val-row { font-family:'EB Garamond',serif; font-size:13px; padding:3px 0;
+      display:flex; align-items:flex-start; gap:6px; line-height:1.4; }
+    .ab-val-ok  { color:var(--good); }
+    .ab-val-err { color:var(--blood-bright); }
+    .ab-val-warn{ color:#c89a3a; }
+    .ab-val-info{ color:var(--parch-dim); }
+
+    /* Unit roster */
+    .ab-roster-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .ab-roster-title { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin:0; }
+    .add-unit-btn { background:var(--gold); color:#0a0a0c; border:none; font-family:'Oswald',sans-serif;
+      font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:8px 16px; cursor:pointer; transition:background .15s; font-weight:600; }
+    .add-unit-btn:hover { background:var(--gold-bright); }
+
+    .role-section { margin-bottom:24px; }
+    .role-section-head { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--gold); opacity:.6; margin:0 0 10px; display:flex; align-items:center; gap:10px; }
+    .role-section-head::after { content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--edge),transparent); }
+
+    .au-row {
+      border:1px solid var(--edge); border-left:3px solid var(--au-accent,var(--gold));
+      padding:12px 14px; margin-bottom:8px; display:grid;
+      grid-template-columns:1fr auto; gap:10px; align-items:start;
+    }
+    .au-row.faction-surface { border-color:color-mix(in srgb,var(--cardarmy,var(--edge)) 65%,var(--edge)); border-left-color:var(--au-accent,var(--gold)); }
+    .au-name { font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--parch); margin:0 0 4px; }
+    .au-role { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.6; margin:0 0 8px; }
+    .au-controls { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+    .au-size-wrap { display:flex; align-items:center; gap:8px; }
+    .au-size-wrap label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); }
+    .au-size-input { width:70px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
+      font-family:'Oswald',sans-serif; font-size:15px; padding:4px 8px; text-align:center; }
+    .au-size-input:focus { outline:none; border-color:rgba(199,154,58,.5); }
+    .au-pts { font-family:'Oswald',sans-serif; font-size:15px; color:var(--gold-bright); white-space:nowrap; }
+    .au-ownership { font-family:'EB Garamond',serif; font-size:14px; margin-top:4px; }
+    .own-ok   { color:var(--good); }
+    .own-warn { color:#c89a3a; }
+    .own-none { color:var(--parch-dim); font-style:italic; }
+    .au-assign-wrap { display:flex; align-items:center; gap:6px; }
+    .au-assign-wrap label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); }
+    .au-assign-input { width:60px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
+      font-family:'Oswald',sans-serif; font-size:14px; padding:3px 7px; text-align:center; }
+    .au-assign-input:focus { outline:none; border-color:rgba(199,154,58,.5); }
+    .au-enh { font-family:'EB Garamond',serif; font-size:13px; color:var(--gold); margin-top:4px; font-style:italic; }
+    .au-actions { display:flex; flex-direction:column; gap:6px; align-items:flex-end; padding-top:2px; }
+    .au-del { background:none; border:1px solid rgba(44,42,53,.6); color:var(--parch-dim); font-family:'Oswald',sans-serif;
+      font-size:11px; letter-spacing:.5px; text-transform:uppercase; padding:4px 8px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+    .au-del:hover { border-color:var(--blood-bright); color:var(--blood-bright); }
+    .au-enh-btn { background:none; border:none; color:var(--parch-dim); font-family:'Oswald',sans-serif;
+      font-size:11px; letter-spacing:.5px; text-transform:uppercase; cursor:pointer; text-decoration:underline;
+      text-underline-offset:2px; transition:color .2s; padding:0; white-space:nowrap; }
+    .au-enh-btn:hover { color:var(--gold); }
+    .au-enh-editor { grid-column:1/-1; background:var(--ink-2); border:1px solid rgba(44,42,53,.7); padding:10px; margin-top:6px; }
+    .au-enh-editor select { width:100%; background:var(--panel); border:1px solid var(--edge); color:var(--parch);
+      font-family:'EB Garamond',serif; font-size:15px; padding:7px 10px; }
+    .au-enh-editor select:focus { outline:none; border-color:rgba(199,154,58,.5); }
+
+    /* Unit picker modal */
+    .modal-backdrop { position:fixed; inset:0; z-index:50; background:rgba(5,5,7,.92);
+      display:flex; align-items:flex-start; justify-content:center; padding:40px 20px; overflow-y:auto; }
+    .modal-backdrop[hidden] { display:none; }
+    .modal-box { background:var(--panel); border:1px solid rgba(199,154,58,.4);
+      width:100%; max-width:680px; max-height:80vh; display:flex; flex-direction:column; }
+    .modal-head { padding:16px 18px; border-bottom:1px solid var(--edge); display:flex; align-items:center; justify-content:space-between; }
+    .modal-title { font-family:'Cinzel',serif; font-weight:700; font-size:15px; color:var(--gold-bright); margin:0; }
+    .modal-close { background:none; border:none; color:var(--parch-dim); font-size:24px; cursor:pointer; line-height:1; padding:0; transition:color .2s; }
+    .modal-close:hover { color:var(--gold); }
+    .modal-search { padding:12px 16px; border-bottom:1px solid var(--edge); }
+    .modal-search input { width:100%; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
+      font-family:'EB Garamond',serif; font-size:15px; padding:8px 12px; }
+    .modal-search input:focus { outline:none; border-color:rgba(199,154,58,.5); }
+    .modal-body { overflow-y:auto; flex:1; }
+    .modal-role-head { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--gold); opacity:.6; padding:10px 16px 4px; position:sticky; top:0; background:var(--panel); z-index:1; }
+    .modal-unit-row { display:flex; align-items:center; gap:12px; padding:9px 16px; cursor:pointer;
+      border-bottom:1px solid rgba(44,42,53,.4); transition:background .15s; }
+    .modal-unit-row:hover { background:rgba(199,154,58,.05); }
+    .modal-unit-thumb { width:44px; height:44px; object-fit:cover; background:#0c0b10; border:1px solid var(--edge); flex-shrink:0; }
+    .modal-unit-name { font-family:'Cinzel',serif; font-size:13px; font-weight:700; flex:1; color:var(--parch); }
+    .modal-unit-owned { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; color:var(--parch-dim); }
+    .modal-unit-pts { font-family:'Oswald',sans-serif; font-size:12px; color:var(--gold-bright); }
+
+    /* Empty state */
+    .ab-empty { text-align:center; padding:60px 30px; color:var(--parch-dim); }
+    .ab-empty-icon { font-size:36px; color:var(--gold); opacity:.3; margin-bottom:14px; display:block; }
+    .ab-empty h3 { font-family:'Cinzel',serif; font-size:16px; color:var(--parch); margin:0 0 8px; }
+    .ab-empty p { font-style:italic; font-size:14px; line-height:1.5; margin:0; }
+  </style>
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+    {% include "_topbar.html" %}
+
+  <main id="view"></main>
+
+  <!-- Unit picker modal -->
+  <div class="modal-backdrop" id="unitPickerModal" hidden>
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 class="modal-title">Add Unit to Army</h2>
+        <button class="modal-close" onclick="closeUnitPicker()">&times;</button>
+      </div>
+      <div class="modal-search">
+        <input id="pickerSearch" placeholder="Search units&hellip;" oninput="filterPicker(this.value)" autocomplete="off">
+      </div>
+      <div class="modal-body" id="pickerBody"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <img id="lightboxImg" alt="">
+    <p id="lightboxCap"></p>
+  </div>
+
+  <footer class="footer">
+    <p>For the Emperor. Unit data from Wahapedia. Army lists are stored locally in collection.db.</p>
+  </footer>
+
+  <script type="module" src="{{ url_for('static', filename='js/army_builder.js') }}"></script>
+</body>
+</html>
+

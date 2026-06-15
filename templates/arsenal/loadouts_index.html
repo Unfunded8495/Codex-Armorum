@@ -1,0 +1,30 @@
+{% extends "arsenal/base.html" %}
+{% block title %}Weapon Loadouts - Codex Armorum{% endblock %}
+{% block content %}
+<section class="arsenal-head">
+  <div>
+    <h2 class="view-title">Weapon Loadouts</h2>
+    <p class="view-sub">Datasheet weapon tables linked to Arsenal entries</p>
+  </div>
+  <div class="arsenal-actions">
+    <a class="btn-secondary" href="{{ url_for('arsenal.audit') }}">Audit</a>
+    <form method="post" action="{{ url_for('arsenal.sync') }}">
+      <button class="btn-primary" type="submit">Rebuild Catalogue</button>
+    </form>
+  </div>
+</section>
+
+{% for group in groups %}
+  <details class="arsenal-collapse">
+    <summary>{{ group.faction.name }} <span>{{ group.units|length }} units</span></summary>
+    <div class="arsenal-unit-list">
+      {% for unit in group.units %}
+        <a href="{{ url_for('arsenal.unit_loadout', datasheet_id=unit.id) }}">
+          <strong>{{ unit.name }}</strong>
+          <span>{{ unit.weapon_count }} weapons</span>
+        </a>
+      {% endfor %}
+    </div>
+  </details>
+{% endfor %}
+{% endblock %}

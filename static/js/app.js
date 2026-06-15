@@ -1,0 +1,37 @@
+import { showHome, showFaction } from './home.js';
+import { showPurchases, renderPurchasePreview, submitPurchase, deletePurchase,
+         startBoxEditor, resetBoxEditor, renderBoxContentRows, searchBoxUnits,
+         addUnitToBox, quickImportBoxText, saveBoxSet, deleteBoxSet,
+         quickPurchase, switchToEditor, saveBoxRef, clearBoxRef } from './purchases.js';
+import { showUnit } from './unit.js';
+import { showMiniPage } from './mini-page.js';
+import { initLightbox } from './lightbox.js';
+import { wireHomeButton } from './header.js';
+
+/* ---- routing ------------------------------------------------------------ */
+function router(){
+  const h = location.hash.slice(1) || '/';
+  const p = h.split('/').filter(Boolean);
+  if(p[0]==='purchases')          return showPurchases();
+  if(p[0]==='faction' && p[1])    return showFaction(p[1], p[2] === 'browse');
+  if(p[0]==='unit'    && p[1])    return showUnit(p[1]);
+  if(p[0]==='mini'    && p[1])    return showMiniPage(p[1]);
+  return showHome();
+}
+
+window.addEventListener('hashchange', router);
+wireHomeButton(()=>{ location.hash = '/'; });
+
+initLightbox();
+
+/* ---- exports for inline onclick handlers in dynamically-rendered HTML --- */
+Object.assign(window, {
+  renderPurchasePreview, submitPurchase, deletePurchase,
+  startBoxEditor, resetBoxEditor, renderBoxContentRows,
+  searchBoxUnits, addUnitToBox, quickImportBoxText,
+  saveBoxSet, deleteBoxSet,
+  quickPurchase, switchToEditor,
+  saveBoxRef, clearBoxRef,
+});
+
+router();

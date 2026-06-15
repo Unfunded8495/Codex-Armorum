@@ -1,0 +1,59 @@
+{% extends "arsenal/base.html" %}
+{% block title %}Arsenal Audit - Codex Armorum{% endblock %}
+{% block content %}
+<section class="arsenal-head">
+  <div>
+    <h2 class="view-title">Audit</h2>
+    <p class="view-sub">Dense faction, unit, and weapon review</p>
+  </div>
+  <form method="post" action="{{ url_for('arsenal.sync') }}">
+    <button class="btn-primary" type="submit">Rebuild Catalogue</button>
+  </form>
+</section>
+
+<form class="arsenal-filter" method="get">
+  <input type="search" name="q" value="{{ filters.q }}" placeholder="Search audit">
+  <select name="faction">
+    <option value="">All factions</option>
+    {% for faction in data.factions %}
+      <option value="{{ faction.id }}" {% if filters.faction == faction.id %}selected{% endif %}>{{ faction.name }}</option>
+    {% endfor %}
+  </select>
+  <select name="problem">
+    {% for value, label in [
+      ("all", "All"),
+      ("missing-photo", "Missing Photo"),
+      ("missing-description", "Missing Description")
+    ] %}
+      <option value="{{ value }}" {% if filters.problem == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn-secondary" type="submit">Filter</button>
+  <span class="arsenal-counts">
+    Missing photos {{ data.problem_counts["missing-photo"] }} &middot;
+    Missing descriptions {{ data.problem_counts["missing-description"] }}
+  </span>
+</form>
+
+<section class="arsenal-audit" data-audit-root>
+  {% for group in data.groups %}
+    <details class="arsenal-audit-faction">
+      <summary>{{ group.faction_name }} <span>{{ group.units|length }} units &middot; {{ group.weapon_count }} weapons &middot; {{ group.problem_count }} problems</span></summary>
+      {% for unit in group.units %}
+        <details class="arsenal-audit-unit">
+          <summary>{{ unit.unit_name }} <span>{{ unit.rows|length }} weapons</span></summary>
+          {% for row in unit.rows %}
+            {% include "arsenal/_audit_weapon_row.html" %}
+          {% endfor %}
+        </details>
+      {% endfor %}
+    </details>
+  {% endfor %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.ARSENAL_CATEGORIES = {{ categories|list|tojson }};
+</script>
+<script type="module" src="{{ url_for('static', filename='js/arsenal-audit.js') }}"></script>
+{% endblock %}

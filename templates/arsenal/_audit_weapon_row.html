@@ -1,0 +1,29 @@
+<article class="arsenal-audit-row" data-weapon-id="{{ row.weapon_id or row.id }}">
+  <div class="arsenal-audit-thumb">
+    {% if row.primary_url %}<img src="{{ row.primary_url }}" alt="{{ row.name }}">{% else %}<span>No photo</span>{% endif %}
+  </div>
+  <label>Name <input data-field="name" value="{{ row.name }}"></label>
+  <label>Category
+    <select data-field="category">
+      {% for category in categories %}
+        <option value="{{ category }}" {% if row.category == category %}selected{% endif %}>{{ category }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Faction <input data-field="faction_name" value="{{ row.faction_name or '' }}"></label>
+  <label>Description <textarea data-field="spotting_notes">{{ row.spotting_notes or '' }}</textarea></label>
+  <label>Distinguish <textarea data-field="distinguishing">{{ row.distinguishing or '' }}</textarea></label>
+  <div class="arsenal-audit-flags">
+    {% if row.unit_count and row.unit_count > 1 %}<span>Shared, {{ row.unit_count }} units</span>{% endif %}
+    {% if row.photo_count is defined %}<span>{{ row.photo_count }} photos</span>{% endif %}
+    {% if row.source_url %}<a class="arsenal-source-link" href="{{ row.source_url }}" target="_blank" rel="noopener">Source</a>{% endif %}
+    {% set control = row.wiki_control %}
+    {% if control.muted_label %}<small class="arsenal-muted-label">{{ control.muted_label }}</small>{% endif %}
+    {% if control.href %}<a class="arsenal-source-link" href="{{ control.href }}" target="_blank" rel="noopener">{{ control.label }}</a>{% endif %}
+    {% if control.note %}<small>{{ control.note }}</small>{% endif %}
+    {% for problem in row.problems %}<span class="is-problem">{{ problem }}</span>{% endfor %}
+    {% if row.raw_name %}<small>{{ row.raw_name }}</small>{% endif %}
+  </div>
+  <button class="btn-secondary" type="button" data-audit-save>Save</button>
+  <output></output>
+</article>
