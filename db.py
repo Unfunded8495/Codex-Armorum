@@ -323,6 +323,7 @@ def init_db():
             "ALTER TABLE catalogue_units ADD COLUMN wargear_options_json TEXT",
             "ALTER TABLE catalogue_units ADD COLUMN loadout TEXT",
             "ALTER TABLE catalogue_units ADD COLUMN leader_targets_json TEXT",
+            "ALTER TABLE catalogue_units ADD COLUMN points_tiers_json TEXT",
         ]:
             try:
                 c.execute(stmt)

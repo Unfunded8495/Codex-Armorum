@@ -119,7 +119,7 @@ class DataStore:
         # Load every unit
         all_unit_rows = conn.execute(
             "SELECT bsdata_id, faction_id, name, role, points,"
-            "       stats_json, abilities_json, keywords_json"
+            "       stats_json, abilities_json, keywords_json, points_tiers_json"
             " FROM catalogue_units"
         ).fetchall()
 
@@ -154,6 +154,8 @@ class DataStore:
             kws = json.loads(u["keywords_json"]) if u["keywords_json"] else []
             stats = json.loads(u["stats_json"]) if u["stats_json"] else {}
             abilities = json.loads(u["abilities_json"]) if u["abilities_json"] else {}
+            points_tiers = (json.loads(u["points_tiers_json"])
+                            if u["points_tiers_json"] else None)
 
             ranged = []
             melee = []
@@ -181,6 +183,7 @@ class DataStore:
                 "faction_id":  u["faction_id"],  # may be overridden below
                 "role":        u["role"] or "Other",
                 "points":      u["points"],
+                "_points_tiers": points_tiers,
                 "virtual_bool": False,
                 "_keywords":   kws,   # internal; used by faction keyword filter
                 "_stats":      stats,
@@ -259,9 +262,14 @@ class DataStore:
                 display_fac["unit_count"] += 1
             self.datasheets = list(self.ds_by_id.values())
 
-        # cost: {did: [{"cost": points}]} — used by army builder
+        # cost: {did: [{"cost": points, "description": label}]} — used by the
+        # datasheet Points section and the army builder. Multi-size units carry
+        # reconstructed per-size tiers; everything else is a single base price.
         for u in self.datasheets:
-            if u.get("points") is not None:
+            tiers = u.get("_points_tiers")
+            if tiers:
+                self.cost[u["id"]] = tiers
+            elif u.get("points") is not None:
                 self.cost[u["id"]] = [{"cost": u["points"]}]
 
         # keywords: {did: list of kw strings} — kept for API compat
@@ -505,6 +513,8 @@ class DataStore:
         composition = self.composition.get(d["id"], [])
         if not composition and isinstance(d.get("_stats"), dict) and d["_stats"]:
             composition = [{"name": d["name"], "min": 1, "max": 1}]
+        abilities = d.get("_abilities") or {}
+        damaged = abilities.get("damaged") or {}
         return {
             "id":                  d["id"],
             "name":                d["name"],
@@ -514,9 +524,9 @@ class DataStore:
             "legend":              "",
             "loadout":             self.loadout.get(d["id"], ""),
             "link":                "",
-            "transport":           "",
-            "damaged_w":           "",
-            "damaged_description": "",
+            "transport":           abilities.get("transport") or "",
+            "damaged_w":           damaged.get("threshold", ""),
+            "damaged_description": damaged.get("description", ""),
             "led_by":              [{"id": lid, "name": self.ds_by_id[lid]["name"]}
                                     for lid in self.led_by.get(d["id"], [])
                                     if lid in self.ds_by_id],

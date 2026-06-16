@@ -67,6 +67,27 @@ export function renderInvuln(abilities){
   </div>`;
 }
 
+/* Damaged bracket — the "while this model has N wounds remaining…" penalty,
+   shown under the stat line like the printed card's red banner. */
+export function renderDamaged(d){
+  if(!d.damaged_description) return '';
+  const label = d.damaged_w
+    ? `Damaged: ${esc(d.damaged_w)} Wounds Remaining`
+    : 'Damaged';
+  return `<div class="damaged-bracket">
+    <span class="damaged-label">${label}</span>
+    <span class="damaged-text">${bsdataMarkup(d.damaged_description)}</span>
+  </div>`;
+}
+
+/* Transport capacity — its own section; BSData stores it as a full sentence. */
+export function renderTransport(d){
+  if(!d.transport) return '';
+  return `<div class="section transport-section"><h2>Transport</h2>
+    <div class="transport-text">${bsdataMarkup(d.transport)}</div>
+  </div>`;
+}
+
 // Surfaced elsewhere: "Leader" as a Core tag + its own block, the invuln as a badge.
 const HIDDEN_DATASHEET_ABILITIES = new Set(['leader','invulnerable save']);
 

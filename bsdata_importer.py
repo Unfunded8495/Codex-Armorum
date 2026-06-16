@@ -30,6 +30,9 @@ LEADER_PATTERN = re.compile(
 )
 BULLET_PATTERN = re.compile(r'[■▪•\-]\s*(.+)')
 INVULN_PATTERN = re.compile(r'(\d+)\+\s*invulnerable save', re.IGNORECASE)
+# A "Damaged: 1-4 Wounds Remaining" bracket profile — capture the wound range.
+DAMAGED_PATTERN = re.compile(r'^damaged:\s*(.+?)\s*wounds?\s*remaining', re.IGNORECASE)
+TRANSPORT_TYPE_NAME = 'Transport'
 
 
 def is_weapon_group(name: str) -> bool:
@@ -717,8 +720,134 @@ def build_entry_index(cat_files):
     return idx
 
 
+def build_profile_index(cat_files):
+    """Global profile id -> {'name', 'type_name', 'description'} across catalogues.
+
+    Bracketed 'Damaged: …' stat profiles (and other shared ability profiles) are
+    usually defined once in a catalogue's <sharedProfiles> and referenced from a
+    unit via an infoLink of type='profile'. A unit only carries that reference,
+    not the profile body, so resolving it needs this id map."""
+    bs = NS_CAT['bs']
+    idx = {}
+    for cat_path in cat_files:
+        try:
+            root = ET.parse(cat_path).getroot()
+        except ET.ParseError:
+            continue
+        for p in root.iter('{%s}profile' % bs):
+            pid = p.get('id')
+            if pid and pid not in idx:
+                idx[pid] = {
+                    'name':        p.get('name', ''),
+                    'type_name':   p.get('typeName', ''),
+                    'description': _profile_description(p, NS_CAT),
+                }
+    return idx
+
+
+# ---------------------------------------------------------------------------
+# Points-per-unit-size tiers
+#
+# BSData stores one base 'pts' cost plus 'set' modifiers that raise it once the
+# unit grows past a model-count threshold (e.g. 80 for a 5-model Intercessor
+# Squad, set to 160 at 6+). These helpers turn those breakpoints back into the
+# printed datasheet's labelled tiers ("5 models … / 10 models …"). The logic is
+# deliberately conservative: any modifier whose gate isn't a single, simple
+# model-count condition makes the whole unit fall back to its base price rather
+# than show a guessed tier.
+# ---------------------------------------------------------------------------
+
+PTS_COST_TYPE_ID = '51b2-306e-1021-d207'
+
+
+def _pts_set_modifiers(unit_se):
+    """All 'set pts' modifiers on a unit, whether direct or in a modifierGroup."""
+    mods = []
+    direct = unit_se.find('bs:modifiers', NS_CAT)
+    if direct is not None:
+        mods += direct.findall('bs:modifier', NS_CAT)
+    mgs = unit_se.find('bs:modifierGroups', NS_CAT)
+    if mgs is not None:
+        for mg in mgs.findall('bs:modifierGroup', NS_CAT):
+            md = mg.find('bs:modifiers', NS_CAT)
+            if md is not None:
+                mods += md.findall('bs:modifier', NS_CAT)
+    return [m for m in mods
+            if m.get('field') == PTS_COST_TYPE_ID and m.get('type') == 'set']
+
+
+def _count_condition(modifier):
+    """(type, value) when a modifier is gated by exactly one selection-count
+    condition; the string 'complex' when its gate is grouped/absent/non-count
+    (uninterpretable for simple tiering)."""
+    if modifier.find('bs:conditionGroups', NS_CAT) is not None:
+        return 'complex'
+    conds = modifier.findall('bs:conditions/bs:condition', NS_CAT)
+    if len(conds) != 1:
+        return 'complex'
+    c = conds[0]
+    if c.get('field') != 'selections' \
+            or c.get('type') not in ('atLeast', 'greaterThan', 'equalTo'):
+        return 'complex'
+    try:
+        return (c.get('type'), int(float(c.get('value'))))
+    except (TypeError, ValueError):
+        return 'complex'
+
+
+def extract_points_tiers(unit_se, base_points):
+    """Return labelled points tiers [{'cost', 'description'}, ...] or None.
+
+    None means "no size tiers" — the caller keeps the single base price.
+    """
+    if base_points is None:
+        return None
+    mods = _pts_set_modifiers(unit_se)
+    if not mods:
+        return None
+
+    parsed = []
+    for m in mods:
+        cond = _count_condition(m)
+        if cond == 'complex':
+            return None  # irregular gate: don't risk a misleading tier list
+        ctype, n = cond
+        try:
+            cost = int(float(m.get('value')))
+        except (TypeError, ValueError):
+            return None
+        start = n + 1 if ctype == 'greaterThan' else n  # size the price kicks in
+        parsed.append({'start': start, 'cost': cost, 'exact': ctype == 'equalTo'})
+
+    parsed.sort(key=lambda p: p['start'])
+    base_size = parsed[0]['start'] - 1
+    if base_size < 1:
+        return None
+
+    top = parsed[-1]
+    # Units come in "X or 2X" sizes, so the largest tier is twice the base size
+    # unless an exact (equalTo) cap names the true maximum.
+    max_size = top['start'] if top['exact'] else max(top['start'], 2 * base_size)
+
+    sizes = [base_size] + [
+        (parsed[i + 1]['start'] - 1) if i < len(parsed) - 1 else max_size
+        for i in range(len(parsed))
+    ]
+    costs = [base_points] + [p['cost'] for p in parsed]
+
+    out = []
+    last_size = 0
+    for size, cost in zip(sizes, costs):
+        if size <= last_size:
+            return None  # non-increasing sizes => structure we can't trust
+        last_size = size
+        plural = '' if size == 1 else 's'
+        out.append({'cost': cost, 'description': f'{size} model{plural}'})
+    return out if len(out) > 1 else None
+
+
 def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
-              entry_index=None):
+              entry_index=None, profile_index=None):
     """Parse one .cat file.
 
     Returns:
@@ -882,6 +1011,8 @@ def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
                 points = int(float(cost.get('value', '0')))
             except (ValueError, TypeError):
                 pass
+        # Per-unit-size price tiers, reconstructed from cost-set modifiers.
+        points_tiers = extract_points_tiers(se, points)
 
         # Stats: Unit profiles
         stat_profiles = [
@@ -905,13 +1036,28 @@ def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
         datasheet_abilities = []
         special_abilities = []
         invuln_save = None
+        transport = None      # capacity text from a 'Transport' profile
+        damaged = None        # {'name', 'threshold', 'description'} bracket profile
         for p in se.findall('.//bs:profile', NS_CAT):
             type_name = p.get('typeName', '')
             if type_name == unit_type_name or type_name in weapon_type_names:
                 continue
             desc = _profile_description(p, NS_CAT)
             name = p.get('name', '')
+            if type_name == TRANSPORT_TYPE_NAME:
+                # The Capacity characteristic is the only field; keep it out of
+                # the generic abilities list and surface it in its own section.
+                if transport is None:
+                    transport = _chars(p, NS_CAT).get('Capacity') or desc
+                continue
             if type_name == ability_type_name:
+                dm = DAMAGED_PATTERN.match(name)
+                if dm:
+                    if damaged is None:
+                        damaged = {'name': name,
+                                   'threshold': dm.group(1).strip(),
+                                   'description': desc}
+                    continue
                 if invuln_save is None and name.lower().startswith('invulnerable'):
                     m = INVULN_PATTERN.search(desc)
                     if m:
@@ -930,7 +1076,20 @@ def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
         info_links = se.find('bs:infoLinks', NS_CAT)
         if info_links is not None:
             for il in info_links.findall('bs:infoLink', NS_CAT):
-                if il.get('type') != 'rule':
+                il_type = il.get('type')
+                if il_type == 'profile':
+                    # Most 'Damaged: …' brackets are shared profiles the unit only
+                    # references; resolve the target to recover the bracket text.
+                    if damaged is None and profile_index:
+                        prof = profile_index.get(il.get('targetId'))
+                        nm = il.get('name') or (prof or {}).get('name', '')
+                        dm = DAMAGED_PATTERN.match(nm)
+                        if prof and dm:
+                            damaged = {'name': nm,
+                                       'threshold': dm.group(1).strip(),
+                                       'description': prof.get('description', '')}
+                    continue
+                if il_type != 'rule':
                     continue
                 rule = (rule_index or {}).get(il.get('targetId'), {})
                 nm = il.get('name') or rule.get('name', '')
@@ -948,9 +1107,12 @@ def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
             'datasheet':   datasheet_abilities,
             'special':     special_abilities,
             'invuln_save': invuln_save,
+            'transport':   transport,
+            'damaged':     damaged,
         }
         has_abilities = any((core_abilities, faction_abilities,
-                             datasheet_abilities, special_abilities, invuln_save))
+                             datasheet_abilities, special_abilities, invuln_save,
+                             transport, damaged))
 
         # Composition, loadout + wargear options: reconstructed from the
         # selectionEntry structure (BSData carries no datasheet prose for these).
@@ -977,6 +1139,7 @@ def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
             'name':           se.get('name', ''),
             'role':           role,
             'points':         points,
+            'points_tiers':   points_tiers,
             'stats':          stats,
             'abilities':      abilities if has_abilities else None,
             'keywords':       keywords if keywords else None,
@@ -1078,6 +1241,7 @@ def import_catalogue(db_path, bsdata_dir):
     for stmt in (
         'ALTER TABLE catalogue_units ADD COLUMN wargear_options_json TEXT',
         'ALTER TABLE catalogue_units ADD COLUMN loadout TEXT',
+        'ALTER TABLE catalogue_units ADD COLUMN points_tiers_json TEXT',
     ):
         try:
             conn.execute(stmt)
@@ -1111,7 +1275,11 @@ def import_catalogue(db_path, bsdata_dir):
 
     print('Indexing catalogue entries for cross-references…')
     entry_index = build_entry_index(cat_files)
-    print(f'Indexed {len(entry_index)} entries\n')
+    print(f'Indexed {len(entry_index)} entries')
+
+    print('Indexing shared profiles (Damaged brackets, etc.)…')
+    profile_index = build_profile_index(cat_files)
+    print(f'Indexed {len(profile_index)} profiles\n')
 
     total_units = 0
     total_weapons = 0
@@ -1119,7 +1287,7 @@ def import_catalogue(db_path, bsdata_dir):
     for cat_path in cat_files:
         try:
             data = parse_cat(cat_path, gst_data, rule_index, weapon_id_index,
-                             entry_index)
+                             entry_index, profile_index)
         except Exception as e:
             print(f'  WARNING: failed to parse {os.path.basename(cat_path)}: {e}')
             continue
@@ -1136,8 +1304,8 @@ def import_catalogue(db_path, bsdata_dir):
                    (bsdata_id, faction_id, name, role, points,
                     stats_json, abilities_json, keywords_json,
                     composition_json, wargear_options_json, loadout,
-                    leader_targets_json, imported_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                    leader_targets_json, points_tiers_json, imported_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                 (u['bsdata_id'], u['faction_id'], u['name'], u['role'],
                  u['points'],
                  json.dumps(u['stats']) if u.get('stats') is not None else None,
@@ -1147,6 +1315,7 @@ def import_catalogue(db_path, bsdata_dir):
                  json.dumps(u['wargear_options']) if u.get('wargear_options') else None,
                  u.get('loadout') or None,
                  json.dumps(u['leader_targets']) if u.get('leader_targets') else None,
+                 json.dumps(u['points_tiers']) if u.get('points_tiers') else None,
                  now)
             )
 

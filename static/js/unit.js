@@ -2,7 +2,7 @@ import { esc, api, jsStr, readableInk, withTimeout } from './utils.js';
 import { clearFactionCache } from './home.js';
 import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
 import { openLightbox } from './lightbox.js';
-import { renderDatasheetModels, renderInvuln, renderWargear, renderAbilities, renderUnitComposition, renderLeaderAttach, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
+import { renderDatasheetModels, renderInvuln, renderDamaged, renderTransport, renderWargear, renderAbilities, renderUnitComposition, renderLeaderAttach, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
 import { setupArsenalHover } from './arsenal-hover.js';
 
 const view       = document.getElementById('view');
@@ -67,7 +67,7 @@ export async function showUnit(did){
       </div>
       <div class="detail-info">
         <h1 class="detail-name" style="color:${readableInk(d.accent)}">${esc(d.name)}</h1>
-        <p class="detail-role">${esc(d.role)}${d.transport?` · Transport: ${esc(d.transport)}`:''}</p>
+        <p class="detail-role">${esc(d.role)}</p>
         <div class="unit-tabs" role="tablist">
           <button class="unit-tab is-active" id="unitInfoTab" data-unit-tab="info">Unit Information</button>
           <button class="unit-tab" id="collectionTab" data-unit-tab="collection">My Collection</button>
@@ -76,12 +76,14 @@ export async function showUnit(did){
           ${d.legend?`<p class="legend">${esc(d.legend)}</p>`:''}
           ${renderDatasheetModels(d.models)}
           ${renderInvuln(d.abilities)}
+          ${renderDamaged(d)}
           ${renderWargear('Ranged Weapons', d.ranged)}
           ${renderWargear('Melee Weapons', d.melee)}
           ${renderAbilities(d.abilities)}
           ${renderUnitComposition(d.composition, d.loadout, d.led_by)}
           ${renderLeaderAttach(d.leads)}
           ${renderOptions(d.options)}
+          ${renderTransport(d)}
           ${renderPoints(d.costs)}
           ${renderKeywords(d)}
         </div>
