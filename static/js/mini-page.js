@@ -272,6 +272,15 @@ function mpRenderGroup(group){
     ? (rep.stage || 'unbuilt') === 'unbuilt'
     : group.every(m=>(m.stage || 'unbuilt') === 'unbuilt');
 
+  // The all-unbuilt "to build" card is tinted with the army colour, matching the
+  // faction box on the left (e.g. red for Skitarii / Adeptus Mechanicus).
+  const army  = mpUnit?.primary || '';
+  const glow  = mpUnit?.accent || army;
+  const unbuiltCls   = isUnbuilt ? ' mp-unbuilt-card' : '';
+  const unbuiltStyle = isUnbuilt && army
+    ? ` style="--cardarmy:${esc(army)};--cardaccent:${esc(glow)};--cardglow:${esc(glow)}"`
+    : '';
+
   const chips = mpRenderGearChips(rep.wargear, isUnbuilt);
 
   const labelText = rep.label || 'Standard';
@@ -300,17 +309,32 @@ function mpRenderGroup(group){
 
   if(count === 1){
     const s = rep.stage || 'unbuilt';
-    const inlineBody = `${mpStageSelect(rep.id, s, rep.multikit_group)}
-      ${gearBlock}
-      ${s !== 'unbuilt' ? `<textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
-        oninput="mpSaveMiniNotes('${rep.id}',this.value)">${esc(rep.notes||'')}</textarea>
-      <div class="mc-gallery" id="mpcgal-${rep.id}">
-        ${(rep.photos||[]).map(p=>mpPhotoTile(p,rep.id)).join('')}
-        ${mpUploaderTile(rep.id)}
-      </div>` : ''}`;
-    return `<div class="mini-group-card is-solo" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}">
+    // Mirror the grouped layout: notes + editable gallery tuck behind the same
+    // collapsible <details>, with a view-only thumbnail strip below the card.
+    const editBody = s !== 'unbuilt'
+      ? `<details class="mgc-details">
+          <summary class="mgc-summary">Notes &amp; photos</summary>
+          <div class="mgc-minis">
+            <textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
+              oninput="mpSaveMiniNotes('${rep.id}',this.value)">${esc(rep.notes||'')}</textarea>
+            <div class="mc-gallery" id="mpcgal-${rep.id}">
+              ${(rep.photos||[]).map(p=>mpPhotoTile(p,rep.id)).join('')}
+              ${mpUploaderTile(rep.id)}
+            </div>
+          </div>
+        </details>`
+      : '';
+    const photoStrip = allPhotos.length
+      ? `<div class="mgc-photo-strip">
+        ${allPhotos.map((p,i)=>mpPhotoThumb(p,gcid,i)).join('')}
+      </div>`
+      : '';
+    return `<div class="mini-group-card is-solo${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
       ${head}
-      ${inlineBody}
+      ${mpStageSelect(rep.id, s, rep.multikit_group)}
+      ${gearBlock}
+      ${editBody}
+      ${photoStrip}
     </div>`;
   }
 
@@ -325,14 +349,14 @@ function mpRenderGroup(group){
 
   const hasPhotos = allPhotos.length > 0;
   if(hasPhotos){
-    return `<div class="mini-group-card" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}">
+    return `<div class="mini-group-card${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
       ${cardContent}
       <div class="mgc-photo-strip">
         ${allPhotos.map((p,i)=>mpPhotoThumb(p,gcid,i)).join('')}
       </div>
     </div>`;
   }
-  return `<div class="mini-group-card" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}">
+  return `<div class="mini-group-card${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
     ${cardContent}
   </div>`;
 }

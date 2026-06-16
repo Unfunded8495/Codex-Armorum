@@ -1234,6 +1234,15 @@ a.brand{text-decoration:none;color:inherit}
   border:1px solid var(--edge);border-left:2px solid rgba(199,154,58,.4);
   padding:12px 14px;margin-bottom:10px;
 }
+/* Top "to build" card tinted with the army colour, matching the faction box. */
+.mini-group-card.mp-unbuilt-card{
+  background:
+    linear-gradient(180deg,rgba(10,10,12,.10),rgba(10,10,12,.50)),
+    radial-gradient(circle at 16% 0%,color-mix(in srgb,var(--cardaccent,var(--gold)) 26%,transparent),transparent 52%),
+    linear-gradient(145deg,color-mix(in srgb,var(--cardarmy,var(--panel-2)) 76%,#17151c),color-mix(in srgb,var(--cardarmy,var(--panel)) 36%,#08080b));
+  border-color:color-mix(in srgb,var(--cardarmy,var(--edge)) 60%,#000);
+  border-left:2px solid var(--cardarmy,var(--gold));
+}
 .mgc-badge{
   font-family:'Cinzel',serif;font-weight:700;font-size:13px;
   color:var(--gold-bright);background:rgba(199,154,58,.1);
