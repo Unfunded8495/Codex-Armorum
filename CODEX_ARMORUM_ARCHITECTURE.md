@@ -115,6 +115,63 @@ The Wahapedia-to-BSData bridge is built at runtime by `data_store._build_wahaped
 
 ---
 
+## The Wahapedia datasheet-ID bridge: status and removability
+
+### The app is already BSData-native internally
+
+Every runtime unit lookup keys on the **BSData GUID**. `ds_by_id` is keyed by GUID,
+`unit_detail()` and `units_for_faction()` return GUIDs, and new minis are written with
+both `datasheet_id` *and* `unit_bsdata_id`. The Wahapedia 9-digit IDs survive only as
+**alias keys** added to `ds_by_id` so that legacy stored data keeps resolving — namely
+older `minis.datasheet_id`, `custom_box_set_contents.datasheet_id`, and the
+`model_catalogue` `datasheet_links`. The bridge is a backward-compatibility layer, not the
+live data path.
+
+As of the June 2026 audit, **all 509 owned minis carry `unit_bsdata_id`**, so the live
+collection resolves to BSData without needing the `Datasheets.csv` name-match fallback
+(step 2 of `_build_wahapedia_aliases`). One mini required a manual backfill to reach this
+state — see the maintenance note below.
+
+### Can the bridge be removed entirely?
+
+Not fully, and not worth it. Two **separate** Wahapedia dependencies must be distinguished:
+
+| Wahapedia dependency | Removable? | Reason |
+|---|---|---|
+| The 9-digit **datasheet-ID bridge** | In principle, via a one-time data migration | BSData carries the same units under GUIDs |
+| **Detachments.csv / Enhancements.csv** | **No** | BSData XML has no detachment/enhancement data; no alternative source exists anywhere |
+
+A June 2026 audit measured how much stored data still keys on Wahapedia IDs, and how much
+of it the runtime bridge can translate to a BSData GUID:
+
+| Store | Wahapedia-keyed | Converts cleanly | Cannot auto-translate |
+|---|---|---|---|
+| `minis` | 501 / 509 | 508 (already carry bsid) | 0 *(after backfill)* |
+| `custom_box_set_contents` | 157 rows / 139 units | 138 | 0 *(after backfill)* |
+| `army_units` | 0 | — | — |
+| `photos` | 32 / 40 | all (ride on their mini's link) | 0 |
+| `model_catalogue` `datasheet_links` | 968 / 968 | 738 | **75 (~9%)** |
+| `model_catalogue_resolutions.json` | 265 | 248 | 17 |
+
+The owned collection converts essentially for free, but **~75 curated catalogue links point
+at datasheets BSData does not carry** (Forge World, `[Legends]`, renamed, or absent units)
+and cannot be auto-translated by name. Those are hand-curated decisions that a migration
+would orphan. Combined with the permanent Detachments/Enhancements dependency, the
+verdict is to **keep the bridge**: it is cheap (built once at startup, in memory, isolated
+in a single function) and invisible at request time.
+
+### Maintenance note — June 2026 backfill
+
+The mini *"Ostromandeus and Stentor-I-52 (2024 release)"* (catalogue `MD-50472`) was the
+only owned mini missing `unit_bsdata_id`. Its Wahapedia ID `000004173` ("Inquisitor
+Ostromandeus") did not name-match because **BSData lists the unit as "Inquisitor
+Ostromandeus [Legends]"** (`6315-d3e6-aa1c-69e4`). The GUID was backfilled onto that mini
+row. Because bridge step 1 derives aliases from minis, this single backfill also makes the
+otherwise-orphaned `custom_box_set_contents` reference `000004173` (box "Inquisitor
+Ostromandeus") resolve. No join keys were changed.
+
+---
+
 ## Migration checklist
 
 Run this whenever deploying to a new environment, rebuilding Docker, or branching for major rework.

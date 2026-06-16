@@ -4,6 +4,8 @@ bsdata/
 # SQLite database and backups
 collection.db
 collection.db.backup
+collection.db.bak-*
+*.db.bak-*
 warhammer.db
 *.db-journal
 *.db-wal

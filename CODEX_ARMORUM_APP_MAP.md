@@ -328,6 +328,14 @@ The **three ID systems** that everything keys on:
 every startup — first from owned minis' `unit_bsdata_id`, then falling back to name-matching
 through `Datasheets.csv`.
 
+> **The engine is already BSData-native.** Every live unit lookup keys on the BSData GUID;
+> the Wahapedia IDs only survive as alias keys so legacy stored data keeps resolving. As of
+> June 2026 all owned minis carry their BSData ID. The bridge can't be removed outright —
+> Detachments/Enhancements come *only* from Wahapedia, and ~75 curated catalogue links point
+> at units BSData doesn't carry. See *"The Wahapedia datasheet-ID bridge: status and
+> removability"* in [`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md) for the
+> full audit.
+
 ---
 
 ## 9. Database schema (entity map)
