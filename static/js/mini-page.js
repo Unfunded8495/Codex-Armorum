@@ -172,7 +172,15 @@ function mpGroupMinis(minis){
     if(!map.has(key)) map.set(key, []);
     map.get(key).push(m);
   }
-  return [...map.values()];
+  // Order: the all-unbuilt card(s) first, then the rest alphanumerically by label.
+  const isUnbuiltGroup = g => g.every(m => (m.stage || 'unbuilt') === 'unbuilt');
+  return [...map.values()].sort((a, b) => {
+    const au = isUnbuiltGroup(a), bu = isUnbuiltGroup(b);
+    if(au !== bu) return au ? -1 : 1;
+    const al = a[0].label || 'Standard';
+    const bl = b[0].label || 'Standard';
+    return al.localeCompare(bl, undefined, {numeric:true, sensitivity:'base'});
+  });
 }
 
 function mpCatalogueUrl(cid){
