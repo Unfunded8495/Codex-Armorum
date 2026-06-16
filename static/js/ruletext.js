@@ -19,6 +19,30 @@ export function wrapKeywords(html){
   return out;
 }
 
+/* Convert BSData's plain-text rules markup into safe HTML.
+   `**bold**`  -> <strong>, `^^small caps^^` -> keyword span, blank-line/­newline
+   bullet markers (* - • ■ ▪) -> a bullet list. Input is escaped first. */
+export function bsdataMarkup(raw){
+  if(raw==null) return '';
+  let html = esc(String(raw).replace(/\r\n?/g,'\n'));
+  html = html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+             .replace(/\^\^(.+?)\^\^/g,'<span class="kw-ref">$1</span>');
+  const out = [];
+  let inList = false;
+  for(const line of html.split('\n').map(l=>l.trim()).filter(Boolean)){
+    const bullet = line.match(/^[■▪•*\-]\s*(.+)$/);
+    if(bullet){
+      if(!inList){ out.push('<ul class="ability-bullets">'); inList = true; }
+      out.push(`<li>${bullet[1]}</li>`);
+    }else{
+      if(inList){ out.push('</ul>'); inList = false; }
+      out.push(`<p>${line}</p>`);
+    }
+  }
+  if(inList) out.push('</ul>');
+  return out.join('');
+}
+
 export function cleanRuleText(text){
   return (text??'').toString()
     .replace(/ /g,' ').replace(/\s+/g,' ')

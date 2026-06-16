@@ -11,16 +11,18 @@ collection. Each mini can keep its own label, wargear, paint stage, notes, and p
 
 - **Army grid** — every 40K faction shown as an icon tile, with badges for owned, bought, and
   unlogged minis.
-- **Faction roster** — datasheets for the chosen army, grouped by battlefield role, with reference
-  images, points, and collection status. The faction view focuses on units you own, with a link to
-  browse every datasheet.
+- **Faction roster** — your purchased minis for the chosen army, shown as unit tiles with a
+  paint-progress bar. Click any tile to open that unit's mini page. A "Browse All Datasheets" link
+  shows every datasheet in the faction with points and collection status.
 - **Purchases** — record boxed sets you have bought. Logging a purchase creates unbuilt mini rows,
   including shared multikit pools when a kit can build alternate datasheets.
-- **Unit detail** — the full datasheet from the CSV export: model stats, ranged and melee weapon
-  profiles, composition, wargear options, points, and keywords. The **My Collection** tab shows the
-  minis you already own for that datasheet.
-- **Collection / paint progress** — review the collection by paint stage and faction, then open a
-  unit's mini page to edit labels, gear, notes, photos, and paint stage.
+- **Unit detail** — the full datasheet: model stats, ranged and melee weapon profiles, composition,
+  wargear options, points, and keywords. The **My Collection** tab shows the minis you already own
+  for that datasheet.
+- **Mini management** — each unit has its own mini page (`#/mini/<unit>`) for editing labels, gear,
+  notes, photos, and paint stage on individual minis or groups.
+- **Paint progress** — the `/collection` page shows an overall stats dashboard: percentage painted,
+  stage breakdown, and per-faction progress with links back to each faction's roster.
 - **Model catalogue** — maintain model-release records, datasheet links, and release images used by
   unit pages and box contents.
 - **Army Builder** — assign owned models to rosters, add detachments and enhancements, track points
@@ -150,10 +152,18 @@ command each time you open a new terminal window.
 
 ## Unit data
 
-The `data/` folder holds the Wahapedia CSV export plus the model and box catalogue JSON files. The
-app reads these on startup — you do not need to import or configure anything. Runtime catalogue
-edits are stored in `data/model_catalogue_manual.json`, with linking decisions in
+Unit data (factions, datasheets, weapon profiles, points) comes from the BSData Warhammer 40,000
+10th Edition XML repository cloned into `bsdata/wh40k-10e/`. The database tables that power the
+unit browser are populated by running `python bsdata_importer.py` — this is safe to re-run at any
+time to pick up ruleset updates.
+
+The `data/` folder also holds three Wahapedia CSV files (detachments, enhancements, and a
+Wahapedia-to-BSData ID bridge) plus the model and box catalogue JSON files. Runtime catalogue edits
+are stored in `data/model_catalogue_manual.json`, with linking decisions in
 `data/model_catalogue_resolutions.json` and image metadata in `data/model_catalogue_images.json`.
+
+See `CODEX_ARMORUM_ARCHITECTURE.md` for a full breakdown of all data sources, ID systems, and what
+must be preserved when migrating to a new environment.
 
 ---
 
@@ -170,33 +180,31 @@ edited from the **Purchases** box editor.
 These reference pictures are the property of their copyright holders, including Games Workshop, and
 are stored locally for your personal collection reference only.
 
-### Optional: bulk prefetch
-
-There is a command-line helper that pulls unit reference photos from source pages:
-
-```
-python fetch_images.py
-python fetch_images.py SM ORK
-python fetch_images.py --limit 30 AE
-```
-
-It is resumable and skips anything already cached.
-
 ---
 
 ## Project layout
 
 ```
 warhammer-catalogue/
-  app.py              Flask backend + REST API
-  data_store.py       loads and joins the CSV export
-  factions_theme.py   colours + generated unit placeholder SVGs
-  fetch_images.py     optional legacy unit-image prefetcher
-  data/               Wahapedia CSVs plus model/box catalogue JSON
-  scripts/            one-off import, migration, image, and audit helpers
-  static/             css + js + icons
-  templates/          Flask page templates
-  uploads/            gallery photos
-  cache/images/       cached catalogue, box, and legacy unit images
-  collection.db       saved local collection (created on first run)
+  app.py                  Flask backend + REST API
+  data_store.py           reads BSData catalogue tables; builds faction/unit indexes
+  bsdata_importer.py      parses BSData XML; populates catalogue_* tables in the DB
+  catalogue_review.py     model catalogue management logic
+  collection.py           mini ownership queries and wargear helpers
+  box_sets.py             box set definitions and purchase creation
+  army.py                 army builder helpers (points, detachments, enhancements)
+  arsenal.py              Arsenal wargear feature (Flask blueprint)
+  arsenal_store.py        Arsenal sqlite3 data access and sync helpers
+  db.py                   SQLite schema init and legacy migrations
+  factions_theme.py       faction colours and placeholder SVGs
+  images.py               image upload and reference-image handling
+  utils.py                shared utility helpers
+  bsdata/wh40k-10e/       BSData 40K 10th Edition XML repo (gitignored — re-cloneable)
+  data/                   Wahapedia CSVs (detachments/enhancements) + model catalogue JSONs
+  scripts/                one-off import, migration, image, and audit helpers
+  static/                 css + js + faction icons
+  templates/              Flask page templates
+  uploads/                gallery photos (gitignored)
+  cache/images/           cached catalogue, box, and unit reference images (gitignored)
+  collection.db           saved local collection (created on first run, gitignored)
 ```

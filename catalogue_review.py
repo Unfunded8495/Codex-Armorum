@@ -326,6 +326,52 @@ def _catalogue_models_by_datasheet():
     return by_datasheet
 
 
+def catalogue_faction_datasheet_index():
+    """Return {catalogue_model_id: {bsdata_faction_id: bsdata_datasheet_id}} for every
+    model release whose resolution (or raw links) covers more than one faction.
+
+    Used by the collection API to surface minis in cross-faction views — e.g. a mini
+    stored under the CSM Plague Marines datasheet should also appear when browsing Death
+    Guard because the model catalogue links that physical kit to both datasheets.
+    """
+    from data_store import get_store
+    store = get_store()
+
+    key = ("catalogue_faction_ds_index", _mtime_key(MANUAL_PATH, RESOLUTIONS_PATH))
+    if key in _CACHE:
+        return _CACHE[key]
+
+    data = _load_json(MANUAL_PATH, {"model_releases": []})
+    resolutions = _resolution_map()
+    index = {}
+
+    for r in data.get("model_releases", []):
+        cid = r.get("id")
+        if not cid:
+            continue
+        resolution = resolutions.get(cid, {})
+        action = resolution.get("action", "")
+        if action in {"exclude", "mark_accessory", "mark_box_product", "no_current_datasheet"}:
+            continue
+        if action in {"link_datasheet", "link_multiple_datasheets"}:
+            link_ids = resolution.get("datasheet_ids", [])
+        else:
+            link_ids = [lnk["datasheet_id"] for lnk in r.get("datasheet_links", [])
+                        if lnk.get("datasheet_id")]
+
+        fac_map = {}
+        for did in link_ids:
+            ds = store.ds_by_id.get(did)
+            if ds:
+                fac_map[ds["faction_id"]] = ds["id"]
+
+        if fac_map:
+            index[cid] = fac_map
+
+    _CACHE[key] = index
+    return index
+
+
 def _safe_catalogue_path(catalogue_model_id, ext):
     """Return the resolved path for a catalogue model image, or None if outside the cache dir."""
     os.makedirs(CATALOGUE_IMAGE_DIR, exist_ok=True)
@@ -447,9 +493,7 @@ def add_manual_model(payload):
         from data_store import get_store
 
         faction = get_store().faction_by_id.get(faction_id)
-        if not faction:
-            return None, "Unknown faction."
-        faction_label = faction.get("name", faction_id)
+        faction_label = faction.get("name", faction_id) if faction else (faction_label or faction_id)
     release_date = str(payload.get("release_date") or "").strip()
     release_year = None
     if release_date:

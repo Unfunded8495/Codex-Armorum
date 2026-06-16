@@ -102,6 +102,7 @@ class DataStore:
         self.enhancements_by_detachment = {}
         self.leaders_for = {}
         self.led_by = {}
+        self.leads = {}
         self._load()
 
     def _load(self):
@@ -150,6 +151,7 @@ class DataStore:
             did = u["bsdata_id"]
             kws = json.loads(u["keywords_json"]) if u["keywords_json"] else []
             stats = json.loads(u["stats_json"]) if u["stats_json"] else {}
+            abilities = json.loads(u["abilities_json"]) if u["abilities_json"] else {}
 
             ranged = []
             melee = []
@@ -180,6 +182,7 @@ class DataStore:
                 "virtual_bool": False,
                 "_keywords":   kws,   # internal; used by faction keyword filter
                 "_stats":      stats,
+                "_abilities":  abilities,
                 "_ranged":     ranged,
                 "_melee":      melee,
             }
@@ -287,9 +290,15 @@ class DataStore:
         """).fetchall():
             self.wargear[row["unit_id"]] = json.loads(row["gear"])
 
+        # Datasheet names are mostly Title Case while leader_targets_json stores
+        # them in the source's UPPER CASE; match case-insensitively so forward
+        # attachment links resolve.
         _name_to_id = {u["name"]: u["id"] for u in self.datasheets}
+        _lower_to_id = {u["name"].lower(): u["id"] for u in self.datasheets}
+        _id_to_name = {u["id"]: u["name"] for u in self.datasheets}
         leaders_for_name = {}
         led_by_id = {}
+        leads_id = {}
         for row in conn2.execute(
             "SELECT bsdata_id, name, leader_targets_json FROM catalogue_units"
             " WHERE leader_targets_json IS NOT NULL"
@@ -299,11 +308,15 @@ class DataStore:
             leader_name = row["name"]
             for target_name in targets:
                 leaders_for_name.setdefault(target_name, []).append(leader_name)
-                target_id = _name_to_id.get(target_name)
+                target_id = _name_to_id.get(target_name) or _lower_to_id.get(target_name.lower())
                 if target_id:
                     led_by_id.setdefault(target_id, []).append(leader_id)
+                # Forward: units this leader can attach to (for the Leader block)
+                leads_id.setdefault(leader_id, []).append(
+                    {"id": target_id, "name": _id_to_name.get(target_id, target_name)})
         self.leaders_for = leaders_for_name
         self.led_by = led_by_id
+        self.leads = leads_id
 
         conn2.close()
 
@@ -474,6 +487,11 @@ class DataStore:
         faction_kw_prefix = "Faction: "
         fkw = [k for k in kws if k.startswith(faction_kw_prefix)]
         kw = [k for k in kws if not k.startswith(faction_kw_prefix)]
+        # Single-model datasheets (one stat profile) carry no composition group
+        # in BSData; synthesise the "1 <name>" line so the section still shows.
+        composition = self.composition.get(d["id"], [])
+        if not composition and isinstance(d.get("_stats"), dict) and d["_stats"]:
+            composition = [{"name": d["name"], "min": 1, "max": 1}]
         return {
             "id":                  d["id"],
             "name":                d["name"],
@@ -489,9 +507,11 @@ class DataStore:
             "led_by":              [self.ds_by_id[lid]["name"]
                                     for lid in self.led_by.get(d["id"], [])
                                     if lid in self.ds_by_id],
+            "leads":               self.leads.get(d["id"], []),
+            "abilities":           d.get("_abilities") or {},
             "models":              d.get("_stats") or [],
             "costs":               self.cost.get(d["id"], []),
-            "composition":         self.composition.get(d["id"], []),
+            "composition":         composition,
             "options":             [],
             "ranged":              d.get("_ranged", []),
             "melee":               d.get("_melee", []),

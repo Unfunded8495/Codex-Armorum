@@ -28,6 +28,7 @@ LEADER_PATTERN = re.compile(
     re.IGNORECASE
 )
 BULLET_PATTERN = re.compile(r'[■▪•\-]\s*(.+)')
+INVULN_PATTERN = re.compile(r'(\d+)\+\s*invulnerable save', re.IGNORECASE)
 
 
 def is_weapon_group(name: str) -> bool:
@@ -57,7 +58,61 @@ def _chars(profile, ns):
     }
 
 
-def parse_cat(cat_path, gst_data):
+def _profile_description(profile, ns):
+    """Best rules-text for an ability-style profile.
+
+    Standard 'Abilities' profiles carry a 'Description' characteristic, but
+    bespoke ability types (e.g. 'Warmaster') name it 'Ability'. Prefer an
+    explicit Description, then fall back to the first characteristic with text.
+    """
+    chars = profile.findall('.//bs:characteristic', ns)
+    for ch in chars:
+        if ch.get('name') == 'Description' and ch.text:
+            return ch.text
+    for ch in chars:
+        if ch.text and ch.text.strip():
+            return ch.text
+    return ''
+
+
+def build_rule_index(gst_files, cat_files):
+    """Map every rule id -> {'name', 'description', 'source'} across the game.
+
+    Rules defined in the .gst game system are universal **Core** abilities
+    (Deep Strike, Leader, Feel No Pain, …); rules defined in a .cat (faction or
+    library) are **Faction** abilities (Dark Pacts, Oath of Moment, …). This
+    lets us classify the rule infoLinks that sit directly on a unit. Weapon
+    keywords are also gst rules, but their infoLinks live deeper (under weapon
+    entries), so the unit-level reader never sees them.
+    """
+    index = {}
+
+    def harvest(root, ns, source):
+        for rule in root.findall('.//bs:rule', ns):
+            rid = rule.get('id')
+            if not rid or rid in index:
+                continue
+            desc_el = rule.find('.//bs:description', ns)
+            index[rid] = {
+                'name':        rule.get('name', ''),
+                'description': desc_el.text if desc_el is not None and desc_el.text else '',
+                'source':      source,
+            }
+
+    for gst_path in gst_files:
+        try:
+            harvest(ET.parse(gst_path).getroot(), NS_GST, 'core')
+        except ET.ParseError:
+            continue
+    for cat_path in cat_files:
+        try:
+            harvest(ET.parse(cat_path).getroot(), NS_CAT, 'faction')
+        except ET.ParseError:
+            continue
+    return index
+
+
+def parse_cat(cat_path, gst_data, rule_index=None):
     """Parse one .cat file.
 
     Returns:
@@ -237,15 +292,59 @@ def parse_cat(cat_path, gst_data):
                 block['profile_name'] = p.get('name', '')
                 stats.append(block)
 
-        # Abilities
-        abilities = []
+        # --- Abilities ---------------------------------------------------
+        # Datasheet abilities (named, with rules text) come from inline
+        # 'Abilities' profiles. Other profile types are bespoke ability blocks
+        # (e.g. 'Warmaster' for Abaddon) and are kept grouped by their type.
+        datasheet_abilities = []
+        special_abilities = []
+        invuln_save = None
         for p in se.findall('.//bs:profile', NS_CAT):
-            if p.get('typeName') == ability_type_name:
-                desc_ch = p.find('.//bs:characteristic[@name="Description"]', NS_CAT)
-                abilities.append({
-                    'name': p.get('name', ''),
-                    'description': desc_ch.text if desc_ch is not None and desc_ch.text else '',
-                })
+            type_name = p.get('typeName', '')
+            if type_name == unit_type_name or type_name in weapon_type_names:
+                continue
+            desc = _profile_description(p, NS_CAT)
+            name = p.get('name', '')
+            if type_name == ability_type_name:
+                if invuln_save is None and name.lower().startswith('invulnerable'):
+                    m = INVULN_PATTERN.search(desc)
+                    if m:
+                        invuln_save = m.group(1)
+                datasheet_abilities.append({'name': name, 'description': desc})
+            else:
+                special_abilities.append(
+                    {'group': type_name, 'name': name, 'description': desc})
+
+        # Core / Faction abilities are referenced by rule infoLinks sitting
+        # directly on the unit (Deep Strike/Leader = Core, Dark Pacts =
+        # Faction). Weapon-keyword infoLinks live deeper, under weapon entries,
+        # so reading only the unit's own infoLinks keeps them out.
+        core_abilities = []
+        faction_abilities = []
+        info_links = se.find('bs:infoLinks', NS_CAT)
+        if info_links is not None:
+            for il in info_links.findall('bs:infoLink', NS_CAT):
+                if il.get('type') != 'rule':
+                    continue
+                rule = (rule_index or {}).get(il.get('targetId'), {})
+                nm = il.get('name') or rule.get('name', '')
+                if not nm:
+                    continue
+                entry = {'name': nm, 'description': rule.get('description', '')}
+                if rule.get('source') == 'faction':
+                    faction_abilities.append(entry)
+                else:
+                    core_abilities.append(entry)
+
+        abilities = {
+            'core':        core_abilities,
+            'faction':     faction_abilities,
+            'datasheet':   datasheet_abilities,
+            'special':     special_abilities,
+            'invuln_save': invuln_save,
+        }
+        has_abilities = any((core_abilities, faction_abilities,
+                             datasheet_abilities, special_abilities, invuln_save))
 
         # Composition: model-count groups on this selectionEntry
         composition = []
@@ -268,7 +367,7 @@ def parse_cat(cat_path, gst_data):
 
         # Leader targets: scan abilities for attachment text
         leader_targets = []
-        for ability in (abilities or []):
+        for ability in datasheet_abilities:
             desc = ability.get('description', '') or ''
             m = LEADER_PATTERN.search(desc)
             if m:
@@ -284,7 +383,7 @@ def parse_cat(cat_path, gst_data):
             'role':           role,
             'points':         points,
             'stats':          stats,
-            'abilities':      abilities if abilities else None,
+            'abilities':      abilities if has_abilities else None,
             'keywords':       keywords if keywords else None,
             'composition':    composition,
             'leader_targets': leader_targets,
@@ -394,12 +493,16 @@ def import_catalogue(db_path, bsdata_dir):
     cat_files = sorted(glob.glob(os.path.join(bsdata_dir, '*.cat')))
     print(f'Found {len(cat_files)} .cat files\n')
 
+    print('Indexing Core/Faction ability rules…')
+    rule_index = build_rule_index(gst_files, cat_files)
+    print(f'Indexed {len(rule_index)} rules\n')
+
     total_units = 0
     total_weapons = 0
 
     for cat_path in cat_files:
         try:
-            data = parse_cat(cat_path, gst_data)
+            data = parse_cat(cat_path, gst_data, rule_index)
         except Exception as e:
             print(f'  WARNING: failed to parse {os.path.basename(cat_path)}: {e}')
             continue

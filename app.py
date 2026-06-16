@@ -3,7 +3,7 @@
 Run:  python app.py    then open http://127.0.0.1:5050
 
 collection.db holds your models and army lists. cache/images/ holds reference
-unit images (populate with fetch_images.py). uploads/ holds your own photos.
+unit images. uploads/ holds your own photos.
 """
 import json
 import os
@@ -29,9 +29,9 @@ from box_sets import (
     purchase_payload,
 )
 from catalogue_review import (
-    add_manual_model, catalogue_image_for_datasheet, catalogue_image_path,
-    catalogue_payload, clear_catalogue_model_image, delete_manual_model,
-    save_catalogue_model_image, save_resolution,
+    add_manual_model, catalogue_faction_datasheet_index, catalogue_image_for_datasheet,
+    catalogue_image_path, catalogue_payload, clear_catalogue_model_image,
+    delete_manual_model, save_catalogue_model_image, save_resolution,
 )
 from collection import (
     _minis_for, _parse_comp_range, _squad_suggestions,
@@ -537,6 +537,39 @@ def api_update_mini(mid):
     return jsonify({"ok": True})
 
 
+def _trim_army_overage(c, unit_bid, id_variants, ph, built_only):
+    """Trim army-list assignments that now exceed the minis available for a unit.
+
+    Called after a mini is reset or removed. When ``built_only`` is set, only minis
+    past the unbuilt stage count as available (used when resetting a built mini back
+    to the pool); otherwise every remaining mini for the unit counts.
+    """
+    if not id_variants:
+        return
+    if unit_bid:
+        remaining_sql = "SELECT COUNT(*) cnt FROM minis WHERE unit_bsdata_id=?"
+        if built_only:
+            remaining_sql += " AND stage!='unbuilt'"
+        total_remaining = c.execute(remaining_sql, (unit_bid,)).fetchone()["cnt"]
+    else:
+        total_remaining = 0
+    total_assigned = c.execute(
+        f"SELECT COALESCE(SUM(assigned_count),0) tot FROM army_units WHERE datasheet_id IN ({ph})",
+        id_variants).fetchone()["tot"]
+    overage = total_assigned - total_remaining
+    if overage <= 0:
+        return
+    for au in c.execute(
+            f"SELECT id, assigned_count FROM army_units WHERE datasheet_id IN ({ph}) AND assigned_count>0 ORDER BY assigned_count DESC",
+            id_variants).fetchall():
+        if overage <= 0:
+            break
+        reduce = min(overage, au["assigned_count"])
+        c.execute("UPDATE army_units SET assigned_count=assigned_count-? WHERE id=?",
+                  (reduce, au["id"]))
+        overage -= reduce
+
+
 @app.route("/api/minis/<mid>", methods=["DELETE"])
 def api_delete_mini(mid):
     from db import db
@@ -544,37 +577,36 @@ def api_delete_mini(mid):
         row = c.execute("SELECT * FROM minis WHERE id=?", (mid,)).fetchone()
         if not row:
             abort(404)
+        stage = row["stage"] if "stage" in row.keys() else (
+            "finished" if bool(row["finished"]) else "unbuilt"
+        )
         photos = c.execute("SELECT filename FROM photos WHERE mini_id=?", (mid,)).fetchall()
-        c.execute("DELETE FROM photos WHERE mini_id=?", (mid,))
-        c.execute("DELETE FROM minis WHERE id=?", (mid,))
         old_did = row["datasheet_id"]
         unit_bid = row["unit_bsdata_id"]
-        total_remaining = c.execute(
-            "SELECT COUNT(*) cnt FROM minis WHERE unit_bsdata_id=?",
-            (unit_bid,)).fetchone()["cnt"] if unit_bid else 0
-        # Query army_units with both ID variants to handle rows created before/after BSData migration
         id_variants = list({x for x in [unit_bid, old_did] if x})
-        ph = ",".join("?" * len(id_variants))
-        total_assigned = c.execute(
-            f"SELECT COALESCE(SUM(assigned_count),0) tot FROM army_units WHERE datasheet_id IN ({ph})",
-            id_variants).fetchone()["tot"] if id_variants else 0
-        if total_assigned > total_remaining:
-            overage = total_assigned - total_remaining
-            for au in c.execute(
-                    f"SELECT id, assigned_count FROM army_units WHERE datasheet_id IN ({ph}) AND assigned_count>0 ORDER BY assigned_count DESC",
-                    id_variants).fetchall():
-                if overage <= 0:
-                    break
-                reduce = min(overage, au["assigned_count"])
-                c.execute("UPDATE army_units SET assigned_count=assigned_count-? WHERE id=?",
-                          (reduce, au["id"]))
-                overage -= reduce
+        ph = ",".join("?" * len(id_variants)) if id_variants else "NULL"
+
+        c.execute("DELETE FROM photos WHERE mini_id=?", (mid,))
+        if stage != "unbuilt":
+            # Reset to pool: clear progress data but keep the row in the collection.
+            c.execute(
+                "UPDATE minis SET stage='unbuilt', finished=0, wargear='[]', notes='' WHERE id=?",
+                (mid,),
+            )
+            _trim_army_overage(c, unit_bid, id_variants, ph, built_only=True)
+            action = "reset"
+        else:
+            # Already unbuilt — remove from the collection entirely.
+            c.execute("DELETE FROM minis WHERE id=?", (mid,))
+            _trim_army_overage(c, unit_bid, id_variants, ph, built_only=False)
+            action = "deleted"
+
     for p in photos:
         try:
             os.remove(os.path.join(UPLOAD_DIR, p["filename"]))
         except OSError:
             pass
-    return jsonify({"ok": True})
+    return jsonify({"ok": True, "action": action})
 
 
 @app.route("/api/minis/<mid>/duplicate", methods=["POST"])
@@ -1069,8 +1101,6 @@ def api_patch_catalogue_model(catalogue_model_id):
             overrides["flags"] = []
     if "faction_id" in data:
         fid = str(data["faction_id"]).strip()
-        if fid and fid not in store.faction_by_id:
-            return jsonify({"ok": False, "error": "Unknown faction."}), 400
         overrides["faction_id"] = fid
         overrides["faction_label"] = store.faction_by_id.get(fid, {}).get("name", fid) if fid else ""
     _, error = save_field_overrides(catalogue_model_id, overrides)
@@ -1434,6 +1464,8 @@ def _multikit_options_for_group(gkey):
             "name": item.get("name") or ds.get("name", did),
             "faction_id": fid,
             "faction_name": faction.get("name", fid),
+            "catalogue_model_id": item.get("catalogue_model_id"),
+            "catalogue_label": item.get("catalogue_label", ""),
         })
     return options
 
@@ -1447,6 +1479,8 @@ def api_collection():
 
     if faction_id and faction_id not in store.faction_by_id:
         abort(404)
+
+    cat_fac_index = catalogue_faction_datasheet_index() if (faction_id or datasheet_id) else {}
 
     with db() as c:
         rows = c.execute(
@@ -1484,24 +1518,54 @@ def api_collection():
         multikit_options = _multikit_options_for_group(multikit_group) if mini_stage == "unbuilt" else []
         option_by_did = {o["datasheet_id"]: o for o in multikit_options}
 
-        if faction_id and fid != faction_id and not any(o["faction_id"] == faction_id for o in multikit_options):
-            continue
-        if datasheet_id and did != datasheet_id and datasheet_id not in option_by_did:
-            continue
-        if stage_filter and mini_stage != stage_filter:
-            continue
-
         display_did = did
         display_ds = ds
         display_fid = fid
-        if datasheet_id and datasheet_id != did and datasheet_id in option_by_did:
+        display_cid = r["catalogue_model_id"] if "catalogue_model_id" in r.keys() else None
+        display_label = r["label"] or ""
+
+        if faction_id and fid != faction_id and not any(o["faction_id"] == faction_id for o in multikit_options):
+            cid = r["catalogue_model_id"] if "catalogue_model_id" in r.keys() else None
+            alt_did = cat_fac_index.get(cid or "", {}).get(faction_id) if cid else None
+            alt_ds = store.ds_by_id.get(alt_did) if alt_did else None
+            if not alt_ds:
+                continue
+            display_did = alt_did
+            display_ds = alt_ds
+            display_fid = faction_id
+
+        if datasheet_id and did != datasheet_id and datasheet_id not in option_by_did:
+            cid = r["catalogue_model_id"] if "catalogue_model_id" in r.keys() else None
+            if not (cid and datasheet_id in cat_fac_index.get(cid, {}).values()):
+                continue
+            alt_ds = store.ds_by_id.get(datasheet_id)
+            if alt_ds:
+                display_did = datasheet_id
+                display_ds = alt_ds
+                display_fid = alt_ds["faction_id"]
+        elif datasheet_id and datasheet_id != did and datasheet_id in option_by_did:
             display_did = datasheet_id
             display_ds = store.ds_by_id.get(datasheet_id, ds)
             display_fid = display_ds.get("faction_id", option_by_did[datasheet_id]["faction_id"])
+            # A multikit builds different units from the same box, each with its own
+            # sculpt. Remap to the sibling unit's catalogue model so the mini page shows
+            # the release the user actually owns, not every release linked to this unit.
+            display_cid = option_by_did[datasheet_id].get("catalogue_model_id") or display_cid
+            # Minis are stored under one member of the group with that member's
+            # auto-generated label. When viewed as the sibling, swap in the sibling's
+            # label (e.g. "Warp Talons (2025 release)") so the group reads as the unit
+            # being viewed. A user's custom rename won't match and is left untouched.
+            src_label = option_by_did.get(did, {}).get("catalogue_label", "")
+            dst_label = option_by_did[datasheet_id].get("catalogue_label", "")
+            if dst_label and display_label == src_label:
+                display_label = dst_label
+
+        if stage_filter and mini_stage != stage_filter:
+            continue
 
         ds_name = display_ds.get("name", option_by_did.get(display_did, {}).get("name", ""))
         faction_name = store.faction_by_id.get(display_fid, {}).get("name", display_fid)
-        label = r["label"] or ""
+        label = display_label
 
         option_names = " ".join(o["name"] for o in multikit_options).lower()
         if search and search not in ds_name.lower() and search not in label.lower() and search not in option_names:
@@ -1525,7 +1589,7 @@ def api_collection():
             "multikit_group": multikit_group,
             "multikit_options": multikit_options,
             "assigned_datasheet_id": did,
-            "catalogue_model_id": r["catalogue_model_id"] if "catalogue_model_id" in r.keys() else None,
+            "catalogue_model_id": display_cid,
             "created_at": r["created_at"],
             "photos": photos_by_mid.get(r["id"], []),
         })

@@ -2,7 +2,7 @@ import { esc, api, jsStr, readableInk, withTimeout } from './utils.js';
 import { clearFactionCache } from './home.js';
 import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
 import { openLightbox } from './lightbox.js';
-import { renderDatasheetModels, renderWargear, renderUnitComposition, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
+import { renderDatasheetModels, renderInvuln, renderWargear, renderAbilities, renderUnitComposition, renderLeaderAttach, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
 import { setupArsenalHover } from './arsenal-hover.js';
 
 const view       = document.getElementById('view');
@@ -75,9 +75,12 @@ export async function showUnit(did){
         <div class="unit-tab-panel" id="unitInfoPanel">
           ${d.legend?`<p class="legend">${esc(d.legend)}</p>`:''}
           ${renderDatasheetModels(d.models)}
+          ${renderInvuln(d.abilities)}
           ${renderWargear('Ranged Weapons', d.ranged)}
           ${renderWargear('Melee Weapons', d.melee)}
+          ${renderAbilities(d.abilities)}
           ${renderUnitComposition(d.composition, d.loadout, d.led_by)}
+          ${renderLeaderAttach(d.leads)}
           ${renderOptions(d.options)}
           ${renderPoints(d.costs)}
           ${renderKeywords(d)}

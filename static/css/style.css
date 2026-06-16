@@ -553,6 +553,12 @@ table.wargear td:first-child{text-align:left;font-family:'EB Garamond',serif;fon
 table.wargear tr:last-child td{border-bottom:none}
 table.wargear tr:hover td{background:rgba(199,154,58,.04)}
 .wg-desc{font-size:13px;color:var(--parch-dim);font-style:italic;margin-top:3px}
+.weapon-kws{display:inline-flex;flex-wrap:wrap;gap:4px;margin-left:8px;vertical-align:middle}
+.wkw-tag{
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--parch-dim);padding:1px 6px;
+  border:1px solid rgba(199,154,58,.3);background:rgba(0,0,0,.25);white-space:nowrap;
+}
 
 .pill-row{display:flex;flex-wrap:wrap;gap:6px}
 .pill{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.75px;text-transform:uppercase;padding:3px 10px;border:1px solid rgba(44,42,53,.8);background:var(--ink-2);color:var(--parch-dim)}
@@ -581,6 +587,66 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
 .points-box::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top left,rgba(199,154,58,.05),transparent 70%)}
 .points-box b{color:var(--gold-bright);font-size:22px;display:block;line-height:1.1}
 .points-box span{font-size:11px;letter-spacing:.75px;color:var(--parch-dim);text-transform:uppercase}
+
+/* Invulnerable save badge — printed-card style, sits under the stat line */
+.invuln-badge{
+  display:inline-flex;align-items:stretch;margin:2px 0 18px;
+  border:1px solid rgba(199,154,58,.5);background:var(--panel);overflow:hidden;
+  box-shadow:var(--edge-hi);
+}
+.invuln-val{
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:20px;line-height:1;
+  color:var(--ink);background:var(--metal-gold);padding:7px 13px;
+  display:flex;align-items:center;
+}
+.invuln-lbl{
+  font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+  letter-spacing:1px;font-size:12px;color:var(--gold-bright);
+  padding:0 15px;display:flex;align-items:center;
+}
+
+/* Abilities */
+.abilities-section .ability-tagline{
+  font-family:'EB Garamond',serif;font-size:15px;color:var(--parch);margin:0 0 9px;line-height:1.5;
+}
+.ability-tag{
+  font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+  letter-spacing:.8px;font-size:12px;color:var(--gold);margin-right:2px;
+}
+.ability-item{
+  margin:0 0 12px;font-family:'EB Garamond',serif;font-size:15px;line-height:1.55;color:var(--parch);
+}
+.ability-name{
+  font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.3px;
+  color:var(--gold-bright);margin-right:5px;
+}
+.ability-text{color:var(--parch)}
+.ability-text p{margin:0}
+.ability-text p:first-child{display:inline}
+.ability-text p + p{display:block;margin-top:6px}
+.ability-bullets{margin:5px 0 2px;padding-left:18px;list-style-type:square}
+.ability-bullets li{margin-bottom:3px}
+.ability-bullets li::marker{color:var(--gold)}
+.kw-ref{font-variant:small-caps;letter-spacing:.4px;color:var(--gold-bright)}
+
+/* Special ability blocks (e.g. Warmaster) — framed like a sub-panel */
+.ability-group{
+  margin-top:16px;border:1px solid var(--edge);background:rgba(0,0,0,.18);
+}
+.ability-group-head{
+  font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+  letter-spacing:1.5px;font-size:12px;color:var(--gold);margin:0;padding:8px 13px;
+  background:rgba(0,0,0,.35);border-bottom:1px solid rgba(199,154,58,.25);
+}
+.ability-group .ability-item{
+  margin:0;padding:10px 13px;border-bottom:1px solid rgba(44,42,53,.45);
+}
+.ability-group .ability-item:last-child{border-bottom:none}
+
+/* Leader attachment block */
+.leader-section .leader-lead{
+  font-family:'EB Garamond',serif;font-size:15px;color:var(--parch-dim);margin:0 0 9px;
+}
 
 /* Gallery */
 .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:6px}
@@ -1582,6 +1648,20 @@ a.brand{text-decoration:none;color:inherit}
 
 /* ── Responsive ── */
 
+/* ---- stage select dropdown ---- */
+.stage-sel{
+  appearance:none;-webkit-appearance:none;
+  background:var(--ink-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239c9686'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border:1px solid var(--edge);
+  color:var(--parch);
+  font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.8px;text-transform:uppercase;
+  padding:6px 30px 6px 11px;cursor:pointer;
+  transition:border-color var(--t-fast);
+  margin-bottom:8px;
+  min-width:160px;
+}
+.stage-sel:hover{border-color:rgba(199,154,58,.5)}
+.stage-sel:focus{outline:none;border-color:var(--gold);box-shadow:var(--ring)}
 /* ---- multikit stage select indicator ---- */
 .stage-sel.is-multikit{border-color:rgba(199,154,58,.55);border-style:dashed}
 .stage-sel.is-multikit::after{content:'⚙'}

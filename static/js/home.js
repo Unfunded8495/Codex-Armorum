@@ -228,10 +228,13 @@ export async function showFaction(fid, browseAll=false){
     const sharedComplete = sharedCompleteCount(unit.id);
     const buildable = Math.max(0, purchased - sharedComplete);
     const uPct = purchased > 0 ? Math.round(complete/purchased*100) : 0;
+    const repCid = unit.minis.find(m => !m.is_potential_build && m.catalogue_model_id)?.catalogue_model_id;
+    const imgSrc = repCid ? `/api/model-catalogue/${encodeURIComponent(repCid)}/image` : `/api/units/${esc(unit.id)}/image`;
+    const imgFallback = `/api/units/${esc(unit.id)}/image`;
     return `
       <div class="unit-card fc-mini-tile" style="--cardarmy:${primary};--cardaccent:${accent};--cardglow:${accent}" onclick="location.hash='/mini/${esc(unit.id)}'">
         <div class="unit-thumb">
-          <img src="/api/units/${esc(unit.id)}/image" alt="${esc(unit.name)}" loading="lazy">
+          <img src="${imgSrc}" onerror="this.src='${imgFallback}';this.onerror=null" alt="${esc(unit.name)}" loading="lazy">
           <span class="pts">${purchased} purchased</span>
         </div>
         <div class="unit-body faction-surface">

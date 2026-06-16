@@ -9,10 +9,6 @@ const STAGE_LABELS = {
   unbuilt:'Unbuilt', assembled:'Assembled', primed:'Primed', base_coated:'Base Coated',
   washed:'Washed', highlighted:'Highlighted', finished:'Finished', display:'Display',
 };
-const STAGE_SHORT = {
-  unbuilt:'UB', assembled:'AS', primed:'PR', base_coated:'BA',
-  washed:'WA', highlighted:'HL', finished:'FN', display:'DP',
-};
 
 /* ---- page state ---- */
 let mpMinis        = [];
@@ -72,10 +68,18 @@ export async function showMiniPage(did){
     {label:rep.datasheet_name},
   ]);
 
-  // Fetch full catalogue card data for linked models
+  // Fetch full catalogue card data for the releases the user actually owns.
+  // Each mini carries the catalogue model matching the datasheet it's shown under (the
+  // collection API remaps multikit minis to the sibling unit's sculpt), so intersect the
+  // owned models with this datasheet's linked releases. Owning more than one era (e.g.
+  // the 2012 and 2025 sculpts) shows each release separately. Fall back to every linked
+  // release when nothing matches.
   mpCatalogueItems = [];
   mpCatalogueFactions = [];
-  const linkedIds = (mpUnit?.linked_catalogue_models || []).map(m => m.id).filter(Boolean);
+  const ownedModelIds  = new Set(mpMinis.map(m => m.catalogue_model_id).filter(Boolean));
+  const allLinkedIds   = (mpUnit?.linked_catalogue_models || []).map(m => m.id).filter(Boolean);
+  const ownedLinkedIds = allLinkedIds.filter(id => ownedModelIds.has(id));
+  const linkedIds = ownedLinkedIds.length ? ownedLinkedIds : allLinkedIds;
   if(linkedIds.length){
     try{
       const results = await Promise.all(
@@ -221,17 +225,6 @@ function mpStageSelect(mid, stage, multikitGroup){
     onchange="mpSetMiniStage('${mid}',this.value);this.dataset.stage=this.value">${opts}</select>`;
 }
 
-function mpRenderStageBar(mid, activeStage){
-  const activeIdx = STAGES.indexOf(activeStage);
-  const segs = STAGES.map((s,i)=>{
-    const isPast   = i < activeIdx;
-    const isActive = i === activeIdx;
-    return `<button class="sb-seg${isActive?' is-active':isPast?' is-past':''}"
-      data-stage="${s}" onclick="mpSetStageFromBar('${mid}','${s}')"
-      title="${STAGE_LABELS[s]||s}">${STAGE_SHORT[s]||s.slice(0,2).toUpperCase()}</button>`;
-  }).join('');
-  return `<div class="stage-bar" id="mpsbar-${mid}">${segs}</div>`;
-}
 
 function mpPhotoThumb(p, gcid, idx){
   return `<button class="mgc-thumb" onclick="mpOpenGroupOverlay('${gcid}',${idx})" title="${esc(p.caption||'')}">
@@ -277,33 +270,52 @@ function mpRenderGroup(group){
 
   const allPhotos = group.flatMap(m=>m.photos||[]);
   MP_GROUP_PHOTOS.set(gcid, allPhotos.map(p=>({url:p.url, caption:p.caption||''})));
-  const hasPhotos = allPhotos.length > 0;
 
   const badge = count > 1 ? `<span class="mgc-badge">×${count}</span>` : '';
   const deleteButton = count > 1
     ? `<button class="mc-del" onclick="mpDeleteOneFromGroup('${gcid}')" title="Remove one mini">−1</button>`
     : `<button class="mc-del" onclick="mpDeleteMini('${rep.id}')" title="Remove mini">✕</button>`;
-  const manageText = count === 1 ? 'Manage 1 mini individually' : `Manage ${count} minis individually`;
 
-  const cardContent = `<div class="mc-head">
+  const head = `<div class="mc-head">
       ${badge}
       <span class="mgc-label" id="mplabel-${gcid}">${esc(labelText)}</span>
       <button class="link-btn mgc-label-btn" onclick="mpEditGroupLabel('${gcid}')" title="Rename">✎</button>
       ${deleteButton}
     </div>
-    <div class="mc-label-ed" id="mpled-${gcid}" hidden></div>
-    <div class="mc-gear-row">
+    <div class="mc-label-ed" id="mpled-${gcid}" hidden></div>`;
+
+  const gearBlock = `<div class="mc-gear-row">
       <div class="gear-chips" id="mpgear-${gcid}">${chips}</div>
       <button class="link-btn" onclick="mpEditGroupGear('${gcid}')">Edit loadout</button>
     </div>
-    <div class="mc-gear-ed" id="mpged-${gcid}" hidden></div>
+    <div class="mc-gear-ed" id="mpged-${gcid}" hidden></div>`;
+
+  if(count === 1){
+    const s = rep.stage || 'unbuilt';
+    const inlineBody = `${mpStageSelect(rep.id, s, rep.multikit_group)}
+      ${gearBlock}
+      ${s !== 'unbuilt' ? `<textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
+        oninput="mpSaveMiniNotes('${rep.id}',this.value)">${esc(rep.notes||'')}</textarea>
+      <div class="mc-gallery" id="mpcgal-${rep.id}">
+        ${(rep.photos||[]).map(p=>mpPhotoTile(p,rep.id)).join('')}
+        ${mpUploaderTile(rep.id)}
+      </div>` : ''}`;
+    return `<div class="mini-group-card is-solo" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}">
+      ${head}
+      ${inlineBody}
+    </div>`;
+  }
+
+  const cardContent = `${head}
+    ${gearBlock}
     <details class="mgc-details">
-      <summary class="mgc-summary">${manageText}</summary>
+      <summary class="mgc-summary">Manage ${count} minis individually</summary>
       <div class="mgc-minis">
         ${group.map((m,i)=>mpRenderSubCard(m,i+1)).join('')}
       </div>
     </details>`;
 
+  const hasPhotos = allPhotos.length > 0;
   if(hasPhotos){
     return `<div class="mini-group-card" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}">
       ${cardContent}
@@ -401,10 +413,6 @@ export async function mpSetMiniStage(mid, stage){
   const sel = document.querySelector(`.stage-sel[data-mid="${CSS.escape(mid)}"]`);
   const prev = sel?.dataset.stage || stage;
   if(sel) sel.value = prev;
-  await mpApplyStageChange(mid, stage);
-}
-
-export async function mpSetStageFromBar(mid, stage){
   await mpApplyStageChange(mid, stage);
 }
 
@@ -623,13 +631,22 @@ export async function mpDeletePhoto(pid, mid){
    DELETE
    ==================================================================== */
 export async function mpDeleteMini(mid){
-  if(!confirm('Remove this mini from your collection? This cannot be undone.')) return;
-  await fetch(`/api/minis/${mid}`, {method:'DELETE'});
-  mpMinis = mpMinis.filter(m=>m.id!==mid);
-  if(!mpMinis.length){
-    // Navigate back to faction
-    history.back();
-    return;
+  const m = mpMinis.find(x=>x.id===mid);
+  const isUnbuilt = !m || m.stage === 'unbuilt';
+  const msg = isUnbuilt
+    ? 'Remove this mini from your collection entirely? (It will no longer count toward your pool.)'
+    : 'Reset this mini to unbuilt? It will go back into your build pool.';
+  if(!confirm(msg)) return;
+  const res = await fetch(`/api/minis/${mid}`, {method:'DELETE'});
+  const data = await res.json().catch(()=>({}));
+  if(data.action === 'reset'){
+    const idx = mpMinis.findIndex(x=>x.id===mid);
+    if(idx !== -1){
+      mpMinis[idx] = {...mpMinis[idx], stage:'unbuilt', wargear:[], notes:'', photos:[]};
+    }
+  } else {
+    mpMinis = mpMinis.filter(m=>m.id!==mid);
+    if(!mpMinis.length){ history.back(); return; }
   }
   mpRefreshUnitMiniList();
 }
@@ -638,11 +655,24 @@ export async function mpDeleteOneFromGroup(gcid){
   const card = document.getElementById(gcid);
   const ids  = (card?.dataset.miniIds||'').split(',').filter(Boolean);
   if(!ids.length) return;
-  if(!confirm(`Remove 1 mini from this group (${ids.length} total)? This cannot be undone.`)) return;
   const mid = ids[ids.length-1];
-  await fetch(`/api/minis/${mid}`, {method:'DELETE'});
-  mpMinis = mpMinis.filter(m=>m.id!==mid);
-  if(!mpMinis.length){ history.back(); return; }
+  const m = mpMinis.find(x=>x.id===mid);
+  const isUnbuilt = !m || m.stage === 'unbuilt';
+  const msg = isUnbuilt
+    ? `Remove 1 mini from this group entirely? (${ids.length} total)`
+    : `Reset 1 mini in this group to unbuilt? (${ids.length} total)`;
+  if(!confirm(msg)) return;
+  const res = await fetch(`/api/minis/${mid}`, {method:'DELETE'});
+  const data = await res.json().catch(()=>({}));
+  if(data.action === 'reset'){
+    const idx = mpMinis.findIndex(x=>x.id===mid);
+    if(idx !== -1){
+      mpMinis[idx] = {...mpMinis[idx], stage:'unbuilt', wargear:[], notes:'', photos:[]};
+    }
+  } else {
+    mpMinis = mpMinis.filter(x=>x.id!==mid);
+    if(!mpMinis.length){ history.back(); return; }
+  }
   mpRefreshUnitMiniList();
 }
 
@@ -778,7 +808,9 @@ function mpCatRenderCard(item){
         ? `<div class="catalogue-image catalogue-image-clickable" data-lightbox-url="${esc(item.image.url)}" data-lightbox-cap="${esc(item.name)}">
              <img src="${esc(item.image.url)}" alt="${esc(item.name)}" loading="lazy">
            </div>`
-        : '<div class="catalogue-image catalogue-image-empty"></div>'}
+        : `<div class="catalogue-image">
+             <img src="/api/units/${esc(mpDatasheetId)}/image" alt="${esc(item.name)}" loading="lazy">
+           </div>`}
       <div class="catalogue-card-head">
         <div>
           <h4><span class="catalogue-name-text">${esc(item.name)}</span></h4>
@@ -1130,69 +1162,6 @@ function mpCatShowFieldErr(msg){
 
 function mpCatOpenLinkEditor(cid, defaultFid){
   mpCatOpenFieldEditor(cid, { focusLinks: true, defaultFid });
-  return;
-  if(mpCatEd.cid === cid){ mpCatCloseLinkEditor(); return; }
-  if(mpCatEd.cid) mpCatCloseLinkEditor();
-  if(mpCatFed.cid) mpCatCloseFieldEditor();
-
-  const item = mpCatalogueItems.find(i => i.id === cid);
-  if(!item) return;
-  mpCatEd.cid = cid;
-  mpCatEd.factionId = defaultFid || item.faction_id || '';
-  mpCatEd.selected = (item.datasheet_links || []).map(l => ({...l}));
-
-  const card = document.querySelector(`#mpCatalogueCol .catalogue-card[data-cid="${CSS.escape(cid)}"]`);
-  if(!card) return;
-  card.classList.add('is-editing');
-
-  const factionOptions = [
-    `<option value="">All factions</option>`,
-    ...mpCatalogueFactions.map(f =>
-      `<option value="${esc(f.id)}"${f.id===mpCatEd.factionId?' selected':''}>${esc(f.name)}</option>`
-    ),
-  ].join('');
-
-  const panel = document.createElement('div');
-  panel.className = 'catalogue-link-editor';
-  panel.innerHTML = `
-    <div class="cle-head">Edit Datasheet Links</div>
-    <div class="cle-selected" id="mpCleChips"></div>
-    <div class="cle-search-row">
-      <select class="cle-faction-sel" id="mpCleFaction">${factionOptions}</select>
-      <input class="cle-search-input" id="mpCleSearch" type="search" placeholder="Search datasheets…" autocomplete="off">
-    </div>
-    <div class="cle-results" id="mpCleResults">
-      <div class="cle-hint">Choose a faction or type to search all armies.</div>
-    </div>
-    <div class="cle-actions">
-      <button class="btn-primary mpCleSave">Save Links</button>
-      <button class="btn-ghost mpCleCancel">Cancel</button>
-    </div>`;
-
-  card.appendChild(panel);
-  mpCatRefreshChips();
-
-  let searchTimer;
-  panel.querySelector('#mpCleFaction').addEventListener('change', e => {
-    mpCatEd.factionId = e.target.value;
-    mpCatSearchDatasheets(panel.querySelector('#mpCleSearch').value);
-  });
-  panel.querySelector('#mpCleSearch').addEventListener('input', e => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => mpCatSearchDatasheets(e.target.value), 220);
-  });
-  panel.querySelector('.mpCleSave').addEventListener('click', mpCatSaveLinkEdits);
-  panel.querySelector('.mpCleCancel').addEventListener('click', mpCatCloseLinkEditor);
-  panel.querySelector('#mpCleChips').addEventListener('click', e => {
-    const btn = e.target.closest('.cle-chip-del');
-    if(!btn) return;
-    mpCatEd.selected = mpCatEd.selected.filter(l => l.datasheet_id !== btn.dataset.did);
-    mpCatRefreshChips();
-    mpCatRefreshResultHighlights();
-  });
-
-  if(mpCatEd.factionId) mpCatSearchDatasheets('');
-  panel.querySelector('#mpCleSearch').focus();
 }
 
 function mpCatCloseLinkEditor(){
@@ -1340,28 +1309,6 @@ async function mpCatSaveLinkSelection(cid){
   if(!res.ok) throw new Error(res.error || 'Link save failed');
 }
 
-async function mpCatSaveLinkEdits(){
-  if(!mpCatEd.cid) return;
-  const saveBtn = document.querySelector('.mpCleSave');
-  if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
-  const ids = mpCatEd.selected.map(l => l.datasheet_id);
-  const action = ids.length === 0 ? 'no_current_datasheet'
-               : ids.length === 1 ? 'link_datasheet'
-               :                    'link_multiple_datasheets';
-  try{
-    const res = await api(`/api/catalogue-review/${encodeURIComponent(mpCatEd.cid)}/resolution`, {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({action, datasheet_ids: ids}),
-    });
-    if(!res.ok) throw new Error(res.error || 'Save failed');
-    mpCatCloseLinkEditor();
-    await mpRefreshCatalogueCards();
-  }catch(e){
-    if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = 'Save Links'; }
-    const hint = document.getElementById('mpCleResults');
-    if(hint) hint.insertAdjacentHTML('beforebegin', `<p class="cle-err" style="margin:6px 0">${esc(e.message)}</p>`);
-  }
-}
 
 /* ====================================================================
    EXPOSE TO WINDOW (for inline onclick handlers in rendered HTML)
@@ -1369,7 +1316,6 @@ async function mpCatSaveLinkEdits(){
 Object.assign(window, {
   openLightbox,
   mpSetMiniStage,
-  mpSetStageFromBar,
   mpEditGroupLabel, mpSaveGroupLabel,
   mpEditGroupGear,  mpSaveGroupGear,
   mpEditMiniGear,   mpSaveMiniGear,

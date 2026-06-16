@@ -5,7 +5,8 @@
       "name": "flask-app",
       "runtimeExecutable": "python",
       "runtimeArgs": ["app.py"],
-      "port": 5050
+      "port": 5050,
+      "autoPort": false
     }
   ]
 }

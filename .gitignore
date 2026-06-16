@@ -4,6 +4,7 @@ bsdata/
 # SQLite database and backups
 collection.db
 collection.db.backup
+warhammer.db
 *.db-journal
 
 # Python

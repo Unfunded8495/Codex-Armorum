@@ -1,19 +1,47 @@
 import { esc } from './utils.js';
-import { ruleText, wrapKeywords } from './ruletext.js';
+import { ruleText, wrapKeywords, bsdataMarkup } from './ruletext.js';
+
+// BSData stat profiles use UPPER-CASE keys (M, T, SV, W, LD, OC) and store a
+// single model's stats as a bare object rather than a one-item array. Read
+// keys case-tolerantly and coerce to a list so single-model datasheets render.
+function statVal(m, ...keys){
+  for(const k of keys){ if(m[k]!=null && m[k]!=='') return m[k]; }
+  return '';
+}
 
 export function renderDatasheetModels(models){
-  if(!models||!models.length) return '';
-  return `<div class="section"><h2>Datasheet</h2>`+models.map(m=>{
-    const stats=[['M',m.M],['T',m.T],['SV',m.Sv],['W',m.W],['LD',m.Ld],['OC',m.OC]];
-    if(m.inv_sv&&m.inv_sv!=='') stats.splice(3,0,['INV',m.inv_sv+'+']);
+  if(!models) return '';
+  const list = Array.isArray(models) ? models : [models];
+  if(!list.length) return '';
+  return `<div class="section"><h2>Datasheet</h2>`+list.map(m=>{
+    const stats=[
+      ['M',  statVal(m,'M','m')],
+      ['T',  statVal(m,'T','t')],
+      ['SV', statVal(m,'SV','Sv','sv')],
+      ['W',  statVal(m,'W','w')],
+      ['LD', statVal(m,'LD','Ld','ld')],
+      ['OC', statVal(m,'OC','Oc','oc')],
+    ];
+    const inv = statVal(m,'inv_sv','INV');
+    if(inv) stats.splice(3,0,['INV',inv+'+']);
+    const mname = statVal(m,'profile_name','name');
+    const base  = statVal(m,'base_size');
     return `<div class="model-row">
-      ${models.length>1?`<p class="mname">${esc(m.name)}</p>`:''}
+      ${list.length>1&&mname?`<p class="mname">${esc(mname)}</p>`:''}
       <div class="statline">${stats.map(([l,v])=>`
         <div class="stat-box"><span class="lbl">${l}</span><span class="val">${esc(v||'–')}</span></div>`).join('')}
       </div>
-      ${m.base_size?`<p class="wg-desc">Base: ${esc(m.base_size)}${m.base_size_descr?' · '+esc(m.base_size_descr):''}</p>`:''}
+      ${base?`<p class="wg-desc">Base: ${esc(base)}</p>`:''}
     </div>`;
   }).join('')+'</div>';
+}
+
+function weaponKeywordTags(keywords){
+  if(!keywords) return '';
+  const tags = keywords.split(',').map(k=>k.trim()).filter(Boolean);
+  if(!tags.length) return '';
+  return `<span class="weapon-kws">${tags.map(k=>
+    `<span class="wkw-tag">${wrapKeywords(esc(k))}</span>`).join('')}</span>`;
 }
 
 export function renderWargear(title,rows){
@@ -23,10 +51,73 @@ export function renderWargear(title,rows){
     <table class="wargear"><thead><tr><th>Weapon</th><th>Range</th><th>A</th>
     <th>${isMe?'WS':'BS'}</th><th>S</th><th>AP</th><th>D</th></tr></thead>
     <tbody>${rows.map(w=>`<tr>
-      <td><button type="button" class="arsenal-trigger" data-arsenal-name="${esc(w.name)}">${esc(w.name)}</button>${w.description?`<div class="wg-desc">${wrapKeywords(ruleText(w.description))}</div>`:''}</td>
+      <td><button type="button" class="arsenal-trigger" data-arsenal-name="${esc(w.name)}">${esc(w.name)}</button>${weaponKeywordTags(w.keywords)}${w.description?`<div class="wg-desc">${wrapKeywords(ruleText(w.description))}</div>`:''}</td>
       <td>${esc(w.range||'–')}</td><td>${esc(w.A||'–')}</td><td>${esc(w.BS_WS||'–')}</td>
       <td>${esc(w.S||'–')}</td><td>${esc(w.AP||'–')}</td><td>${esc(w.D||'–')}</td></tr>`).join('')}
     </tbody></table></div>`;
+}
+
+/* Invulnerable save badge — shown under the stat line like the printed card. */
+export function renderInvuln(abilities){
+  const inv = abilities && abilities.invuln_save;
+  if(!inv) return '';
+  return `<div class="invuln-badge">
+    <span class="invuln-val">${esc(inv)}+</span>
+    <span class="invuln-lbl">Invulnerable Save</span>
+  </div>`;
+}
+
+// Surfaced elsewhere: "Leader" as a Core tag + its own block, the invuln as a badge.
+const HIDDEN_DATASHEET_ABILITIES = new Set(['leader','invulnerable save']);
+
+export function renderAbilities(abilities){
+  if(!abilities) return '';
+  const core    = abilities.core    || [];
+  const faction = abilities.faction || [];
+  const special = abilities.special || [];
+  const datasheet = (abilities.datasheet || [])
+    .filter(a => !HIDDEN_DATASHEET_ABILITIES.has((a.name||'').toLowerCase()));
+
+  if(!core.length && !faction.length && !special.length && !datasheet.length) return '';
+
+  const tagLine = (label, items) => items.length
+    ? `<p class="ability-tagline"><span class="ability-tag">${label}:</span> ${items.map(a=>esc(a.name)).join(', ')}</p>`
+    : '';
+
+  const item = a => `<div class="ability-item">
+    <span class="ability-name">${esc(a.name)}:</span>
+    <span class="ability-text">${bsdataMarkup(a.description)}</span>
+  </div>`;
+
+  // Special abilities grouped by their profile type (e.g. Warmaster).
+  const groups = {};
+  for(const s of special){ (groups[s.group] ||= []).push(s); }
+  const specialBlocks = Object.entries(groups).map(([group, items]) =>
+    `<div class="ability-group">
+      <h3 class="ability-group-head">${esc(group)}</h3>
+      ${items.map(item).join('')}
+    </div>`).join('');
+
+  return `<div class="section abilities-section">
+    <h2>Abilities</h2>
+    ${tagLine('Core', core)}
+    ${tagLine('Faction', faction)}
+    ${datasheet.map(item).join('')}
+    ${specialBlocks}
+  </div>`;
+}
+
+/* "Leader" block — the units this model can be attached to. */
+export function renderLeaderAttach(leads){
+  if(!leads || !leads.length) return '';
+  const links = leads.map(t => t.id
+    ? `<a href="#/unit/${esc(t.id)}">${esc(t.name)}</a>`
+    : `<span>${esc(t.name)}</span>`).join('');
+  return `<div class="section leader-section">
+    <h2>Leader</h2>
+    <p class="leader-lead">This model can be attached to the following units:</p>
+    <div class="led-by-links">${links}</div>
+  </div>`;
 }
 
 export function renderList(title,rows,cls){
@@ -35,11 +126,25 @@ export function renderList(title,rows,cls){
     ${rows.map(r=>`<li>${ruleText(r.description)}</li>`).join('')}</ul></div>`;
 }
 
+// Composition rows are {name, min, max}; `name` sometimes already embeds the
+// count range ("4-9 Dark Reapers"), otherwise prefix the model count.
+function compositionLine(r){
+  if(r.description) return ruleText(r.description);  // legacy/Wahapedia shape
+  const name = (r.name||'').trim();
+  if(!name) return '';
+  if(/^\d/.test(name)) return esc(name);
+  if(r.min!=null && r.max!=null){
+    const count = r.min===r.max ? `${r.min}` : `${r.min}-${r.max}`;
+    return `${count} ${esc(name)}`;
+  }
+  return esc(name);
+}
+
 export function renderUnitComposition(rows,loadout,ledBy){
   if((!rows||!rows.length)&&!loadout&&(!ledBy||!ledBy.length)) return '';
   return `<div class="section"><h2>Unit Composition</h2>
     ${rows&&rows.length?`<ul class="comp-list">
-      ${rows.map(r=>`<li>${ruleText(r.description)}</li>`).join('')}</ul>`:''}
+      ${rows.map(r=>`<li>${compositionLine(r)}</li>`).join('')}</ul>`:''}
     ${loadout?`<div class="loadout-block">${renderLoadout(loadout)}</div>`:''}
     ${ledBy&&ledBy.length?renderLedBy(ledBy):''}
   </div>`;
