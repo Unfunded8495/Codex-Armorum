@@ -95,6 +95,8 @@ class DataStore:
         self.ds_by_faction = {}
         self.cost = {}
         self.composition = {}
+        self.wargear_options = {}
+        self.loadout = {}
         self.wargear = {}
         self.keywords = {}
         self.detachments_by_faction = {}
@@ -280,6 +282,17 @@ class DataStore:
             " WHERE composition_json IS NOT NULL"
         ).fetchall():
             self.composition[row["bsdata_id"]] = json.loads(row["composition_json"])
+
+        for row in conn2.execute(
+            "SELECT bsdata_id, wargear_options_json FROM catalogue_units"
+            " WHERE wargear_options_json IS NOT NULL"
+        ).fetchall():
+            self.wargear_options[row["bsdata_id"]] = json.loads(row["wargear_options_json"])
+
+        for row in conn2.execute(
+            "SELECT bsdata_id, loadout FROM catalogue_units WHERE loadout IS NOT NULL"
+        ).fetchall():
+            self.loadout[row["bsdata_id"]] = row["loadout"]
 
         for row in conn2.execute("""
             SELECT cuw.unit_id,
@@ -499,12 +512,12 @@ class DataStore:
             "faction_name":        self.faction_by_id.get(d["faction_id"], {}).get("name", ""),
             "role":                d.get("role") or "Other",
             "legend":              "",
-            "loadout":             "",
+            "loadout":             self.loadout.get(d["id"], ""),
             "link":                "",
             "transport":           "",
             "damaged_w":           "",
             "damaged_description": "",
-            "led_by":              [self.ds_by_id[lid]["name"]
+            "led_by":              [{"id": lid, "name": self.ds_by_id[lid]["name"]}
                                     for lid in self.led_by.get(d["id"], [])
                                     if lid in self.ds_by_id],
             "leads":               self.leads.get(d["id"], []),
@@ -512,7 +525,7 @@ class DataStore:
             "models":              d.get("_stats") or [],
             "costs":               self.cost.get(d["id"], []),
             "composition":         composition,
-            "options":             [],
+            "options":             self.wargear_options.get(d["id"], []),
             "ranged":              d.get("_ranged", []),
             "melee":               d.get("_melee", []),
             "keywords":            kw,

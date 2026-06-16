@@ -320,6 +320,8 @@ def init_db():
         # Migration: add composition and leader target columns to catalogue_units
         for stmt in [
             "ALTER TABLE catalogue_units ADD COLUMN composition_json TEXT",
+            "ALTER TABLE catalogue_units ADD COLUMN wargear_options_json TEXT",
+            "ALTER TABLE catalogue_units ADD COLUMN loadout TEXT",
             "ALTER TABLE catalogue_units ADD COLUMN leader_targets_json TEXT",
         ]:
             try:

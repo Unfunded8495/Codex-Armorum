@@ -151,7 +151,7 @@ def _wargear_choices(detail):
 def _parse_comp_range(comp_rows):
     groups = [[]]
     for row in comp_rows:
-        desc = _strip_html(row.get("description", "")).strip()
+        desc = _strip_html(row.get("description") or row.get("name", "")).strip()
         if re.fullmatch(r"or:?", desc, re.I):
             if groups[-1]:
                 groups.append([])
