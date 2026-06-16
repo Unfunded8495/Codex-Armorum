@@ -303,7 +303,140 @@ def _process_bulk_group(group):
     return lines
 
 
-def extract_composition(unit_se):
+# --- 'Unit Composition' combo-group pattern -------------------------------
+# Some units (e.g. Astra Militarum infantry, several Ork mobs, Kill Teams)
+# wrap their whole roster in a pick-one group whose members are *upgrade*
+# combos like "1 Sergeant and 9 Troopers"; the models themselves are reached
+# by entryLink into shared/library selectionEntries. These helpers resolve
+# those references (via a global id->element index) so composition and loadout
+# can still be reconstructed. They run only as a fallback, so units handled by
+# the normal model/bulk logic are unaffected.
+
+def _entry_has_model_ref(node, entry_index):
+    ses = node.find('bs:selectionEntries', NS_CAT)
+    if ses is not None and any(se.get('type') == 'model'
+                               for se in ses.findall('bs:selectionEntry', NS_CAT)):
+        return True
+    els = node.find('bs:entryLinks', NS_CAT)
+    if els is not None:
+        for el in els.findall('bs:entryLink', NS_CAT):
+            tgt = entry_index.get(el.get('targetId'))
+            if tgt is None:
+                continue
+            if tgt.tag.endswith('selectionEntry') and tgt.get('type') == 'model':
+                return True
+            if tgt.tag.endswith('selectionEntryGroup') and _entry_has_model_ref(tgt, entry_index):
+                return True
+    segs = node.find('bs:selectionEntryGroups', NS_CAT)
+    if segs is not None:
+        for g in segs.findall('bs:selectionEntryGroup', NS_CAT):
+            if _entry_has_model_ref(g, entry_index):
+                return True
+    return False
+
+
+def _combo_groups(unit_se, entry_index):
+    """Top-level groups whose members are upgrade combos that reference models."""
+    out = []
+    segs = unit_se.find('bs:selectionEntryGroups', NS_CAT)
+    if segs is None or entry_index is None:
+        return out
+    for g in segs.findall('bs:selectionEntryGroup', NS_CAT):
+        child = g.find('bs:selectionEntries', NS_CAT)
+        mems = child.findall('bs:selectionEntry', NS_CAT) if child is not None else []
+        if mems and all(m.get('type') != 'model' for m in mems) \
+                and any(_entry_has_model_ref(m, entry_index) for m in mems):
+            out.append(g)
+    return out
+
+
+def _default_combo(group):
+    child = group.find('bs:selectionEntries', NS_CAT)
+    mems = child.findall('bs:selectionEntry', NS_CAT) if child is not None else []
+    if not mems:
+        return None
+    default_id = group.get('defaultSelectionEntryId')
+    return next((m for m in mems if m.get('id') == default_id), mems[0])
+
+
+def _group_base_model(group, entry_index):
+    """The base (highest-count) model of a model group, plus its count."""
+    cands = []
+    ses = group.find('bs:selectionEntries', NS_CAT)
+    if ses is not None:
+        for se in ses.findall('bs:selectionEntry', NS_CAT):
+            if se.get('type') == 'model':
+                cands.append((_sel_con(se, 'max') or 1, se))
+    els = group.find('bs:entryLinks', NS_CAT)
+    if els is not None:
+        for el in els.findall('bs:entryLink', NS_CAT):
+            tgt = entry_index.get(el.get('targetId'))
+            if tgt is not None and tgt.tag.endswith('selectionEntry') and tgt.get('type') == 'model':
+                cands.append((_sel_con(el, 'max') or 1, tgt))
+    if not cands:
+        return None, 0
+    base = max(cands, key=lambda c: c[0])
+    return base[1], (_sel_con(group, 'max') or base[0])
+
+
+def _combo_unit_models(combo, entry_index):
+    """(champions, rankfile) model elements resolved from a composition combo."""
+    champions, rankfile = [], None
+
+    def consider(count, elem):
+        nonlocal rankfile
+        if elem is None:
+            return
+        if count <= 1:
+            champions.append(elem)
+        elif rankfile is None or count > rankfile[0]:
+            rankfile = (count, elem)
+
+    ses = combo.find('bs:selectionEntries', NS_CAT)
+    if ses is not None:
+        for se in ses.findall('bs:selectionEntry', NS_CAT):
+            if se.get('type') == 'model':
+                consider(_sel_con(se, 'max') or 1, se)
+    els = combo.find('bs:entryLinks', NS_CAT)
+    if els is not None:
+        for el in els.findall('bs:entryLink', NS_CAT):
+            tgt = entry_index.get(el.get('targetId'))
+            if tgt is not None and tgt.tag.endswith('selectionEntry') and tgt.get('type') == 'model':
+                consider(_sel_con(el, 'max') or _sel_con(el, 'min') or 1, tgt)
+    segs = combo.find('bs:selectionEntryGroups', NS_CAT)
+    if segs is not None:
+        for g in segs.findall('bs:selectionEntryGroup', NS_CAT):
+            base, cnt = _group_base_model(g, entry_index)
+            consider(cnt, base)
+    return champions, rankfile
+
+
+def _combo_composition_lines(combo, entry_index):
+    lines = []
+    for ch in list(combo):
+        tag = ch.tag.split('}')[-1]
+        if tag == 'entryLinks':
+            for el in ch.findall('bs:entryLink', NS_CAT):
+                tgt = entry_index.get(el.get('targetId'))
+                if tgt is None or not tgt.tag.endswith('selectionEntry') \
+                        or tgt.get('type') != 'model':
+                    continue
+                cnt = _sel_con(el, 'min') or _sel_con(el, 'max') or 1
+                lines.append(f"{cnt} {el.get('name', '')}")
+        elif tag == 'selectionEntryGroups':
+            for g in ch.findall('bs:selectionEntryGroup', NS_CAT):
+                if not _entry_has_model_ref(g, entry_index):
+                    continue
+                nm = g.get('name', '')
+                if re.match(r'^\d', nm):
+                    lines.append(nm)
+                else:
+                    lo, hi = _sel_con(g, 'min') or 1, _sel_con(g, 'max') or 1
+                    lines.append(f"{lo} {nm}" if lo == hi else f"{lo}-{hi} {nm}")
+    return lines
+
+
+def extract_composition(unit_se, entry_index=None):
     """Return ordered composition lines as [{'name': '<line>'}, ...]."""
     is_single = unit_se.get('type') == 'model'
     ses = unit_se.find('bs:selectionEntries', NS_CAT)
@@ -331,6 +464,13 @@ def extract_composition(unit_se):
         else:
             lo, hi = _sel_con(node, 'min') or 1, _sel_con(node, 'max') or 1
             lines.append(f"{lo} {name}" if lo == hi else f"{lo}-{hi} {name}")
+    if not lines and not is_single:
+        for cg in _combo_groups(unit_se, entry_index):
+            combo = _default_combo(cg)
+            if combo is not None:
+                lines += _combo_composition_lines(combo, entry_index)
+            if lines:
+                break
     if not lines and is_single:
         lines.append(f"1 {unit_se.get('name', '')}")
     return [{'name': ln} for ln in lines]
@@ -453,7 +593,7 @@ def _bulk_default_variant(group):
     return high[0] if len(high) == 1 else variants[0]
 
 
-def extract_loadout(unit_se, weapon_ids):
+def extract_loadout(unit_se, weapon_ids, entry_index=None):
     """Reconstruct the 'Every model is equipped with: …' line(s) from BSData.
 
     Returns an HTML string (bold prefix) or '' when no default weapons are found.
@@ -498,6 +638,20 @@ def extract_loadout(unit_se, weapon_ids):
                 continue
             count = _sel_con(g, 'max') or _sel_con(base, 'max') or 1
             consider(base, count, base.get('name', ''))
+
+    # Fallback: resolve a 'Unit Composition' combo group's model references.
+    if not champions and rankfile is None:
+        for cg in _combo_groups(unit_se, entry_index):
+            combo = _default_combo(cg)
+            if combo is None:
+                continue
+            champs, rf = _combo_unit_models(combo, entry_index)
+            for elem in champs:
+                consider(elem, 1, elem.get('name', ''))
+            if rf is not None:
+                consider(rf[1], rf[0], rf[1].get('name', ''))
+            if champions or rankfile is not None:
+                break
 
     contexts = champions + ([rankfile] if rankfile else [])
     if not contexts:
@@ -544,7 +698,27 @@ def collect_weapon_ids(cat_files):
     return ids
 
 
-def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None):
+def build_entry_index(cat_files):
+    """Global id -> element map for every selectionEntry / selectionEntryGroup
+    across all catalogues, so entryLinks that target shared/library entries
+    (e.g. models inside a 'Unit Composition' combo) can be resolved."""
+    bs = NS_CAT['bs']
+    idx = {}
+    for cat_path in cat_files:
+        try:
+            root = ET.parse(cat_path).getroot()
+        except ET.ParseError:
+            continue
+        for tag in ('selectionEntry', 'selectionEntryGroup'):
+            for e in root.iter('{%s}%s' % (bs, tag)):
+                eid = e.get('id')
+                if eid and eid not in idx:
+                    idx[eid] = e
+    return idx
+
+
+def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
+              entry_index=None):
     """Parse one .cat file.
 
     Returns:
@@ -780,10 +954,11 @@ def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None):
 
         # Composition, loadout + wargear options: reconstructed from the
         # selectionEntry structure (BSData carries no datasheet prose for these).
-        composition = extract_composition(se)
+        composition = extract_composition(se, entry_index)
         wargear_options = extract_wargear_options(se)
         loadout = extract_loadout(
-            se, global_weapon_ids if global_weapon_ids is not None else weapon_ids)
+            se, global_weapon_ids if global_weapon_ids is not None else weapon_ids,
+            entry_index)
 
         # Leader targets: scan abilities for attachment text
         leader_targets = []
@@ -932,14 +1107,19 @@ def import_catalogue(db_path, bsdata_dir):
 
     print('Indexing weapon definitions across catalogues…')
     weapon_id_index = collect_weapon_ids(cat_files)
-    print(f'Indexed {len(weapon_id_index)} weapons\n')
+    print(f'Indexed {len(weapon_id_index)} weapons')
+
+    print('Indexing catalogue entries for cross-references…')
+    entry_index = build_entry_index(cat_files)
+    print(f'Indexed {len(entry_index)} entries\n')
 
     total_units = 0
     total_weapons = 0
 
     for cat_path in cat_files:
         try:
-            data = parse_cat(cat_path, gst_data, rule_index, weapon_id_index)
+            data = parse_cat(cat_path, gst_data, rule_index, weapon_id_index,
+                             entry_index)
         except Exception as e:
             print(f'  WARNING: failed to parse {os.path.basename(cat_path)}: {e}')
             continue
