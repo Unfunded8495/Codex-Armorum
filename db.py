@@ -15,6 +15,9 @@ DB_PATH = os.path.join(BASE, "collection.db")
 def db():
     conn = sqlite3.connect(DB_PATH)
     conn.execute("PRAGMA foreign_keys = ON")
+    # synchronous=NORMAL is the recommended, corruption-safe setting under WAL
+    # (journal_mode is persisted in the DB header by init_db).
+    conn.execute("PRAGMA synchronous = NORMAL")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -124,6 +127,10 @@ def _migrate_legacy_loadouts(c, legacy_photos_table):
 
 def init_db():
     with db() as c:
+        # WAL persists in the DB header, so this one-time switch sticks for all
+        # future connections. Set before any DML opens a transaction.
+        c.execute("PRAGMA journal_mode = WAL")
+
         # Migration: rename models table to minis
         if _table_exists(c, "models") and not _table_exists(c, "minis"):
             c.execute("ALTER TABLE models RENAME TO minis")
@@ -329,3 +336,18 @@ def init_db():
                 c.execute(stmt)
             except Exception:
                 pass
+
+        # Indexes on the collection tables' frequently-filtered foreign-key
+        # columns. Without these, per-request lookups full-scan the table and
+        # scale linearly with the collection. (The arsenal_* tables already
+        # carry their own equivalent indexes.)
+        for stmt in [
+            "CREATE INDEX IF NOT EXISTS idx_minis_datasheet ON minis(datasheet_id)",
+            "CREATE INDEX IF NOT EXISTS idx_minis_unit_bsdata ON minis(unit_bsdata_id)",
+            "CREATE INDEX IF NOT EXISTS idx_photos_mini ON photos(mini_id)",
+            "CREATE INDEX IF NOT EXISTS idx_army_units_list ON army_units(army_list_id)",
+            "CREATE INDEX IF NOT EXISTS idx_army_units_datasheet ON army_units(datasheet_id)",
+            "CREATE INDEX IF NOT EXISTS idx_box_contents_box ON custom_box_set_contents(box_set_id)",
+            "CREATE INDEX IF NOT EXISTS idx_purchases_box ON purchases(box_set_id)",
+        ]:
+            c.execute(stmt)
