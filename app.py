@@ -1692,6 +1692,75 @@ def api_collection():
     return jsonify(result)
 
 
+@app.route("/api/unassigned-minis")
+def api_unassigned_minis():
+    """Safety net: minis whose unit_bsdata_id is missing or no longer resolves to a real
+    datasheet. Such minis are invisible to every faction/unit view (owned_totals and the
+    collection API are both keyed by datasheet), so surface them here grouped by sculpt +
+    label so they can be filed under a unit. Normally returns []."""
+    from catalogue_review import catalogue_payload
+    cat_by_id = {i["id"]: i for i in catalogue_payload().get("items", [])}
+    with db() as c:
+        rows = c.execute("SELECT * FROM minis ORDER BY created_at").fetchall()
+
+    groups = {}
+    for r in rows:
+        did = r["unit_bsdata_id"]
+        if did and store.ds_by_id.get(did):
+            continue  # properly assigned — skip
+        cid   = r["catalogue_model_id"] if "catalogue_model_id" in r.keys() else None
+        label = r["label"] or ""
+        key   = f"{cid or ''}\x01{label}"
+        g = groups.get(key)
+        if not g:
+            item = cat_by_id.get(cid) if cid else None
+            if item:
+                name = item.get("name") or label or "Unknown kit"
+            else:
+                name = label or (f"Kit {cid}" if cid else "Unknown kit")
+            g = groups[key] = {
+                "catalogue_model_id": cid,
+                "name": name,
+                "faction_id": (item or {}).get("faction_id", ""),
+                "faction_label": (item or {}).get("faction_label", ""),
+                "label": label,
+                "image_url": f"/api/model-catalogue/{cid}/image" if (item and item.get("image")) else None,
+                "mini_ids": [],
+            }
+        g["mini_ids"].append(r["id"])
+
+    out = sorted(groups.values(), key=lambda g: (g["name"] or "").lower())
+    for g in out:
+        g["count"] = len(g["mini_ids"])
+    return jsonify(out)
+
+
+@app.route("/api/minis/assign-datasheet", methods=["POST"])
+def api_assign_datasheet():
+    """File a set of (typically unassigned) minis under a datasheet, stamping both the raw
+    datasheet_id and the canonical BSData GUID so they show up under the right unit."""
+    data = request.get_json(force=True)
+    datasheet_id = str(data.get("datasheet_id", "")).strip()
+    mini_ids = data.get("mini_ids", [])
+    if not datasheet_id or not isinstance(mini_ids, list) or not mini_ids:
+        return jsonify({"ok": False, "error": "datasheet_id and mini_ids are required"}), 400
+    ds = store.ds_by_id.get(datasheet_id)
+    if not ds:
+        return jsonify({"ok": False, "error": "Unknown datasheet"}), 400
+    unit_bsdata_id = ds["id"]
+    mini_ids = [str(m) for m in mini_ids][:500]
+    ph = ",".join("?" * len(mini_ids))
+    with db() as c:
+        c.execute(
+            f"UPDATE minis SET datasheet_id=?, unit_bsdata_id=? WHERE id IN ({ph})",
+            [datasheet_id, unit_bsdata_id, *mini_ids],
+        )
+        assigned = c.execute(
+            f"SELECT COUNT(*) n FROM minis WHERE unit_bsdata_id=? AND id IN ({ph})",
+            [unit_bsdata_id, *mini_ids]).fetchone()["n"]
+    return jsonify({"ok": True, "assigned": assigned, "datasheet_id": unit_bsdata_id})
+
+
 @app.route("/api/minis/<mid>/multikit-options")
 def api_mini_multikit_options(mid):
     """Return the build options for an unresolved multikit mini."""

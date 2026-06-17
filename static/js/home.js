@@ -3,6 +3,7 @@ import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
 
 const view       = document.getElementById('view');
 let factionCache = null;
+let unassignedGroups = [];
 export function clearFactionCache(){ factionCache = null; }
 
 export async function showHome(){
@@ -23,6 +24,8 @@ export async function showHome(){
     </div>`;
     return;
   }
+  try{ unassignedGroups = await withTimeout(api('/api/unassigned-minis')); }
+  catch(e){ unassignedGroups = []; }
   const summary = await summaryPromise;
   const isFirstRun = summary && (summary.bought_minis || 0) === 0;
   const firstRunHtml = isFirstRun
@@ -56,8 +59,117 @@ export async function showHome(){
     ${firstRunHtml}
     ${favouriteHtml}
     <h3 class="army-list-title">${favourites.length?'All Other Armies':'All Armies'}</h3>
-    <div class="faction-grid">${otherFactions.map((f,i)=>factionCard(f,i)).join('')}</div>`;
+    <div class="faction-grid">${otherFactions.map((f,i)=>factionCard(f,i)).join('')}</div>
+    ${unassignedSection(unassignedGroups)}`;
   wireFavouriteButtons();
+  wireUnassigned();
+}
+
+/* ---- Unassigned minis (safety net) ----
+   Minis whose unit_bsdata_id no longer resolves to a datasheet are invisible to every
+   faction view. Surface them here so they can be filed under a unit. Hidden when none. */
+function unassignedSection(groups){
+  if(!groups || !groups.length) return '';
+  const total = groups.reduce((n,g)=>n+(g.count||0),0);
+  return `
+    <section class="unassigned-armies">
+      <div class="fave-head">
+        <div><h3>⚠ Unassigned Minis</h3>
+          <p>Purchased minis with no datasheet — they don't show under any army. Assign each to a unit to file it.</p>
+        </div>
+        <span>${total}</span>
+      </div>
+      <div class="faction-grid">${groups.map((g,i)=>unassignedCard(g,i)).join('')}</div>
+    </section>`;
+}
+
+function unassignedCard(g, idx){
+  const imgSrc = g.image_url || '/static/images/warhammer_40_000_logo.png';
+  return `
+    <div class="unit-card unassigned-card" data-ua-idx="${idx}" style="--cardarmy:var(--panel);--cardaccent:var(--gold);--cardglow:var(--gold)">
+      <div class="unit-thumb">
+        <img src="${esc(imgSrc)}" alt="${esc(g.name)}" loading="lazy">
+        <span class="pts">${g.count}</span>
+      </div>
+      <div class="unit-body faction-surface">
+        <div class="unit-name">${esc(g.name)}</div>
+        <div class="fc-unit-stats">
+          <span>${esc(g.faction_label || 'No army')}</span>
+          <span class="ua-warn">No datasheet</span>
+        </div>
+        <button class="btn-secondary ua-assign-btn" type="button" data-ua-idx="${idx}">Assign datasheet</button>
+        <div class="ua-picker" data-ua-idx="${idx}" hidden>
+          <input class="ff-input ua-search" type="search" placeholder="Search datasheets…" autocomplete="off">
+          <div class="ua-results"><div class="ua-hint">Type a unit name to search.</div></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function wireUnassigned(){
+  document.querySelectorAll('.ua-assign-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = btn.dataset.uaIdx;
+      const picker = document.querySelector(`.ua-picker[data-ua-idx="${idx}"]`);
+      if(!picker) return;
+      const opening = picker.hidden;
+      picker.hidden = !opening;
+      btn.textContent = opening ? 'Cancel' : 'Assign datasheet';
+      if(opening) picker.querySelector('.ua-search')?.focus();
+    });
+  });
+  document.querySelectorAll('.ua-picker').forEach(picker=>{
+    const idx = picker.dataset.uaIdx;
+    const input = picker.querySelector('.ua-search');
+    const results = picker.querySelector('.ua-results');
+    let timer;
+    input?.addEventListener('input', ()=>{
+      clearTimeout(timer);
+      timer = setTimeout(()=>uaSearch(idx, input.value, results), 220);
+    });
+  });
+}
+
+async function uaSearch(idx, q, resultsEl){
+  const g = unassignedGroups[idx];
+  if(!g || !resultsEl) return;
+  const trimmed = (q||'').trim();
+  if(!trimmed){ resultsEl.innerHTML = '<div class="ua-hint">Type a unit name to search.</div>'; return; }
+  resultsEl.innerHTML = '<div class="ua-hint">Searching…</div>';
+  try{
+    const params = new URLSearchParams({q:trimmed});
+    if(g.faction_id) params.set('faction_id', g.faction_id);
+    const rows = await api(`/api/units/search?${params}`);
+    if(!rows.length){ resultsEl.innerHTML = '<div class="ua-hint">No datasheets found.</div>'; return; }
+    resultsEl.innerHTML = rows.slice(0,12).map(u=>`
+      <button class="ua-result" type="button" data-did="${esc(u.id)}" data-name="${esc(u.name)}">
+        <span class="ua-result-name">${esc(u.name)}</span>
+        <span class="ua-result-meta">${esc(u.role||'')}${u.faction_id?' · '+esc(u.faction_id):''}</span>
+      </button>`).join('');
+    resultsEl.querySelectorAll('.ua-result').forEach(b=>{
+      b.addEventListener('click', ()=>uaAssign(idx, b.dataset.did, b.dataset.name, resultsEl));
+    });
+  }catch(e){
+    resultsEl.innerHTML = `<div class="ua-hint ua-err">Search failed: ${esc(e.message)}</div>`;
+  }
+}
+
+async function uaAssign(idx, datasheetId, datasheetName, resultsEl){
+  const g = unassignedGroups[idx];
+  if(!g) return;
+  resultsEl.innerHTML = `<div class="ua-hint">Filing ${g.count} mini${g.count===1?'':'s'} under ${esc(datasheetName)}…</div>`;
+  try{
+    const res = await api('/api/minis/assign-datasheet', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({mini_ids:g.mini_ids, datasheet_id:datasheetId}),
+    });
+    if(!res.ok) throw new Error(res.error || 'Assign failed');
+    clearFactionCache();
+    refreshLedger();
+    showHome();
+  }catch(e){
+    resultsEl.innerHTML = `<div class="ua-hint ua-err">${esc(e.message)}</div>`;
+  }
 }
 
 function factionCard(f, i, extraClass=''){

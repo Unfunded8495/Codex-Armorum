@@ -253,6 +253,35 @@ main{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:32px 30p
 .army-list-title::before{content:"✠";font-size:8px;color:var(--gold);opacity:.5;line-height:1}
 .army-list-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--edge),transparent)}
 
+/* Unassigned-minis safety net: shown only when a mini has no resolvable datasheet */
+.unassigned-armies{
+  background:linear-gradient(135deg,rgba(196,98,46,.08) 0%,rgba(22,21,27,.8) 60%,rgba(10,10,12,.9) 100%);
+  border:1px solid rgba(196,98,46,.4);
+  margin:24px 0 0;padding:15px 16px 16px;position:relative;overflow:hidden;
+}
+.unassigned-armies::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,transparent,#c4622e 30%,#c4622e 70%,transparent);
+}
+.unassigned-armies .fave-head h3{color:#e08a4f}
+.unassigned-armies .fave-head span{border-color:rgba(196,98,46,.5);color:#e08a4f;background:rgba(196,98,46,.08)}
+.unassigned-card{cursor:default}
+.unassigned-card:hover{transform:none;border-color:rgba(196,98,46,.5)}
+.unassigned-card .fc-unit-stats .ua-warn{color:#e08a4f}
+.ua-assign-btn{margin-top:10px;width:100%}
+.ua-picker{margin-top:10px}
+.ua-picker .ua-search{width:100%}
+.ua-results{margin-top:8px;display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto}
+.ua-hint{color:var(--parch-dim);font-size:12px;font-style:italic;padding:4px 2px}
+.ua-err{color:#e0795f}
+.ua-result{
+  display:flex;flex-direction:column;gap:2px;text-align:left;cursor:pointer;
+  border:1px solid rgba(44,42,53,.75);background:rgba(10,10,12,.35);padding:7px 9px;
+}
+.ua-result:hover{border-color:rgba(199,154,58,.5);background:rgba(199,154,58,.07)}
+.ua-result-name{font-family:'Cinzel',serif;font-size:13px;color:var(--parch)}
+.ua-result-meta{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--parch-dim)}
+
 .faction-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px}
 .faction-grid.fave-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
 
