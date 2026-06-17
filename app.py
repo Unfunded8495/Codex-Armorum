@@ -219,7 +219,9 @@ def _factions_payload(info=None, owned=None):
 
     counted_bought_by_fid = {}
     counted_ul_by_fid     = {}
-    group_ul = info.get("group_ul", {})
+    group_ul      = info.get("group_ul", {})
+    standalone    = info.get("standalone", {})
+    standalone_ul = info.get("standalone_ul", {})
     for did, qty in bought.items():
         d = store.ds_by_id.get(did)
         if not d or qty <= 0:
@@ -229,6 +231,12 @@ def _factions_payload(info=None, owned=None):
         cb    = counted_bought_by_fid.setdefault(fid, set())
         cu    = counted_ul_by_fid.setdefault(fid, set())
         if gkeys:
+            # Dedicated-kit purchases of a multikit member are per-datasheet:
+            # count their minis on top of the (once-per-group) shared pool.
+            sa = standalone.get(did, 0)
+            if sa:
+                bought_minis_by_faction[fid] = bought_minis_by_faction.get(fid, 0) + sa
+                ul_by_faction[fid]           = ul_by_faction.get(fid, 0) + standalone_ul.get(did, 0)
             for gk in gkeys:
                 if gk not in cb:
                     cb.add(gk)
@@ -359,7 +367,9 @@ def api_faction_units(fid):
         u["bought"]   = info["totals"].get(u["id"], 0)
         u["unlogged"] = ul_map.get(u["id"], 0)
         u["multikit_groups"] = [
-            {"key": gkey, "members": info["groups"].get(gkey, {}).get("members", [])}
+            {"key": gkey,
+             "pool": info["groups"].get(gkey, {}).get("pool", 0),
+             "members": info["groups"].get(gkey, {}).get("members", [])}
             for gkey in info["did_groups"].get(u["id"], [])
         ]
     primary, accent, _ = ft.theme_for(faction["name"])

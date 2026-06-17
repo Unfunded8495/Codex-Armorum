@@ -1830,6 +1830,15 @@ a.brand{text-decoration:none;color:inherit}
   color:var(--parch-dim);
 }
 .fc-unit-stats span:last-child{color:var(--parch);text-align:right}
+.fc-shared-note{
+  display:flex;align-items:center;gap:5px;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.3px;
+  color:var(--gold);cursor:help;
+  padding:3px 7px;margin:-1px 0 1px;
+  border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);
+  border-radius:3px;background:color-mix(in srgb,var(--gold) 10%,transparent);
+}
+.fc-shared-ico{font-size:12px;line-height:1;opacity:.85}
 
 /* ══ MINI MANAGEMENT PAGE ════════════════════════════════════ */
 .mp-bar-track{

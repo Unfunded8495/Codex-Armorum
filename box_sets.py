@@ -340,7 +340,7 @@ def bought_info(conn=None, boxes_by_id=None):
     c = conn or db()
     try:
         if not _table_exists(c, "purchases"):
-            return {"totals": {}, "groups": {}, "did_groups": {}}
+            return {"totals": {}, "groups": {}, "did_groups": {}, "standalone": {}}
         rows = c.execute("SELECT box_set_id, quantity FROM purchases").fetchall()
     finally:
         if close:
@@ -349,6 +349,7 @@ def bought_info(conn=None, boxes_by_id=None):
     totals    = {}
     groups    = {}
     did_groups = {}
+    standalone = {}   # {did: qty bought as a dedicated (non-multikit) kit}
 
     for r in rows:
         box = boxes.get(r["box_set_id"])
@@ -390,9 +391,12 @@ def bought_info(conn=None, boxes_by_id=None):
                 if gkey not in did_groups[did]:
                     did_groups[did].append(gkey)
             else:
-                totals[did] = totals.get(did, 0) + qty * item["datasheet_count"]
+                amt = qty * item["datasheet_count"]
+                totals[did]     = totals.get(did, 0) + amt
+                standalone[did] = standalone.get(did, 0) + amt
 
-    return {"totals": totals, "groups": groups, "did_groups": did_groups}
+    return {"totals": totals, "groups": groups, "did_groups": did_groups,
+            "standalone": standalone}
 
 
 def bought_totals(conn=None):
@@ -414,19 +418,33 @@ def compute_unlogged_map(info, owned):
     totals     = info["totals"]
     groups     = info["groups"]
     did_groups = info["did_groups"]
+    standalone = info.get("standalone", {})
+
+    # A datasheet can be bought both as a dedicated kit (standalone) and as one
+    # build option of a shared multikit pool. Attribute owned minis to that
+    # datasheet's own dedicated kits first; only the remainder draws down a
+    # shared pool. Otherwise a multikit member's owned count would wrongly
+    # consume the pool and the dedicated-kit purchases would never be unlogged.
+    standalone_ul = {}
+    pool_owned = {}   # owned that counts against a shared pool
+    for did in set(totals) | set(standalone):
+        sa = standalone.get(did, 0)
+        own = owned.get(did, 0)
+        used = min(own, sa)
+        standalone_ul[did] = sa - used
+        pool_owned[did] = own - used
 
     group_ul = {}
     for gkey, g in groups.items():
-        pool_owned = sum(owned.get(m, 0) for m in g["members"])
-        group_ul[gkey] = max(0, g["pool"] - pool_owned)
-    info["group_ul"] = group_ul  # expose for dedup_group_total callers
+        consumed = sum(pool_owned.get(m, 0) for m in g["members"])
+        group_ul[gkey] = max(0, g["pool"] - consumed)
+    info["group_ul"] = group_ul            # expose for dedup_group_total callers
+    info["standalone_ul"] = standalone_ul  # expose for dedup_group_total callers
 
     result = {}
-    for did, bought in totals.items():
-        if did in did_groups:
-            result[did] = sum(group_ul[gk] for gk in did_groups[did])
-        else:
-            result[did] = max(0, bought - owned.get(did, 0))
+    for did in set(totals) | set(standalone):
+        result[did] = (sum(group_ul[gk] for gk in did_groups.get(did, []))
+                       + standalone_ul.get(did, 0))
     return result
 
 
@@ -442,13 +460,18 @@ def dedup_group_total(info, value_by_did):
     counted  = set()
     total    = 0
     use_pool = value_by_did is info["totals"]
-    group_ul = info.get("group_ul", {})
+    group_ul      = info.get("group_ul", {})
+    standalone    = info.get("standalone", {})
+    standalone_ul = info.get("standalone_ul", {})
 
     for did, val in value_by_did.items():
         gkeys = info["did_groups"].get(did, [])
         if not gkeys:
             total += val
         else:
+            # The dedicated-kit (standalone) portion is per-datasheet, so count it
+            # in full; the shared pool is counted once per group.
+            total += (standalone if use_pool else standalone_ul).get(did, 0)
             for gk in gkeys:
                 if gk not in counted:
                     counted.add(gk)

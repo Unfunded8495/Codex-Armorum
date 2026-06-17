@@ -343,6 +343,25 @@ export async function showFaction(fid, browseAll=false){
     const repCid = unit.minis.find(m => !m.is_potential_build && m.catalogue_model_id)?.catalogue_model_id;
     const imgSrc = repCid ? `/api/model-catalogue/${encodeURIComponent(repCid)}/image` : `/api/units/${esc(unit.id)}/image`;
     const imgFallback = `/api/units/${esc(unit.id)}/image`;
+
+    // Multi-build kits: some of this unit's "purchased" count comes from a kit that
+    // can be built as one of several datasheets. Flag the shared pool so the tile is
+    // not read as that many extra physical models.
+    const sharedPool = (stat?.multikit_groups || [])
+      .reduce((sum, g) => sum + Number(g.pool || 0), 0);
+    const siblingNames = new Set();
+    (stat?.multikit_groups || []).forEach(g => (g.members || []).forEach(mid => {
+      if(mid === unit.id) return;
+      const nm = unitStats.get(mid)?.name;
+      if(nm) siblingNames.add(nm);
+    }));
+    const sharedNote = sharedPool > 0 ? `
+          <div class="fc-shared-note" title="${esc(siblingNames.size
+              ? `${sharedPool} of these come from one multi-build kit you can build as ${[...siblingNames].join(' / ')} instead — those models count once across all of these options.`
+              : `${sharedPool} of these come from a multi-build kit and can be built as only one option.`)}">
+            <span class="fc-shared-ico" aria-hidden="true">⚒</span>${sharedPool} shared multi-build kit
+          </div>` : '';
+
     return `
       <div class="unit-card fc-mini-tile" style="--cardarmy:${primary};--cardaccent:${accent};--cardglow:${accent}" onclick="location.hash='/mini/${esc(unit.id)}'">
         <div class="unit-thumb">
@@ -351,7 +370,7 @@ export async function showFaction(fid, browseAll=false){
         </div>
         <div class="unit-body faction-surface">
           <div class="faction-bg-mark" aria-hidden="true">${facMark}</div>
-          <div class="unit-name">${esc(unit.name)}</div>
+          <div class="unit-name">${esc(unit.name)}</div>${sharedNote}
           <div class="fc-unit-bar-wrap">
             <div class="fc-unit-bar" style="width:${uPct}%;background:${accent}"></div>
           </div>
