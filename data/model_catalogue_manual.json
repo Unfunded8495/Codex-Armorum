@@ -594,7 +594,7 @@
     },
     {
       "id": "MD-50020",
-      "name": "Daemonifuge \u00e2\u20ac\u201c Ephrael Stern & Kyganil",
+      "name": "Daemonifuge â€“ Ephrael Stern & Kyganil",
       "faction_label": "Adepta Sororitas",
       "faction_id": "b39e-4401-8f3e-fdf7",
       "release_date": "2020-06",
@@ -1267,7 +1267,7 @@
     {
       "id": "MD-50050",
       "name": "Knight Errant",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2014-02",
       "release_year": 2014,
@@ -1296,7 +1296,7 @@
     {
       "id": "MD-50051",
       "name": "Knight Paladin",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2014-02",
       "release_year": 2014,
@@ -1325,7 +1325,7 @@
     {
       "id": "MD-50052",
       "name": "Ironstrider Ballistarius",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-03",
       "release_year": 2015,
@@ -1354,7 +1354,7 @@
     {
       "id": "MD-50053",
       "name": "Skitarii Rangers",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-03",
       "release_year": 2015,
@@ -1393,7 +1393,7 @@
     {
       "id": "MD-50054",
       "name": "Skitarii Vanguard",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-03",
       "release_year": 2015,
@@ -1432,7 +1432,7 @@
     {
       "id": "MD-50055",
       "name": "Sydonian Dragoon",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-03",
       "release_year": 2015,
@@ -1471,7 +1471,7 @@
     {
       "id": "MD-50056",
       "name": "Onager Dunecrawler",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-04",
       "release_year": 2015,
@@ -1500,7 +1500,7 @@
     {
       "id": "MD-50057",
       "name": "Sicarian Infiltrators",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-04",
       "release_year": 2015,
@@ -1529,7 +1529,7 @@
     {
       "id": "MD-50058",
       "name": "Sicarian Ruststalkers",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-04",
       "release_year": 2015,
@@ -1558,7 +1558,7 @@
     {
       "id": "MD-50059",
       "name": "Corpuscarii Electro Priests",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1587,7 +1587,7 @@
     {
       "id": "MD-50060",
       "name": "Fulgurite Electro Priests",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1616,7 +1616,7 @@
     {
       "id": "MD-50061",
       "name": "Kastelan Robots",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1663,7 +1663,7 @@
     {
       "id": "MD-50063",
       "name": "Kataphron Destroyers",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1692,7 +1692,7 @@
     {
       "id": "MD-50064",
       "name": "Knight Crusader",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1721,7 +1721,7 @@
     {
       "id": "MD-50065",
       "name": "Knight Gallant",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1750,7 +1750,7 @@
     {
       "id": "MD-50066",
       "name": "Knight Warden",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1779,7 +1779,7 @@
     {
       "id": "MD-50067",
       "name": "Tech-Priest Dominus",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-05",
       "release_year": 2015,
@@ -1818,7 +1818,7 @@
     {
       "id": "MD-50068",
       "name": "Tech-Priest Enginseer",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2015-11",
       "release_year": 2015,
@@ -1857,7 +1857,7 @@
     {
       "id": "MD-50069",
       "name": "Belisarius Cawl",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2017-01",
       "release_year": 2017,
@@ -1886,7 +1886,7 @@
     {
       "id": "MD-50070",
       "name": "Tech-Priest Manipulus",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2019-01",
       "release_year": 2019,
@@ -1925,7 +1925,7 @@
     {
       "id": "MD-50071",
       "name": "Skorpius Disintegrator",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2019-06",
       "release_year": 2019,
@@ -1954,7 +1954,7 @@
     {
       "id": "MD-50072",
       "name": "Skorpius Dunerider",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2019-06",
       "release_year": 2019,
@@ -1983,7 +1983,7 @@
     {
       "id": "MD-50073",
       "name": "Archaeopter Fusilave",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -2012,7 +2012,7 @@
     {
       "id": "MD-50074",
       "name": "Archaeopter Stratoraptor",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -2041,7 +2041,7 @@
     {
       "id": "MD-50075",
       "name": "Archaeopter Transvector",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -2070,7 +2070,7 @@
     {
       "id": "MD-50076",
       "name": "Pteraxii Skystalkers",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -2099,7 +2099,7 @@
     {
       "id": "MD-50077",
       "name": "Pteraxii Sterylizors",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -2128,7 +2128,7 @@
     {
       "id": "MD-50078",
       "name": "Serberys Raiders",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -2157,7 +2157,7 @@
     {
       "id": "MD-50079",
       "name": "Serberys Sulphurhounds",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -2186,7 +2186,7 @@
     {
       "id": "MD-50080",
       "name": "Skitarii Marshal",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2021-05",
       "release_year": 2021,
@@ -2225,7 +2225,7 @@
     {
       "id": "MD-50081",
       "name": "Adeptus Mechanicus: Sydonian Skatros",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2023-12",
       "release_year": 2023,
@@ -2243,7 +2243,7 @@
     {
       "id": "MD-50082",
       "name": "Battleclade Kill Team",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -2261,7 +2261,7 @@
     {
       "id": "MD-50083",
       "name": "Archmagos Terminus",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2026-02",
       "release_year": 2026,
@@ -2279,7 +2279,7 @@
     {
       "id": "MD-50084",
       "name": "Skitarii Heavy Infantry",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2026-02",
       "release_year": 2026,
@@ -6597,7 +6597,7 @@
     {
       "id": "MD-50230",
       "name": "Fallen",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2007-03",
       "release_year": 2007,
@@ -6615,7 +6615,7 @@
     {
       "id": "MD-50231",
       "name": "Possessed",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2007-08",
       "release_year": 2007,
@@ -6664,7 +6664,7 @@
     {
       "id": "MD-50232",
       "name": "Chaos Spawn",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2007-09",
       "release_year": 2007,
@@ -6733,7 +6733,7 @@
     {
       "id": "MD-50233",
       "name": "Sorcerer Lord in Terminator Armour",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2007-09",
       "release_year": 2007,
@@ -6782,7 +6782,7 @@
     {
       "id": "MD-50234",
       "name": "Terminator Lord",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2007-09",
       "release_year": 2007,
@@ -6800,7 +6800,7 @@
     {
       "id": "MD-50235",
       "name": "Bloodletters of Khorne",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2008-05",
       "release_year": 2008,
@@ -6839,7 +6839,7 @@
     {
       "id": "MD-50236",
       "name": "Plaguebearers of Nurgle",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-08",
       "release_year": 2012,
@@ -6878,7 +6878,7 @@
     {
       "id": "MD-50237",
       "name": "Chaos Cultists",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-09",
       "release_year": 2012,
@@ -6957,7 +6957,7 @@
     {
       "id": "MD-50238",
       "name": "Aspiring Champion",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -6996,7 +6996,7 @@
     {
       "id": "MD-50239",
       "name": "Forgefiend",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -7045,7 +7045,7 @@
     {
       "id": "MD-50240",
       "name": "Heldrake",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -7104,7 +7104,7 @@
     {
       "id": "MD-50241",
       "name": "Maulerfiend",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -7163,7 +7163,7 @@
     {
       "id": "MD-50242",
       "name": "Raptors",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -7202,7 +7202,7 @@
     {
       "id": "MD-50243",
       "name": "Warp Talons",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -7241,7 +7241,7 @@
     {
       "id": "MD-50244",
       "name": "Khorne Lord of Skulls",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2013-07",
       "release_year": 2013,
@@ -7280,7 +7280,7 @@
     {
       "id": "MD-50245",
       "name": "Helbrute",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2014-03",
       "release_year": 2014,
@@ -7338,8 +7338,8 @@
     },
     {
       "id": "MD-50246",
-      "name": "Kh\u00c3\u00a2rn the Betrayer",
-      "faction_label": "Chaos Space Marines",
+      "name": "KhÃ¢rn the Betrayer",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2016-09",
       "release_year": 2016,
@@ -7350,10 +7350,10 @@
       "datasheet_links": [
         {
           "datasheet_id": "000002622",
-          "datasheet_name": "Kh\u00c3\u00a2rn The Betrayer",
+          "datasheet_name": "KhÃ¢rn The Betrayer",
           "faction_id": "WE",
           "matched_from": "datasheet",
-          "matched_name": "Kh\u00c3\u00a2rn The Betrayer",
+          "matched_name": "KhÃ¢rn The Betrayer",
           "confidence": 1.0,
           "match_method": "exact",
           "cross_faction": true
@@ -7368,7 +7368,7 @@
     {
       "id": "MD-50247",
       "name": "Cypher",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2017-03",
       "release_year": 2017,
@@ -7397,7 +7397,7 @@
     {
       "id": "MD-50248",
       "name": "Icon Bearer",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2017-10",
       "release_year": 2017,
@@ -7426,7 +7426,7 @@
     {
       "id": "MD-50249",
       "name": "Plague Marine Champion",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2017-10",
       "release_year": 2017,
@@ -7483,7 +7483,7 @@
     {
       "id": "MD-50251",
       "name": "Plague Marine Reinforcements",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2018-08",
       "release_year": 2018,
@@ -7501,7 +7501,7 @@
     {
       "id": "MD-50252",
       "name": "Chaos Lord",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2018-11",
       "release_year": 2018,
@@ -7560,7 +7560,7 @@
     {
       "id": "MD-50253",
       "name": "Haarken Worldclaimer",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2018-12",
       "release_year": 2018,
@@ -7589,7 +7589,7 @@
     {
       "id": "MD-50254",
       "name": "Noise Marine",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2018-12",
       "release_year": 2018,
@@ -7628,7 +7628,7 @@
     {
       "id": "MD-50255",
       "name": "Abaddon The Despoiler",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-03",
       "release_year": 2019,
@@ -7657,7 +7657,7 @@
     {
       "id": "MD-50256",
       "name": "Chaos Space Marines",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-03",
       "release_year": 2019,
@@ -7675,7 +7675,7 @@
     {
       "id": "MD-50257",
       "name": "Arch-Lord Discordant",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-04",
       "release_year": 2019,
@@ -7693,7 +7693,7 @@
     {
       "id": "MD-50258",
       "name": "Havocs",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-04",
       "release_year": 2019,
@@ -7711,7 +7711,7 @@
     {
       "id": "MD-50259",
       "name": "Chaos Terminators",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-04",
       "release_year": 2019,
@@ -7770,7 +7770,7 @@
     {
       "id": "MD-50260",
       "name": "Dark Apostle",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-04",
       "release_year": 2019,
@@ -7809,7 +7809,7 @@
     {
       "id": "MD-50261",
       "name": "Master of Executions",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-04",
       "release_year": 2019,
@@ -7848,7 +7848,7 @@
     {
       "id": "MD-50262",
       "name": "Chaos Sorcerer",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-11",
       "release_year": 2019,
@@ -7866,7 +7866,7 @@
     {
       "id": "MD-50263",
       "name": "Fabius Bile",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2020-06",
       "release_year": 2020,
@@ -7895,7 +7895,7 @@
     {
       "id": "MD-50264",
       "name": "Chosen",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2022-02",
       "release_year": 2022,
@@ -7934,7 +7934,7 @@
     {
       "id": "MD-50265",
       "name": "Warpsmith",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2022-02",
       "release_year": 2022,
@@ -7963,7 +7963,7 @@
     {
       "id": "MD-50266",
       "name": "Chaos Lord",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2024-05",
       "release_year": 2024,
@@ -8022,7 +8022,7 @@
     {
       "id": "MD-50267",
       "name": "Chaos Lord on Jump Pack",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2024-05",
       "release_year": 2024,
@@ -8585,7 +8585,7 @@
       "release_year": 2016,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Death Masque box \u00e2\u20ac\u201c Solo release 2017-10",
+      "note": "Death Masque box â€“ Solo release 2017-10",
       "flags": [],
       "datasheet_links": [
         {
@@ -8614,7 +8614,7 @@
       "release_year": 2018,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Wake the Dead box \u00e2\u20ac\u201c Solo release 2019-07",
+      "note": "Wake the Dead box â€“ Solo release 2019-07",
       "flags": [],
       "datasheet_links": [
         {
@@ -8643,7 +8643,7 @@
       "release_year": 2019,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Blood of the Phoenix box \u00e2\u20ac\u201c Solo release 2020-03",
+      "note": "Blood of the Phoenix box â€“ Solo release 2020-03",
       "flags": [],
       "datasheet_links": [
         {
@@ -8672,7 +8672,7 @@
       "release_year": 2019,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Blood of the Phoenix box \u00e2\u20ac\u201c Solo release 2020-03",
+      "note": "Blood of the Phoenix box â€“ Solo release 2020-03",
       "flags": [],
       "datasheet_links": [
         {
@@ -9280,7 +9280,7 @@
       "release_year": 2026,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Dual-build kit \u00e2\u20ac\u201d Skyreavers (ranged) or Voidreavers (melee)",
+      "note": "Dual-build kit â€” Skyreavers (ranged) or Voidreavers (melee)",
       "flags": [],
       "datasheet_links": [
         {
@@ -9948,7 +9948,7 @@
     {
       "id": "MD-50336",
       "name": "Belial, Grand Master of the Deathwing",
-      "faction_label": "Imperium - Adeptus Astartes - Space Marines",
+      "faction_label": "Space Marines",
       "faction_id": "e0af-67df-9d63-8fb7",
       "release_date": "2024-02",
       "release_year": 2024,
@@ -10071,7 +10071,7 @@
     {
       "id": "MD-50341",
       "name": "Possessed",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2022",
       "release_year": 2022,
@@ -11653,7 +11653,7 @@
       "release_year": 2019,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Blood of the Phoenix box \u00e2\u20ac\u201c Solo release 2020-03",
+      "note": "Blood of the Phoenix box â€“ Solo release 2020-03",
       "flags": [],
       "datasheet_links": [
         {
@@ -11682,7 +11682,7 @@
       "release_year": 2019,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Blood of the Phoenix box \u00e2\u20ac\u201c Solo release 2020-03",
+      "note": "Blood of the Phoenix box â€“ Solo release 2020-03",
       "flags": [],
       "datasheet_links": [
         {
@@ -11830,7 +11830,7 @@
     {
       "id": "MD-50399",
       "name": "Scout Sentinel",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2009-05",
       "release_year": 2009,
@@ -11869,7 +11869,7 @@
     {
       "id": "MD-50400",
       "name": "Leman Russ",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2010-06",
       "release_year": 2010,
@@ -11887,7 +11887,7 @@
     {
       "id": "MD-50401",
       "name": "Acolyte Hybrids",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -11926,7 +11926,7 @@
     {
       "id": "MD-50402",
       "name": "Acolyte Iconward",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -11955,7 +11955,7 @@
     {
       "id": "MD-50403",
       "name": "Brood Brothers",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -11973,7 +11973,7 @@
     {
       "id": "MD-50404",
       "name": "Broodcoven",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -11991,7 +11991,7 @@
     {
       "id": "MD-50405",
       "name": "Goliath Rockgrinder",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -12020,7 +12020,7 @@
     {
       "id": "MD-50406",
       "name": "Goliath Truck",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -12049,7 +12049,7 @@
     {
       "id": "MD-50407",
       "name": "Hybrid Metamorphs",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -12078,7 +12078,7 @@
     {
       "id": "MD-50408",
       "name": "Neophyte Hybrids",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016-10",
       "release_year": 2016,
@@ -12107,13 +12107,13 @@
     {
       "id": "MD-50409",
       "name": "Aberrants",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2018-08",
       "release_year": 2018,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Tooth and Claw box \u00e2\u20ac\u201c Solo release 2019-02",
+      "note": "Tooth and Claw box â€“ Solo release 2019-02",
       "flags": [],
       "datasheet_links": [
         {
@@ -12136,13 +12136,13 @@
     {
       "id": "MD-50410",
       "name": "Abominant",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2018-08",
       "release_year": 2018,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Tooth and Claw box \u00e2\u20ac\u201c Solo release 2019-02",
+      "note": "Tooth and Claw box â€“ Solo release 2019-02",
       "flags": [],
       "datasheet_links": [
         {
@@ -12165,7 +12165,7 @@
     {
       "id": "MD-50411",
       "name": "Kelermorph",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-01",
       "release_year": 2019,
@@ -12194,7 +12194,7 @@
     {
       "id": "MD-50412",
       "name": "Achilles Ridgerunner",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12223,7 +12223,7 @@
     {
       "id": "MD-50413",
       "name": "Atalan Jackals",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12252,7 +12252,7 @@
     {
       "id": "MD-50414",
       "name": "Biophagus",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12281,7 +12281,7 @@
     {
       "id": "MD-50415",
       "name": "Clamavus",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12310,7 +12310,7 @@
     {
       "id": "MD-50416",
       "name": "Jackal Alphus",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12339,7 +12339,7 @@
     {
       "id": "MD-50417",
       "name": "Locus",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12368,7 +12368,7 @@
     {
       "id": "MD-50418",
       "name": "Magus",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12397,7 +12397,7 @@
     {
       "id": "MD-50419",
       "name": "Nexos",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12426,7 +12426,7 @@
     {
       "id": "MD-50420",
       "name": "Sanctus",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2019-02",
       "release_year": 2019,
@@ -12455,7 +12455,7 @@
     {
       "id": "MD-50421",
       "name": "Reductus Saboteur",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2021-12",
       "release_year": 2021,
@@ -12484,7 +12484,7 @@
     {
       "id": "MD-50422",
       "name": "Codex: Genestealer Cults (10th Edition)",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2024-06",
       "release_year": 2024,
@@ -12502,7 +12502,7 @@
     {
       "id": "MD-50423",
       "name": "Biosigns Terminated",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -14607,7 +14607,7 @@
       "release_year": 2018,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Forgebane Box \u00e2\u20ac\u201c Solo release 2018-12",
+      "note": "Forgebane Box â€“ Solo release 2018-12",
       "flags": [],
       "datasheet_links": [],
       "source": {
@@ -15357,7 +15357,7 @@
     {
       "id": "MD-50521",
       "name": "Burna Boyz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2008-01",
       "release_year": 2008,
@@ -15386,7 +15386,7 @@
     {
       "id": "MD-50522",
       "name": "Lootas",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2008-01",
       "release_year": 2008,
@@ -15414,8 +15414,8 @@
     },
     {
       "id": "MD-50523",
-      "name": "Ork Boyz \u00e2\u20ac\u201c Heavy weapons & Nobs",
-      "faction_label": "Orks",
+      "name": "Ork Boyz â€“ Heavy weapons & Nobs",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2008-01",
       "release_year": 2008,
@@ -15433,7 +15433,7 @@
     {
       "id": "MD-50524",
       "name": "Trukk",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2008-01",
       "release_year": 2008,
@@ -15462,7 +15462,7 @@
     {
       "id": "MD-50525",
       "name": "Warbiker Mob",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2008-01",
       "release_year": 2008,
@@ -15480,7 +15480,7 @@
     {
       "id": "MD-50526",
       "name": "Battlewagon",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2009-01",
       "release_year": 2009,
@@ -15509,7 +15509,7 @@
     {
       "id": "MD-50528",
       "name": "Nobz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2009-01",
       "release_year": 2009,
@@ -15538,7 +15538,7 @@
     {
       "id": "MD-50529",
       "name": "Stormboyz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2009-01",
       "release_year": 2009,
@@ -15567,7 +15567,7 @@
     {
       "id": "MD-50530",
       "name": "Stompa",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2009-03",
       "release_year": 2009,
@@ -15596,7 +15596,7 @@
     {
       "id": "MD-50531",
       "name": "Deff Dread",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2010-03",
       "release_year": 2010,
@@ -15625,7 +15625,7 @@
     {
       "id": "MD-50532",
       "name": "Killa Kans",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2010-03",
       "release_year": 2010,
@@ -15654,7 +15654,7 @@
     {
       "id": "MD-50533",
       "name": "Blitza-bommer",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2012-06",
       "release_year": 2012,
@@ -15683,7 +15683,7 @@
     {
       "id": "MD-50534",
       "name": "Burna-bommer",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2012-06",
       "release_year": 2012,
@@ -15712,7 +15712,7 @@
     {
       "id": "MD-50535",
       "name": "Dakkajet",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2012-06",
       "release_year": 2012,
@@ -15741,7 +15741,7 @@
     {
       "id": "MD-50536",
       "name": "Gorkanaut",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-05",
       "release_year": 2014,
@@ -15780,7 +15780,7 @@
     {
       "id": "MD-50537",
       "name": "Morkanaut",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-05",
       "release_year": 2014,
@@ -15819,13 +15819,13 @@
     {
       "id": "MD-50538",
       "name": "Warboss Grukk's Boss-Mob",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-05",
       "release_year": 2014,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Stormclaw box \u00e2\u20ac\u201c Solo release 2016-02",
+      "note": "Stormclaw box  Solo release 2016-02",
       "flags": [],
       "datasheet_links": [],
       "source": {
@@ -15837,7 +15837,7 @@
     {
       "id": "MD-50539",
       "name": "Big Mek in Mega Armour",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -15866,7 +15866,7 @@
     {
       "id": "MD-50540",
       "name": "Big Mek with Shock Attack Gun",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -15884,7 +15884,7 @@
     {
       "id": "MD-50541",
       "name": "Deff Rolla",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -15902,7 +15902,7 @@
     {
       "id": "MD-50542",
       "name": "Flash Gitz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -15931,7 +15931,7 @@
     {
       "id": "MD-50543",
       "name": "Meganobz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -15960,7 +15960,7 @@
     {
       "id": "MD-50544",
       "name": "Mek",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -15989,7 +15989,7 @@
     {
       "id": "MD-50545",
       "name": "Mek Gunz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -16018,12 +16018,12 @@
     {
       "id": "MD-50546",
       "name": "Painboy",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
       "material": "Plastic",
-      "status": "current_or_unknown",
+      "status": "discontinued",
       "note": "",
       "flags": [],
       "datasheet_links": [
@@ -16047,7 +16047,7 @@
     {
       "id": "MD-50547",
       "name": "Trukk Boyz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2014-06",
       "release_year": 2014,
@@ -16065,7 +16065,7 @@
     {
       "id": "MD-50548",
       "name": "Wazbom Blastajet",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2016-04",
       "release_year": 2016,
@@ -16094,7 +16094,7 @@
     {
       "id": "MD-50549",
       "name": "Boomdakka Snazzwagon",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2018-11",
       "release_year": 2018,
@@ -16123,7 +16123,7 @@
     {
       "id": "MD-50550",
       "name": "Deffkilla Wartrike",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2018-11",
       "release_year": 2018,
@@ -16152,7 +16152,7 @@
     {
       "id": "MD-50551",
       "name": "Kustom Boosta-Blasta",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2018-11",
       "release_year": 2018,
@@ -16181,7 +16181,7 @@
     {
       "id": "MD-50552",
       "name": "Megatrakk Scrapjet",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2018-11",
       "release_year": 2018,
@@ -16210,7 +16210,7 @@
     {
       "id": "MD-50553",
       "name": "Rukkatrukk Squigbuggy",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2018-11",
       "release_year": 2018,
@@ -16239,7 +16239,7 @@
     {
       "id": "MD-50554",
       "name": "Shokkjump Dragsta",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2018-11",
       "release_year": 2018,
@@ -16268,7 +16268,7 @@
     {
       "id": "MD-50555",
       "name": "Ghazghkull Thraka",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2020-03",
       "release_year": 2020,
@@ -16297,7 +16297,7 @@
     {
       "id": "MD-50556",
       "name": "Makari",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2020-03",
       "release_year": 2020,
@@ -16326,7 +16326,7 @@
     {
       "id": "MD-50557",
       "name": "Beast Snagga Boyz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-07",
       "release_year": 2021,
@@ -16355,7 +16355,7 @@
     {
       "id": "MD-50558",
       "name": "Bomb Squig",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-07",
       "release_year": 2021,
@@ -16373,7 +16373,7 @@
     {
       "id": "MD-50559",
       "name": "Nob on Smasha Squig",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-07",
       "release_year": 2021,
@@ -16402,7 +16402,7 @@
     {
       "id": "MD-50560",
       "name": "Squighog Boyz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-07",
       "release_year": 2021,
@@ -16431,7 +16431,7 @@
     {
       "id": "MD-50561",
       "name": "Zodgrod Wortsnagga",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-07",
       "release_year": 2021,
@@ -16460,7 +16460,7 @@
     {
       "id": "MD-50562",
       "name": "Beastboss",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-09",
       "release_year": 2021,
@@ -16489,7 +16489,7 @@
     {
       "id": "MD-50563",
       "name": "Boyz",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-09",
       "release_year": 2021,
@@ -16518,7 +16518,7 @@
     {
       "id": "MD-50564",
       "name": "Deffkoptas",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-09",
       "release_year": 2021,
@@ -16547,7 +16547,7 @@
     {
       "id": "MD-50565",
       "name": "Warboss in Mega Armour",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-09",
       "release_year": 2021,
@@ -16576,7 +16576,7 @@
     {
       "id": "MD-50566",
       "name": "Beastboss on Squigosaur",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-10",
       "release_year": 2021,
@@ -16605,7 +16605,7 @@
     {
       "id": "MD-50567",
       "name": "Hunta Rig",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-10",
       "release_year": 2021,
@@ -16634,7 +16634,7 @@
     {
       "id": "MD-50568",
       "name": "Kill Rig",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-10",
       "release_year": 2021,
@@ -16663,7 +16663,7 @@
     {
       "id": "MD-50569",
       "name": "Mozrog Skragbad",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-10",
       "release_year": 2021,
@@ -16692,7 +16692,7 @@
     {
       "id": "MD-50570",
       "name": "Painboss",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2021-10",
       "release_year": 2021,
@@ -16721,7 +16721,7 @@
     {
       "id": "MD-50571",
       "name": "Kill Team: Kommandos",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2022-01",
       "release_year": 2022,
@@ -16739,7 +16739,7 @@
     {
       "id": "MD-50572",
       "name": "Ork Warboss with Attack Squig",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2022-01",
       "release_year": 2022,
@@ -16757,7 +16757,7 @@
     {
       "id": "MD-50573",
       "name": "Da Red Gobbo's Nemesis",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2023-11",
       "release_year": 2023,
@@ -16775,7 +16775,7 @@
     {
       "id": "MD-50574",
       "name": "Da Red Gobbo's Surprise",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2023-11",
       "release_year": 2023,
@@ -16793,7 +16793,7 @@
     {
       "id": "MD-50575",
       "name": "Ufthak Blackhawk",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2023-12",
       "release_year": 2023,
@@ -16822,7 +16822,7 @@
     {
       "id": "MD-50576",
       "name": "Big Mek",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2024-03",
       "release_year": 2024,
@@ -16851,7 +16851,7 @@
     {
       "id": "MD-50577",
       "name": "Da Red Gobbo",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2024-10",
       "release_year": 2024,
@@ -16880,7 +16880,7 @@
     {
       "id": "MD-50578",
       "name": "Kill Team: Storm Volkus",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2024-10",
       "release_year": 2024,
@@ -16898,7 +16898,7 @@
     {
       "id": "MD-50579",
       "name": "Da Red Gobbo with Robotic Contraption",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2025-10",
       "release_year": 2025,
@@ -16916,7 +16916,7 @@
     {
       "id": "MD-50580",
       "name": "Wazdakka Gutsmek",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2026-03",
       "release_year": 2026,
@@ -24654,7 +24654,7 @@
     {
       "id": "MD-50854",
       "name": "Fulgrim",
-      "faction_label": "Emperor\u00e2\u20ac\u2122s Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -24683,7 +24683,7 @@
     {
       "id": "MD-50855",
       "name": "Tormentors",
-      "faction_label": "Emperor's Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -24712,7 +24712,7 @@
     {
       "id": "MD-50856",
       "name": "Infractors",
-      "faction_label": "Emperor's Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -24741,7 +24741,7 @@
     {
       "id": "MD-50857",
       "name": "Flawless Blades",
-      "faction_label": "Emperor's Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -24770,7 +24770,7 @@
     {
       "id": "MD-50858",
       "name": "Lord Exultant",
-      "faction_label": "Emperor\u00e2\u20ac\u2122s Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -24799,7 +24799,7 @@
     {
       "id": "MD-50859",
       "name": "Lord Kakophonist",
-      "faction_label": "Emperor\u00e2\u20ac\u2122s Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -24828,7 +24828,7 @@
     {
       "id": "MD-50860",
       "name": "Lucius the Eternal",
-      "faction_label": "Emperor\u00e2\u20ac\u2122s Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2019-06",
       "release_year": 2019,
@@ -24857,7 +24857,7 @@
     {
       "id": "MD-50861",
       "name": "Chaos Rhino",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -24928,7 +24928,7 @@
     {
       "id": "MD-50862",
       "name": "Chaos Land Raider",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -24999,7 +24999,7 @@
     {
       "id": "MD-50863",
       "name": "Defiler",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -25070,13 +25070,13 @@
     {
       "id": "MD-50864",
       "name": "Daemon Prince",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Plastic Daemon Prince kit \u00e2\u20ac\u201d can be built as any god variant. Approximate release date.",
+      "note": "Plastic Daemon Prince kit â€” can be built as any god variant. Approximate release date.",
       "flags": [
         "Shared Multi-kit"
       ],
@@ -25151,7 +25151,7 @@
     {
       "id": "MD-50865",
       "name": "Daemon Prince with Wings",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-10",
       "release_year": 2012,
@@ -25271,7 +25271,7 @@
     {
       "id": "MD-50867",
       "name": "Sorcerer",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2019-11",
       "release_year": 2019,
@@ -25373,13 +25373,13 @@
     {
       "id": "MD-50869",
       "name": "Defiler",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "New 2026 sculpt \u00e2\u20ac\u201d the 2012 kit entry is tracked separately.",
+      "note": "New 2026 sculpt â€” the 2012 kit entry is tracked separately.",
       "flags": [
         "Shared Multi-kit"
       ],
@@ -25444,7 +25444,7 @@
     {
       "id": "MD-50870",
       "name": "Huron Blackheart",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25473,7 +25473,7 @@
     {
       "id": "MD-50871",
       "name": "Red Corsairs Reave-Captain",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25502,7 +25502,7 @@
     {
       "id": "MD-50872",
       "name": "Red Corsairs Raiders",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25531,7 +25531,7 @@
     {
       "id": "MD-50873",
       "name": "Mutilators",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25560,7 +25560,7 @@
     {
       "id": "MD-50874",
       "name": "Kravek Morne",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25589,7 +25589,7 @@
     {
       "id": "MD-50875",
       "name": "Garreon the Corpsemaster",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25607,7 +25607,7 @@
     {
       "id": "MD-50876",
       "name": "Katar Garrix",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25625,7 +25625,7 @@
     {
       "id": "MD-50877",
       "name": "Garlon Souleater",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25643,7 +25643,7 @@
     {
       "id": "MD-50878",
       "name": "Captain Sargotta",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25661,7 +25661,7 @@
     {
       "id": "MD-50879",
       "name": "Traitor Enforcer",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2025-11",
       "release_year": 2025,
@@ -25679,13 +25679,13 @@
     {
       "id": "MD-50880",
       "name": "Bigboss",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
-      "release_date": "2026-01",
+      "release_date": "2026-06",
       "release_year": 2026,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "No datasheet in CSV yet",
+      "note": "11th Edition Launch Box",
       "flags": [],
       "datasheet_links": [],
       "source": {
@@ -25697,7 +25697,7 @@
     {
       "id": "MD-50881",
       "name": "Dakkarig",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2026-01",
       "release_year": 2026,
@@ -25857,7 +25857,7 @@
     {
       "id": "MD-50884",
       "name": "Raptors",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -25886,7 +25886,7 @@
     {
       "id": "MD-50885",
       "name": "Warp Talons",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -25915,7 +25915,7 @@
     {
       "id": "MD-50886",
       "name": "Noise Marines",
-      "faction_label": "Emperor\u00e2\u20ac\u2122s Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -25954,7 +25954,7 @@
     {
       "id": "MD-50887",
       "name": "Lucius the Eternal",
-      "faction_label": "Emperor\u00e2\u20ac\u2122s Children",
+      "faction_label": "Chaos - Emperor's Children",
       "faction_id": "03fe-a162-4c02-f07b",
       "release_date": "2025-04",
       "release_year": 2025,
@@ -26030,7 +26030,7 @@
     {
       "id": "MD-50890",
       "name": "First of the Faithful",
-      "faction_label": "Genestealer Cult",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -26724,7 +26724,7 @@
     {
       "id": "MD-50917",
       "name": "Servitor Underseer",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -26742,7 +26742,7 @@
     {
       "id": "MD-50918",
       "name": "Gun Servitors",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -26760,7 +26760,7 @@
     {
       "id": "MD-50919",
       "name": "Combat Servitors",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2025-01",
       "release_year": 2025,
@@ -26872,8 +26872,8 @@
       "flags": [],
       "id": "MD-50925",
       "material": "Plastic",
-      "name": "\u00c3\u203athar the Destined / K\u00c3\u00a2hl",
-      "note": "Dual-build kit \u00e2\u20ac\u201d assembles as named character \u00c3\u203athar the Destined or a generic K\u00c3\u00a2hl. Launch Army Set.",
+      "name": "Ã›thar the Destined / KÃ¢hl",
+      "note": "Dual-build kit â€” assembles as named character Ã›thar the Destined or a generic KÃ¢hl. Launch Army Set.",
       "release_date": "2022-10",
       "release_year": 2022,
       "source": {
@@ -26962,7 +26962,7 @@
       "flags": [],
       "id": "MD-50930",
       "material": "Plastic",
-      "name": "Br\u00c3\u00b4khyr Thunderkyn",
+      "name": "BrÃ´khyr Thunderkyn",
       "note": "",
       "release_date": "2022-10",
       "release_year": 2022,
@@ -26980,7 +26980,7 @@
       "flags": [],
       "id": "MD-50931",
       "material": "Plastic",
-      "name": "Br\u00c3\u00b4khyr Iron-master",
+      "name": "BrÃ´khyr Iron-master",
       "note": "",
       "release_date": "2022-10",
       "release_year": 2022,
@@ -27071,7 +27071,7 @@
       "id": "MD-50936",
       "material": "Plastic",
       "name": "Hernkyn Yaegirs",
-      "note": "Kill Team: Termination box \u00e2\u20ac\u201d standalone release date TBC",
+      "note": "Kill Team: Termination box â€” standalone release date TBC",
       "release_date": "2024-05",
       "release_year": 2024,
       "source": {
@@ -27107,7 +27107,7 @@
       "id": "MD-50938",
       "material": "Plastic",
       "name": "Lord Invocatus / Chaos Lord on Juggernaut",
-      "note": "Dual-build kit \u00e2\u20ac\u201d Lord Invocatus (named) or generic Chaos Lord on Juggernaut",
+      "note": "Dual-build kit â€” Lord Invocatus (named) or generic Chaos Lord on Juggernaut",
       "release_date": "2023-02",
       "release_year": 2023,
       "source": {
@@ -27125,7 +27125,7 @@
       "id": "MD-50939",
       "material": "Plastic",
       "name": "Eightbound / Exalted Eightbound",
-      "note": "Dual-build kit \u00e2\u20ac\u201d Eightbound (standard) or Exalted Eightbound (upgraded)",
+      "note": "Dual-build kit â€” Eightbound (standard) or Exalted Eightbound (upgraded)",
       "release_date": "2023-02",
       "release_year": 2023,
       "source": {
@@ -27245,7 +27245,7 @@
     },
     {
       "id": "MD-50946",
-      "name": "Br\u00c3\u00b4khyr Thunderkyn",
+      "name": "BrÃ´khyr Thunderkyn",
       "faction_label": "Leagues of Votann",
       "faction_id": "f616-3f08-ee8e-3349",
       "release_date": "2022",
@@ -27264,7 +27264,7 @@
     {
       "id": "MD-50947",
       "name": "Patriarch",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016",
       "release_year": 2016,
@@ -27282,7 +27282,7 @@
     {
       "id": "MD-50948",
       "name": "Primus",
-      "faction_label": "Genestealer Cults",
+      "faction_label": "Xenos - Genestealer Cults",
       "faction_id": "3bdf-a114-5035-c6ac",
       "release_date": "2016",
       "release_year": 2016,
@@ -27318,7 +27318,7 @@
     {
       "id": "MD-50950",
       "name": "Possessed",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2006",
       "release_year": 2006,
@@ -27367,7 +27367,7 @@
     {
       "id": "MD-50951",
       "name": "Chosen",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2012-01",
       "release_year": 2012,
@@ -27406,7 +27406,7 @@
     {
       "id": "MD-50952",
       "name": "Chosen",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2007",
       "release_year": 2007,
@@ -27445,7 +27445,7 @@
     {
       "id": "MD-50953",
       "name": "Gretchin",
-      "faction_label": "Orks",
+      "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2009",
       "release_year": 2009,
@@ -27474,7 +27474,7 @@
     {
       "id": "MD-50954",
       "name": "Nemesis Claw",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2024",
       "release_year": 2024,
@@ -27548,7 +27548,7 @@
     {
       "id": "MD-50958",
       "name": "The Enforcer",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026",
       "release_year": 2026,
@@ -27566,7 +27566,7 @@
     {
       "id": "MD-50959",
       "name": "Plunder",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2026",
       "release_year": 2026,
@@ -27584,7 +27584,7 @@
     {
       "id": "MD-50960",
       "name": "Huron Blackheart",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2007",
       "release_year": 2007,
@@ -27779,7 +27779,7 @@
     {
       "id": "MD-50969",
       "name": "Vashtorr the Arkifane",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2023-03",
       "release_year": 2023,
@@ -27797,7 +27797,7 @@
     {
       "id": "MD-50970",
       "name": "Venomcrawler",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2022",
       "release_year": 2022,
@@ -27815,7 +27815,7 @@
     {
       "id": "MD-50971",
       "name": "Obliterators",
-      "faction_label": "Chaos Space Marines",
+      "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
       "release_date": "2022",
       "release_year": 2022,
@@ -27851,7 +27851,7 @@
     {
       "id": "MD-50973",
       "name": "Cybernetica Datasmith",
-      "faction_label": "Adeptus Mechanicus",
+      "faction_label": "Imperium - Adeptus Mechanicus",
       "faction_id": "77b9-2f66-3f9b-5cf3",
       "release_date": "2017",
       "release_year": 2017,
@@ -27881,6 +27881,107 @@
       "source": {
         "workbook": "manual",
         "sheet": "Space Marines",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50975",
+      "name": "Bannernob",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "11th Edition Launch Box",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Xenos - Orks",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50976",
+      "name": "Painboy",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "11th Edition Launch Box",
+      "flags": [],
+      "datasheet_links": [
+        {
+          "datasheet_id": "000000013",
+          "datasheet_name": "Painboy",
+          "faction_id": "ORK",
+          "matched_from": "datasheet",
+          "matched_name": "Painboy",
+          "confidence": 1.0,
+          "match_method": "exact",
+          "cross_faction": false
+        }
+      ],
+      "source": {
+        "workbook": "40K_-_Current_model_range_release_dates_Updated.xlsx",
+        "sheet": "Orks",
+        "row": 50
+      }
+    },
+    {
+      "id": "MD-50977",
+      "name": "Warboss",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "11th Edition Launch Box",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Xenos - Orks",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50978",
+      "name": "Weirdboy",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "11th Edition Launch Box",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Xenos - Orks",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50979",
+      "name": "Wartrakk",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Xenos - Orks",
         "row": 0
       }
     }

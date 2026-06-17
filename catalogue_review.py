@@ -17,6 +17,42 @@ CATALOGUE_IMAGE_DIR = os.path.join(BASE, "cache", "images", "catalogue")
 _CACHE = {}
 
 
+# ---------------------------------------------------------------------------
+# Faction-label canonicalisation
+#
+# `faction_label` is a denormalised, per-record display string. Legacy
+# spreadsheet imports seeded it from the worksheet tab title (e.g. "Orks"),
+# while newer add/edit paths wrote the data store's canonical faction name
+# (e.g. "Xenos - Orks"). The result was one faction_id carrying two different
+# strings, so a card's meta line and its group header could disagree.
+#
+# These aliases collapse each known drift variant onto the data store's
+# canonical faction name — the single string the rest of the app already uses —
+# so cards, group headers and the army picker all agree with no display-time
+# string munging. We deliberately do NOT touch faction_ids that legitimately
+# carry several sub-faction labels (Space Marine chapters, Aeldari branches,
+# Agents of the Imperium); those are meaningful distinctions finer-grained than
+# faction_id, not drift.
+FACTION_LABEL_ALIASES = {
+    "Orks": "Xenos - Orks",
+    "Adeptus Mechanicus": "Imperium - Adeptus Mechanicus",
+    "Chaos Space Marines": "Chaos - Chaos Space Marines",
+    "Genestealer Cult": "Xenos - Genestealer Cults",
+    "Genestealer Cults": "Xenos - Genestealer Cults",
+    "Emperor's Children": "Chaos - Emperor's Children",
+    "Emperorâ€™s Children": "Chaos - Emperor's Children",  # mojibake repair
+    "Imperium - Adeptus Astartes - Space Marines": "Space Marines",       # rejoin generic SM group
+}
+
+
+def canonical_faction_label(label):
+    """Map a stored faction_label onto its canonical display form (see above)."""
+    if not label:
+        return label
+    stripped = label.strip()
+    return FACTION_LABEL_ALIASES.get(stripped, stripped)
+
+
 def _faction_icon_url(fid, name):
     icon_dir = os.path.join(BASE, "static", "icons")
     candidates = [
@@ -172,7 +208,7 @@ def catalogue_payload():
         items.append({
             "id": cid,
             "name": fo.get("name") or resolution.get("name_override") or record.get("name", ""),
-            "faction_label": record.get("faction_label", ""),
+            "faction_label": canonical_faction_label(record.get("faction_label", "")),
             "faction_id": source_faction,
             "army_ids": sorted(army_ids),
             "release_date": fo.get("release_date", record.get("release_date", "")),
@@ -250,7 +286,7 @@ def catalogue_model_index():
                 "name": r.get("name", ""),
                 "release_year": r.get("release_year"),
                 "material": r.get("material", ""),
-                "faction_label": r.get("faction_label", ""),
+                "faction_label": canonical_faction_label(r.get("faction_label", "")),
             }
     _CACHE[key] = index
     return index
@@ -295,7 +331,7 @@ def _catalogue_models_by_datasheet():
                 "release_year": r.get("release_year"),
                 "release_date": r.get("release_date", ""),
                 "material": r.get("material", ""),
-                "faction_label": r.get("faction_label", ""),
+                "faction_label": canonical_faction_label(r.get("faction_label", "")),
                 "note": r.get("note", ""),
                 "status": r.get("status", ""),
                 "image_url": f"/api/model-catalogue/{cid}/image" if img_path else None,

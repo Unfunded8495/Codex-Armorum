@@ -3488,10 +3488,10 @@
     {
       "catalogue_model_id": "MD-50538",
       "action": "no_current_datasheet",
-      "catalogue_type": "model_release",
+      "catalogue_type": "",
       "datasheet_ids": [],
       "notes": "",
-      "updated_at": 1780330171.344488
+      "updated_at": 1781648791.8483891
     },
     {
       "catalogue_model_id": "MD-50539",
@@ -3564,12 +3564,12 @@
     {
       "catalogue_model_id": "MD-50546",
       "action": "link_datasheet",
-      "catalogue_type": "model_release",
+      "catalogue_type": "",
       "datasheet_ids": [
         "7669-1442-2c0b-e0c9"
       ],
       "notes": "",
-      "updated_at": 1781555124.4949365
+      "updated_at": 1781648972.9829974
     },
     {
       "catalogue_model_id": "MD-50547",
@@ -3600,12 +3600,12 @@
     {
       "catalogue_model_id": "MD-50550",
       "action": "link_datasheet",
-      "catalogue_type": "model_release",
+      "catalogue_type": "",
       "datasheet_ids": [
         "ca85-1d18-dc30-d64e"
       ],
       "notes": "",
-      "updated_at": 1781555124.4949365
+      "updated_at": 1781684446.735129
     },
     {
       "catalogue_model_id": "MD-50551",
@@ -5965,6 +5965,14 @@
       "updated_at": 1780411356.5342357
     },
     {
+      "catalogue_model_id": "MD-50880",
+      "action": "no_current_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [],
+      "notes": "",
+      "updated_at": 1781684230.4141905
+    },
+    {
       "catalogue_model_id": "MD-50884",
       "action": "link_datasheet",
       "catalogue_type": "model_release",
@@ -6586,6 +6594,50 @@
       ],
       "notes": "Lieutenant with Combi-weapon from Leviathan box",
       "updated_at": 1781562153.327801
+    },
+    {
+      "catalogue_model_id": "MD-50975",
+      "action": "no_current_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [],
+      "notes": "",
+      "updated_at": 1781648887.5931628
+    },
+    {
+      "catalogue_model_id": "MD-50976",
+      "action": "link_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [
+        "000000013"
+      ],
+      "notes": "",
+      "updated_at": 1781648951.5139523
+    },
+    {
+      "catalogue_model_id": "MD-50977",
+      "action": "no_current_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [],
+      "notes": "",
+      "updated_at": 1781684186.2137837
+    },
+    {
+      "catalogue_model_id": "MD-50978",
+      "action": "link_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [
+        "260d-9ce4-ea1f-a957"
+      ],
+      "notes": "",
+      "updated_at": 1781684276.3567863
+    },
+    {
+      "catalogue_model_id": "MD-50979",
+      "action": "no_current_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [],
+      "notes": "",
+      "updated_at": 1781684329.7498658
     }
   ]
 }
