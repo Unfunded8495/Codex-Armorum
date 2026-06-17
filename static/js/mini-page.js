@@ -244,7 +244,7 @@ function mpPhotoThumb(p, gcid, idx){
 
 function mpPhotoTile(p, mid){
   return `<div class="shot" data-id="${p.id}">
-    <img src="${p.url}" alt="${esc(p.caption||'')}" onclick="openLightbox(${jsStr(p.url)},${jsStr(p.caption||'')})">
+    <img src="${esc(p.url)}" alt="${esc(p.caption||'')}" onclick="openLightbox(${esc(jsStr(p.url))},${esc(jsStr(p.caption||''))})">
     <button class="del" onclick="mpDeletePhoto('${p.id}','${mid}')">&times;</button>
   </div>`;
 }
@@ -666,7 +666,7 @@ export async function mpDeletePhoto(pid, mid){
    ==================================================================== */
 function mpWipPhotoTile(p){
   return `<div class="shot" data-id="${p.id}">
-    <img src="${p.url}" alt="${esc(p.caption||'')}" onclick="openLightbox(${jsStr(p.url)},${jsStr(p.caption||'')})">
+    <img src="${esc(p.url)}" alt="${esc(p.caption||'')}" onclick="openLightbox(${esc(jsStr(p.url))},${esc(jsStr(p.caption||''))})">
     <button class="del" onclick="mpDeleteWipPhoto('${p.id}')" title="Remove photo">&times;</button>
   </div>`;
 }
