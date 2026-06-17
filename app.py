@@ -393,6 +393,27 @@ def api_detachment_enhancements(dtid):
 
 
 # ---------------------------------------------------------------- unit api
+def _canon_did(did):
+    """Resolve a datasheet id (GUID or Wahapedia alias) to its canonical BSData
+    GUID so unit-level records key consistently regardless of which alias the
+    page was reached by. Falls back to the id as given when unresolvable."""
+    return store.ds_by_id.get(did, {}).get("id") or did
+
+
+def _unit_wip(c, did):
+    """Return (notes, photos) for the unit-level Work in Progress section."""
+    key = _canon_did(did)
+    row = c.execute("SELECT notes FROM unit_wip WHERE datasheet_id=?", (key,)).fetchone()
+    notes = row["notes"] if row else ""
+    photos = c.execute(
+        "SELECT id, filename, caption FROM unit_wip_photos"
+        " WHERE datasheet_id=? ORDER BY uploaded_at", (key,)).fetchall()
+    return notes, [
+        {"id": p["id"], "url": f"/uploads/{p['filename']}", "caption": p["caption"]}
+        for p in photos
+    ]
+
+
 @app.route("/api/units/<did>")
 def api_unit(did):
     from db import db
@@ -407,6 +428,7 @@ def api_unit(did):
     cat_index = catalogue_model_index()
     with db() as c:
         minis = _minis_for(c, did)
+        detail["wip_notes"], detail["wip_photos"] = _unit_wip(c, did)
     for m in minis:
         cid = m.get("catalogue_model_id")
         m["catalogue_model"] = cat_index.get(cid) if cid else None
@@ -698,6 +720,79 @@ def api_upload_mini_photos(mid):
                 pass
         raise
     return jsonify({"ok": True, "photos": saved})
+
+
+# ---------------------------------------------------------------- unit WIP notes
+@app.route("/api/units/<did>/wip-notes", methods=["POST"])
+def api_save_wip_notes(did):
+    from db import db
+    notes = str(request.get_json(force=True).get("notes", ""))[:8000]
+    key = _canon_did(did)
+    now = time.time()
+    with db() as c:
+        c.execute(
+            "INSERT INTO unit_wip(datasheet_id, notes, updated_at) VALUES(?,?,?)"
+            " ON CONFLICT(datasheet_id) DO UPDATE SET"
+            " notes=excluded.notes, updated_at=excluded.updated_at",
+            (key, notes, now),
+        )
+    return jsonify({"ok": True})
+
+
+@app.route("/api/units/<did>/wip-photos", methods=["POST"])
+def api_upload_wip_photos(did):
+    from db import db
+    key = _canon_did(did)
+    saved = []
+    db_rows = []
+    written_paths = []
+    files = request.files.getlist("photos")
+    try:
+        for f in files:
+            ext = os.path.splitext(f.filename)[1].lower()
+            if ext == ".jpeg":
+                ext = ".jpg"
+            if ext not in ALLOWED:
+                continue
+            image, error = _read_image_upload(f, MAX_UPLOAD_BYTES)
+            if error:
+                continue
+            blob, ext = image
+            pid = uuid.uuid4().hex
+            fname = f"{pid}{ext}"
+            path = os.path.join(UPLOAD_DIR, fname)
+            with open(path, "wb") as fh:
+                fh.write(blob)
+            written_paths.append(path)
+            db_rows.append((pid, key, fname, "", time.time()))
+            saved.append({"id": pid, "url": f"/uploads/{fname}", "caption": ""})
+        with db() as c:
+            c.executemany(
+                "INSERT INTO unit_wip_photos(id, datasheet_id, filename, caption, uploaded_at)"
+                " VALUES(?,?,?,?,?)", db_rows)
+    except Exception:
+        for path in written_paths:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+        raise
+    return jsonify({"ok": True, "photos": saved})
+
+
+@app.route("/api/wip-photos/<pid>", methods=["DELETE"])
+def api_delete_wip_photo(pid):
+    from db import db
+    with db() as c:
+        row = c.execute("SELECT filename FROM unit_wip_photos WHERE id=?", (pid,)).fetchone()
+        if not row:
+            abort(404)
+        c.execute("DELETE FROM unit_wip_photos WHERE id=?", (pid,))
+    try:
+        os.remove(os.path.join(UPLOAD_DIR, row["filename"]))
+    except OSError:
+        pass
+    return jsonify({"ok": True})
 
 
 # ---------------------------------------------------------------- reference image

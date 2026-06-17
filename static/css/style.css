@@ -1786,6 +1786,13 @@ a.brand{text-decoration:none;color:inherit}
 .mp-ds-link:hover{color:var(--gold-bright)}
 .mp-mini-list{display:flex;flex-direction:column;gap:10px}
 
+/* ---- Work in Progress notes (unit-level) ---- */
+.mp-wip{margin-top:16px;border-top:1px solid rgba(44,42,53,.6);padding-top:12px}
+.mp-wip-summary{font-size:13px;letter-spacing:1px;color:var(--gold)}
+.mp-wip-summary:hover{color:var(--gold-bright)}
+.mp-wip-body{margin-top:10px}
+.mp-wip-notes{min-height:84px}
+
 /* ══ COLLECTION STATS DASHBOARD ═════════════════════════════ */
 .col-page-head{
   display:flex;flex-direction:column;gap:8px;margin-bottom:24px;

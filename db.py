@@ -165,6 +165,22 @@ def init_db():
             caption TEXT DEFAULT '',
             uploaded_at REAL NOT NULL)""")
 
+        # Unit-level "Work in Progress" notes — one free-text record per
+        # datasheet, independent of any individual mini.
+        c.execute("""CREATE TABLE IF NOT EXISTS unit_wip(
+            datasheet_id TEXT PRIMARY KEY,
+            notes TEXT DEFAULT '',
+            updated_at REAL NOT NULL)""")
+
+        # Unit-level WIP photos — shared gallery for the datasheet, separate
+        # from the per-mini `photos` table (which requires a mini_id).
+        c.execute("""CREATE TABLE IF NOT EXISTS unit_wip_photos(
+            id TEXT PRIMARY KEY,
+            datasheet_id TEXT NOT NULL,
+            filename TEXT NOT NULL,
+            caption TEXT DEFAULT '',
+            uploaded_at REAL NOT NULL)""")
+
         c.execute("""CREATE TABLE IF NOT EXISTS favourite_factions(
             faction_id TEXT PRIMARY KEY,
             created_at REAL NOT NULL)""")
@@ -345,6 +361,7 @@ def init_db():
             "CREATE INDEX IF NOT EXISTS idx_minis_datasheet ON minis(datasheet_id)",
             "CREATE INDEX IF NOT EXISTS idx_minis_unit_bsdata ON minis(unit_bsdata_id)",
             "CREATE INDEX IF NOT EXISTS idx_photos_mini ON photos(mini_id)",
+            "CREATE INDEX IF NOT EXISTS idx_wip_photos_did ON unit_wip_photos(datasheet_id)",
             "CREATE INDEX IF NOT EXISTS idx_army_units_list ON army_units(army_list_id)",
             "CREATE INDEX IF NOT EXISTS idx_army_units_datasheet ON army_units(datasheet_id)",
             "CREATE INDEX IF NOT EXISTS idx_box_contents_box ON custom_box_set_contents(box_set_id)",

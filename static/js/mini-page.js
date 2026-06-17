@@ -146,11 +146,13 @@ function mpRenderPage(){
         <div style="margin-top:18px">
           <a class="mp-ds-link" href="/#/unit/${esc(rep.datasheet_id)}">View Full Datasheet →</a>
         </div>
+        ${mpRenderWipSection()}
       </div>
     </div>`;
 
   if(mpCatalogueItems.length) mpCatWireCards();
   mpWireDropZones();
+  mpWireWipDropZone();
 }
 
 function mpRefreshProgress(){
@@ -657,6 +659,85 @@ export async function mpDeletePhoto(pid, mid){
   const m = mpMinis.find(x=>x.id===mid);
   if(m) m.photos = (m.photos||[]).filter(p=>p.id!==pid);
   mpRefreshUnitMiniList();
+}
+
+/* ====================================================================
+   WORK IN PROGRESS NOTES (unit-level)
+   ==================================================================== */
+function mpWipPhotoTile(p){
+  return `<div class="shot" data-id="${p.id}">
+    <img src="${p.url}" alt="${esc(p.caption||'')}" onclick="openLightbox(${jsStr(p.url)},${jsStr(p.caption||'')})">
+    <button class="del" onclick="mpDeleteWipPhoto('${p.id}')" title="Remove photo">&times;</button>
+  </div>`;
+}
+
+function mpWipUploaderTile(){
+  return `<label class="uploader" id="mpWipUploader">
+    + Add Photos
+    <input type="file" accept="image/*" multiple hidden onchange="mpUploadWipPhotos(this.files)">
+  </label>`;
+}
+
+function mpRenderWipSection(){
+  const notes  = mpUnit?.wip_notes  || '';
+  const photos = mpUnit?.wip_photos || [];
+  return `<details class="mp-wip" id="mpWip"${notes||photos.length?' open':''}>
+    <summary class="mgc-summary mp-wip-summary">Work in Progress Notes</summary>
+    <div class="mp-wip-body">
+      <textarea class="mc-notes mp-wip-notes" id="mpWipNotes"
+        placeholder="General notes — colour recipes, conversion ideas, basing plans…"
+        oninput="mpSaveUnitNotes(this.value)">${esc(notes)}</textarea>
+      <div class="mc-gallery" id="mpWipGallery">
+        ${photos.map(p=>mpWipPhotoTile(p)).join('')}
+        ${mpWipUploaderTile()}
+      </div>
+    </div>
+  </details>`;
+}
+
+function mpRefreshWipGallery(){
+  const gal = document.getElementById('mpWipGallery');
+  if(!gal) return;
+  const photos = mpUnit?.wip_photos || [];
+  gal.innerHTML = photos.map(p=>mpWipPhotoTile(p)).join('') + mpWipUploaderTile();
+  mpWireWipDropZone();
+}
+
+function mpWireWipDropZone(){
+  const up = document.getElementById('mpWipUploader');
+  if(!up) return;
+  ['dragover','dragenter'].forEach(ev=>up.addEventListener(ev,e=>{e.preventDefault();up.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>up.addEventListener(ev,e=>{e.preventDefault();up.classList.remove('drag');}));
+  up.addEventListener('drop',e=>mpUploadWipPhotos(e.dataTransfer.files));
+}
+
+export function mpSaveUnitNotes(value){
+  if(mpUnit) mpUnit.wip_notes = value;
+  clearTimeout(MP_NOTE_TIMERS.__wip);
+  MP_NOTE_TIMERS.__wip = setTimeout(()=>{
+    api(`/api/units/${encodeURIComponent(mpDatasheetId)}/wip-notes`, {method:'POST',
+      headers:{'Content-Type':'application/json'}, body:JSON.stringify({notes:value})}).catch(()=>{});
+  }, 600);
+}
+
+export async function mpUploadWipPhotos(files){
+  if(!files||!files.length) return;
+  const up = document.getElementById('mpWipUploader');
+  if(up){ up.classList.add('busy'); up.childNodes[0].textContent='Uploading…'; }
+  const fd = new FormData();
+  [...files].forEach(f=>fd.append('photos',f));
+  try{
+    const res = await api(`/api/units/${encodeURIComponent(mpDatasheetId)}/wip-photos`, {method:'POST', body:fd});
+    if(mpUnit && res.photos) mpUnit.wip_photos = [...(mpUnit.wip_photos||[]), ...res.photos];
+  }catch(e){ console.error('WIP photo upload failed', e); }
+  mpRefreshWipGallery();
+}
+
+export async function mpDeleteWipPhoto(pid){
+  if(!confirm('Remove this photo?')) return;
+  await fetch(`/api/wip-photos/${pid}`, {method:'DELETE'});
+  if(mpUnit) mpUnit.wip_photos = (mpUnit.wip_photos||[]).filter(p=>p.id!==pid);
+  mpRefreshWipGallery();
 }
 
 /* ====================================================================
@@ -1353,6 +1434,7 @@ Object.assign(window, {
   mpEditMiniGear,   mpSaveMiniGear,
   mpSaveMiniNotes,
   mpUploadToMini,   mpDeletePhoto,
+  mpSaveUnitNotes,  mpUploadWipPhotos, mpDeleteWipPhoto,
   mpDeleteMini,     mpDeleteOneFromGroup,
   mpOpenGroupOverlay, mpCloseGroupOverlay, mpOverlayNav,
 });
