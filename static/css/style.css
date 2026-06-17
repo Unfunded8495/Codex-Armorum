@@ -481,6 +481,37 @@ main{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:32px 30p
 /* In the mini page left column, catalogue card images display portrait */
 .detail-media .catalogue-image{aspect-ratio:4/5}
 
+/* Left-column model carousel: swipe / scroll between the owned sculpts */
+.mp-cat-carousel{position:relative}
+.mp-cat-track{
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.mp-cat-track::-webkit-scrollbar{display:none}
+.mp-cat-track>.catalogue-card{flex:0 0 100%;scroll-snap-align:start}
+.mp-cat-nav{
+  position:absolute;top:38%;transform:translateY(-50%);z-index:3;
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--gold);background:rgba(10,10,12,.72);color:var(--gold-bright);
+  font-family:'Cinzel',serif;font-size:22px;line-height:1;cursor:pointer;
+  transition:background .15s,opacity .15s;
+}
+.mp-cat-nav:hover{background:rgba(199,154,58,.22)}
+.mp-cat-prev{left:6px}
+.mp-cat-next{right:6px}
+.mp-cat-nav:disabled{opacity:.22;cursor:default}
+.mp-cat-nav:disabled:hover{background:rgba(10,10,12,.72)}
+.mp-cat-dots{
+  position:absolute;left:50%;transform:translateX(-50%);z-index:3;
+  display:flex;gap:7px;padding:5px 9px;
+  background:rgba(10,10,12,.6);border:1px solid rgba(199,154,58,.3);
+}
+.mp-cat-dot{
+  width:8px;height:8px;padding:0;border-radius:50%;cursor:pointer;
+  border:1px solid var(--gold);background:transparent;transition:background .15s,transform .15s;
+}
+.mp-cat-dot.is-active{background:var(--gold-bright);transform:scale(1.18)}
+
 .owned-panel{
   margin-top:12px;background:var(--panel);
   border:1px solid var(--edge);border-left:2px solid var(--gold);

@@ -19,6 +19,7 @@ const MP_GROUP_PHOTOS = new Map();
 const MP_NOTE_TIMERS  = {};
 let mpOverlayPhotos = [];
 let mpOverlayIndex  = 0;
+let mpCarouselResizeHandler = null;
 
 /* ---- catalogue card state ---- */
 let mpCatalogueItems    = [];
@@ -68,25 +69,28 @@ export async function showMiniPage(did){
     {label:rep.datasheet_name},
   ]);
 
-  // Fetch full catalogue card data for the releases the user actually owns.
-  // Each mini carries the catalogue model matching the datasheet it's shown under (the
-  // collection API remaps multikit minis to the sibling unit's sculpt), so intersect the
-  // owned models with this datasheet's linked releases. Owning more than one era (e.g.
-  // the 2012 and 2025 sculpts) shows each release separately. Fall back to every linked
-  // release when nothing matches.
+  // Fetch full catalogue card data for every sculpt the user actually owns under this
+  // datasheet. The collection API remaps each mini's catalogue_model_id to the sculpt
+  // matching the datasheet it's shown under, so the distinct owned models ARE the releases
+  // to show — including ones the datasheet hasn't been formally linked to yet (e.g. owning
+  // both the standard box and the Easy-To-Build set). The most-owned sculpt leads. Fall
+  // back to the datasheet's linked releases only when no mini carries a catalogue model.
   mpCatalogueItems = [];
   mpCatalogueFactions = [];
-  const ownedModelIds  = new Set(mpMinis.map(m => m.catalogue_model_id).filter(Boolean));
-  const allLinkedIds   = (mpUnit?.linked_catalogue_models || []).map(m => m.id).filter(Boolean);
-  const ownedLinkedIds = allLinkedIds.filter(id => ownedModelIds.has(id));
-  const linkedIds = ownedLinkedIds.length ? ownedLinkedIds : allLinkedIds;
+  const ownedCounts = new Map();
+  for(const m of mpMinis){
+    if(m.catalogue_model_id) ownedCounts.set(m.catalogue_model_id, (ownedCounts.get(m.catalogue_model_id) || 0) + 1);
+  }
+  const ownedModelIds = [...ownedCounts.entries()].sort((a, b) => b[1] - a[1]).map(e => e[0]);
+  const allLinkedIds  = (mpUnit?.linked_catalogue_models || []).map(m => m.id).filter(Boolean);
+  const linkedIds = ownedModelIds.length ? ownedModelIds : allLinkedIds;
   if(linkedIds.length){
     try{
       const results = await Promise.all(
         linkedIds.map(id => api(`/api/model-catalogue/${encodeURIComponent(id)}`))
       );
       mpCatalogueItems = results.map(r => r.item).filter(Boolean);
-      mpCatalogueFactions = results[0]?.factions || [];
+      mpCatalogueFactions = results.find(r => r.factions?.length)?.factions || [];
     }catch(e){ /* fall back to hero image */ }
   }
 
@@ -109,10 +113,6 @@ function mpRenderPage(){
   const legend  = mpUnit?.legend || '';
   const faction = mpUnit?.faction_name || rep.faction_name;
 
-  const linkedModels = mpUnit?.linked_catalogue_models || [];
-  const heroImg = linkedModels.find(m=>m.image_url)?.image_url
-    || `/api/units/${esc(rep.datasheet_id)}/image`;
-
   const ownedPanel = `<div class="owned-panel">
     <div class="owned-readout">
       <b>${total}</b> <span>mini${total===1?'':'s'} in collection</span>
@@ -125,16 +125,10 @@ function mpRenderPage(){
     </div>
   </div>`;
 
-  const leftColInner = mpCatalogueItems.length
-    ? `<div id="mpCatalogueCol">${mpCatalogueItems.map(item => mpCatRenderCard(item)).join('')}</div>${ownedPanel}`
-    : `<div class="hero-wrap">
-         <img class="hero-img" src="${esc(heroImg)}" alt="${esc(name)}" style="border-color:${accent}">
-       </div>${ownedPanel}`;
-
   view.innerHTML = `
     <div class="detail-wrap">
       <div class="detail-media">
-        ${leftColInner}
+        ${mpLeftMediaHtml()}${ownedPanel}
       </div>
       <div class="detail-info">
         <h1 class="detail-name" style="color:${readableInk(accent)}">${esc(name)}</h1>
@@ -150,9 +144,99 @@ function mpRenderPage(){
       </div>
     </div>`;
 
-  if(mpCatalogueItems.length) mpCatWireCards();
+  mpWireLeftMedia();
   mpWireDropZones();
   mpWireWipDropZone();
+}
+
+/* Build the left-column media: a swipeable carousel of the owned sculpt cards when the
+   user owns more than one, a single card when they own one, or the hero image fallback. */
+function mpLeftMediaHtml(){
+  if(mpCatalogueItems.length){
+    const cards = mpCatalogueItems.map(item => mpCatRenderCard(item)).join('');
+    if(mpCatalogueItems.length === 1) return `<div id="mpCatalogueCol">${cards}</div>`;
+    const dots = mpCatalogueItems.map((it, i) =>
+      `<button class="mp-cat-dot${i===0?' is-active':''}" data-idx="${i}" type="button" aria-label="Show ${esc(it.name)}"></button>`
+    ).join('');
+    return `<div class="mp-cat-carousel" id="mpCatCarousel">
+      <div class="mp-cat-track" id="mpCatalogueCol">${cards}</div>
+      <button class="mp-cat-nav mp-cat-prev" type="button" aria-label="Previous model">‹</button>
+      <button class="mp-cat-nav mp-cat-next" type="button" aria-label="Next model">›</button>
+      <div class="mp-cat-dots">${dots}</div>
+    </div>`;
+  }
+  const rep    = mpMinis[0];
+  const accent = mpUnit?.accent || 'var(--gold)';
+  const name   = mpUnit?.name   || rep.datasheet_name;
+  const heroImg = (mpUnit?.linked_catalogue_models || []).find(m=>m.image_url)?.image_url
+    || `/api/units/${esc(rep.datasheet_id)}/image`;
+  return `<div class="hero-wrap">
+    <img class="hero-img" src="${esc(heroImg)}" alt="${esc(name)}" style="border-color:${accent}">
+  </div>`;
+}
+
+function mpWireLeftMedia(){
+  if(!mpCatalogueItems.length) return;
+  mpCatWireCards();
+  mpCatWireCarousel();
+}
+
+/* Re-render just the left-column media (used after a card is added/removed/edited). */
+function mpRerenderLeftMedia(){
+  const media = document.querySelector('.detail-media');
+  if(!media) return;
+  const ownedPanel = media.querySelector('.owned-panel');
+  const next = document.createElement('div');
+  next.innerHTML = mpLeftMediaHtml();
+  [...media.children].forEach(ch => { if(ch !== ownedPanel) ch.remove(); });
+  if(next.firstElementChild) media.insertBefore(next.firstElementChild, ownedPanel);
+  mpWireLeftMedia();
+}
+
+function mpCatWireCarousel(){
+  const car = document.getElementById('mpCatCarousel');
+  if(!car) return;
+  const track = car.querySelector('#mpCatalogueCol');
+  const cards = [...track.querySelectorAll('.catalogue-card')];
+  const dots  = [...car.querySelectorAll('.mp-cat-dot')];
+  const prev  = car.querySelector('.mp-cat-prev');
+  const next  = car.querySelector('.mp-cat-next');
+  if(cards.length < 2) return;
+
+  const indexFor = () => Math.min(cards.length - 1, Math.max(0, Math.round(track.scrollLeft / track.clientWidth)));
+  const goTo = i => cards[i]?.scrollIntoView({behavior:'smooth', inline:'start', block:'nearest'});
+
+  prev?.addEventListener('click', () => goTo(indexFor() - 1));
+  next?.addEventListener('click', () => goTo(indexFor() + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.idx)));
+
+  // Pin the overlay controls to the artwork: arrows at its vertical centre, dots near
+  // its lower edge. The artwork is the tallest element, so the card itself runs longer.
+  const dotsEl = car.querySelector('.mp-cat-dots');
+  const placeArrows = () => {
+    const img = track.querySelector('.catalogue-image');
+    if(!img) return;
+    const imgTop = img.getBoundingClientRect().top - car.getBoundingClientRect().top;
+    [prev, next].forEach(b => { if(b) b.style.top = `${imgTop + img.offsetHeight / 2}px`; });
+    if(dotsEl) dotsEl.style.top = `${imgTop + img.offsetHeight - 22}px`;
+  };
+  const sync = () => {
+    const i = indexFor();
+    dots.forEach((d, j) => d.classList.toggle('is-active', j === i));
+    if(prev) prev.disabled = i === 0;
+    if(next) next.disabled = i === cards.length - 1;
+  };
+
+  let raf = 0;
+  track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(sync); });
+  track.querySelectorAll('.catalogue-image img').forEach(im => {
+    if(!im.complete) im.addEventListener('load', placeArrows, {once:true});
+  });
+  if(mpCarouselResizeHandler) window.removeEventListener('resize', mpCarouselResizeHandler);
+  mpCarouselResizeHandler = () => { placeArrows(); sync(); };
+  window.addEventListener('resize', mpCarouselResizeHandler);
+  placeArrows();
+  sync();
 }
 
 function mpRefreshProgress(){
@@ -973,10 +1057,10 @@ async function mpRefreshCatalogueCards(){
       ids.map(id => api(`/api/model-catalogue/${encodeURIComponent(id)}`))
     );
     mpCatalogueItems = results.map(r => r.item).filter(Boolean);
-    if(results[0]?.factions) mpCatalogueFactions = results[0].factions;
+    const f = results.find(r => r.factions?.length)?.factions;
+    if(f) mpCatalogueFactions = f;
   }catch(e){ return; }
-  const col = document.getElementById('mpCatalogueCol');
-  if(col) col.innerHTML = mpCatalogueItems.map(item => mpCatRenderCard(item)).join('');
+  mpRerenderLeftMedia();
 }
 
 async function mpCatDelete(cid){
@@ -988,17 +1072,7 @@ async function mpCatDelete(cid){
     const json = await r.json();
     if(!r.ok) throw new Error(json.error || `HTTP ${r.status}`);
     mpCatalogueItems = mpCatalogueItems.filter(i => i.id !== cid);
-    const col = document.getElementById('mpCatalogueCol');
-    if(col){
-      if(mpCatalogueItems.length){
-        col.innerHTML = mpCatalogueItems.map(i => mpCatRenderCard(i)).join('');
-      } else {
-        const accent = mpUnit?.accent || 'var(--gold)';
-        col.outerHTML = `<div class="hero-wrap">
-          <img class="hero-img" src="/api/units/${esc(mpDatasheetId)}/image" alt="" style="border-color:${accent}">
-        </div>`;
-      }
-    }
+    mpRerenderLeftMedia();
   }catch(e){ alert(`Could not delete: ${e.message}`); }
 }
 

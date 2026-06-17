@@ -183,8 +183,18 @@ def _option_members(group):
     return out
 
 
-def _process_option_group(group, label):
+def _is_wargear_member(node, weapon_id, weapon_ids):
+    """True if an option member is a weapon/wargear pick rather than an abstract
+    choice (Mark of Chaos, allegiance, …). Members can be inline selectionEntries
+    that carry a weapon profile, or entryLinks whose target is a known weapon."""
+    if node.tag.endswith('selectionEntry') and _has_weapon_profile(node):
+        return True
+    return bool(weapon_ids) and weapon_id in weapon_ids
+
+
+def _process_option_group(group, label, weapon_ids=None):
     """Option lines for an option-bearing selectionEntryGroup on a model."""
+    weapon_ids = weapon_ids or set()
     lines = []
     gmin, gmax = _sel_con(group, 'min'), _sel_con(group, 'max')
     default_id = group.get('defaultSelectionEntryId')
@@ -206,6 +216,12 @@ def _process_option_group(group, label):
     elif gmax == 1 and gmin in (None, 0) and len(members) > 1:
         lines.append(f"{label} can be equipped with one of the "
                      f"following:{_ul([nm for (_, _, nm, _w) in members])}")
+    elif (gmin == 1 and gmax == 1 and not default_id and len(members) > 1
+          and any(_is_wargear_member(n, w, weapon_ids) for (n, _i, _nm, w) in members)):
+        # Pick-exactly-one with no marked default: a mandatory weapon choice
+        # (skipped unless the members are weapons, to avoid Marks/allegiance).
+        lines.append(f"{label} can be equipped with one of the "
+                     f"following:{_ul([nm for (_, _, nm, _w) in members])}")
     else:
         # Container / multi-pick group: each optional member is its own add-on.
         for (node, _i, nm, _w) in members:
@@ -213,11 +229,11 @@ def _process_option_group(group, label):
                 lines.append(f"{label} can be equipped with {_sel_con(node, 'max')} {nm}.")
 
     for sub in group.findall('bs:selectionEntryGroups/bs:selectionEntryGroup', NS_CAT):
-        lines += _process_option_group(sub, label)
+        lines += _process_option_group(sub, label, weapon_ids)
     return lines
 
 
-def _process_model_options(model, label):
+def _process_model_options(model, label, weapon_ids=None):
     """Options attached directly to one model/single-model entry."""
     lines = []
     ses = model.find('bs:selectionEntries', NS_CAT)
@@ -234,7 +250,7 @@ def _process_model_options(model, label):
     groups = model.find('bs:selectionEntryGroups', NS_CAT)
     if groups is not None:
         for g in groups.findall('bs:selectionEntryGroup', NS_CAT):
-            lines += _process_option_group(g, label)
+            lines += _process_option_group(g, label, weapon_ids)
     return lines
 
 
@@ -259,7 +275,14 @@ def _bulk_model_members(group):
             if m.get('type') == 'model']
 
 
-def _process_bulk_group(group):
+def _variant_label(variant):
+    """GW-style label for one model variant inside a rank-and-file group."""
+    vmax = _sel_con(variant, 'max') or 1
+    name = variant.get('name', '')
+    return f"The {name}" if vmax <= 1 else f"{vmax} {name}"
+
+
+def _process_bulk_group(group, weapon_ids=None):
     """Options for a rank-and-file group whose members are model variants."""
     variants = _bulk_model_members(group)
     if not variants:
@@ -267,42 +290,48 @@ def _process_bulk_group(group):
     plural = _COUNT_PREFIX.sub('', group.get('name', ''))
 
     high = [v for v in variants if (_sel_con(v, 'max') or 1) > 1]
+    lines = []
     # Mode A — every variant interchangeable: a per-model loadout choice.
     if len(high) == len(variants) and len(variants) > 1:
-        return [f"All {plural} can each be equipped with one of the "
-                f"following:{_ul([_loadout_text(v.get('name', '')) for v in variants])}"]
+        lines.append(f"All {plural} can each be equipped with one of the "
+                     f"following:{_ul([_loadout_text(v.get('name', '')) for v in variants])}")
     # Mode B — one base model (high max) plus low-max variant swaps/add-ons.
-    if len(high) != 1:
-        return []
-    base = high[0]
-    singular = base.get('name', '').split(' w/ ', 1)[0]
-    base_weapons, base_other = _model_item_names(base)
+    elif len(high) == 1:
+        base = high[0]
+        singular = base.get('name', '').split(' w/ ', 1)[0]
+        base_weapons, base_other = _model_item_names(base)
 
-    lines, addons = [], []
+        addons = []
+        for v in variants:
+            if v is base:
+                continue
+            vmax = _sel_con(v, 'max') or 1
+            vw, vo = _model_item_names(v)
+            replaced = base_weapons - vw
+            added_w = vw - base_weapons
+            added_o = vo - base_other
+            if len(replaced) == 1 and len(added_w) == 1:
+                lines.append(f"{vmax} {singular}'s {_lower1(next(iter(replaced)))} "
+                             f"can be replaced with 1 {next(iter(added_w))}.")
+            elif added_w and not replaced:
+                for w in sorted(added_w):
+                    lines.append(f"{vmax} {singular} can be equipped with 1 {w}.")
+            addons += sorted(added_o)
+        if addons:
+            qual = ''
+            if len(base_weapons) == 1:
+                qual = f" equipped with a {_lower1(next(iter(base_weapons)))}"
+            if len(addons) == 1:
+                lines.append(f"1 {singular}{qual} can be equipped with 1 {addons[0]}.")
+            else:
+                lines.append(f"1 {singular}{qual} can be equipped with one of the "
+                             f"following:{_ul(['1 ' + a for a in addons])}")
+
+    # Per-model option groups nested inside each variant (e.g. a sergeant's
+    # weapon swaps) are orthogonal to the structural variant logic above and
+    # were previously dropped entirely for multi-variant squads — surface them.
     for v in variants:
-        if v is base:
-            continue
-        vmax = _sel_con(v, 'max') or 1
-        vw, vo = _model_item_names(v)
-        replaced = base_weapons - vw
-        added_w = vw - base_weapons
-        added_o = vo - base_other
-        if len(replaced) == 1 and len(added_w) == 1:
-            lines.append(f"{vmax} {singular}'s {_lower1(next(iter(replaced)))} "
-                         f"can be replaced with 1 {next(iter(added_w))}.")
-        elif added_w and not replaced:
-            for w in sorted(added_w):
-                lines.append(f"{vmax} {singular} can be equipped with 1 {w}.")
-        addons += sorted(added_o)
-    if addons:
-        qual = ''
-        if len(base_weapons) == 1:
-            qual = f" equipped with a {_lower1(next(iter(base_weapons)))}"
-        if len(addons) == 1:
-            lines.append(f"1 {singular}{qual} can be equipped with 1 {addons[0]}.")
-        else:
-            lines.append(f"1 {singular}{qual} can be equipped with one of the "
-                         f"following:{_ul(['1 ' + a for a in addons])}")
+        lines += _process_model_options(v, _variant_label(v), weapon_ids)
     return lines
 
 
@@ -479,8 +508,14 @@ def extract_composition(unit_se, entry_index=None):
     return [{'name': ln} for ln in lines]
 
 
-def extract_wargear_options(unit_se):
-    """Return reconstructed wargear-option lines as [{'description': '<line>'}, ...]."""
+def extract_wargear_options(unit_se, weapon_ids=None):
+    """Return reconstructed wargear-option lines as [{'description': '<line>'}, ...].
+
+    `weapon_ids` is the global set of weapon selectionEntry ids; it lets the
+    option logic tell a mandatory weapon choice (surface it) from an abstract
+    pick such as a Mark of Chaos / allegiance (skip it).
+    """
+    weapon_ids = weapon_ids or set()
     is_single = unit_se.get('type') == 'model'
     ses = unit_se.find('bs:selectionEntries', NS_CAT)
     segs = unit_se.find('bs:selectionEntryGroups', NS_CAT)
@@ -492,15 +527,15 @@ def extract_wargear_options(unit_se):
                 continue
             mx = _sel_con(se, 'max') or 1
             label = f"The {se.get('name', '')}" if mx <= 1 else f"{mx} {se.get('name', '')}"
-            opts += _process_model_options(se, label)
+            opts += _process_model_options(se, label, weapon_ids)
     if not is_single and segs is not None:
         for g in segs.findall('bs:selectionEntryGroup', NS_CAT):
             if _bulk_model_members(g):
-                opts += _process_bulk_group(g)
+                opts += _process_bulk_group(g, weapon_ids)
             else:
-                opts += _process_option_group(g, "This unit")
+                opts += _process_option_group(g, "This unit", weapon_ids)
     if is_single:
-        opts += _process_model_options(unit_se, "This model")
+        opts += _process_model_options(unit_se, "This model", weapon_ids)
     return [{'description': o} for o in opts]
 
 
@@ -1117,10 +1152,10 @@ def parse_cat(cat_path, gst_data, rule_index=None, global_weapon_ids=None,
         # Composition, loadout + wargear options: reconstructed from the
         # selectionEntry structure (BSData carries no datasheet prose for these).
         composition = extract_composition(se, entry_index)
-        wargear_options = extract_wargear_options(se)
-        loadout = extract_loadout(
-            se, global_weapon_ids if global_weapon_ids is not None else weapon_ids,
-            entry_index)
+        effective_weapon_ids = (
+            global_weapon_ids if global_weapon_ids is not None else weapon_ids)
+        wargear_options = extract_wargear_options(se, effective_weapon_ids)
+        loadout = extract_loadout(se, effective_weapon_ids, entry_index)
 
         # Leader targets: scan abilities for attachment text
         leader_targets = []

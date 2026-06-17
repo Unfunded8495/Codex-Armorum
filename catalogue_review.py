@@ -342,18 +342,31 @@ def _catalogue_models_by_datasheet():
     for entries in by_datasheet.values():
         entries.sort(key=lambda e: (e.get("release_year") or 0, e.get("name", "")))
 
-    # Also index each entry under its BSData GUID so lookups with BSData GUIDs
-    # find model catalogue entries that were imported with Wahapedia IDs.
+    # Also index each entry under its BSData GUID so lookups with BSData GUIDs find model
+    # catalogue entries that were imported with Wahapedia IDs. A datasheet can be reachable
+    # under both IDs at once — e.g. one kit resolved straight to the BSData GUID while another
+    # still links via the Wahapedia ID — so MERGE into the BSData bucket (de-duplicating by
+    # catalogue model id) rather than skipping it when it already exists, otherwise the
+    # Wahapedia-linked kits get silently dropped from the BSData view.
     try:
         from data_store import get_store as _get_store
         _store = _get_store()
         bsdata_additions = {}
-        for wahapedia_id, entries in by_datasheet.items():
+        for wahapedia_id, entries in list(by_datasheet.items()):
             unit = _store.ds_by_id.get(wahapedia_id)
-            if unit:
-                bsdata_id = unit.get("id")
-                if bsdata_id and bsdata_id not in by_datasheet:
-                    bsdata_additions[bsdata_id] = entries
+            if not unit:
+                continue
+            bsdata_id = unit.get("id")
+            if not bsdata_id or bsdata_id == wahapedia_id:
+                continue
+            merged = bsdata_additions.setdefault(bsdata_id, list(by_datasheet.get(bsdata_id, [])))
+            seen_ids = {e["id"] for e in merged}
+            for entry in entries:
+                if entry["id"] not in seen_ids:
+                    merged.append(entry)
+                    seen_ids.add(entry["id"])
+        for merged in bsdata_additions.values():
+            merged.sort(key=lambda e: (e.get("release_year") or 0, e.get("name", "")))
         by_datasheet.update(bsdata_additions)
     except Exception:
         pass  # fail silently; model catalogue will just show no linked models

@@ -18330,7 +18330,7 @@
     {
       "id": "MD-50626",
       "name": "Easy To Build: Primaris Intercessors",
-      "faction_label": "Space Marines",
+      "faction_label": "Imperium - Adeptus Astartes - Space Marines",
       "faction_id": "e0af-67df-9d63-8fb7",
       "release_date": "2017-07",
       "release_year": 2017,
@@ -27450,7 +27450,7 @@
       "release_date": "2009",
       "release_year": 2009,
       "material": "Plastic",
-      "status": "current_or_unknown",
+      "status": "discontinued",
       "note": "",
       "flags": [],
       "datasheet_links": [
@@ -27970,6 +27970,82 @@
     {
       "id": "MD-50979",
       "name": "Wartrakk",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Xenos - Orks",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50980",
+      "name": "Gretchin",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "11th Edition Launch Box",
+      "flags": [],
+      "datasheet_links": [
+        {
+          "datasheet_id": "000000017",
+          "datasheet_name": "Gretchin",
+          "faction_id": "ORK",
+          "matched_from": "datasheet",
+          "matched_name": "Gretchin",
+          "confidence": 1.0,
+          "match_method": "exact",
+          "cross_faction": false
+        }
+      ],
+      "source": {
+        "workbook": "40K_-_Current_model_range_release_dates_Updated.xlsx",
+        "sheet": "Orks",
+        "row": 28
+      }
+    },
+    {
+      "id": "MD-50981",
+      "name": "Boyz",
+      "faction_label": "Xenos - Orks",
+      "faction_id": "a55f-b7b3-6c65-a05f",
+      "release_date": "2026-06",
+      "release_year": 2026,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "11th Edition Launch Box",
+      "flags": [],
+      "datasheet_links": [
+        {
+          "datasheet_id": "000000016",
+          "datasheet_name": "Boyz",
+          "faction_id": "ORK",
+          "matched_from": "datasheet",
+          "matched_name": "Boyz",
+          "confidence": 1.0,
+          "match_method": "exact",
+          "cross_faction": false
+        }
+      ],
+      "source": {
+        "workbook": "40K_-_Current_model_range_release_dates_Updated.xlsx",
+        "sheet": "Orks",
+        "row": 75
+      }
+    },
+    {
+      "id": "MD-50982",
+      "name": "Big Mek Dakkarig",
       "faction_label": "Xenos - Orks",
       "faction_id": "a55f-b7b3-6c65-a05f",
       "release_date": "2026-06",
