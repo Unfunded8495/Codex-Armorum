@@ -1805,6 +1805,8 @@ def api_update_mini_stage(mid):
 
         multikit_group = row["multikit_group"] if "multikit_group" in row.keys() else None
         new_datasheet_id = None
+        new_catalogue_model_id = None
+        new_label = None
 
         if multikit_group and stage != "unbuilt":
             new_datasheet_id = str(data.get("datasheet_id", "")).strip()
@@ -1817,21 +1819,38 @@ def api_update_mini_stage(mid):
             except ValueError:
                 box_id = mg_name = None
             valid_dids = set()
+            chosen_item = None
             if box_id:
                 box = box_set_by_id(box_id)
                 if box:
-                    valid_dids = {i["datasheet_id"] for i in box["contents"]
-                                  if i.get("multikit_group") == mg_name}
+                    for i in box["contents"]:
+                        if i.get("multikit_group") != mg_name:
+                            continue
+                        valid_dids.add(i["datasheet_id"])
+                        if i["datasheet_id"] == new_datasheet_id:
+                            chosen_item = i
             if valid_dids and new_datasheet_id not in valid_dids:
                 return jsonify({"ok": False, "error": "Invalid unit for this multikit group."}), 400
+            # The pooled mini was created from the group's first kit option. Now that
+            # the user has chosen which unit to build, repoint it at that unit's own
+            # catalogue model and label so it no longer shows the wrong kit.
+            if chosen_item:
+                new_catalogue_model_id = chosen_item.get("catalogue_model_id")
+                new_label = chosen_item.get("catalogue_label") or None
 
         finished = 1 if stage == "finished" else 0
         if new_datasheet_id:
             new_unit_bsdata_id = store.ds_by_id.get(new_datasheet_id, {}).get("id") or new_datasheet_id
-            c.execute(
-                "UPDATE minis SET stage=?, finished=?, datasheet_id=?, unit_bsdata_id=?, multikit_group=NULL WHERE id=?",
-                (stage, finished, new_datasheet_id, new_unit_bsdata_id, mid),
-            )
+            sets = "stage=?, finished=?, datasheet_id=?, unit_bsdata_id=?, multikit_group=NULL"
+            params = [stage, finished, new_datasheet_id, new_unit_bsdata_id]
+            if new_catalogue_model_id:
+                sets += ", catalogue_model_id=?"
+                params.append(new_catalogue_model_id)
+            if new_label:
+                sets += ", label=?"
+                params.append(new_label)
+            params.append(mid)
+            c.execute(f"UPDATE minis SET {sets} WHERE id=?", params)
         else:
             c.execute("UPDATE minis SET stage=?, finished=? WHERE id=?", (stage, finished, mid))
 
