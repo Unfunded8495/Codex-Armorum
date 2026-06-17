@@ -27210,7 +27210,7 @@
     {
       "id": "MD-50944",
       "name": "Brutalis Dreadnought",
-      "faction_label": "Space Marines",
+      "faction_label": "Imperium - Adeptus Astartes - Space Marines",
       "faction_id": "e0af-67df-9d63-8fb7",
       "release_date": "2023",
       "release_year": 2023,
@@ -27868,8 +27868,8 @@
     },
     {
       "id": "MD-50974",
-      "name": "Lieutenant with Combi-weapon",
-      "faction_label": "Space Marines",
+      "name": "Lieutenant with Phobos Armour",
+      "faction_label": "Imperium - Adeptus Astartes - Space Marines",
       "faction_id": "e0af-67df-9d63-8fb7",
       "release_date": "2023-06",
       "release_year": 2023,
@@ -28058,6 +28058,24 @@
       "source": {
         "workbook": "manual",
         "sheet": "Xenos - Orks",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50983",
+      "name": "Primaris Company Champion",
+      "faction_label": "Imperium - Adeptus Astartes - Space Marines",
+      "faction_id": "e0af-67df-9d63-8fb7",
+      "release_date": "2022",
+      "release_year": 2022,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Imperium - Adeptus Astartes - Space Marines",
         "row": 0
       }
     }

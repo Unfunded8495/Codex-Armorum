@@ -6305,7 +6305,7 @@
         "000000136"
       ],
       "notes": "",
-      "updated_at": 1780388578.9153774
+      "updated_at": 1781732240.2786574
     },
     {
       "catalogue_model_id": "MD-50945",
@@ -6600,12 +6600,12 @@
     {
       "catalogue_model_id": "MD-50974",
       "action": "link_datasheet",
-      "catalogue_type": "model_release",
+      "catalogue_type": "",
       "datasheet_ids": [
-        "000000076"
+        "fe0e-6070-e7b-d4b8"
       ],
-      "notes": "Lieutenant with Combi-weapon from Leviathan box",
-      "updated_at": 1781562153.327801
+      "notes": "",
+      "updated_at": 1781732151.2481613
     },
     {
       "catalogue_model_id": "MD-50975",
@@ -6678,6 +6678,16 @@
       "datasheet_ids": [],
       "notes": "",
       "updated_at": 1781722521.8290117
+    },
+    {
+      "catalogue_model_id": "MD-50983",
+      "action": "link_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [
+        "36cf-5961-78b9-79ce"
+      ],
+      "notes": "",
+      "updated_at": 1781731551.1641405
     }
   ]
 }
