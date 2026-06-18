@@ -1142,9 +1142,24 @@ def api_box_sets():
     return jsonify(_box_set_payloads(box_sets()))
 
 
+@app.route("/api/editions")
+def api_editions():
+    """Hand-curated edition timeline (editions_timeline.json), sorted by edition."""
+    from editions import editions_document
+    return jsonify(editions_document())
+
+
 @app.route("/api/model-catalogue")
 def api_model_catalogue():
     return jsonify(catalogue_payload())
+
+
+@app.route("/api/model-catalogue/faction-cards")
+def api_model_catalogue_faction_cards():
+    """One card per canonical faction label, themed, with model count, year range
+    and a server-resolved photographic image URL. Excludes Test Faction."""
+    from catalogue_review import faction_cards
+    return jsonify({"cards": faction_cards()})
 
 
 @app.route("/api/model-catalogue", methods=["POST"])
@@ -1208,6 +1223,13 @@ def api_patch_catalogue_model(catalogue_model_id):
         fid = str(data["faction_id"]).strip()
         overrides["faction_id"] = fid
         overrides["faction_label"] = store.faction_by_id.get(fid, {}).get("name", fid) if fid else ""
+    if "faction_label" in data:
+        # Direct canonical-label edit (History view). Re-files a model under the
+        # right card without touching faction_id — sub-factions like Blood Angels
+        # share one BSData GUID, so the label is the meaningful grouping key. An
+        # explicit faction_label wins over one derived from faction_id above.
+        from catalogue_review import canonical_faction_label
+        overrides["faction_label"] = canonical_faction_label(str(data["faction_label"]).strip())
     _, error = save_field_overrides(catalogue_model_id, overrides)
     if error:
         return jsonify({"ok": False, "error": error}), 400
@@ -1312,7 +1334,12 @@ def _catalogue_display_label(item):
 
 @app.route("/api/model-catalogue/search")
 def api_search_model_catalogue():
+    from catalogue_review import canonical_faction_label
     fid = request.args.get("faction_id", "")
+    # Optional canonical-label scope used by the History view's in-card search so a
+    # Blood Angels search returns only Blood Angels, not every Space Marine (they
+    # share one faction_id). The faction_id path below is untouched.
+    faction_label = canonical_faction_label((request.args.get("faction_label", "") or "").strip())
     q = (request.args.get("q", "") or "").strip().lower()
     if fid and fid not in store.faction_by_id:
         abort(404)
@@ -1323,6 +1350,8 @@ def api_search_model_catalogue():
     for item in catalogue_payload().get("items", []):
         links = item.get("datasheet_links", [])
         if not links:
+            continue
+        if faction_label and item.get("faction_label", "") != faction_label:
             continue
         army_ids = set(item.get("army_ids") or [])
         if fid and fid not in army_ids and item.get("faction_id") != fid:

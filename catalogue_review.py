@@ -257,6 +257,110 @@ def catalogue_payload():
     return payload
 
 
+# ---------------------------------------------------------------------------
+# Faction cards for the History view
+#
+# Cards are grouped by canonical faction_label (how a person thinks of a faction),
+# NOT faction_id — a single BSData GUID is shared by every Space Marine chapter and
+# by all the Aeldari branches, so grouping by id would collapse them into one card.
+STATIC_IMAGE_DIR = os.path.join(BASE, "static", "images")
+
+# Faction labels whose photographic card image does not match the default slug.
+# Held explicitly so the mapping is auditable rather than guessed (see
+# MODEL_PAGE_BRIEF.md). Keyed by the prefix-stripped display name.
+FACTION_CARD_IMAGE_ALIASES = {
+    "Tau Empire": "t_au_empire.jpg",       # catalogue drops the apostrophe; file slugged from "T'au Empire"
+    "T'au Empire": "t_au_empire.jpg",
+    "Craftworlds": "aeldari.jpg",          # Aeldari subfaction, no own card image
+    "Harlequins": "aeldari.jpg",
+    "Ynnari": "aeldari.jpg",
+    "Inquisition": "imperial_agents.jpg",  # Imperial Agents grouping, no own card image
+    "Imperial Assassins": "imperial_agents.jpg",
+    "Supplement Marines": "space_marines.jpg",  # generic Space Marine bucket
+}
+
+# Labels theme_for() does not key on directly. Each maps onto the colours of the
+# parent faction the card already borrows its image from, so a subfaction card never
+# falls back to the grey placeholder theme.
+FACTION_CARD_THEME_ALIASES = {
+    "Tau Empire": "T'au Empire",        # catalogue drops the apostrophe theme_for keys on
+    "Craftworlds": "Aeldari",
+    "Harlequins": "Aeldari",
+    "Imperial Agents": "Agents of the Imperium",
+    "Inquisition": "Agents of the Imperium",
+    "Imperial Assassins": "Agents of the Imperium",
+}
+
+
+def _faction_card_display_name(label):
+    """Prefix-stripped display name — the same suffix theme_for keys on."""
+    return label.rsplit(" - ", 1)[-1].strip()
+
+
+def _faction_card_image_url(display_name, label):
+    """Resolve the card image to a known-good /static/images URL, or None.
+
+    Order: exact slug file, then the explicit alias table, else None (the client
+    falls back to the tinted faction glyph so no card renders blank)."""
+    slug = re.sub(r"[^a-z0-9_-]+", "_", display_name.lower()).strip("_")
+    exact = f"{slug}.jpg"
+    if os.path.exists(os.path.join(STATIC_IMAGE_DIR, exact)):
+        return f"/static/images/{exact}"
+    alias = (FACTION_CARD_IMAGE_ALIASES.get(display_name)
+             or FACTION_CARD_IMAGE_ALIASES.get(label))
+    if alias and os.path.exists(os.path.join(STATIC_IMAGE_DIR, alias)):
+        return f"/static/images/{alias}"
+    return None
+
+
+def faction_cards():
+    """Return one card per canonical faction_label, sorted by model count desc.
+
+    Each card: faction_label (canonical, the join key for the drill-in), display_name,
+    count, year_min/year_max, primary/accent/glyph from the faction theme, and a
+    server-resolved photographic image_url. Test Faction is excluded entirely."""
+    key = ("faction_cards", _mtime_key(MANUAL_PATH, RESOLUTIONS_PATH))
+    if key in _CACHE:
+        return _CACHE[key]
+
+    payload = catalogue_payload()
+    groups = {}
+    for item in payload.get("items", []):
+        label = item.get("faction_label", "")
+        if not label or label == "Test Faction":
+            continue
+        g = groups.get(label)
+        if g is None:
+            g = groups[label] = {"label": label, "count": 0, "years": []}
+        g["count"] += 1
+        year = item.get("release_year")
+        if isinstance(year, int):
+            g["years"].append(year)
+
+    cards = []
+    for label, g in groups.items():
+        display = _faction_card_display_name(label)
+        theme_key = FACTION_CARD_THEME_ALIASES.get(display, display)
+        primary, accent, glyph = ft.theme_for(theme_key)
+        years = g["years"]
+        cards.append({
+            "faction_label": label,
+            "display_name": display,
+            "count": g["count"],
+            "year_min": min(years) if years else None,
+            "year_max": max(years) if years else None,
+            "primary": primary,
+            "accent": accent,
+            "glyph": glyph,
+            "initial": (display[:1] or "?").upper(),
+            "image_url": _faction_card_image_url(display, label),
+        })
+
+    cards.sort(key=lambda c: (-c["count"], c["display_name"]))
+    _CACHE[key] = cards
+    return cards
+
+
 def image_payload(catalogue_model_id, image_row):
     if not image_row or not image_row.get("local_path"):
         return None

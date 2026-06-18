@@ -2070,3 +2070,183 @@ a.brand{text-decoration:none;color:inherit}
   font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.5px;color:var(--parch-dim);
 }
 .col-stats-empty p{margin:0 0 18px}
+
+/* ===================== History view (Codex Archive) ===================== */
+.hist-timeline-section{margin:0 0 30px}
+.tl-track{overflow-x:auto;padding:6px 2px 14px;scrollbar-width:thin}
+.tl-list{
+  list-style:none;margin:0;padding:0;display:flex;gap:0;min-width:min-content;
+  position:relative;
+}
+.tl-list::before{
+  content:"";position:absolute;left:0;right:0;top:46px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold) 6%,var(--gold) 94%,transparent);
+  opacity:.5;
+}
+.tl-node{
+  position:relative;flex:0 0 122px;display:flex;flex-direction:column;align-items:center;
+  gap:7px;cursor:pointer;padding:4px 6px 0;background:none;border:0;color:inherit;
+  font-family:'Oswald',sans-serif;
+}
+.tl-year{font-size:13px;letter-spacing:1px;color:var(--gold-bright);font-weight:600}
+.tl-dot{
+  width:13px;height:13px;border-radius:50%;background:var(--panel-2);
+  border:2px solid var(--gold);box-shadow:0 0 0 4px var(--ink);transition:.18s;
+}
+.tl-node:hover .tl-dot,.tl-node:focus-visible .tl-dot{background:var(--gold);transform:scale(1.18)}
+.tl-node.is-open .tl-dot{background:var(--gold-bright);transform:scale(1.25)}
+.tl-node.is-current .tl-dot{background:var(--blood-bright);border-color:var(--blood-bright);box-shadow:0 0 10px rgba(178,31,40,.7),0 0 0 4px var(--ink)}
+.tl-name{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--parch);text-align:center;line-height:1.25}
+.tl-node.is-open .tl-name{color:var(--gold-bright)}
+.tl-flag{
+  font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--blood-bright);
+  border:1px solid rgba(178,31,40,.5);border-radius:3px;padding:1px 6px;
+}
+.tl-node:focus-visible{outline:none}
+.tl-detail{margin-top:12px;animation:viewIn .25s ease both}
+.tl-detail-card{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid rgba(199,154,58,.28);border-left:3px solid var(--gold);
+  border-radius:4px;padding:16px 20px;
+}
+.tl-d-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.tl-d-head h3{margin:0;font-family:'Cinzel',serif;font-size:18px;color:var(--parch);letter-spacing:.5px}
+.tl-d-era{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;color:var(--gold);text-transform:uppercase}
+.tl-d-line{margin:4px 0;font-size:13px;color:var(--parch-dim);line-height:1.5}
+.tl-d-line b{color:var(--parch)}
+.tl-projected{color:var(--gold);font-style:italic}
+.tl-d-summary{margin:10px 0;font-family:'EB Garamond',serif;font-size:15px;color:var(--parch);line-height:1.55}
+.tl-d-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;margin:6px 0}
+.tl-d-cols h4{margin:6px 0 4px;font-family:'Oswald',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--gold)}
+.tl-d-list{margin:0;padding-left:18px}
+.tl-d-list li{font-size:13px;color:var(--parch-dim);line-height:1.5;margin:2px 0}
+.tl-d-hook{margin:10px 0 0;font-family:'EB Garamond',serif;font-style:italic;font-size:14px;color:var(--gold-bright);line-height:1.5}
+
+/* search */
+.hist-search-wrap{position:relative;max-width:460px;margin:0 0 22px}
+.hist-search{width:100%;padding-right:34px}
+.hist-search-clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:none;border:0;color:var(--parch-dim);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;
+}
+.hist-search-clear:hover{color:var(--gold-bright)}
+.hist-results{margin:0 0 26px;border:1px solid rgba(199,154,58,.22);border-radius:4px;background:var(--panel);overflow:hidden}
+.hist-results-head{padding:9px 14px;font-family:'Oswald',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);background:var(--ink-2);border-bottom:1px solid rgba(199,154,58,.16)}
+.hist-results-list{max-height:320px;overflow-y:auto}
+.hist-result-row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;width:100%;
+  padding:9px 14px;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.04);
+  cursor:pointer;text-align:left;color:inherit;
+}
+.hist-result-row:hover{background:rgba(199,154,58,.08)}
+.hrr-name{font-family:'Cinzel',serif;font-size:14px;color:var(--parch)}
+.hrr-meta{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--parch-dim);white-space:nowrap}
+.hist-err{color:var(--blood-bright)}
+.hist-empty{font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.5px;color:var(--parch-dim);padding:8px 2px;font-style:italic}
+
+/* faction cards */
+.hist-card-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.hist-faction-card{
+  position:relative;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;
+  border:1px solid rgba(199,154,58,.25);border-radius:5px;padding:0;background:var(--panel);
+  color:inherit;text-align:left;isolation:isolate;animation:viewIn .35s ease both;
+  box-shadow:0 4px 14px rgba(0,0,0,.45);transition:transform .15s,border-color .15s,box-shadow .15s;
+}
+.hist-faction-card:hover{transform:translateY(-3px);border-color:var(--cardaccent);box-shadow:0 8px 22px rgba(0,0,0,.6)}
+.hist-faction-card:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+.hfc-media{position:relative;display:block;height:128px;background:var(--cardarmy);overflow:hidden}
+.hfc-img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05)}
+.hfc-img.is-broken{display:none}
+.hfc-fallback{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:54px;font-weight:700;color:var(--cardaccent);opacity:.4;z-index:-1;
+}
+.hfc-scrim{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.55) 100%)}
+.hfc-body{
+  display:flex;flex-direction:column;gap:3px;padding:11px 14px 13px;
+  border-top:2px solid var(--cardaccent);background:linear-gradient(180deg,var(--panel-2),var(--panel));
+}
+.hfc-name{font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:.4px;line-height:1.2}
+.hfc-meta{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--parch-dim)}
+.hfc-meta b{color:var(--gold-bright);font-weight:600}
+
+/* faction drill-in */
+.hist-faction-head{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin-bottom:4px}
+.hist-back{
+  background:none;border:1px solid rgba(199,154,58,.4);border-radius:3px;color:var(--gold-bright);
+  font-family:'Oswald',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;
+  padding:6px 12px;cursor:pointer;transition:.15s;
+}
+.hist-back:hover{background:rgba(199,154,58,.12);border-color:var(--gold-bright)}
+.hist-faction-title{margin:0}
+.hist-faction-search{margin-left:auto;min-width:240px;flex:1;max-width:360px}
+.hist-faction-search .ff-input{width:100%}
+.hist-faction-summary{margin-top:10px}
+.hist-drill{margin-top:8px}
+.hist-edition-group{margin:0 0 30px}
+.hist-edition-head{
+  margin:0 0 14px;font-family:'Cinzel',serif;font-size:19px;color:var(--parch);
+  letter-spacing:.5px;padding-bottom:7px;border-bottom:1px solid rgba(199,154,58,.3);
+}
+.hist-era{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:300}
+.hist-year-group{display:grid;grid-template-columns:64px 1fr;gap:14px;margin:0 0 16px}
+.hist-year{
+  font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--gold-bright);
+  text-align:right;padding-top:8px;position:sticky;top:84px;height:max-content;
+}
+.hist-rows{display:flex;flex-direction:column;gap:8px}
+.hist-undated-label{
+  font-family:'Oswald',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--parch-dim);margin:4px 0 0;font-style:italic;
+}
+.hist-model-row{
+  display:flex;align-items:center;gap:13px;padding:8px 12px;cursor:pointer;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid rgba(255,255,255,.05);border-radius:4px;transition:border-color .15s,background .15s;
+}
+.hist-model-row:hover,.hist-model-row:focus-visible{border-color:rgba(199,154,58,.4);background:linear-gradient(180deg,var(--panel-2),var(--panel-2));outline:none}
+.hist-row-edit{
+  margin-left:auto;flex:0 0 auto;font-family:'Oswald',sans-serif;font-size:11px;
+  text-transform:uppercase;letter-spacing:1px;color:var(--gold);opacity:0;
+  border:1px solid rgba(199,154,58,.45);border-radius:3px;padding:3px 9px;transition:opacity .15s;
+}
+.hist-model-row:hover .hist-row-edit,.hist-model-row:focus-visible .hist-row-edit{opacity:.9}
+.hist-disc + .hist-row-edit{margin-left:10px}
+.hist-thumb{
+  flex:0 0 46px;width:46px;height:46px;border-radius:3px;overflow:hidden;
+  border:1px solid rgba(199,154,58,.4);background:var(--ink-2);
+}
+.hist-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.hist-thumb-ph{
+  width:100%;height:100%;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:20px;color:var(--gold);opacity:.55;
+}
+.hist-model-main{flex:1;min-width:0}
+.hist-model-name{font-family:'Cinzel',serif;font-size:15px;color:var(--parch);line-height:1.3}
+.hist-model-meta{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--parch-dim);margin-top:2px}
+.hist-disc{
+  font-family:'Oswald',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--blood-bright);border:1px solid rgba(178,31,40,.45);border-radius:3px;padding:2px 7px;white-space:nowrap;
+}
+/* model editor overlay — image section (reuses .cfe-backdrop / .am-* from the catalogue editor) */
+.he-img-section{margin-top:16px;border-top:1px solid rgba(44,42,53,.75);padding-top:14px}
+.he-img-row{display:flex;gap:14px;align-items:flex-start;margin-top:6px}
+.he-img-frame{
+  flex:0 0 96px;width:96px;height:96px;border:1px solid rgba(199,154,58,.4);border-radius:4px;
+  overflow:hidden;background:var(--ink-2);display:flex;align-items:center;justify-content:center;
+}
+.he-img-preview{width:100%;height:100%;object-fit:cover;display:block}
+.he-img-empty{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--parch-dim);text-align:center}
+.he-img-controls{flex:1;min-width:0}
+.he-img-controls .ref-row{margin-top:0}
+.he-img-msg{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;margin:6px 0 0;min-height:14px;color:var(--good,#7faa5a)}
+.he-img-msg.is-err{color:var(--blood-bright)}
+.he-img-clear{margin-left:10px;padding:4px 10px;font-size:11px}
+
+@media(max-width:760px){
+  .tl-d-cols{grid-template-columns:1fr}
+  .hist-faction-search{margin-left:0;max-width:none}
+  .hist-year-group{grid-template-columns:48px 1fr;gap:10px}
+  .hist-year{font-size:16px;position:static}
+  .he-img-row{flex-direction:column}
+}

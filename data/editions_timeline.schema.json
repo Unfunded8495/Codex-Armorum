@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.codex-armorum/editions_timeline.schema.json",
+  "title": "Codex Armorum Warhammer 40,000 edition timeline",
+  "type": "object",
+  "required": ["schema_version", "editions"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "compiled": { "type": "string" },
+    "notes": { "type": "string" },
+    "editions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["edition", "name", "release_date", "release_precision", "is_current", "sources"],
+        "properties": {
+          "edition": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string" },
+          "full_title": { "type": "string" },
+          "era_start": { "type": "string", "pattern": "^$|^[0-9]{4}-[0-9]{2}$" },
+          "era_end": { "type": "string", "pattern": "^$|^[0-9]{4}-[0-9]{2}$" },
+          "projected_era_end": { "type": "string", "pattern": "^$|^[0-9]{4}-[0-9]{2}$" },
+          "announce_date": { "type": "string", "pattern": "^$|^[0-9]{4}-[0-9]{2}(-[0-9]{2})?$" },
+          "preorder_date": { "type": "string", "pattern": "^$|^[0-9]{4}-[0-9]{2}(-[0-9]{2})?$" },
+          "release_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}(-[0-9]{2})?$" },
+          "release_precision": { "type": "string", "enum": ["day", "month", "year"] },
+          "lifespan_years": { "type": ["integer", "null"] },
+          "launch_box": { "type": "string" },
+          "launch_box_note": { "type": "string" },
+          "box_factions": { "type": "array", "items": { "type": "string" } },
+          "designers": { "type": "array", "items": { "type": "string" } },
+          "rules_summary": { "type": "string" },
+          "key_changes": { "type": "array", "items": { "type": "string" } },
+          "iconic_models": { "type": "array", "items": { "type": "string" } },
+          "narrative_hook": { "type": "string" },
+          "lineage_note": { "type": "string" },
+          "is_current": { "type": "boolean" },
+          "sources": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

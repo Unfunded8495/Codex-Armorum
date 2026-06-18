@@ -1,0 +1,343 @@
+{
+  "schema_version": 1,
+  "title": "Warhammer 40,000 edition timeline",
+  "description": "Major game releases of Warhammer 40,000 from the first miniature range (Rogue Trader, 1987) to the current edition. Built as the spine of the Codex Armorum historical record. Each edition record is the parent milestone; per-model releases in model_catalogue_manual.json hang off these via release_year and the era ranges below.",
+  "compiled": "2026-06",
+  "notes": "Day-precise launch dates are given where Games Workshop announced them. Earlier editions use month or year precision only, matching what is reliably documented. Fields marked projected are not confirmed by Games Workshop.",
+  "editions": [
+    {
+      "edition": 1,
+      "name": "Rogue Trader",
+      "full_title": "Warhammer 40,000: Rogue Trader",
+      "era_start": "1987-09",
+      "era_end": "1993-09",
+      "announce_date": "",
+      "release_date": "1987-09",
+      "release_precision": "month",
+      "lifespan_years": 6,
+      "launch_box": "",
+      "launch_box_note": "No starter set. Released as a single hardcover rulebook. Reprint still sold at Warhammer World.",
+      "box_factions": [],
+      "designers": ["Rick Priestly"],
+      "rules_summary": "Foundational ruleset. A narrative, gamesmaster-led hybrid of skirmish wargame and roleplaying game with very detailed per-model profiles and open-ended wargear. Closer to a large skirmish than the platoon-scale battle game the line later became.",
+      "key_changes": [
+        "First Warhammer 40,000 rules and setting",
+        "Gamesmaster-driven narrative play",
+        "Deeply detailed wargear and character profiles"
+      ],
+      "iconic_models": [
+        "RTB01 plastic Space Marines (Mk6 'beakie' helmets)",
+        "Early Citadel metal Space Marine, Ork and Imperial Guard range"
+      ],
+      "narrative_hook": "Establishes the 41st Millennium and the grimdark setting.",
+      "lineage_note": "Setting and mechanics trace partly to Laserburn (Tabletop Games, 1980, by Bryan Ansell).",
+      "is_current": false,
+      "sources": ["en.wikipedia.org/wiki/Warhammer_40,000", "wh40k.lexicanum.com/wiki/Warhammer_40,000", "chaosbunker.de Through the Ages"]
+    },
+    {
+      "edition": 2,
+      "name": "2nd Edition",
+      "full_title": "Warhammer 40,000 2nd Edition",
+      "era_start": "1993-10",
+      "era_end": "1998-09",
+      "announce_date": "",
+      "release_date": "1993-10",
+      "release_precision": "month",
+      "lifespan_years": 5,
+      "launch_box": "Warhammer 40,000 2nd Edition Boxed Set",
+      "launch_box_note": "First time a single boxed set let a new player buy one product and play out of the box. RRP about 34.99 GBP / 59.99 USD.",
+      "box_factions": ["Space Marines", "Orks"],
+      "designers": ["Rick Priestly", "Andy Chambers"],
+      "rules_summary": "Structured boxed game built on character-driven play, wargear and strategy cards, a card-based psychic phase and overwatch. Supported by the Dark Millennium expansion.",
+      "key_changes": [
+        "Dropped the Rogue Trader name",
+        "Wargear, strategy and psychic cards",
+        "Overwatch and detailed close combat",
+        "Codex book line begins"
+      ],
+      "iconic_models": [
+        "2nd edition plastic Space Marines",
+        "Space Ork Goffs and Gretchin",
+        "Squad reference card era miniatures"
+      ],
+      "narrative_hook": "Colourful, character-led era. White Dwarf issues 166 to 225.",
+      "is_current": false,
+      "sources": ["wh40k.lexicanum.com Warhammer 40,000 2nd Edition Box Set", "chaosbunker.de 2nd Edition Starter Set unboxing"]
+    },
+    {
+      "edition": 3,
+      "name": "3rd Edition",
+      "full_title": "Warhammer 40,000 3rd Edition",
+      "era_start": "1998-10",
+      "era_end": "2004-09",
+      "announce_date": "",
+      "release_date": "1998-10",
+      "release_precision": "month",
+      "lifespan_years": 6,
+      "launch_box": "Warhammer 40,000 3rd Edition Box Set",
+      "launch_box_note": "Softback rulebook plus two forces. Marked the debut of the Dark Eldar as the antagonist faction.",
+      "box_factions": ["Space Marines", "Dark Eldar"],
+      "designers": ["Andy Chambers", "Rick Priestly", "Gav Thorpe"],
+      "rules_summary": "The most significant overhaul to that point. Replaced the dense 2nd edition charts with a core rules plus exceptions model that all later editions built on. Introduced the Force Organisation Chart and simplified vehicle and psychic rules.",
+      "key_changes": [
+        "Force Organisation Chart introduced",
+        "Core rules plus exceptions design",
+        "Vehicle and psychic rules simplified",
+        "New game logo used from 3rd to 8th edition"
+      ],
+      "iconic_models": [
+        "Dark Eldar Kabalite Warriors (faction debut)",
+        "Tau and Necrons introduced late in the edition"
+      ],
+      "narrative_hook": "Streamlined for larger, faster battles. Tau debut coincided with a popularity surge in the United States.",
+      "is_current": false,
+      "sources": ["wh40k.lexicanum.com 3rd Edition Box Set", "boardgamegeek.com Third Edition Starter Set", "grimdarkgamer.com box sets overview"]
+    },
+    {
+      "edition": 4,
+      "name": "4th Edition",
+      "full_title": "Warhammer 40,000 4th Edition",
+      "era_start": "2004-09",
+      "era_end": "2008-06",
+      "announce_date": "",
+      "release_date": "2004-09",
+      "release_precision": "month",
+      "lifespan_years": 4,
+      "launch_box": "Battle for Macragge",
+      "launch_box_note": "A beginner focused game in a box with a compact softcover ruleset. Expansion The Battle Rages On added scenarios and units.",
+      "box_factions": ["Space Marines", "Tyranids"],
+      "designers": ["Andy Chambers"],
+      "rules_summary": "A measured revision rather than a rewrite. Backwards compatible with 3rd edition codices, with refined terrain, cover and background content. Released as hardback rulebook, the Battle for Macragge boxed set, and a Collector's Edition.",
+      "key_changes": [
+        "Backwards compatible with 3rd edition codices",
+        "Refined terrain and cover",
+        "Beginner friendly boxed entry point"
+      ],
+      "iconic_models": [
+        "Tyranid swarm from Battle for Macragge",
+        "Ultramarines tactical squad"
+      ],
+      "narrative_hook": "Set during the Tyranid invasion of Macragge, the First Tyrannic War.",
+      "is_current": false,
+      "sources": ["wh40k.lexicanum.com Warhammer 40,000", "warhammer40k.fandom.com Codex", "grimdarkgamer.com box sets overview"]
+    },
+    {
+      "edition": 5,
+      "name": "5th Edition",
+      "full_title": "Warhammer 40,000 5th Edition",
+      "era_start": "2008-07",
+      "era_end": "2012-05",
+      "announce_date": "",
+      "release_date": "2008-07",
+      "release_precision": "month",
+      "lifespan_years": 4,
+      "launch_box": "Assault on Black Reach",
+      "launch_box_note": "First starter set to include proper armies rather than a squad or two per side. Each side had an HQ, troops and more, with the Ork Warboss, Nobz and Deffkoptas long exclusive to this box.",
+      "box_factions": ["Space Marines", "Orks"],
+      "designers": ["Alessio Cavatore"],
+      "rules_summary": "Shared the 4th edition core but added major changes. True Line of Sight made terrain placement critical, the Run rule gave infantry flexibility, and transports became central to the competitive meta.",
+      "key_changes": [
+        "True Line of Sight",
+        "Run rule added",
+        "Mechanised transport heavy meta (Rhino Rush, Razorback spam)",
+        "Reworked wound allocation"
+      ],
+      "iconic_models": [
+        "Assault on Black Reach Ork Warboss and Deffkoptas",
+        "Captain Sicarius"
+      ],
+      "narrative_hook": "Competitive 40k matured significantly during this era.",
+      "is_current": false,
+      "sources": ["warhammerguild.com 40k edition history", "warhammer40k.fandom.com Codex", "chaosbunker.de Through the Ages"]
+    },
+    {
+      "edition": 6,
+      "name": "6th Edition",
+      "full_title": "Warhammer 40,000 6th Edition",
+      "era_start": "2012-06",
+      "era_end": "2014-05",
+      "announce_date": "",
+      "release_date": "2012-06",
+      "release_precision": "month",
+      "lifespan_years": 2,
+      "launch_box": "Dark Vengeance",
+      "launch_box_note": "Replaced Assault on Black Reach. Early copies included a limited edition Interrogator-Chaplain for the Dark Angels.",
+      "box_factions": ["Dark Angels", "Chaos Space Marines"],
+      "designers": [],
+      "rules_summary": "Expanded army building with the Allies system and Fortifications, and added Warlord Traits, expanded psychic powers, Flyers and Overwatch with greater scenery interaction.",
+      "key_changes": [
+        "Allies system",
+        "Fortifications",
+        "Warlord Traits",
+        "Flyers and Overwatch"
+      ],
+      "iconic_models": [
+        "Dark Vengeance Dark Angels (Ravenwing and Deathwing elements)",
+        "Chaos Hellbrute and Chosen"
+      ],
+      "narrative_hook": "Crimson Slaughter Chaos warband versus the Dark Angels.",
+      "is_current": false,
+      "sources": ["warhammer40k.fandom.com Warhammer 40,000", "en.wikipedia.org Warhammer 40,000"]
+    },
+    {
+      "edition": 7,
+      "name": "7th Edition",
+      "full_title": "Warhammer 40,000 7th Edition",
+      "era_start": "2014-05",
+      "era_end": "2017-06",
+      "announce_date": "",
+      "release_date": "2014-05",
+      "release_precision": "month",
+      "lifespan_years": 3,
+      "launch_box": "Dark Vengeance (carried over); later Stormclaw and other battleboxes; Battle for Vedros entry set",
+      "launch_box_note": "Reused the Dark Vengeance starter with updated rules. Themed battleforce boxes set you up with specific armies, and Battle for Vedros reused the 5th edition Assault on Black Reach sprues as a low cost entry point.",
+      "box_factions": ["Dark Angels", "Chaos Space Marines"],
+      "designers": [],
+      "rules_summary": "Very similar to 6th edition but reorganised army building into Battle-forged and Unbound, reworked the psychic phase, added Maelstrom of War missions and folded Lords of War into the standard chart. Suffered heavy rules bloat from formations and supplements.",
+      "key_changes": [
+        "Battle-forged and Unbound army building",
+        "Reworked psychic phase",
+        "Maelstrom of War missions",
+        "Lords of War in standard play",
+        "Significant rules bloat from supplements"
+      ],
+      "iconic_models": [
+        "Roboute Guilliman returns",
+        "Triumvirate boxes",
+        "Magnus the Red",
+        "Genestealer Cults range return and new Deathwatch"
+      ],
+      "narrative_hook": "Fall of Cadia, Gathering Storm and Fracture of Biel-Tan advanced the storyline for the first time in decades, ending the static timeline and setting up 8th edition.",
+      "is_current": false,
+      "sources": ["warhammer40k.fandom.com Warhammer 40,000", "warhammerguild.com 40k edition history", "en.wikipedia.org Warhammer 40,000"]
+    },
+    {
+      "edition": 8,
+      "name": "8th Edition",
+      "full_title": "Warhammer 40,000 8th Edition",
+      "era_start": "2017-06",
+      "era_end": "2020-07",
+      "announce_date": "2017-04-22",
+      "release_date": "2017-06-17",
+      "release_precision": "day",
+      "preorder_date": "2017-06-03",
+      "lifespan_years": 3,
+      "launch_box": "Dark Imperium",
+      "launch_box_note": "Launched the Primaris Space Marines. The regular marines became known as Firstborn.",
+      "box_factions": ["Primaris Space Marines", "Death Guard"],
+      "designers": ["Robin Cruddace", "Pete Foley"],
+      "rules_summary": "The most radical revision since 3rd edition. Introduced Three Ways to Play (Open, Matched, Narrative), a 14 page free core rules PDF, universal datasheets, Command Points and Stratagems, and wounds based vehicles. Introduced the Primaris Space Marines, the Crossing the Rubicon Primaris moment.",
+      "key_changes": [
+        "Three Ways to Play (Open, Matched, Narrative)",
+        "Free 14 page core rules",
+        "Universal datasheets",
+        "Command Points and Stratagems",
+        "Primaris Space Marines introduced"
+      ],
+      "iconic_models": [
+        "Primaris Space Marines",
+        "Dark Imperium Death Guard",
+        "Mortarion",
+        "Roboute Guilliman in command"
+      ],
+      "narrative_hook": "The Plague Wars and the Indomitus Crusade following the Gathering Storm.",
+      "is_current": false,
+      "sources": ["en.wikipedia.org Warhammer 40,000", "grimdarkgamer.com box sets overview", "warhammerguild.com 40k edition history"]
+    },
+    {
+      "edition": 9,
+      "name": "9th Edition",
+      "full_title": "Warhammer 40,000 9th Edition",
+      "era_start": "2020-07",
+      "era_end": "2023-06",
+      "announce_date": "2020-05",
+      "release_date": "2020-07",
+      "release_precision": "month",
+      "lifespan_years": 3,
+      "launch_box": "Indomitus",
+      "launch_box_note": "A limited release launch box, followed by the Recruit, Elite and Command edition starter sets. Featured a revised Necron range and new Primaris units.",
+      "box_factions": ["Space Marines (Primaris)", "Necrons"],
+      "designers": [],
+      "rules_summary": "A minor modification of 8th edition rather than a total overhaul. Codices, supplements and Psychic Awakening content stayed compatible. Added the Crusade narrative campaign system, overhauled terrain rules and secondary objectives, and brought the first logo redesign since 3rd edition.",
+      "key_changes": [
+        "Crusade narrative campaign system",
+        "Terrain rules overhaul",
+        "Secondary objectives",
+        "First logo redesign since 3rd edition",
+        "Backwards compatible with 8th edition books"
+      ],
+      "iconic_models": [
+        "Indomitus Necrons (revised range)",
+        "New Primaris units",
+        "Ephrael Stern and Kyganil"
+      ],
+      "narrative_hook": "Continued the Indomitus Crusade across the galaxy split by the Great Rift.",
+      "is_current": false,
+      "sources": ["wh40k.lexicanum.com Warhammer 40,000", "en.wikipedia.org Warhammer 40,000"]
+    },
+    {
+      "edition": 10,
+      "name": "10th Edition",
+      "full_title": "Warhammer 40,000 10th Edition",
+      "era_start": "2023-06",
+      "era_end": "2026-06",
+      "announce_date": "2023-03",
+      "release_date": "2023-06",
+      "release_precision": "month",
+      "lifespan_years": 3,
+      "launch_box": "Leviathan",
+      "launch_box_note": "Marine versus Tyranid launch box with a large new Tyranid range and updated Space Marine kits.",
+      "box_factions": ["Space Marines", "Tyranids"],
+      "designers": [],
+      "rules_summary": "Another major simplification. Removed Force Organisation charts, gave each army a single Detachment that defines its playstyle with bespoke Enhancements and Stratagems, tightened Stratagems toward a core set, and made free Index rules available for every unit on day one.",
+      "key_changes": [
+        "Force Organisation charts removed",
+        "Single Detachment defines army playstyle",
+        "Streamlined core plus detachment Stratagems",
+        "Free Index rules for every unit on day one"
+      ],
+      "iconic_models": [
+        "Leviathan Tyranids (Norn Emissary, Von Ryan's Leapers, Neurogaunts)",
+        "New Terminators and Sternguard Veterans",
+        "Lieutenant in Phobos armour"
+      ],
+      "narrative_hook": "The 4th Tyrannic War. Significant changes to the setting of the 41st Millennium.",
+      "is_current": false,
+      "sources": ["en.wikipedia.org Warhammer 40,000", "wh40k.lexicanum.com Warhammer 40,000", "warhammerguild.com 40k edition history"]
+    },
+    {
+      "edition": 11,
+      "name": "11th Edition",
+      "full_title": "Warhammer 40,000 11th Edition",
+      "era_start": "2026-06",
+      "era_end": "",
+      "announce_date": "2026-03-26",
+      "release_date": "2026-06-20",
+      "release_precision": "day",
+      "preorder_date": "2026-06-06",
+      "lifespan_years": null,
+      "projected_era_end": "2029-06",
+      "launch_box": "Warhammer 40,000: Armageddon",
+      "launch_box_note": "Billed as the biggest 40k launch box ever. About 295 USD, 61 push fit miniatures (23 Space Marines and 38 Orks across 12 kits), Core Rules booklet, Operation Imperator lore book, two mission and campaign decks, datasheet cards and transfers.",
+      "box_factions": ["Space Marines (Blood Angels led)", "Orks"],
+      "designers": [],
+      "rules_summary": "Framed as an evolution of 10th rather than a ground up rewrite. Existing 10th edition codexes and recent campaign books stay legal at launch. Detachments become modular and combinable using a Detachment Point pool (each detachment costs 1 to 3 DP, 2 DP at 1000 points, 3 DP at 2000 points) with over 70 new and updated detachments. Objective circles are replaced by terrain based objectives, with new rules including Stay Hidden and reworked Fire Overwatch and Snap Shooting. Free core rules PDF and app.",
+      "key_changes": [
+        "Evolution of 10th, codexes remain legal at launch",
+        "Modular combinable Detachments with Detachment Points",
+        "Over 70 new and updated detachments",
+        "Terrain based objectives replace objective circles",
+        "Stay Hidden rule, reworked Overwatch and Snap Shooting"
+      ],
+      "iconic_models": [
+        "New Intercessors and Vanguard Veterans",
+        "Captain with Relic Shield",
+        "New Librarian, Chaplain with Jump Pack, Ancient with Armageddon banner",
+        "Ork Big Mek Dakkarig and new Boyz"
+      ],
+      "narrative_hook": "The war for Armageddon after the Return of Yarrick. Wazdakka Gutsmek lands first, Ghazghkull's main force closes in, and Yarrick triggers Operation Imperator with Blood Angels leading the Imperial coalition.",
+      "is_current": true,
+      "sources": ["warhammer-community.com Adepticon Preview 2026", "wargamer.com 11th edition", "spikeybits.com Armageddon Starter Set", "warhammerguild.com 11th edition"]
+    }
+  ]
+}
