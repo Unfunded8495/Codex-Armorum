@@ -158,7 +158,8 @@ def _summary_payload(c, info=None, owned=None):
     stage_counts = c.execute("""
         SELECT
           COALESCE(SUM(CASE WHEN COALESCE(stage, 'unbuilt') = 'unbuilt' THEN 1 ELSE 0 END), 0) n_unbuilt,
-          COALESCE(SUM(CASE WHEN COALESCE(stage, 'unbuilt') IN ('finished', 'display') THEN 1 ELSE 0 END), 0) n_finished
+          COALESCE(SUM(CASE WHEN COALESCE(stage, 'unbuilt') IN ('finished', 'display') THEN 1 ELSE 0 END), 0) n_finished,
+          COALESCE(SUM(CASE WHEN COALESCE(stage, 'unbuilt') NOT IN ('unbuilt', 'finished', 'display') THEN 1 ELSE 0 END), 0) n_wip
         FROM minis
     """).fetchone()
     distinct = c.execute(
@@ -173,6 +174,7 @@ def _summary_payload(c, info=None, owned=None):
             "photos": photo_count, "armies": army_count,
             "bought_minis": dedup_group_total(info, info["totals"]),
             "unbuilt_minis": stage_counts["n_unbuilt"],
+            "wip_minis": stage_counts["n_wip"],
             "finished_minis": stage_counts["n_finished"],
             "unlogged_minis": dedup_group_total(info, ul_map)}
 

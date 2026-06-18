@@ -7,11 +7,14 @@ export function updateLedger(s){
   if(!ledger) return;
   const bought = s.bought_minis || 0;
   const unbuilt = s.unbuilt_minis || 0;
+  const wip = s.wip_minis || 0;
   const finished = s.finished_minis || 0;
   const pct = bought > 0 ? Math.round((finished / bought) * 100) : 0;
+  const wipPct = bought > 0 ? Math.round((wip / bought) * 100) : 0;
   ledger.innerHTML = `
     <div class="stat"><b>${bought}</b><span>Bought</span></div>
     <div class="stat"><b>${unbuilt}</b><span>Unbuilt</span></div>
+    <div class="stat"><b>${wip}</b><span>WIP ${wipPct}%</span></div>
     <div class="stat"><b>${finished}</b><span>Finished ${pct}%</span></div>`;
 }
 
