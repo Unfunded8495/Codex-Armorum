@@ -561,6 +561,11 @@ function openModelEditor(cid){
   wireEditorImage(backdrop, cid);
 }
 
+function imageSearchUrl(item){
+  return 'https://www.google.com/search?tbm=isch&q=' +
+    encodeURIComponent(`${item.name} ${(item.faction_label||'').split(' - ').pop()} Warhammer 40k miniature`);
+}
+
 function renderEditorImage(item){
   const url = item.image && item.image.url ? item.image.url : '';
   const preview = url
@@ -569,6 +574,7 @@ function renderEditorImage(item){
   return `
     <div class="he-img-section" id="heImgSection">
       <div class="am-label">Image</div>
+      <a class="ref-search" href="${esc(imageSearchUrl(item))}" target="_blank" rel="noopener noreferrer">Find an image ↗</a>
       <div class="he-img-row">
         <div class="he-img-frame">${preview}</div>
         <div class="he-img-controls">

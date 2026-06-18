@@ -2230,7 +2230,8 @@ a.brand{text-decoration:none;color:inherit}
 }
 /* model editor overlay — image section (reuses .cfe-backdrop / .am-* from the catalogue editor) */
 .he-img-section{margin-top:16px;border-top:1px solid rgba(44,42,53,.75);padding-top:14px}
-.he-img-row{display:flex;gap:14px;align-items:flex-start;margin-top:6px}
+.he-img-section .ref-search{font-size:11px;padding:6px 10px;margin:6px 0 2px}
+.he-img-row{display:flex;gap:14px;align-items:flex-start;margin-top:10px}
 .he-img-frame{
   flex:0 0 96px;width:96px;height:96px;border:1px solid rgba(199,154,58,.4);border-radius:4px;
   overflow:hidden;background:var(--ink-2);display:flex;align-items:center;justify-content:center;
