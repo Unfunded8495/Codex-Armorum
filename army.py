@@ -73,13 +73,19 @@ def _valid_detachment_for_faction(fid, dtid):
     if not dtid:
         return True
     detachment = store.detachment_by_id.get(dtid)
-    return bool(detachment and detachment.get("faction_id") == fid)
+    if not detachment:
+        return False
+    # Detachments are coded under the parent faction (Wahapedia does not split
+    # them by chapter), so a chapter army (e.g. SM::Blood Angels) accepts any
+    # detachment whose faction equals the chapter's parent.
+    det_fac = detachment.get("faction_id")
+    return det_fac == fid or det_fac == store.faction_parent(fid)
 
 
 def _datasheet_in_faction(did, fid):
-    store = get_store()
-    d = store.ds_by_id.get(did)
-    return bool(d and d.get("faction_id") == fid)
+    # Parent-aware: a chapter unit validates as in its own chapter and in the
+    # parent faction (a Blood Angels unit is in both SM and SM::Blood Angels).
+    return get_store().unit_in_faction(did, fid)
 
 
 def _army_unit_row(c, au):

@@ -161,6 +161,9 @@ def catalogue_payload():
     key = ("catalogue_payload", _mtime_key(MANUAL_PATH, RESOLUTIONS_PATH, IMAGES_PATH))
     if key in _CACHE:
         return _CACHE[key]
+    from data_store import get_store
+    store = get_store()
+
     data = _load_json(MANUAL_PATH, {"model_releases": []})
     all_releases = data.get("model_releases", [])
     resolutions = _resolution_map()
@@ -189,15 +192,21 @@ def catalogue_payload():
             ds = datasheets.get(did)
             if not ds:
                 continue
-            linked_factions.add(ds.get("faction_id", ""))
+            # Collapse chapter datasheets back to the parent faction (e.g.
+            # SM::Blood Angels -> SM). The chapter rollup splits Space Marines
+            # only for the browse grid and favourites; the catalogue faction
+            # grouping and search scope deliberately stay at the parent level so
+            # the purchase browser is unchanged by the rollup.
+            fac = store.faction_parent(ds.get("faction_id", ""))
+            linked_factions.add(fac)
             links.append({
                 "datasheet_id": did,
                 "datasheet_name": ds.get("name", ""),
-                "faction_id": ds.get("faction_id", ""),
+                "faction_id": fac,
                 "role": ds.get("role", ""),
             })
 
-        source_faction = record.get("faction_id", "")
+        source_faction = store.faction_parent(record.get("faction_id", ""))
         army_ids = {source_faction, *linked_factions}
         army_ids.discard("")
         for fid in army_ids:
@@ -225,9 +234,6 @@ def catalogue_payload():
             "is_manual": True,
         })
 
-    from data_store import get_store
-
-    store = get_store()
     for fid, faction in factions.items():
         name = store.faction_by_id.get(fid, {}).get("name", faction["name"])
         primary, accent, _ = ft.theme_for(name)

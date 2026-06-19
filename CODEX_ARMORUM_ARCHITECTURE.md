@@ -60,6 +60,22 @@ Datasheets_models_cost.csv
 
 ---
 
+## Space Marine chapter rollup
+
+Wahapedia carries one Space Marines faction code, `SM`, holding every chapter (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars, and the codex chapters). To restore per-chapter browsing and favouriting, `data_store._apply_chapter_rollup()` derives a per-chapter faction card at load time. This is purely load-time and data-driven, so it survives every reimport with no manual step.
+
+- **Detection is data-driven.** Chapters are the faction keywords (`is_faction_keyword=true`, stored on each unit dict with the `Faction: ` prefix) that appear on `SM` datasheets, minus `CHAPTER_KEYWORD_EXCLUDE` (`Adeptus Astartes`, `Imperium`, `Agents of the Imperium`) and minus any keyword that equals a real faction name. A new chapter added by Wahapedia appears automatically. `CHAPTER_ALLOWLIST` (empty by default) can curate the set without touching logic.
+- **The importer stays unaware of chapters.** No chapter rows are written to any table. After a reimport, `data_store` rebuilds the chapter cards from whatever keywords the fresh CSVs contain.
+- **Chapter ids are stable.** A chapter faction id is `parent::chapter`, e.g. `SM::Blood Angels`. It is deterministic from the keyword text, so favourites (`favourite_factions`), box tags (`custom_box_sets`) and army factions (`army_lists`) that persist a chapter id keep resolving across reimports. The `::` separator cannot occur in a real Wahapedia faction code. Helpers: `faction_parent(fid)`, `is_chapter_faction(fid)`.
+- **Assignment.** A datasheet carrying exactly one detected chapter keyword is reassigned to that chapter (its `faction_id` becomes the chapter id); generic datasheets stay under `SM`. `units_for_faction(fid)` is strict (the `SM` card shows generic units only, a chapter card shows its own), while `units_in_faction_tree(fid)` returns the parent plus all chapter children (used by box/army matching) and `unit_in_faction(did, fid)` treats a chapter unit as belonging to both its chapter and the parent.
+- **Detachments inherit the parent pool.** Wahapedia codes every chapter detachment under `SM` and gives no field attributing a detachment to a chapter, so a chapter card shows the full Space Marines detachment pool via `detachments_for_faction(fid)` (parent fallback). Enhancements follow their detachment.
+- **Icons fall back to the parent.** A chapter card tries its own icon, then the parent Space Marines icon, then the tinted glyph (`app._resolve_faction_icon`). No icon files are invented.
+- **The catalogue view groups chapters under the parent.** `catalogue_review.catalogue_payload()` collapses chapter datasheet factions back to `SM` (via `faction_parent`) so the purchase browser grouping and catalogue search scope are unchanged by the rollup.
+
+A load-time assertion warns loudly (without raising) if any of `CORE_EXPECTED_CHAPTERS` (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars) fails to resolve to a non-empty card, so a Wahapedia keyword restructure surfaces on the next refresh instead of silently re-merging a chapter into Space Marines. The read-only diagnostic `scripts/inspect_chapters.py` re-derives the chapter set from the live CSVs.
+
+---
+
 ## Track 2: Model catalogue JSONs
 
 **Files (all in `data/`):**
@@ -203,4 +219,4 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 
 ## Migration history
 
-The June 2026 migration replaced BSData (GitHub wh40k-10e .cat/.gst XML) with the Wahapedia CSV export as the sole ruleset source. The migration scripts live in `scripts/` (`capture_baseline.py`, `fetch_wahapedia.py`, `reconcile_ids.py`). The pre-migration database snapshot is `collection.db.pre-wahapedia`. The most visible behavioural change: Space Marine chapters (Blood Angels, Space Wolves, Dark Angels, Deathwatch, and others) are no longer separate factions; Wahapedia groups them all under `Space Marines` (`SM`).
+The June 2026 migration replaced BSData (GitHub wh40k-10e .cat/.gst XML) with the Wahapedia CSV export as the sole ruleset source. The migration scripts live in `scripts/` (`capture_baseline.py`, `fetch_wahapedia.py`, `reconcile_ids.py`). The pre-migration database snapshot is `collection.db.pre-wahapedia`. The most visible behavioural change: Space Marine chapters (Blood Angels, Space Wolves, Dark Angels, Deathwatch, and others) are no longer separate factions in the source data; Wahapedia groups them all under `Space Marines` (`SM`). Per-chapter browsing and favouriting were then restored on top of that data by the load-time chapter rollup (see "Space Marine chapter rollup" above), which derives chapter cards from the faction keywords without leaving Wahapedia.

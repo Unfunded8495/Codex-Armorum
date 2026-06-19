@@ -125,6 +125,21 @@ def _faction_icon_url(fid, name):
     return None
 
 
+def _resolve_faction_icon(fid, name):
+    """Faction icon URL, parent-aware for chapter cards.
+
+    A chapter card (e.g. SM::Blood Angels) first tries its own chapter name
+    through the icon resolver, then falls back to the parent Space Marines icon.
+    Returns None when neither resolves (the client then renders the tinted
+    faction glyph). No icon files are invented or renamed."""
+    raw = _faction_icon_url(fid, name)
+    if not raw and store.is_chapter_faction(fid):
+        parent = store.faction_parent(fid)
+        parent_name = store.faction_by_id.get(parent, {}).get("name", parent)
+        raw = _faction_icon_url(parent, parent_name)
+    return raw
+
+
 def _tinted_svg(filepath, accent):
     with open(filepath, encoding="utf-8") as f:
         svg = f.read()
@@ -263,9 +278,9 @@ def _factions_payload(info=None, owned=None):
         f["unbuilt_minis"]   = unbuilt_minis_by_faction.get(f["id"], 0)
         f["finished_minis"]  = finished_minis_by_faction.get(f["id"], 0)
         f["unlogged_minis"]  = ul_by_faction.get(f["id"], 0)
-        raw_icon = _faction_icon_url(f["id"], f["name"])
+        raw_icon = _resolve_faction_icon(f["id"], f["name"])
         if raw_icon and raw_icon.lower().endswith(".svg"):
-            f["icon_url"] = f"/api/factions/{f['id']}/icon"
+            f["icon_url"] = f"/api/factions/{quote(f['id'])}/icon"
         else:
             f["icon_url"] = raw_icon
         dn, group = _faction_display_name(f["name"])
@@ -325,7 +340,7 @@ def faction_icon(fid):
     if not fac:
         abort(404)
     _, accent, _ = ft.theme_for(fac.get("name", ""))
-    raw_url = _faction_icon_url(fid, fac.get("name", ""))
+    raw_url = _resolve_faction_icon(fid, fac.get("name", ""))
     if not raw_url or not raw_url.lower().endswith(".svg"):
         abort(404)
     fname = unquote(raw_url.split("/static/icons/", 1)[-1])
@@ -386,7 +401,10 @@ def api_faction_units(fid):
 def api_faction_detachments(fid):
     if fid not in store.faction_by_id:
         abort(404)
-    detachments = store.detachments_by_faction.get(fid, [])
+    # A chapter card has no detachments of its own; it inherits the full parent
+    # Space Marines pool because Wahapedia does not attribute detachments to
+    # chapters.
+    detachments = store.detachments_for_faction(fid)
     return jsonify([{"id": d["id"], "name": d["name"], "type": d.get("type", "")}
                     for d in detachments])
 

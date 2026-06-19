@@ -9,12 +9,30 @@ short codes such as "CSM").
 The external interface (every public attribute and method) is unchanged so all
 consuming modules continue to work; only the data source and the id values
 differ from the previous BSData version.
+
+Chapter rollup (Space Marines):
+    Wahapedia carries one Space Marines faction code, "SM", holding every chapter
+    (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars, and the
+    codex chapters). This module derives a per-chapter "faction" card at load
+    time from the faction keywords present on SM datasheets, so each chapter is
+    its own browsable, favouritable card whose datasheets are the chapter-specific
+    ones, while generic Space Marine datasheets stay under Space Marines.
+
+    The rollup is purely load-time and data-driven. The importer stays unaware of
+    chapters and writes no chapter rows: after any CSV reimport this module
+    rebuilds the chapter cards from whatever keywords the fresh data carries.
+    Chapter faction ids are deterministic and stable (parent code, "::", chapter
+    keyword, e.g. "SM::Blood Angels") so favourites, box tags and army faction
+    references that persist in collection.db keep resolving across reimports.
 """
 import json
+import logging
 import os
 import re
 import sqlite3
 from functools import lru_cache
+
+logger = logging.getLogger(__name__)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "collection.db")
 
@@ -24,6 +42,41 @@ ROLE_ORDER = [
     "Beast", "Monster", "Vehicle", "Swarm", "Transport",
     "Fortification", "Other", "Unaligned",
 ]
+
+# ---------------------------------------------------------------------------
+# Chapter rollup configuration
+# ---------------------------------------------------------------------------
+# Faction codes that get the chapter rollup. Only Space Marines for now. The
+# mechanism is parameterised by parent code so it is extensible, but the Chaos
+# legions and Aeldari subfactions already have their own Wahapedia codes and need
+# no rollup.
+PARENT_FACTIONS = {"SM"}
+
+# Universal faction keywords that are never a chapter. At runtime this is also
+# unioned with every real faction name (so cross-faction tags that equal a
+# faction name are dropped too). "Agents of the Imperium" is listed explicitly
+# because the real faction is named "Imperial Agents", so the faction-name rule
+# alone would not catch this cross-faction tag (it appears on Kill Team Cassius).
+CHAPTER_KEYWORD_EXCLUDE = {"Adeptus Astartes", "Imperium", "Agents of the Imperium"}
+
+# Optional curated set of chapter keywords to surface. Empty means surface every
+# detected chapter (fully data-driven). The owner can trim this later without
+# touching logic.
+CHAPTER_ALLOWLIST = set()
+
+# Used only by the load-time assertion: if any of these does not resolve to a
+# non-empty chapter card after the rollup, a single prominent warning is logged
+# (the Wahapedia keyword structure may have changed). The app still starts.
+CORE_EXPECTED_CHAPTERS = {"Blood Angels", "Dark Angels", "Space Wolves",
+                          "Deathwatch", "Black Templars"}
+
+# data_store stores faction keywords on each unit dict with this prefix (set by
+# wahapedia_importer.build_keywords from is_faction_keyword=true rows).
+FACTION_KW_PREFIX = "Faction: "
+
+# The separator in a synthetic chapter faction id. Cannot occur in a real
+# Wahapedia faction code, so there is no collision risk.
+CHAPTER_SEP = "::"
 
 
 def strip_html(text):
@@ -61,6 +114,9 @@ class DataStore:
         self.leaders_for = {}
         self.led_by = {}
         self.leads = {}
+        # Chapter rollup bookkeeping (populated by _apply_chapter_rollup).
+        self.chapter_faction_ids = set()
+        self.chapters_by_parent = {}
         self._load()
 
     def _load(self):
@@ -183,6 +239,12 @@ class DataStore:
 
         self.datasheets = list(self.ds_by_id.values())
 
+        # Derive the Space Marine chapter cards from the faction keywords now that
+        # the base factions and units are built. Real faction names feed the
+        # exclude rule, so capture them before any synthetic chapter is added.
+        real_faction_names = {row["name"] for row in all_fac_rows}
+        self._apply_chapter_rollup(real_faction_names)
+
         # cost: {did: [{"cost": points, "description": label}]}: used by the
         # datasheet Points section and the army builder. Multi-size units carry
         # per-size tiers; everything else is a single base price.
@@ -233,6 +295,119 @@ class DataStore:
         self.leads = leads_id
 
         self._load_detachment_data()
+
+    # ---- chapter rollup ------------------------------------------------
+
+    @staticmethod
+    def faction_parent(fid):
+        """Return the parent code of a faction id. For a chapter id such as
+        "SM::Blood Angels" this is "SM"; for a plain code it is the code itself."""
+        if fid and CHAPTER_SEP in fid:
+            return fid.split(CHAPTER_SEP, 1)[0]
+        return fid
+
+    @staticmethod
+    def is_chapter_faction(fid):
+        """True when fid is a synthetic chapter faction id (contains "::")."""
+        return bool(fid) and CHAPTER_SEP in fid
+
+    @staticmethod
+    def _unit_faction_keywords(unit):
+        """The bare faction keywords on a unit dict (the "Faction: " prefix that
+        data_store stores them with, stripped back off)."""
+        return [k[len(FACTION_KW_PREFIX):] for k in unit.get("_keywords", [])
+                if k.startswith(FACTION_KW_PREFIX)]
+
+    def _apply_chapter_rollup(self, real_faction_names):
+        """Split each PARENT_FACTIONS code into per-chapter faction cards.
+
+        Chapters are detected from the faction keywords on the parent's
+        datasheets, minus the universal/configured excludes and any keyword that
+        equals a real faction name. Each detected chapter becomes a synthetic
+        faction whose datasheets are the ones carrying exactly that one chapter
+        keyword; generic datasheets stay under the parent.
+        """
+        exclude_names = set(CHAPTER_KEYWORD_EXCLUDE) | set(real_faction_names)
+
+        for parent in sorted(PARENT_FACTIONS):
+            if parent not in self.faction_by_id:
+                continue
+            parent_units = list(self.ds_by_faction.get(parent, []))
+
+            # Detect the chapter keyword set across the parent's datasheets.
+            detected = set()
+            for u in parent_units:
+                for kw in self._unit_faction_keywords(u):
+                    if kw and kw not in exclude_names:
+                        detected.add(kw)
+            if CHAPTER_ALLOWLIST:
+                detected &= set(CHAPTER_ALLOWLIST)
+
+            # Create a synthetic faction card per detected chapter.
+            chapter_ids = {}
+            for chapter in sorted(detected):
+                cid = f"{parent}{CHAPTER_SEP}{chapter}"
+                chapter_ids[chapter] = cid
+                faction_dict = {"id": cid, "name": chapter, "unit_count": 0}
+                self.factions.append(faction_dict)
+                self.faction_by_id[cid] = faction_dict
+                self.ds_by_faction.setdefault(cid, [])
+                self.chapter_faction_ids.add(cid)
+                self.chapters_by_parent.setdefault(parent, []).append(cid)
+
+            # Reassign each parent datasheet that carries exactly one detected
+            # chapter keyword to that chapter; leave generic ones under the parent.
+            remaining = []
+            for u in parent_units:
+                chs = sorted(kw for kw in self._unit_faction_keywords(u)
+                             if kw in detected)
+                if not chs:
+                    remaining.append(u)
+                    continue
+                if len(chs) > 1:
+                    logger.warning(
+                        "Chapter rollup: datasheet %s (%s) carries multiple "
+                        "chapter keywords %s; assigning to %r for determinism.",
+                        u["id"], u.get("name", ""), chs, chs[0])
+                cid = chapter_ids[chs[0]]
+                u["faction_id"] = cid
+                self.ds_by_faction[cid].append(u)
+            self.ds_by_faction[parent] = remaining
+
+            # Recompute unit counts so the faction grid reflects the split.
+            self.faction_by_id[parent]["unit_count"] = len(remaining)
+            for chapter, cid in chapter_ids.items():
+                self.faction_by_id[cid]["unit_count"] = len(self.ds_by_faction[cid])
+
+        self._assert_core_chapters()
+
+    def _assert_core_chapters(self):
+        """Warn loudly if any core expected chapter did not resolve to a
+        non-empty card. Does not raise: the app must still start."""
+        missing = []
+        for parent in sorted(PARENT_FACTIONS):
+            for chapter in sorted(CORE_EXPECTED_CHAPTERS):
+                cid = f"{parent}{CHAPTER_SEP}{chapter}"
+                if not self.ds_by_faction.get(cid):
+                    missing.append(cid)
+        if missing:
+            logger.warning(
+                "\n" + "=" * 70 +
+                "\nCHAPTER ROLLUP: expected chapter card(s) missing or empty: %s"
+                "\nThe Wahapedia faction keyword structure may have changed; "
+                "chapters may have silently re-merged into Space Marines."
+                "\n" + "=" * 70, ", ".join(missing))
+
+    def _chapter_children(self, fid):
+        """Chapter faction ids whose parent is fid (empty for a chapter id)."""
+        return list(self.chapters_by_parent.get(fid, []))
+
+    def detachments_for_faction(self, fid):
+        """Detachments for a faction id, falling back to the parent's pool. A
+        chapter card has no detachments of its own because Wahapedia does not
+        attribute detachments to chapters, so it inherits the full parent pool."""
+        return (self.detachments_by_faction.get(fid)
+                or self.detachments_by_faction.get(self.faction_parent(fid), []))
 
     def _load_detachment_data(self):
         """Populate detachments_by_faction, detachment_by_id,
@@ -307,6 +482,9 @@ class DataStore:
         return out
 
     def units_for_faction(self, fid):
+        """Strict membership: only units whose canonical faction_id equals fid.
+        The Space Marines card shows generic units only; a chapter card shows its
+        own units only. This is the un-merged view used by the browse grid."""
         sheets = [d for d in self.ds_by_faction.get(fid, [])
                   if not d["virtual_bool"]]
         units = []
@@ -320,6 +498,29 @@ class DataStore:
         units.sort(key=lambda u: (_role_rank(u["role"]), u["name"]))
         return units
 
+    def units_in_faction_tree(self, fid):
+        """Units for fid plus, when fid is a parent, all units of its chapter
+        children. Used by faction-scoped matching and validation, not the browse
+        grid (e.g. a Space Marines box should match Blood Angels units)."""
+        units = self.units_for_faction(fid)
+        children = self._chapter_children(fid)
+        if not children:
+            return units
+        for cid in children:
+            units += self.units_for_faction(cid)
+        units.sort(key=lambda u: (_role_rank(u["role"]), u["name"]))
+        return units
+
+    def unit_in_faction(self, did, fid):
+        """True when the unit's canonical faction equals fid, or when fid is the
+        parent of the unit's chapter faction. So a Blood Angels unit counts as in
+        both "SM" and "SM::Blood Angels"."""
+        d = self.ds_by_id.get(did)
+        if not d:
+            return False
+        ufid = d.get("faction_id")
+        return ufid == fid or self.faction_parent(ufid) == fid
+
     def _cheapest_points(self, did):
         costs = [_int(c.get("cost")) for c in self.cost.get(did, [])
                  if _int(c.get("cost"))]
@@ -330,7 +531,7 @@ class DataStore:
         if not d:
             return None
         kws = d.get("_keywords", [])
-        faction_kw_prefix = "Faction: "
+        faction_kw_prefix = FACTION_KW_PREFIX
         fkw = [k for k in kws if k.startswith(faction_kw_prefix)]
         kw = [k for k in kws if not k.startswith(faction_kw_prefix)]
         # Single-model datasheets carry a stats dict; synthesise the "1 <name>"

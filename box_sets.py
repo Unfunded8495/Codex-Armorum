@@ -542,7 +542,9 @@ def _clean_box_payload(data, existing_id=None):
         ds = store.ds_by_id.get(did)
         if not ds:
             return None, "Unknown unit in box contents."
-        if fid and ds.get("faction_id") != fid:
+        # Parent-aware: an SM-tagged box accepts chapter units (a Blood Angels
+        # unit is in SM); a chapter-tagged box accepts that chapter's units.
+        if fid and not store.unit_in_faction(did, fid):
             return None, "One or more units do not belong to the selected army."
         count    = min(500, _as_int(item.get("datasheet_count"), 1, minimum=1))
         physical = min(500, _as_int(item.get("physical_miniatures"), count, minimum=1))
@@ -593,7 +595,10 @@ def _clean_box_payload(data, existing_id=None):
 def _unit_search_pool(fid):
     store = get_store()
     if fid:
-        return store.units_for_faction(fid)
+        # Tree scope: a Space Marines (SM) box must match chapter units too, so
+        # an SM scope includes every chapter's units; a chapter scope returns
+        # just that chapter's units.
+        return store.units_in_faction_tree(fid)
     return [{"id": d["id"], "name": d["name"], "role": d.get("role") or "Other",
              "points": None, "faction_id": d.get("faction_id", "")}
             for d in store.datasheets if not d["virtual_bool"]]
@@ -601,14 +606,19 @@ def _unit_search_pool(fid):
 
 def _catalogue_search_pool(fid):
     from catalogue_review import catalogue_payload
+    store = get_store()
     items = catalogue_payload().get("items", [])
+    # Parent-aware scope: catalogue army_ids are kept at the parent level (the
+    # rollup collapses chapters back to SM in the catalogue), so a chapter scope
+    # also matches its parent's catalogue items.
+    scopes = {fid, store.faction_parent(fid)} if fid else set()
     pool = []
     for item in items:
         links = item.get("datasheet_links", [])
         if not links:
             continue
         army_ids = set(item.get("army_ids") or [])
-        if fid and fid not in army_ids and item.get("faction_id") != fid:
+        if fid and not (scopes & army_ids) and item.get("faction_id") not in scopes:
             continue
         pool.append({
             "id": item["id"],
