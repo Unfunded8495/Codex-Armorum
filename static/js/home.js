@@ -338,7 +338,15 @@ export async function showFaction(fid, browseAll=false){
     const purchased = Math.max(Number(stat?.bought || 0), unit.minis.length);
     const complete = completeByDid.get(unit.id) || 0;
     const sharedComplete = sharedCompleteCount(unit.id);
-    const buildable = Math.max(0, purchased - sharedComplete);
+    // WIP = started but not finished (any stage past 'unbuilt' that isn't complete).
+    // Potential multikit builds are always unbuilt, so they never land here.
+    const wip = unit.minis.filter(m => {
+      const s = m.stage || 'unbuilt';
+      return s !== 'unbuilt' && !isCompleteStage(s);
+    }).length;
+    // Buildable is now only the un-started (unbuilt) models: carve WIP out of the
+    // not-complete pool so buildable + WIP + complete reads as the full count.
+    const buildable = Math.max(0, purchased - sharedComplete - wip);
     const uPct = purchased > 0 ? Math.round(complete/purchased*100) : 0;
     const repCid = unit.minis.find(m => !m.is_potential_build && m.catalogue_model_id)?.catalogue_model_id;
     const imgSrc = repCid ? `/api/model-catalogue/${encodeURIComponent(repCid)}/image` : `/api/units/${esc(unit.id)}/image`;
@@ -376,6 +384,7 @@ export async function showFaction(fid, browseAll=false){
           </div>
           <div class="fc-unit-stats">
             <span>${buildable} buildable</span>
+            <span class="fc-stat-wip">${wip} WIP</span>
             <span>${complete} Complete</span>
           </div>
         </div>

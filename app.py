@@ -406,9 +406,9 @@ def api_detachment_enhancements(dtid):
 
 # ---------------------------------------------------------------- unit api
 def _canon_did(did):
-    """Resolve a datasheet id (GUID or Wahapedia alias) to its canonical BSData
-    GUID so unit-level records key consistently regardless of which alias the
-    page was reached by. Falls back to the id as given when unresolvable."""
+    """Resolve a datasheet id to its canonical Wahapedia id so unit-level
+    records key consistently. With Wahapedia-native ids this normalises an id to
+    itself. Falls back to the id as given when unresolvable."""
     return store.ds_by_id.get(did, {}).get("id") or did
 
 
@@ -474,7 +474,8 @@ def _create_minis(datasheet_id, catalogue_model_id, label, wargear, count, multi
     """Insert `count` mini rows and return the created dicts."""
     from db import db
     import uuid as _uuid
-    # Resolve to canonical BSData GUID (handles both GUIDs and Wahapedia aliases)
+    # Resolve to the canonical Wahapedia datasheet id (unit_bsdata_id is a legacy
+    # column name that now holds the Wahapedia id).
     unit_bsdata_id = store.ds_by_id.get(datasheet_id, {}).get("id")
     now = time.time()
     created = []
@@ -1068,7 +1069,7 @@ def api_add_army_unit(aid):
     did = str(data.get("datasheet_id", ""))
     if did not in store.ds_by_id:
         return jsonify({"ok": False, "error": "Unknown datasheet"}), 400
-    did = store.ds_by_id[did]["id"]  # Normalize to canonical BSData GUID
+    did = store.ds_by_id[did]["id"]  # Normalize to canonical Wahapedia id
     if not _datasheet_in_faction(did, army["faction_id"]):
         return jsonify({"ok": False, "error": "Unit does not belong to this army's faction"}), 400
     comp_range = _parse_comp_range(store.composition.get(did, []))
@@ -1099,7 +1100,7 @@ def api_update_army_unit(auid):
         army = c.execute("SELECT * FROM army_lists WHERE id=?", (row["army_list_id"],)).fetchone()
         if not army:
             abort(404)
-        # Normalize old Wahapedia IDs to canonical BSData GUID
+        # Normalize to the canonical Wahapedia datasheet id
         canonical_did = store.ds_by_id.get(did, {}).get("id") or did
         if canonical_did != did:
             c.execute("UPDATE army_units SET datasheet_id=? WHERE id=?", (canonical_did, auid))
@@ -1227,8 +1228,9 @@ def api_patch_catalogue_model(catalogue_model_id):
         overrides["faction_label"] = store.faction_by_id.get(fid, {}).get("name", fid) if fid else ""
     if "faction_label" in data:
         # Direct canonical-label edit (History view). Re-files a model under the
-        # right card without touching faction_id — sub-factions like Blood Angels
-        # share one BSData GUID, so the label is the meaningful grouping key. An
+        # right card without touching faction_id. Sub-factions like Blood Angels
+        # share one Wahapedia faction code, so the label is the meaningful
+        # grouping key. An
         # explicit faction_label wins over one derived from faction_id above.
         from catalogue_review import canonical_faction_label
         overrides["faction_label"] = canonical_faction_label(str(data["faction_label"]).strip())
@@ -1778,8 +1780,8 @@ def api_unassigned_minis():
 
 @app.route("/api/minis/assign-datasheet", methods=["POST"])
 def api_assign_datasheet():
-    """File a set of (typically unassigned) minis under a datasheet, stamping both the raw
-    datasheet_id and the canonical BSData GUID so they show up under the right unit."""
+    """File a set of (typically unassigned) minis under a datasheet, stamping both
+    datasheet_id and the canonical Wahapedia id so they show up under the right unit."""
     data = request.get_json(force=True)
     datasheet_id = str(data.get("datasheet_id", "")).strip()
     mini_ids = data.get("mini_ids", [])

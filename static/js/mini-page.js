@@ -592,9 +592,13 @@ function mpKnownGearSet(){
 function mpGearEditorHtml(containerId, currentGear, saveCall, cancelCall, saveLabel){
   const groups = mpGearGroups();
   const current = new Set((currentGear || []).map(mpNormGear));
-  const rendered = new Set();
   const sections = [];
   groups.forEach((group, gi) => {
+    // Dedupe within a group only: each option is a distinct rule context, so a
+    // weapon legitimately appears under several (e.g. a chainsword swap offered
+    // both to the champion and the rank and file). Deduping across groups would
+    // hide whole options whose weapons happened to appear earlier.
+    const rendered = new Set();
     const choices = [];
     (group.choices || []).forEach((choice, ci) => {
       const key = mpNormGear(choice);

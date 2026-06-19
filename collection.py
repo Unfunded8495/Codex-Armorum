@@ -86,10 +86,19 @@ def _canonical_wargear(detail):
 
 def _choices_from_loadout(loadout, canonical):
     text = _strip_html(unescape(loadout or ""))
-    if ":" in text:
-        text = text.split(":", 1)[1]
-    parts = re.split(r"\s*;\s*", text)
-    return [_display_choice(p, canonical) for p in parts if _display_choice(p, canonical)]
+    # A datasheet may carry several "… is equipped with: …" sentences (e.g. a
+    # separate champion line plus the rank-and-file line). Collect the weapons
+    # from every such clause; fall back to the whole string if none match.
+    clauses = re.findall(r"equipped with:\s*(.+?)(?:\.|$)", text, flags=re.I)
+    if not clauses:
+        clauses = [text.split(":", 1)[1] if ":" in text else text]
+    out = []
+    for clause in clauses:
+        for part in re.split(r"\s*;\s*", clause):
+            disp = _display_choice(part, canonical)
+            if disp and disp not in out:
+                out.append(disp)
+    return out
 
 
 def _choices_from_option(description, canonical):

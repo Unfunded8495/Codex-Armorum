@@ -1830,6 +1830,7 @@ a.brand{text-decoration:none;color:inherit}
   color:var(--parch-dim);
 }
 .fc-unit-stats span:last-child{color:var(--parch);text-align:right}
+.fc-unit-stats .fc-stat-wip{color:#e0a44f;text-align:center}
 .fc-shared-note{
   display:flex;align-items:center;gap:5px;
   font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.3px;

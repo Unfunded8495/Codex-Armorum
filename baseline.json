@@ -1,0 +1,5036 @@
+{
+  "counts": {
+    "catalogue_factions": 46,
+    "catalogue_units": 1533,
+    "catalogue_weapons": 11715,
+    "catalogue_unit_weapons": 6367,
+    "minis_total": 525,
+    "faction_list_len": 36
+  },
+  "faction_list": [
+    {
+      "id": "1f1-47f9-a3a4-9bfb",
+      "name": "Aeldari - Ynnari",
+      "unit_count": 11
+    },
+    {
+      "id": "d265-877b-e03d-30ca",
+      "name": "Chaos - Chaos Daemons",
+      "unit_count": 71
+    },
+    {
+      "id": "46d8-abc8-ef3a-9f85",
+      "name": "Chaos - Chaos Knights",
+      "unit_count": 19
+    },
+    {
+      "id": "c8da-e875-58f7-f6d6",
+      "name": "Chaos - Chaos Space Marines",
+      "unit_count": 84
+    },
+    {
+      "id": "5108-f98-63c2-53cb",
+      "name": "Chaos - Death Guard",
+      "unit_count": 50
+    },
+    {
+      "id": "03fe-a162-4c02-f07b",
+      "name": "Chaos - Emperor's Children",
+      "unit_count": 26
+    },
+    {
+      "id": "1069-10ff-3ba9-873b",
+      "name": "Chaos - Thousand Sons",
+      "unit_count": 42
+    },
+    {
+      "id": "df9a-59b2-f464-59ad",
+      "name": "Chaos - World Eaters",
+      "unit_count": 36
+    },
+    {
+      "id": "b39e-4401-8f3e-fdf7",
+      "name": "Imperium - Adepta Sororitas",
+      "unit_count": 46
+    },
+    {
+      "id": "36d3-36bc-68dd-40ac",
+      "name": "Imperium - Adeptus Astartes - Black Templars",
+      "unit_count": 20
+    },
+    {
+      "id": "4ef9-15ce-e3e6-36de",
+      "name": "Imperium - Adeptus Astartes - Blood Angels",
+      "unit_count": 27
+    },
+    {
+      "id": "470a-6daa-9014-12df",
+      "name": "Imperium - Adeptus Astartes - Dark Angels",
+      "unit_count": 19
+    },
+    {
+      "id": "f89b-84e0-6e3b-f1e2",
+      "name": "Imperium - Adeptus Astartes - Deathwatch",
+      "unit_count": 16
+    },
+    {
+      "id": "5d6e-fd3-330a-11dd",
+      "name": "Imperium - Adeptus Astartes - Imperial Fists",
+      "unit_count": 3
+    },
+    {
+      "id": "f27e-18c0-b73e-748e",
+      "name": "Imperium - Adeptus Astartes - Iron Hands",
+      "unit_count": 2
+    },
+    {
+      "id": "6e59-e1ee-47ad-6ce5",
+      "name": "Imperium - Adeptus Astartes - Raven Guard",
+      "unit_count": 2
+    },
+    {
+      "id": "2261-79a5-19d9-1668",
+      "name": "Imperium - Adeptus Astartes - Salamanders",
+      "unit_count": 2
+    },
+    {
+      "id": "e0af-67df-9d63-8fb7",
+      "name": "Imperium - Adeptus Astartes - Space Marines",
+      "unit_count": 129
+    },
+    {
+      "id": "94bb-3284-ee14-57a1",
+      "name": "Imperium - Adeptus Astartes - Space Wolves",
+      "unit_count": 49
+    },
+    {
+      "id": "4029-9237-e8db-af55",
+      "name": "Imperium - Adeptus Astartes - Ultramarines",
+      "unit_count": 16
+    },
+    {
+      "id": "67c1-fc13-f9a1-cbbf",
+      "name": "Imperium - Adeptus Astartes - White Scars",
+      "unit_count": 2
+    },
+    {
+      "id": "1f19-6509-d906-ca10",
+      "name": "Imperium - Adeptus Custodes",
+      "unit_count": 34
+    },
+    {
+      "id": "77b9-2f66-3f9b-5cf3",
+      "name": "Imperium - Adeptus Mechanicus",
+      "unit_count": 41
+    },
+    {
+      "id": "b00-cd86-4b4c-97ba",
+      "name": "Imperium - Agents of the Imperium",
+      "unit_count": 55
+    },
+    {
+      "id": "b0ae-12a5-c84-ea45",
+      "name": "Imperium - Astra Militarum",
+      "unit_count": 136
+    },
+    {
+      "id": "50c4-3e83-fe54-97c4",
+      "name": "Imperium - Grey Knights",
+      "unit_count": 35
+    },
+    {
+      "id": "25dd-7aa0-6bf4-f2d5",
+      "name": "Imperium - Imperial Knights",
+      "unit_count": 22
+    },
+    {
+      "id": "581a-46b9-5b86-44b7",
+      "name": "Unaligned Forces",
+      "unit_count": 23
+    },
+    {
+      "id": "34a5-8c7e-f468-82d1",
+      "name": "Xenos - Aeldari",
+      "unit_count": 78
+    },
+    {
+      "id": "38de-521f-1ce0-44a0",
+      "name": "Xenos - Drukhari",
+      "unit_count": 31
+    },
+    {
+      "id": "3bdf-a114-5035-c6ac",
+      "name": "Xenos - Genestealer Cults",
+      "unit_count": 28
+    },
+    {
+      "id": "f616-3f08-ee8e-3349",
+      "name": "Xenos - Leagues of Votann",
+      "unit_count": 25
+    },
+    {
+      "id": "b654-a18a-ea1-3bf2",
+      "name": "Xenos - Necrons",
+      "unit_count": 66
+    },
+    {
+      "id": "a55f-b7b3-6c65-a05f",
+      "name": "Xenos - Orks",
+      "unit_count": 100
+    },
+    {
+      "id": "d81a-61dd-6d27-a3ce",
+      "name": "Xenos - T'au Empire",
+      "unit_count": 66
+    },
+    {
+      "id": "b984-7317-81cc-20f",
+      "name": "Xenos - Tyranids",
+      "unit_count": 63
+    }
+  ],
+  "samples": {
+    "Legionaries": {
+      "resolved": true,
+      "id": "615-e6bf-cfd2-9384",
+      "unit_detail_shape": {
+        "id": "str",
+        "name": "str",
+        "faction_id": "str",
+        "faction_name": "str",
+        "role": "str",
+        "legend": "str",
+        "loadout": "str",
+        "link": "str",
+        "transport": "str",
+        "damaged_w": "str",
+        "damaged_description": "str",
+        "led_by": [
+          "list-of",
+          {
+            "id": "str",
+            "name": "str"
+          }
+        ],
+        "leads": [
+          "empty-list"
+        ],
+        "abilities": {
+          "core": [
+            "empty-list"
+          ],
+          "faction": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "datasheet": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "special": [
+            "empty-list"
+          ],
+          "invuln_save": "NoneType",
+          "transport": "NoneType",
+          "damaged": "NoneType"
+        },
+        "models": {
+          "M": "str",
+          "T": "str",
+          "SV": "str",
+          "W": "str",
+          "LD": "str",
+          "OC": "str"
+        },
+        "costs": [
+          "list-of",
+          {
+            "cost": "int",
+            "description": "str"
+          }
+        ],
+        "composition": [
+          "list-of",
+          {
+            "name": "str"
+          }
+        ],
+        "options": [
+          "list-of",
+          {
+            "description": "str"
+          }
+        ],
+        "ranged": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "melee": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "keywords": [
+          "list-of",
+          "str"
+        ],
+        "faction_keywords": [
+          "list-of",
+          "str"
+        ]
+      },
+      "unit_detail": {
+        "id": "615-e6bf-cfd2-9384",
+        "name": "Legionaries",
+        "faction_id": "c8da-e875-58f7-f6d6",
+        "faction_name": "Chaos - Chaos Space Marines",
+        "role": "Battleline",
+        "legend": "",
+        "loadout": "<b>The Aspiring Champion is equipped with:</b> close combat weapon; bolt pistol; boltgun.<br><b>Every model is equipped with:</b> boltgun; bolt pistol; close combat weapon.",
+        "link": "",
+        "transport": "",
+        "damaged_w": "",
+        "damaged_description": "",
+        "led_by": [
+          {
+            "id": "cd9c-96e7-6dcb-bedf",
+            "name": "Fabius Bile"
+          },
+          {
+            "id": "287f-7d48-59cf-dc1e",
+            "name": "Master of Possession"
+          },
+          {
+            "id": "e496-5a54-4cb2-4fc1",
+            "name": "Chaos Lord"
+          },
+          {
+            "id": "980d-c80a-19b2-f641",
+            "name": "Sorcerer"
+          },
+          {
+            "id": "f3d9-883e-6ca2-e3b",
+            "name": "Exalted Champion [Legends]"
+          },
+          {
+            "id": "d2b8-454a-d061-b592",
+            "name": "Dark Apostle"
+          },
+          {
+            "id": "da34-7071-8658-a453",
+            "name": "Master of Executions"
+          }
+        ],
+        "leads": [],
+        "abilities": {
+          "core": [],
+          "faction": [
+            {
+              "name": "Dark Pacts",
+              "description": "If your Army Faction is ^^**Heretic Astartes**^^, each time a unit with this ability is selected to shoot or fight, it can make a Dark Pact. If it does, it must first take a Leadership test before any effects of the Dark Pact are resolved; if that test is failed, that unit suffers D3 mortal wounds. Then, select one of the following abilities for that unit’s weapons to gain until the end of the phase:\n■ [LETHAL HITS]\n■ [SUSTAINED HITS 1]"
+            }
+          ],
+          "datasheet": [
+            {
+              "name": "Veterans of the Long War",
+              "description": "Each time a model in this unit targets an enemy unit with a melee attack, re-roll a Wound roll of 1. If that enemy unit is within range of an objective marker, you can re-roll the Wound roll instead."
+            }
+          ],
+          "special": [],
+          "invuln_save": null,
+          "transport": null,
+          "damaged": null
+        },
+        "models": {
+          "M": "6\"",
+          "T": "4",
+          "SV": "3+",
+          "W": "2",
+          "LD": "6+",
+          "OC": "2"
+        },
+        "costs": [
+          {
+            "cost": 90,
+            "description": "5 models"
+          },
+          {
+            "cost": 170,
+            "description": "10 models"
+          }
+        ],
+        "composition": [
+          {
+            "name": "1 Aspiring Champion"
+          },
+          {
+            "name": "4 - 9 Legionaries"
+          }
+        ],
+        "options": [
+          {
+            "description": "The Aspiring Champion's bolt pistol can be replaced with one of the following:<ul><li>Accursed weapon</li><li>Astartes chainsword</li><li>Heavy melee weapon</li><li>Plasma pistol</li></ul>"
+          },
+          {
+            "description": "The Aspiring Champion's boltgun can be replaced with one of the following:<ul><li>Accursed weapon</li><li>Astartes chainsword</li><li>Heavy melee weapon</li><li>Plasma pistol</li></ul>"
+          },
+          {
+            "description": "Any number of Legionaries can each have their boltgun replaced with 1 Astartes chainsword."
+          },
+          {
+            "description": "One Legionary's boltgun can be replaced with 1 Heavy melee weapon."
+          },
+          {
+            "description": "One Legionary's boltgun can be replaced with 1 Balefire tome."
+          },
+          {
+            "description": "For every 5 models in this unit, 1 Legionary's boltgun can be replaced with one of the following:<ul><li>1 Flamer</li><li>1 Havoc autocannon</li><li>1 Heavy bolter</li><li>1 Lascannon</li><li>1 Missile launcher</li><li>1 Plasma gun</li><li>1 Reaper chaincannon</li><li>1 Plasma pistol and Astartes chainsword</li><li>1 Meltagun</li></ul>"
+          },
+          {
+            "description": "1 model can be equipped with 1 Chaos icon."
+          }
+        ],
+        "ranged": [
+          {
+            "name": "Meltagun",
+            "range": "12\"",
+            "A": "1",
+            "BS_WS": "3+",
+            "S": "9",
+            "AP": "-4",
+            "D": "D6",
+            "keywords": "Melta 2",
+            "description": ""
+          },
+          {
+            "name": "Balefire tome",
+            "range": "18\"",
+            "A": "2",
+            "BS_WS": "3+",
+            "S": "5",
+            "AP": "-1",
+            "D": "1",
+            "keywords": "Psychic",
+            "description": ""
+          },
+          {
+            "name": "Flamer",
+            "range": "12\"",
+            "A": "D6",
+            "BS_WS": "N/A",
+            "S": "4",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Ignores Cover, Torrent",
+            "description": ""
+          },
+          {
+            "name": "Havoc autocannon",
+            "range": "48\"",
+            "A": "2",
+            "BS_WS": "4+",
+            "S": "9",
+            "AP": "-1",
+            "D": "3",
+            "keywords": "-",
+            "description": ""
+          },
+          {
+            "name": "Heavy bolter",
+            "range": "36\"",
+            "A": "3",
+            "BS_WS": "4+",
+            "S": "5",
+            "AP": "-1",
+            "D": "2",
+            "keywords": "Heavy, Sustained Hits 1",
+            "description": ""
+          },
+          {
+            "name": "Lascannon",
+            "range": "48\"",
+            "A": "1",
+            "BS_WS": "4+",
+            "S": "12",
+            "AP": "-3",
+            "D": "D6+1",
+            "keywords": "Heavy",
+            "description": ""
+          },
+          {
+            "name": "➤ Missile launcher - frag",
+            "range": "48\"",
+            "A": "D6",
+            "BS_WS": "4+",
+            "S": "4",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Blast, Heavy",
+            "description": ""
+          },
+          {
+            "name": "➤ Missile launcher - krak",
+            "range": "48\"",
+            "A": "1",
+            "BS_WS": "4+",
+            "S": "9",
+            "AP": "-2",
+            "D": "D6",
+            "keywords": "Heavy",
+            "description": ""
+          },
+          {
+            "name": "Reaper chaincannon",
+            "range": "24\"",
+            "A": "8",
+            "BS_WS": "4+",
+            "S": "5",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Heavy",
+            "description": ""
+          }
+        ],
+        "melee": [
+          {
+            "name": "Close combat weapon",
+            "range": "Melee",
+            "A": "3",
+            "BS_WS": "3+",
+            "S": "4",
+            "AP": "0",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          },
+          {
+            "name": "Close combat weapon",
+            "range": "Melee",
+            "A": "3",
+            "BS_WS": "3+",
+            "S": "4",
+            "AP": "0",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          },
+          {
+            "name": "Accursed weapon",
+            "range": "Melee",
+            "A": "4",
+            "BS_WS": "3+",
+            "S": "5",
+            "AP": "-2",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          }
+        ],
+        "keywords": [
+          "Infantry",
+          "Battleline",
+          "Chaos",
+          "Grenades",
+          "Legionaries"
+        ],
+        "faction_keywords": [
+          "Faction: Heretic Astartes"
+        ]
+      },
+      "raw_columns": {
+        "stats_json": {
+          "shape": {
+            "M": "str",
+            "T": "str",
+            "SV": "str",
+            "W": "str",
+            "LD": "str",
+            "OC": "str"
+          },
+          "value": {
+            "M": "6\"",
+            "T": "4",
+            "SV": "3+",
+            "W": "2",
+            "LD": "6+",
+            "OC": "2"
+          }
+        },
+        "abilities_json": {
+          "shape": {
+            "core": [
+              "empty-list"
+            ],
+            "faction": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "datasheet": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "special": [
+              "empty-list"
+            ],
+            "invuln_save": "NoneType",
+            "transport": "NoneType",
+            "damaged": "NoneType"
+          },
+          "value": {
+            "core": [],
+            "faction": [
+              {
+                "name": "Dark Pacts",
+                "description": "If your Army Faction is ^^**Heretic Astartes**^^, each time a unit with this ability is selected to shoot or fight, it can make a Dark Pact. If it does, it must first take a Leadership test before any effects of the Dark Pact are resolved; if that test is failed, that unit suffers D3 mortal wounds. Then, select one of the following abilities for that unit’s weapons to gain until the end of the phase:\n■ [LETHAL HITS]\n■ [SUSTAINED HITS 1]"
+              }
+            ],
+            "datasheet": [
+              {
+                "name": "Veterans of the Long War",
+                "description": "Each time a model in this unit targets an enemy unit with a melee attack, re-roll a Wound roll of 1. If that enemy unit is within range of an objective marker, you can re-roll the Wound roll instead."
+              }
+            ],
+            "special": [],
+            "invuln_save": null,
+            "transport": null,
+            "damaged": null
+          }
+        },
+        "keywords_json": {
+          "shape": [
+            "list-of",
+            "str"
+          ],
+          "value": [
+            "Faction: Heretic Astartes",
+            "Infantry",
+            "Battleline",
+            "Chaos",
+            "Grenades",
+            "Legionaries"
+          ]
+        },
+        "composition_json": {
+          "shape": [
+            "list-of",
+            {
+              "name": "str"
+            }
+          ],
+          "value": [
+            {
+              "name": "1 Aspiring Champion"
+            },
+            {
+              "name": "4 - 9 Legionaries"
+            }
+          ]
+        },
+        "wargear_options_json": {
+          "shape": [
+            "list-of",
+            {
+              "description": "str"
+            }
+          ],
+          "value": [
+            {
+              "description": "The Aspiring Champion's bolt pistol can be replaced with one of the following:<ul><li>Accursed weapon</li><li>Astartes chainsword</li><li>Heavy melee weapon</li><li>Plasma pistol</li></ul>"
+            },
+            {
+              "description": "The Aspiring Champion's boltgun can be replaced with one of the following:<ul><li>Accursed weapon</li><li>Astartes chainsword</li><li>Heavy melee weapon</li><li>Plasma pistol</li></ul>"
+            },
+            {
+              "description": "Any number of Legionaries can each have their boltgun replaced with 1 Astartes chainsword."
+            },
+            {
+              "description": "One Legionary's boltgun can be replaced with 1 Heavy melee weapon."
+            },
+            {
+              "description": "One Legionary's boltgun can be replaced with 1 Balefire tome."
+            },
+            {
+              "description": "For every 5 models in this unit, 1 Legionary's boltgun can be replaced with one of the following:<ul><li>1 Flamer</li><li>1 Havoc autocannon</li><li>1 Heavy bolter</li><li>1 Lascannon</li><li>1 Missile launcher</li><li>1 Plasma gun</li><li>1 Reaper chaincannon</li><li>1 Plasma pistol and Astartes chainsword</li><li>1 Meltagun</li></ul>"
+            },
+            {
+              "description": "1 model can be equipped with 1 Chaos icon."
+            }
+          ]
+        },
+        "points_tiers_json": {
+          "shape": [
+            "list-of",
+            {
+              "cost": "int",
+              "description": "str"
+            }
+          ],
+          "value": [
+            {
+              "cost": 90,
+              "description": "5 models"
+            },
+            {
+              "cost": 170,
+              "description": "10 models"
+            }
+          ]
+        },
+        "loadout": {
+          "raw_len": 172,
+          "shape": "str"
+        }
+      }
+    },
+    "Chaos Lord": {
+      "resolved": true,
+      "id": "e496-5a54-4cb2-4fc1",
+      "unit_detail_shape": {
+        "id": "str",
+        "name": "str",
+        "faction_id": "str",
+        "faction_name": "str",
+        "role": "str",
+        "legend": "str",
+        "loadout": "str",
+        "link": "str",
+        "transport": "str",
+        "damaged_w": "str",
+        "damaged_description": "str",
+        "led_by": [
+          "empty-list"
+        ],
+        "leads": [
+          "list-of",
+          {
+            "id": "str",
+            "name": "str"
+          }
+        ],
+        "abilities": {
+          "core": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "faction": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "datasheet": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "special": [
+            "empty-list"
+          ],
+          "invuln_save": "str",
+          "transport": "NoneType",
+          "damaged": "NoneType"
+        },
+        "models": {
+          "M": "str",
+          "T": "str",
+          "SV": "str",
+          "W": "str",
+          "LD": "str",
+          "OC": "str"
+        },
+        "costs": [
+          "list-of",
+          {
+            "cost": "int"
+          }
+        ],
+        "composition": [
+          "list-of",
+          {
+            "name": "str"
+          }
+        ],
+        "options": [
+          "list-of",
+          {
+            "description": "str"
+          }
+        ],
+        "ranged": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "melee": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "keywords": [
+          "list-of",
+          "str"
+        ],
+        "faction_keywords": [
+          "list-of",
+          "str"
+        ]
+      },
+      "unit_detail": {
+        "id": "e496-5a54-4cb2-4fc1",
+        "name": "Chaos Lord",
+        "faction_id": "c8da-e875-58f7-f6d6",
+        "faction_name": "Chaos - Chaos Space Marines",
+        "role": "Character",
+        "legend": "",
+        "loadout": "<b>This model is equipped with:</b> daemon hammer; plasma pistol.",
+        "link": "",
+        "transport": "",
+        "damaged_w": "",
+        "damaged_description": "",
+        "led_by": [],
+        "leads": [
+          {
+            "id": "4e85-615b-5d49-dfa4",
+            "name": "Chosen"
+          },
+          {
+            "id": "615-e6bf-cfd2-9384",
+            "name": "Legionaries"
+          }
+        ],
+        "abilities": {
+          "core": [
+            {
+              "name": "Leader",
+              "description": "While a Bodyguard unit contains a Leader, it is known as an Attached unit and, with the exception of rules that are triggered when units are destroyed (pg 12), it is treated as a single unit for all rules purposes. Each time an attack targets an Attached unit, until the attacking unit has resolved all of its attacks, you must use the Toughness characteristic of the Bodyguard models in that unit, even if a Leader in that unit has a different Toughness characteristic. Each time an attack successfully wounds an Attached unit, that attack cannot be allocated to a Character model in that unit, even if that Character model has lost one or more wounds or has already had attacks allocated to it this phase. As soon as the last Bodyguard model in an Attached unit has been destroyed, any attacks made against that unit that have yet to be allocated can then be allocated to Character models in that unit.\n\nEach time the last model in a Bodyguard unit is destroyed, each CHARACTER unit that is part of that Attached unit becomes a separate unit, with its original Starting Strength. If this happens as the result of an attack, they become separate units after the attacking unit has resolved all of its attacks. \n\nEach time the last model in a CHARACTER unit that is attached to a Bodyguard unit is destroyed and there is not another CHARACTER unit attached, that Attached unit’s Bodyguard unit becomes a separate unit, with its original Starting Strength. If this happens as the result of an attack, they become separate units after the attacking unit has resolved all of its attacks. \n\nEach time a unit that is part of an Attached unit is destroyed, it does not have the keywords of any other units that make up that Attached unit (unless it has those keywords on its own datasheet) for the purposes of any rules that would be triggered when that unit is destroyed."
+            }
+          ],
+          "faction": [
+            {
+              "name": "Dark Pacts",
+              "description": "If your Army Faction is ^^**Heretic Astartes**^^, each time a unit with this ability is selected to shoot or fight, it can make a Dark Pact. If it does, it must first take a Leadership test before any effects of the Dark Pact are resolved; if that test is failed, that unit suffers D3 mortal wounds. Then, select one of the following abilities for that unit’s weapons to gain until the end of the phase:\n■ [LETHAL HITS]\n■ [SUSTAINED HITS 1]"
+            }
+          ],
+          "datasheet": [
+            {
+              "name": "Invulnerable Save",
+              "description": "This model has a 4+ invulnerable save."
+            },
+            {
+              "name": "Leader",
+              "description": "This model can be attached to the following units:\n■ CHOSEN\n■ LEGIONARIES"
+            },
+            {
+              "name": "Chance for Glory",
+              "description": "Once per battle, at the start of the Fight phase, this model can use this ability. If it does, until the end of the phase, improve the Strength, Attacks, Armour\nPenetration and Damage characteristics of melee weapons equipped by this model by 1."
+            }
+          ],
+          "special": [],
+          "invuln_save": "4",
+          "transport": null,
+          "damaged": null
+        },
+        "models": {
+          "M": "6\"",
+          "T": "4",
+          "SV": "3+",
+          "W": "5",
+          "LD": "6+",
+          "OC": "1"
+        },
+        "costs": [
+          {
+            "cost": 90
+          }
+        ],
+        "composition": [
+          {
+            "name": "1 Chaos Lord"
+          }
+        ],
+        "options": [
+          {
+            "description": "This model's daemon hammer can be replaced with one of the following:<ul><li>Accursed weapon</li><li>Astartes chainblade</li></ul>"
+          },
+          {
+            "description": "This model's plasma pistol can be replaced with 1 Power fist."
+          }
+        ],
+        "ranged": [
+          {
+            "name": "Plasma pistol",
+            "range": "12\"",
+            "A": "1",
+            "BS_WS": "2+",
+            "S": "7",
+            "AP": "-2",
+            "D": "1",
+            "keywords": "Pistol",
+            "description": ""
+          }
+        ],
+        "melee": [
+          {
+            "name": "Daemon hammer",
+            "range": "Melee",
+            "A": "5",
+            "BS_WS": "3+",
+            "S": "8",
+            "AP": "-2",
+            "D": "2",
+            "keywords": "Devastating Wounds",
+            "description": ""
+          },
+          {
+            "name": "Accursed weapon",
+            "range": "Melee",
+            "A": "6",
+            "BS_WS": "2+",
+            "S": "5",
+            "AP": "-2",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          },
+          {
+            "name": "Astartes chainblade",
+            "range": "Melee",
+            "A": "7",
+            "BS_WS": "2+",
+            "S": "4",
+            "AP": "-1",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          },
+          {
+            "name": "Power fist",
+            "range": "Melee",
+            "A": "5",
+            "BS_WS": "2+",
+            "S": "8",
+            "AP": "-2",
+            "D": "2",
+            "keywords": "-",
+            "description": ""
+          }
+        ],
+        "keywords": [
+          "Infantry",
+          "Character",
+          "Grenades",
+          "Chaos",
+          "Chaos Lord"
+        ],
+        "faction_keywords": [
+          "Faction: Heretic Astartes"
+        ]
+      },
+      "raw_columns": {
+        "stats_json": {
+          "shape": {
+            "M": "str",
+            "T": "str",
+            "SV": "str",
+            "W": "str",
+            "LD": "str",
+            "OC": "str"
+          },
+          "value": {
+            "M": "6\"",
+            "T": "4",
+            "SV": "3+",
+            "W": "5",
+            "LD": "6+",
+            "OC": "1"
+          }
+        },
+        "abilities_json": {
+          "shape": {
+            "core": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "faction": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "datasheet": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "special": [
+              "empty-list"
+            ],
+            "invuln_save": "str",
+            "transport": "NoneType",
+            "damaged": "NoneType"
+          },
+          "value": {
+            "core": [
+              {
+                "name": "Leader",
+                "description": "While a Bodyguard unit contains a Leader, it is known as an Attached unit and, with the exception of rules that are triggered when units are destroyed (pg 12), it is treated as a single unit for all rules purposes. Each time an attack targets an Attached unit, until the attacking unit has resolved all of its attacks, you must use the Toughness characteristic of the Bodyguard models in that unit, even if a Leader in that unit has a different Toughness characteristic. Each time an attack successfully wounds an Attached unit, that attack cannot be allocated to a Character model in that unit, even if that Character model has lost one or more wounds or has already had attacks allocated to it this phase. As soon as the last Bodyguard model in an Attached unit has been destroyed, any attacks made against that unit that have yet to be allocated can then be allocated to Character models in that unit.\n\nEach time the last model in a Bodyguard unit is destroyed, each CHARACTER unit that is part of that Attached unit becomes a separate unit, with its original Starting Strength. If this happens as the result of an attack, they become separate units after the attacking unit has resolved all of its attacks. \n\nEach time the last model in a CHARACTER unit that is attached to a Bodyguard unit is destroyed and there is not another CHARACTER unit attached, that Attached unit’s Bodyguard unit becomes a separate unit, with its original Starting Strength. If this happens as the result of an attack, they become separate units after the attacking unit has resolved all of its attacks. \n\nEach time a unit that is part of an Attached unit is destroyed, it does not have the keywords of any other units that make up that Attached unit (unless it has those keywords on its own datasheet) for the purposes of any rules that would be triggered when that unit is destroyed."
+              }
+            ],
+            "faction": [
+              {
+                "name": "Dark Pacts",
+                "description": "If your Army Faction is ^^**Heretic Astartes**^^, each time a unit with this ability is selected to shoot or fight, it can make a Dark Pact. If it does, it must first take a Leadership test before any effects of the Dark Pact are resolved; if that test is failed, that unit suffers D3 mortal wounds. Then, select one of the following abilities for that unit’s weapons to gain until the end of the phase:\n■ [LETHAL HITS]\n■ [SUSTAINED HITS 1]"
+              }
+            ],
+            "datasheet": [
+              {
+                "name": "Invulnerable Save",
+                "description": "This model has a 4+ invulnerable save."
+              },
+              {
+                "name": "Leader",
+                "description": "This model can be attached to the following units:\n■ CHOSEN\n■ LEGIONARIES"
+              },
+              {
+                "name": "Chance for Glory",
+                "description": "Once per battle, at the start of the Fight phase, this model can use this ability. If it does, until the end of the phase, improve the Strength, Attacks, Armour\nPenetration and Damage characteristics of melee weapons equipped by this model by 1."
+              }
+            ],
+            "special": [],
+            "invuln_save": "4",
+            "transport": null,
+            "damaged": null
+          }
+        },
+        "keywords_json": {
+          "shape": [
+            "list-of",
+            "str"
+          ],
+          "value": [
+            "Faction: Heretic Astartes",
+            "Infantry",
+            "Character",
+            "Grenades",
+            "Chaos",
+            "Chaos Lord"
+          ]
+        },
+        "composition_json": {
+          "shape": [
+            "list-of",
+            {
+              "name": "str"
+            }
+          ],
+          "value": [
+            {
+              "name": "1 Chaos Lord"
+            }
+          ]
+        },
+        "wargear_options_json": {
+          "shape": [
+            "list-of",
+            {
+              "description": "str"
+            }
+          ],
+          "value": [
+            {
+              "description": "This model's daemon hammer can be replaced with one of the following:<ul><li>Accursed weapon</li><li>Astartes chainblade</li></ul>"
+            },
+            {
+              "description": "This model's plasma pistol can be replaced with 1 Power fist."
+            }
+          ]
+        },
+        "points_tiers_json": {
+          "raw": null,
+          "shape": null
+        },
+        "loadout": {
+          "raw_len": 65,
+          "shape": "str"
+        }
+      }
+    },
+    "Land Raider": {
+      "resolved": true,
+      "id": "8cca-9318-3bec-d360",
+      "unit_detail_shape": {
+        "id": "str",
+        "name": "str",
+        "faction_id": "str",
+        "faction_name": "str",
+        "role": "str",
+        "legend": "str",
+        "loadout": "str",
+        "link": "str",
+        "transport": "str",
+        "damaged_w": "str",
+        "damaged_description": "str",
+        "led_by": [
+          "empty-list"
+        ],
+        "leads": [
+          "empty-list"
+        ],
+        "abilities": {
+          "core": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "faction": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "datasheet": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "special": [
+            "empty-list"
+          ],
+          "invuln_save": "NoneType",
+          "transport": "NoneType",
+          "damaged": {
+            "name": "str",
+            "threshold": "str",
+            "description": "str"
+          }
+        },
+        "models": {
+          "M": "str",
+          "T": "str",
+          "SV": "str",
+          "W": "str",
+          "LD": "str",
+          "OC": "str"
+        },
+        "costs": [
+          "list-of",
+          {
+            "cost": "int"
+          }
+        ],
+        "composition": [
+          "list-of",
+          {
+            "name": "str"
+          }
+        ],
+        "options": [
+          "list-of",
+          {
+            "description": "str"
+          }
+        ],
+        "ranged": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "melee": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "keywords": [
+          "list-of",
+          "str"
+        ],
+        "faction_keywords": [
+          "list-of",
+          "str"
+        ]
+      },
+      "unit_detail": {
+        "id": "8cca-9318-3bec-d360",
+        "name": "Land Raider",
+        "faction_id": "e0af-67df-9d63-8fb7",
+        "faction_name": "Imperium - Adeptus Astartes - Space Marines",
+        "role": "Vehicle",
+        "legend": "",
+        "loadout": "<b>This model is equipped with:</b> godhammer Lascannon; armoured Tracks; twin heavy bolter.",
+        "link": "",
+        "transport": "",
+        "damaged_w": "1-5",
+        "damaged_description": "While this model has 1-5 wounds remaining, each time this model makes an attack, subtract 1 from the Hit roll.",
+        "led_by": [],
+        "leads": [],
+        "abilities": {
+          "core": [
+            {
+              "name": "Deadly Demise",
+              "description": "Some models have 'Deadly Demise x' listed in their abilities. When such a model is destroyed, roll one D6 before removing it from play (if such a model is a TRANSPORT, roll before any embarked models disembark). On a 6, each unit within 6\" of that model suffers a number of mortal wounds denoted by 'x' (if this is a random number, roll separately for each unit within 6\")."
+            }
+          ],
+          "faction": [
+            {
+              "name": "Oath of Moment",
+              "description": "If your Army Faction is **^^Adeptus Astartes^^**, at the start of your Command phase, select one unit from your opponent’s army. Until the start of your next Command phase, that enemy unit is your Oath of Moment target. Each time a model with this ability makes an attack that targets your Oath of Moment target:\n■ You can reroll the Hit roll\n■ If you are using a Codex: Space Marines Detachment and your army does not include one or more units with the **^^Blood Angels^^**, **^^Dark Angels^^**, **^^Deathwatch^^** or **^^Space Wolves^^** keywords, add 1 to the Wound roll as well."
+            },
+            {
+              "name": "Templar Vows",
+              "description": "If your Army Faction is **^^Adeptus Astartes^^**, at the start of the first battle round, select one of the following Vows to be active for **^^Adeptus Astartes^^** units from your army. While a Vow is active for your army, that unit has the associated ability below. \n\n**Abhor the Witch, Destroy the Witch**\n■ Each time this unit declares a charge, if one or more targets of that charge have the **^^Psyker^^** keyword, you can re-roll the Charge roll. Melee weapons equipped by models in this unit have the **[PRECISION]** ability while targeting **^^Psyker^^** units. \n\n**Accept Any Challenge, No Matter the Odds**\n■ Each time a model in this unit makes a melee attack, if the Strength characteristic of that attack is less than or equal to the Toughness characteristic of the target, add 1 to the wound roll\n\n**Suffer Not the Unclean to Live**\n■ This unit is eligible to declare a charge in a turn in which it Fell Back, and each time a model in this unit makes a Pile-in or Consolidation move, it does not need to end that move closer to the closest enemy model, provided it ends that move as close as possible to the nearest enemy unit. \n\n**Uphold the Honour of the Emperor**\nIf this unit has the **^^Infantry^^** keyword:\n■ At the end of your Command phase, if this unit is within range of an objective marker you control, that objective marker remains under your control until your opponent's level of control over that objective marker is greater than yours at the end of the phase. \n■ If the mission you are playing features Actions, this unit is eligible to start to perform an Action in a turn in which it Advanced."
+            }
+          ],
+          "datasheet": [
+            {
+              "name": "Assault Ramp",
+              "description": "Each time a unit disembarks from this model after it has made a Normal move, that unit is still eligible to declare a charge this turn."
+            },
+            {
+              "name": "Transport",
+              "description": "This model has a transport capacity of 12 Adeptus Astartes Infantry models. Each Jump Pack, Wulfen, Gravis or Terminator model takes up the space of 2 models and each Centurion model takes up the space of 3 models."
+            }
+          ],
+          "special": [],
+          "invuln_save": null,
+          "transport": null,
+          "damaged": {
+            "name": "Damaged: 1-5 Wounds Remaining",
+            "threshold": "1-5",
+            "description": "While this model has 1-5 wounds remaining, each time this model makes an attack, subtract 1 from the Hit roll."
+          }
+        },
+        "models": {
+          "M": "10\"",
+          "T": "12",
+          "SV": "2+",
+          "W": "16",
+          "LD": "6+",
+          "OC": "5"
+        },
+        "costs": [
+          {
+            "cost": 220
+          }
+        ],
+        "composition": [
+          {
+            "name": "1 Land Raider"
+          }
+        ],
+        "options": [
+          {
+            "description": "This model can be equipped with 1 Hunter-killer missile."
+          },
+          {
+            "description": "This model can be equipped with 1 Multi-melta."
+          },
+          {
+            "description": "This model can be equipped with 1 Storm bolter."
+          }
+        ],
+        "ranged": [
+          {
+            "name": "Hunter-killer missile",
+            "range": "48\"",
+            "A": "1",
+            "BS_WS": "2+",
+            "S": "14",
+            "AP": "-3",
+            "D": "D6",
+            "keywords": "One Shot",
+            "description": ""
+          },
+          {
+            "name": "Multi-melta",
+            "range": "18\"",
+            "A": "2",
+            "BS_WS": "3+",
+            "S": "9",
+            "AP": "-4",
+            "D": "D6",
+            "keywords": "Melta 2",
+            "description": ""
+          },
+          {
+            "name": "Storm bolter",
+            "range": "24\"",
+            "A": "2",
+            "BS_WS": "3+",
+            "S": "4",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Rapid Fire 2",
+            "description": ""
+          },
+          {
+            "name": "Twin heavy bolter",
+            "range": "36\"",
+            "A": "3",
+            "BS_WS": "3+",
+            "S": "5",
+            "AP": "-1",
+            "D": "2",
+            "keywords": "Sustained Hits 1, Twin-linked",
+            "description": ""
+          },
+          {
+            "name": "Godhammer Lascannon",
+            "range": "48\"",
+            "A": "2",
+            "BS_WS": "3+",
+            "S": "12",
+            "AP": "-3",
+            "D": "D6+1",
+            "keywords": "-",
+            "description": ""
+          }
+        ],
+        "melee": [
+          {
+            "name": "Armoured Tracks",
+            "range": "Melee",
+            "A": "6",
+            "BS_WS": "4+",
+            "S": "8",
+            "AP": "0",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          }
+        ],
+        "keywords": [
+          "Vehicle",
+          "Smoke",
+          "Imperium",
+          "Land Raider",
+          "Transport"
+        ],
+        "faction_keywords": [
+          "Faction: Adeptus Astartes"
+        ]
+      },
+      "raw_columns": {
+        "stats_json": {
+          "shape": {
+            "M": "str",
+            "T": "str",
+            "SV": "str",
+            "W": "str",
+            "LD": "str",
+            "OC": "str"
+          },
+          "value": {
+            "M": "10\"",
+            "T": "12",
+            "SV": "2+",
+            "W": "16",
+            "LD": "6+",
+            "OC": "5"
+          }
+        },
+        "abilities_json": {
+          "shape": {
+            "core": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "faction": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "datasheet": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "special": [
+              "empty-list"
+            ],
+            "invuln_save": "NoneType",
+            "transport": "NoneType",
+            "damaged": {
+              "name": "str",
+              "threshold": "str",
+              "description": "str"
+            }
+          },
+          "value": {
+            "core": [
+              {
+                "name": "Deadly Demise",
+                "description": "Some models have 'Deadly Demise x' listed in their abilities. When such a model is destroyed, roll one D6 before removing it from play (if such a model is a TRANSPORT, roll before any embarked models disembark). On a 6, each unit within 6\" of that model suffers a number of mortal wounds denoted by 'x' (if this is a random number, roll separately for each unit within 6\")."
+              }
+            ],
+            "faction": [
+              {
+                "name": "Oath of Moment",
+                "description": "If your Army Faction is **^^Adeptus Astartes^^**, at the start of your Command phase, select one unit from your opponent’s army. Until the start of your next Command phase, that enemy unit is your Oath of Moment target. Each time a model with this ability makes an attack that targets your Oath of Moment target:\n■ You can reroll the Hit roll\n■ If you are using a Codex: Space Marines Detachment and your army does not include one or more units with the **^^Blood Angels^^**, **^^Dark Angels^^**, **^^Deathwatch^^** or **^^Space Wolves^^** keywords, add 1 to the Wound roll as well."
+              },
+              {
+                "name": "Templar Vows",
+                "description": "If your Army Faction is **^^Adeptus Astartes^^**, at the start of the first battle round, select one of the following Vows to be active for **^^Adeptus Astartes^^** units from your army. While a Vow is active for your army, that unit has the associated ability below. \n\n**Abhor the Witch, Destroy the Witch**\n■ Each time this unit declares a charge, if one or more targets of that charge have the **^^Psyker^^** keyword, you can re-roll the Charge roll. Melee weapons equipped by models in this unit have the **[PRECISION]** ability while targeting **^^Psyker^^** units. \n\n**Accept Any Challenge, No Matter the Odds**\n■ Each time a model in this unit makes a melee attack, if the Strength characteristic of that attack is less than or equal to the Toughness characteristic of the target, add 1 to the wound roll\n\n**Suffer Not the Unclean to Live**\n■ This unit is eligible to declare a charge in a turn in which it Fell Back, and each time a model in this unit makes a Pile-in or Consolidation move, it does not need to end that move closer to the closest enemy model, provided it ends that move as close as possible to the nearest enemy unit. \n\n**Uphold the Honour of the Emperor**\nIf this unit has the **^^Infantry^^** keyword:\n■ At the end of your Command phase, if this unit is within range of an objective marker you control, that objective marker remains under your control until your opponent's level of control over that objective marker is greater than yours at the end of the phase. \n■ If the mission you are playing features Actions, this unit is eligible to start to perform an Action in a turn in which it Advanced."
+              }
+            ],
+            "datasheet": [
+              {
+                "name": "Assault Ramp",
+                "description": "Each time a unit disembarks from this model after it has made a Normal move, that unit is still eligible to declare a charge this turn."
+              },
+              {
+                "name": "Transport",
+                "description": "This model has a transport capacity of 12 Adeptus Astartes Infantry models. Each Jump Pack, Wulfen, Gravis or Terminator model takes up the space of 2 models and each Centurion model takes up the space of 3 models."
+              }
+            ],
+            "special": [],
+            "invuln_save": null,
+            "transport": null,
+            "damaged": {
+              "name": "Damaged: 1-5 Wounds Remaining",
+              "threshold": "1-5",
+              "description": "While this model has 1-5 wounds remaining, each time this model makes an attack, subtract 1 from the Hit roll."
+            }
+          }
+        },
+        "keywords_json": {
+          "shape": [
+            "list-of",
+            "str"
+          ],
+          "value": [
+            "Vehicle",
+            "Smoke",
+            "Imperium",
+            "Faction: Adeptus Astartes",
+            "Land Raider",
+            "Transport"
+          ]
+        },
+        "composition_json": {
+          "shape": [
+            "list-of",
+            {
+              "name": "str"
+            }
+          ],
+          "value": [
+            {
+              "name": "1 Land Raider"
+            }
+          ]
+        },
+        "wargear_options_json": {
+          "shape": [
+            "list-of",
+            {
+              "description": "str"
+            }
+          ],
+          "value": [
+            {
+              "description": "This model can be equipped with 1 Hunter-killer missile."
+            },
+            {
+              "description": "This model can be equipped with 1 Multi-melta."
+            },
+            {
+              "description": "This model can be equipped with 1 Storm bolter."
+            }
+          ]
+        },
+        "points_tiers_json": {
+          "raw": null,
+          "shape": null
+        },
+        "loadout": {
+          "raw_len": 92,
+          "shape": "str"
+        }
+      }
+    },
+    "Termagants": {
+      "resolved": true,
+      "id": "359c-db2c-681a-8d62",
+      "unit_detail_shape": {
+        "id": "str",
+        "name": "str",
+        "faction_id": "str",
+        "faction_name": "str",
+        "role": "str",
+        "legend": "str",
+        "loadout": "str",
+        "link": "str",
+        "transport": "str",
+        "damaged_w": "str",
+        "damaged_description": "str",
+        "led_by": [
+          "empty-list"
+        ],
+        "leads": [
+          "empty-list"
+        ],
+        "abilities": {
+          "core": [
+            "empty-list"
+          ],
+          "faction": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "datasheet": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "special": [
+            "empty-list"
+          ],
+          "invuln_save": "NoneType",
+          "transport": "NoneType",
+          "damaged": "NoneType"
+        },
+        "models": [
+          "empty-list"
+        ],
+        "costs": [
+          "list-of",
+          {
+            "cost": "int",
+            "description": "str"
+          }
+        ],
+        "composition": [
+          "list-of",
+          {
+            "name": "str"
+          }
+        ],
+        "options": [
+          "list-of",
+          {
+            "description": "str"
+          }
+        ],
+        "ranged": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "melee": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "keywords": [
+          "list-of",
+          "str"
+        ],
+        "faction_keywords": [
+          "list-of",
+          "str"
+        ]
+      },
+      "unit_detail": {
+        "id": "359c-db2c-681a-8d62",
+        "name": "Termagants",
+        "faction_id": "b984-7317-81cc-20f",
+        "faction_name": "Xenos - Tyranids",
+        "role": "Battleline",
+        "legend": "",
+        "loadout": "<b>Every model is equipped with:</b> fleshborer; chitinous claws and teeth.",
+        "link": "",
+        "transport": "",
+        "damaged_w": "",
+        "damaged_description": "",
+        "led_by": [],
+        "leads": [],
+        "abilities": {
+          "core": [],
+          "faction": [
+            {
+              "name": "Synapse",
+              "description": "If your Army Faction is **^^Tyranids^^**, while a **^^Tyranids^^** unit from your army is within 6\" of one or more friendly **^^Synapse^^** models, that **^^Tyranids^^** unit is said to be within Synapse Range of that model and of your army. While a **^^Tyranids^^** unit from your army is within Synapse Range of your army:\n\n■ Each time that unit takes a Battle-shock test, take that test on 3D6 instead of 2D6.\n■ Each time a model in that unit makes a melee attack, add 1 to the Strength characteristic of that attack."
+            }
+          ],
+          "datasheet": [
+            {
+              "name": "Skulking Horrors",
+              "description": "Once per turn, when an enemy unit ends a Normal, Advance or Fall Back move within 9\" of this unit, if this unit is not within Engagement Range of one or more enemy units, it can make a Normal move of up to D6\"."
+            }
+          ],
+          "special": [],
+          "invuln_save": null,
+          "transport": null,
+          "damaged": null
+        },
+        "models": [],
+        "costs": [
+          {
+            "cost": 60,
+            "description": "10 models"
+          },
+          {
+            "cost": 120,
+            "description": "20 models"
+          }
+        ],
+        "composition": [
+          {
+            "name": "10-20 Termagants"
+          }
+        ],
+        "options": [
+          {
+            "description": "All Termagants can each be equipped with one of the following:<ul><li>Termagants</li><li>Termagant w/ Shardlauncher</li><li>Termagant w/ Spike rifle</li><li>Termagant w/ Strangleweb</li></ul>"
+          },
+          {
+            "description": "20 Termagants's fleshborer can be replaced with one of the following:<ul><li>Termagant spinefist</li><li>Termagant devourer</li></ul>"
+          }
+        ],
+        "ranged": [
+          {
+            "name": "Fleshborer",
+            "range": "18\"",
+            "A": "1",
+            "BS_WS": "4+",
+            "S": "5",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Assault",
+            "description": ""
+          },
+          {
+            "name": "Termagant spinefist",
+            "range": "12\"",
+            "A": "2",
+            "BS_WS": "4+",
+            "S": "3",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Assault, Pistol, Twin-linked",
+            "description": ""
+          },
+          {
+            "name": "Termagant devourer",
+            "range": "18\"",
+            "A": "2",
+            "BS_WS": "4+",
+            "S": "4",
+            "AP": "0",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          },
+          {
+            "name": "Shardlauncher",
+            "range": "18\"",
+            "A": "D3",
+            "BS_WS": "4+",
+            "S": "5",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Blast, Heavy",
+            "description": ""
+          },
+          {
+            "name": "Spike rifle",
+            "range": "24\"",
+            "A": "1",
+            "BS_WS": "4+",
+            "S": "4",
+            "AP": "-1",
+            "D": "1",
+            "keywords": "Heavy",
+            "description": ""
+          },
+          {
+            "name": "Strangleweb",
+            "range": "18\"",
+            "A": "D6",
+            "BS_WS": "N/A",
+            "S": "2",
+            "AP": "0",
+            "D": "1",
+            "keywords": "Assault, Devastating Wounds, Torrent",
+            "description": ""
+          }
+        ],
+        "melee": [
+          {
+            "name": "Chitinous claws and teeth",
+            "range": "Melee",
+            "A": "1",
+            "BS_WS": "4+",
+            "S": "3",
+            "AP": "0",
+            "D": "1",
+            "keywords": "-",
+            "description": ""
+          }
+        ],
+        "keywords": [
+          "Battleline",
+          "Infantry",
+          "Great Devourer",
+          "Endless Multitude",
+          "Termagants"
+        ],
+        "faction_keywords": [
+          "Faction: Tyranids"
+        ]
+      },
+      "raw_columns": {
+        "stats_json": {
+          "raw": null,
+          "shape": null
+        },
+        "abilities_json": {
+          "shape": {
+            "core": [
+              "empty-list"
+            ],
+            "faction": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "datasheet": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "special": [
+              "empty-list"
+            ],
+            "invuln_save": "NoneType",
+            "transport": "NoneType",
+            "damaged": "NoneType"
+          },
+          "value": {
+            "core": [],
+            "faction": [
+              {
+                "name": "Synapse",
+                "description": "If your Army Faction is **^^Tyranids^^**, while a **^^Tyranids^^** unit from your army is within 6\" of one or more friendly **^^Synapse^^** models, that **^^Tyranids^^** unit is said to be within Synapse Range of that model and of your army. While a **^^Tyranids^^** unit from your army is within Synapse Range of your army:\n\n■ Each time that unit takes a Battle-shock test, take that test on 3D6 instead of 2D6.\n■ Each time a model in that unit makes a melee attack, add 1 to the Strength characteristic of that attack."
+              }
+            ],
+            "datasheet": [
+              {
+                "name": "Skulking Horrors",
+                "description": "Once per turn, when an enemy unit ends a Normal, Advance or Fall Back move within 9\" of this unit, if this unit is not within Engagement Range of one or more enemy units, it can make a Normal move of up to D6\"."
+              }
+            ],
+            "special": [],
+            "invuln_save": null,
+            "transport": null,
+            "damaged": null
+          }
+        },
+        "keywords_json": {
+          "shape": [
+            "list-of",
+            "str"
+          ],
+          "value": [
+            "Battleline",
+            "Infantry",
+            "Great Devourer",
+            "Faction: Tyranids",
+            "Endless Multitude",
+            "Termagants"
+          ]
+        },
+        "composition_json": {
+          "shape": [
+            "list-of",
+            {
+              "name": "str"
+            }
+          ],
+          "value": [
+            {
+              "name": "10-20 Termagants"
+            }
+          ]
+        },
+        "wargear_options_json": {
+          "shape": [
+            "list-of",
+            {
+              "description": "str"
+            }
+          ],
+          "value": [
+            {
+              "description": "All Termagants can each be equipped with one of the following:<ul><li>Termagants</li><li>Termagant w/ Shardlauncher</li><li>Termagant w/ Spike rifle</li><li>Termagant w/ Strangleweb</li></ul>"
+            },
+            {
+              "description": "20 Termagants's fleshborer can be replaced with one of the following:<ul><li>Termagant spinefist</li><li>Termagant devourer</li></ul>"
+            }
+          ]
+        },
+        "points_tiers_json": {
+          "shape": [
+            "list-of",
+            {
+              "cost": "int",
+              "description": "str"
+            }
+          ],
+          "value": [
+            {
+              "cost": 60,
+              "description": "10 models"
+            },
+            {
+              "cost": 120,
+              "description": "20 models"
+            }
+          ]
+        },
+        "loadout": {
+          "raw_len": 75,
+          "shape": "str"
+        }
+      }
+    },
+    "Cerastus Knight Lancer": {
+      "resolved": true,
+      "id": "9ee-e289-bc6c-d943",
+      "unit_detail_shape": {
+        "id": "str",
+        "name": "str",
+        "faction_id": "str",
+        "faction_name": "str",
+        "role": "str",
+        "legend": "str",
+        "loadout": "str",
+        "link": "str",
+        "transport": "str",
+        "damaged_w": "str",
+        "damaged_description": "str",
+        "led_by": [
+          "empty-list"
+        ],
+        "leads": [
+          "empty-list"
+        ],
+        "abilities": {
+          "core": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "faction": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "datasheet": [
+            "list-of",
+            {
+              "name": "str",
+              "description": "str"
+            }
+          ],
+          "special": [
+            "empty-list"
+          ],
+          "invuln_save": "NoneType",
+          "transport": "NoneType",
+          "damaged": {
+            "name": "str",
+            "threshold": "str",
+            "description": "str"
+          }
+        },
+        "models": {
+          "M": "str",
+          "T": "str",
+          "SV": "str",
+          "W": "str",
+          "LD": "str",
+          "OC": "str"
+        },
+        "costs": [
+          "list-of",
+          {
+            "cost": "int"
+          }
+        ],
+        "composition": [
+          "list-of",
+          {
+            "name": "str"
+          }
+        ],
+        "options": [
+          "empty-list"
+        ],
+        "ranged": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "melee": [
+          "list-of",
+          {
+            "name": "str",
+            "range": "str",
+            "A": "str",
+            "BS_WS": "str",
+            "S": "str",
+            "AP": "str",
+            "D": "str",
+            "keywords": "str",
+            "description": "str"
+          }
+        ],
+        "keywords": [
+          "list-of",
+          "str"
+        ],
+        "faction_keywords": [
+          "list-of",
+          "str"
+        ]
+      },
+      "unit_detail": {
+        "id": "9ee-e289-bc6c-d943",
+        "name": "Cerastus Knight Lancer",
+        "faction_id": "25dd-7aa0-6bf4-f2d5",
+        "faction_name": "Imperium - Imperial Knights",
+        "role": "Character",
+        "legend": "",
+        "loadout": "<b>This model is equipped with:</b> cerastus shock lance.",
+        "link": "",
+        "transport": "",
+        "damaged_w": "1-10",
+        "damaged_description": "While this model has 1-10 wounds remaining, subtract 5 from this model's Objective Control characteristic and each time this model makes an attack, subtract 1 from the Hit roll.",
+        "led_by": [],
+        "leads": [],
+        "abilities": {
+          "core": [
+            {
+              "name": "Deadly Demise",
+              "description": "Some models have 'Deadly Demise x' listed in their abilities. When such a model is destroyed, roll one D6 before removing it from play (if such a model is a TRANSPORT, roll before any embarked models disembark). On a 6, each unit within 6\" of that model suffers a number of mortal wounds denoted by 'x' (if this is a random number, roll separately for each unit within 6\")."
+            },
+            {
+              "name": "Super-Heavy Walker",
+              "description": "Each time a model with this ability makes a Normal, Advance or Fall Back move, it can move through models (excluding **^^Titanic^^** models) and sections of terrain features that are 4\" or less in height.\nWhen doing so:\n- It can move within Engagement Range of enemy models, but cannot end that move within Engagement Range of them.\n- It can also move through sections of terrain features that are more than 4\" in height, but if it does, after it has moved, roll one D6: on a 1, that model is Battle-shocked."
+            }
+          ],
+          "faction": [
+            {
+              "name": "Code Chivalric",
+              "description": "If your Army Faction is **^^Imperial Knights^^**, at the end of the Read Mission Objectives step, you must determine your army's Oath for the coming battle. An Oath consists of two parts - one Deed and one Quality. There are three options for each part.\n\nTo determine your army's Deed, you can either select one Deed or you can randomly select one Deed by rolling a D6 and consulting the relevant table. The selected Deed will describe what needs to be achieved in order to complete that Deed.\n\nTo determine your army's Quality, you can either select one Quality or you can randomly select one Quality by rolling a D6 and consulting the relevant table. Until the end of the battle, the ability described in the Quality selected applies to all models in your army with this ability.\n\nThe first time your selected Deed is completed your Oath is fulfilled and, until the end of the battle, your army becomes Honoured and you gain 2CP, or 3CP if you randomly selected your Deed and/or Quality (CP gained in this way are an exemption to the Core Rules that limit the maximum number of CP you can gain per battle round to 1)."
+            }
+          ],
+          "datasheet": [
+            {
+              "name": "Shock Charge",
+              "description": "You can target this model with the Tank Shock Stratagem for 0CP, and can do so even if you have already targeted a different unit with that Stratagem this phase."
+            },
+            {
+              "name": "Lancer’s Duty (Bondsman)",
+              "description": "While a model is affected by this ability, it is eligible to declare a charge in a turn in which it Advanced."
+            }
+          ],
+          "special": [],
+          "invuln_save": null,
+          "transport": null,
+          "damaged": {
+            "name": "Damaged: 1-10 Wounds Remaining",
+            "threshold": "1-10",
+            "description": "While this model has 1-10 wounds remaining, subtract 5 from this model's Objective Control characteristic and each time this model makes an attack, subtract 1 from the Hit roll."
+          }
+        },
+        "models": {
+          "M": "14\"",
+          "T": "11",
+          "SV": "3+",
+          "W": "28",
+          "LD": "6+",
+          "OC": "10"
+        },
+        "costs": [
+          {
+            "cost": 395
+          }
+        ],
+        "composition": [
+          {
+            "name": "1 Cerastus Knight Lancer"
+          }
+        ],
+        "options": [],
+        "ranged": [
+          {
+            "name": "Cerastus shock lance",
+            "range": "12\"",
+            "A": "6",
+            "BS_WS": "3+",
+            "S": "6",
+            "AP": "0",
+            "D": "2",
+            "keywords": "Assault, Sustained Hits 2",
+            "description": ""
+          }
+        ],
+        "melee": [
+          {
+            "name": "➤ Cerastus shock lance - strike",
+            "range": "Melee",
+            "A": "5",
+            "BS_WS": "2+",
+            "S": "20",
+            "AP": "-3",
+            "D": "8",
+            "keywords": "Lance",
+            "description": ""
+          },
+          {
+            "name": "➤ Cerastus shock lance - sweep",
+            "range": "Melee",
+            "A": "10",
+            "BS_WS": "2+",
+            "S": "10",
+            "AP": "-2",
+            "D": "3",
+            "keywords": "-",
+            "description": ""
+          }
+        ],
+        "keywords": [
+          "Character",
+          "Vehicle",
+          "Walker",
+          "Titanic",
+          "Towering",
+          "Imperium",
+          "Knight Lancer",
+          "Cerastus"
+        ],
+        "faction_keywords": [
+          "Faction: Imperial Knights"
+        ]
+      },
+      "raw_columns": {
+        "stats_json": {
+          "shape": {
+            "M": "str",
+            "T": "str",
+            "SV": "str",
+            "W": "str",
+            "LD": "str",
+            "OC": "str"
+          },
+          "value": {
+            "M": "14\"",
+            "T": "11",
+            "SV": "3+",
+            "W": "28",
+            "LD": "6+",
+            "OC": "10"
+          }
+        },
+        "abilities_json": {
+          "shape": {
+            "core": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "faction": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "datasheet": [
+              "list-of",
+              {
+                "name": "str",
+                "description": "str"
+              }
+            ],
+            "special": [
+              "empty-list"
+            ],
+            "invuln_save": "NoneType",
+            "transport": "NoneType",
+            "damaged": {
+              "name": "str",
+              "threshold": "str",
+              "description": "str"
+            }
+          },
+          "value": {
+            "core": [
+              {
+                "name": "Deadly Demise",
+                "description": "Some models have 'Deadly Demise x' listed in their abilities. When such a model is destroyed, roll one D6 before removing it from play (if such a model is a TRANSPORT, roll before any embarked models disembark). On a 6, each unit within 6\" of that model suffers a number of mortal wounds denoted by 'x' (if this is a random number, roll separately for each unit within 6\")."
+              },
+              {
+                "name": "Super-Heavy Walker",
+                "description": "Each time a model with this ability makes a Normal, Advance or Fall Back move, it can move through models (excluding **^^Titanic^^** models) and sections of terrain features that are 4\" or less in height.\nWhen doing so:\n- It can move within Engagement Range of enemy models, but cannot end that move within Engagement Range of them.\n- It can also move through sections of terrain features that are more than 4\" in height, but if it does, after it has moved, roll one D6: on a 1, that model is Battle-shocked."
+              }
+            ],
+            "faction": [
+              {
+                "name": "Code Chivalric",
+                "description": "If your Army Faction is **^^Imperial Knights^^**, at the end of the Read Mission Objectives step, you must determine your army's Oath for the coming battle. An Oath consists of two parts - one Deed and one Quality. There are three options for each part.\n\nTo determine your army's Deed, you can either select one Deed or you can randomly select one Deed by rolling a D6 and consulting the relevant table. The selected Deed will describe what needs to be achieved in order to complete that Deed.\n\nTo determine your army's Quality, you can either select one Quality or you can randomly select one Quality by rolling a D6 and consulting the relevant table. Until the end of the battle, the ability described in the Quality selected applies to all models in your army with this ability.\n\nThe first time your selected Deed is completed your Oath is fulfilled and, until the end of the battle, your army becomes Honoured and you gain 2CP, or 3CP if you randomly selected your Deed and/or Quality (CP gained in this way are an exemption to the Core Rules that limit the maximum number of CP you can gain per battle round to 1)."
+              }
+            ],
+            "datasheet": [
+              {
+                "name": "Shock Charge",
+                "description": "You can target this model with the Tank Shock Stratagem for 0CP, and can do so even if you have already targeted a different unit with that Stratagem this phase."
+              },
+              {
+                "name": "Lancer’s Duty (Bondsman)",
+                "description": "While a model is affected by this ability, it is eligible to declare a charge in a turn in which it Advanced."
+              }
+            ],
+            "special": [],
+            "invuln_save": null,
+            "transport": null,
+            "damaged": {
+              "name": "Damaged: 1-10 Wounds Remaining",
+              "threshold": "1-10",
+              "description": "While this model has 1-10 wounds remaining, subtract 5 from this model's Objective Control characteristic and each time this model makes an attack, subtract 1 from the Hit roll."
+            }
+          }
+        },
+        "keywords_json": {
+          "shape": [
+            "list-of",
+            "str"
+          ],
+          "value": [
+            "Character",
+            "Vehicle",
+            "Walker",
+            "Titanic",
+            "Towering",
+            "Imperium",
+            "Faction: Imperial Knights",
+            "Knight Lancer",
+            "Cerastus"
+          ]
+        },
+        "composition_json": {
+          "shape": [
+            "list-of",
+            {
+              "name": "str"
+            }
+          ],
+          "value": [
+            {
+              "name": "1 Cerastus Knight Lancer"
+            }
+          ]
+        },
+        "wargear_options_json": {
+          "raw": null,
+          "shape": null
+        },
+        "points_tiers_json": {
+          "raw": null,
+          "shape": null
+        },
+        "loadout": {
+          "raw_len": 57,
+          "shape": "str"
+        }
+      }
+    }
+  },
+  "detachment_counts": {
+    "1f19-6509-d906-ca10": {
+      "name": "Imperium - Adeptus Custodes",
+      "count": 8
+    },
+    "77b9-2f66-3f9b-5cf3": {
+      "name": "Imperium - Adeptus Mechanicus",
+      "count": 10
+    },
+    "34a5-8c7e-f468-82d1": {
+      "name": "Xenos - Aeldari",
+      "count": 16
+    },
+    "b0ae-12a5-c84-ea45": {
+      "name": "Imperium - Astra Militarum",
+      "count": 11
+    },
+    "b00-cd86-4b4c-97ba": {
+      "name": "Imperium - Agents of the Imperium",
+      "count": 7
+    },
+    "b39e-4401-8f3e-fdf7": {
+      "name": "Imperium - Adepta Sororitas",
+      "count": 7
+    },
+    "d265-877b-e03d-30ca": {
+      "name": "Chaos - Chaos Daemons",
+      "count": 11
+    },
+    "c8da-e875-58f7-f6d6": {
+      "name": "Chaos - Chaos Space Marines",
+      "count": 18
+    },
+    "5108-f98-63c2-53cb": {
+      "name": "Chaos - Death Guard",
+      "count": 10
+    },
+    "38de-521f-1ce0-44a0": {
+      "name": "Xenos - Drukhari",
+      "count": 10
+    },
+    "3bdf-a114-5035-c6ac": {
+      "name": "Xenos - Genestealer Cults",
+      "count": 9
+    },
+    "50c4-3e83-fe54-97c4": {
+      "name": "Imperium - Grey Knights",
+      "count": 8
+    },
+    "f616-3f08-ee8e-3349": {
+      "name": "Xenos - Leagues of Votann",
+      "count": 9
+    },
+    "b654-a18a-ea1-3bf2": {
+      "name": "Xenos - Necrons",
+      "count": 13
+    },
+    "a55f-b7b3-6c65-a05f": {
+      "name": "Xenos - Orks",
+      "count": 13
+    },
+    "25dd-7aa0-6bf4-f2d5": {
+      "name": "Imperium - Imperial Knights",
+      "count": 6
+    },
+    "46d8-abc8-ef3a-9f85": {
+      "name": "Chaos - Chaos Knights",
+      "count": 6
+    },
+    "e0af-67df-9d63-8fb7": {
+      "name": "Imperium - Adeptus Astartes - Space Marines",
+      "count": 44
+    },
+    "1069-10ff-3ba9-873b": {
+      "name": "Chaos - Thousand Sons",
+      "count": 9
+    },
+    "b984-7317-81cc-20f": {
+      "name": "Xenos - Tyranids",
+      "count": 12
+    },
+    "df9a-59b2-f464-59ad": {
+      "name": "Chaos - World Eaters",
+      "count": 8
+    }
+  },
+  "detachment_total": 245,
+  "minis_pairing": [
+    {
+      "id": "00f3c246dd364c969288ba84e0707c18",
+      "datasheet_id": "000002491",
+      "unit_bsdata_id": "a74a-107a-e2ac-7e4c"
+    },
+    {
+      "id": "01411f66a48544d499ce0beaaa4cad81",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "01fc458f2a6c40589ed60dbf1474ea11",
+      "datasheet_id": "000001044",
+      "unit_bsdata_id": "9030-f62d-417-fc92"
+    },
+    {
+      "id": "020e214e19284b528c2ab5af8d9f2057",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "02563c3dbcd14688906148762b1f0027",
+      "datasheet_id": "000000613",
+      "unit_bsdata_id": "b9e9-397e-d83a-f77a"
+    },
+    {
+      "id": "02c7834c5fd649dc8394a71345ad6d08",
+      "datasheet_id": "000004138",
+      "unit_bsdata_id": "80ad-6e62-65e3-e667"
+    },
+    {
+      "id": "02ee63e34c3443269eee7767553ab2cd",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "034a436bc4a04e2ab9676dcf619fae9c",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "0399ad8020a0499db55f7e624f1b1f15",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "0425e3708db347cd850f2b2ee84486b6",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "04dc551b6226480d9b55791e18632fc2",
+      "datasheet_id": "000002721",
+      "unit_bsdata_id": "c3e8-3cde-8b39-4b19"
+    },
+    {
+      "id": "051e76661e2c4ef981ff25462f4646fa",
+      "datasheet_id": "36cf-5961-78b9-79ce",
+      "unit_bsdata_id": "36cf-5961-78b9-79ce"
+    },
+    {
+      "id": "05355f9074714ed1897184cde67ddf47",
+      "datasheet_id": "000002686",
+      "unit_bsdata_id": "6de-ccee-11b4-be3e"
+    },
+    {
+      "id": "057eaf76cece44db858b1fe10084e284",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "05c12165c5d649d196fc444f56289df1",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "05f659b2ec784645a75310ad66e067e7",
+      "datasheet_id": "000004148",
+      "unit_bsdata_id": "cbb9-15e9-16ae-6597"
+    },
+    {
+      "id": "09063bd7665a464d88b2229ef794e033",
+      "datasheet_id": "000002609",
+      "unit_bsdata_id": "4d28-f2a7-67c1-eb2e"
+    },
+    {
+      "id": "0a90437b197c4a81a3f3945e9486ada1",
+      "datasheet_id": "000002523",
+      "unit_bsdata_id": "503b-f7be-eeeb-9e31"
+    },
+    {
+      "id": "0addb807570c4fcfba1e45a109d73799",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "0c86f1aa68264daba61aaddadcb61e18",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "0cfec40d41da4839b91b1002b72a85bf",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "0d1d80fb87104ddf861c22f3bc9375bd",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "0d64b5a13d94414a8d21f356725e38c1",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "0de4f04ac376408f94d6fc9caa58b352",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "0e5b5eafd6274686ac0c3113bb71f791",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "0ec1ad97a1f94e658e84b6c4f227a4dc",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "10634eb1027044a58830648ae65e008f",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "10a3c06ae3804acdb0c0011a8ee4f0cc",
+      "datasheet_id": "000001454",
+      "unit_bsdata_id": "918b-c9ed-7af7-74df"
+    },
+    {
+      "id": "10b3669a224845dba2e7a02188e438c3",
+      "datasheet_id": "000000854",
+      "unit_bsdata_id": "ea05-4db7-9ee6-7a87"
+    },
+    {
+      "id": "11b30632a11049199c62a5fb01967f5e",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "11fe8a6b676840d484d7366e1cfd0f93",
+      "datasheet_id": "000000514",
+      "unit_bsdata_id": "f51d-bc51-f301-9dee"
+    },
+    {
+      "id": "129de5cb8145427884533dd4606a5296",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "1398acb82116478cb0254da454e11049",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "13b5c262828049359bdeb7c52296d17b",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "13bda313d04d4e588918489cd16afd81",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "13c79983d42442759089d01085a978a7",
+      "datasheet_id": "000002496",
+      "unit_bsdata_id": "6a83-8e1f-63ef-50c3"
+    },
+    {
+      "id": "13e332ede0244fc5a26f3ef43fb4a5d6",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "151edca8da0e4e289c3f1564abe7a1b8",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "161b9fc70b954b7d9a540e96e4740c3a",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "16699ade827d4b989bb2fab2c319cbd3",
+      "datasheet_id": "000002693",
+      "unit_bsdata_id": "9bd8-ac8c-2d3b-79f6"
+    },
+    {
+      "id": "167bb3a55bc348cb99bf3b68b729f4c8",
+      "datasheet_id": "000000470",
+      "unit_bsdata_id": "1de2-b57b-aa0a-1f0d"
+    },
+    {
+      "id": "168f38ce80b54f23bb830ee2d85d00e2",
+      "datasheet_id": "8da0-4570-c3c-819f",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "1763f40eb74f4c0faf77185e01e22e41",
+      "datasheet_id": "000000594",
+      "unit_bsdata_id": "7fcb-9262-474a-7cec"
+    },
+    {
+      "id": "177dd7fcc0cf48fea7ae116ebc919722",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "17810d8596aa42868a1ad0117d8af4c0",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "178ed67cde9b4836b4cd14780e879175",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "17e4d50af4514e2da151223b3ec931b4",
+      "datasheet_id": "000004190",
+      "unit_bsdata_id": "a998-9dce-fbab-8d32"
+    },
+    {
+      "id": "183b0a7fddd345c09d0906fd2d3ae3b9",
+      "datasheet_id": "000004137",
+      "unit_bsdata_id": "a499-86fa-4d0c-b06d"
+    },
+    {
+      "id": "183e1cab6d2f4bdcb4981de9c473bde8",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "1959bf337a7042bdaa33323727017d87",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "195a499be92c484fb9f8299559fbd24d",
+      "datasheet_id": "a6cc-9a65-dbf1-71b0",
+      "unit_bsdata_id": "a6cc-9a65-dbf1-71b0"
+    },
+    {
+      "id": "1969b0eeddd3413485c70844b7d5f26b",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "1978055de7b9432287f50306aed93208",
+      "datasheet_id": "000002617",
+      "unit_bsdata_id": "2127-efcc-1f62-7fab"
+    },
+    {
+      "id": "198e928e23074b82a51e1146591815ae",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "19b181dff02848d78869ac343e929b5d",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "1a3ad5511c04419aa7cfe8c27aa0d243",
+      "datasheet_id": "000002623",
+      "unit_bsdata_id": "3b15-b424-2059-71fa"
+    },
+    {
+      "id": "1b64b7f01bd64f589ed09021911bef26",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "1bfb98614e434a8ca5ca46ec88252e85",
+      "datasheet_id": "2a1d-2757-347c-58f2",
+      "unit_bsdata_id": "2a1d-2757-347c-58f2"
+    },
+    {
+      "id": "1ccd9246e8514c4a9582c92b35655c87",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "1d2db961fd8842feb731b888e04e38ee",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "1d637ef20fd340d38bcbfc28c376cb14",
+      "datasheet_id": "000002105",
+      "unit_bsdata_id": "eecd-6976-6410-1e42"
+    },
+    {
+      "id": "1d747cb5a6e4450b9bf947e7b51f1ded",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "1d790e249e8e41f7a613bcc2d6f4cb38",
+      "datasheet_id": "000002776",
+      "unit_bsdata_id": "cdd9-efda-95-e7b2"
+    },
+    {
+      "id": "1d913537f8e6498fb3fba03b5a3c6052",
+      "datasheet_id": "000000091",
+      "unit_bsdata_id": "5dc7-aa6c-7053-cede"
+    },
+    {
+      "id": "1dc13e1b34b6478b85d5244b55cdf49e",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "1e04d55ebd38427c861bb46325a331c1",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "1ee39c3206e0478d9801fe6e7429050f",
+      "datasheet_id": "000002609",
+      "unit_bsdata_id": "4d28-f2a7-67c1-eb2e"
+    },
+    {
+      "id": "1f24d8151d10414f8e4dbbe1a1c81153",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "1f28572d66b04b469465ebcd6bbb5ed5",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "1f3ee21beef749389a8eec3e5ab04f94",
+      "datasheet_id": "000001044",
+      "unit_bsdata_id": "9030-f62d-417-fc92"
+    },
+    {
+      "id": "1f491de34e264eb5b9f81d544f3bbb2e",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "20070733824c4ae9ba9c3cd805c1e9c7",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "2033dc7a9d65475085d1f3ff5321bfab",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "2037ef042474469c96c9c73a74ab5931",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "2051753096fb45d0bcbde6179bc1e21f",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "20dcc88845ba4532bfdd0181a2e167e8",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "20f2f9ec0db243b6a6c56d7e0a3d12bb",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "210bed017ee54a8dbb8ed81488668432",
+      "datasheet_id": "000001371",
+      "unit_bsdata_id": "83e8-ebb7-785a-2115"
+    },
+    {
+      "id": "21e97c7c05ba49a0819b2dc2979307e8",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "21ea429bcc3344a2bb6a2bc990bc6adf",
+      "datasheet_id": "000002528",
+      "unit_bsdata_id": "fa68-fcb9-38c-cd0f"
+    },
+    {
+      "id": "21f458d20d81477588e068a91ee0981a",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "239eafd6d52c4d73a48cdb869260b90c",
+      "datasheet_id": "000000848",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "2417951e3efd48239baa3c6d1d20273f",
+      "datasheet_id": "000002522",
+      "unit_bsdata_id": "dd2d-568a-9c56-1b6e"
+    },
+    {
+      "id": "2437ebdb80e44ee2b02bb02a823475b3",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "2453739adab446468926c0a25f499b52",
+      "datasheet_id": "000002752",
+      "unit_bsdata_id": "6a9b-8e2f-edac-fa2d"
+    },
+    {
+      "id": "24fb932b8ee84b5db592dd2f0ed8897d",
+      "datasheet_id": "000000507",
+      "unit_bsdata_id": "2a91-a18e-bd08-fa66"
+    },
+    {
+      "id": "256327a2e6854014987f03571fc5076f",
+      "datasheet_id": "000002690",
+      "unit_bsdata_id": "8e53-d4a-a69f-e71d"
+    },
+    {
+      "id": "2594d9769319498c9dc80ae13a66fe2b",
+      "datasheet_id": "000000594",
+      "unit_bsdata_id": "7fcb-9262-474a-7cec"
+    },
+    {
+      "id": "266aa7f0c7d44a81b5060b498b2bd7e1",
+      "datasheet_id": "000000965",
+      "unit_bsdata_id": "2311-fa63-364-22a3"
+    },
+    {
+      "id": "26922b11583b40df96e4f76b66faf780",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "277be2fe804f40f3ae408c2eeac1f019",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "27d25757b5c846ee83788fd0f5dce9cf",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "285e143fed5742a2b86f3999f7897fe3",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "2a7f3ec0e143451aa2d9c8a1e8c2af99",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "2ac6296d79f043d9bc29d818ef9358c1",
+      "datasheet_id": "000003897",
+      "unit_bsdata_id": "64a9-4cb2-400e-efd1"
+    },
+    {
+      "id": "2b61dfcd8460410ab9138665a0d1b90d",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "2b877c67a8244d039a30bdc0e4e0b31d",
+      "datasheet_id": "000002776",
+      "unit_bsdata_id": "cdd9-efda-95-e7b2"
+    },
+    {
+      "id": "2bba5db3c5184cff845fa94d7ff7772f",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "2ccf71d03c4b4e2d97b309d59a4fcc1e",
+      "datasheet_id": "000000041",
+      "unit_bsdata_id": "8c36-c946-2e0f-f648"
+    },
+    {
+      "id": "2d63334e613d461d8f9aa69c0e94db65",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "2d7356df42f4476fbb679027d43ae90a",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "2e66c31382f54c79988601d69f09a9c7",
+      "datasheet_id": "000001047",
+      "unit_bsdata_id": "e981-27ae-112f-aa9a"
+    },
+    {
+      "id": "2eb90eb90a604b69809c8e5c81f78a33",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "2f032be5a1e5425f8dcbf63559734e28",
+      "datasheet_id": "000000002",
+      "unit_bsdata_id": "494b-11ce-5af-5b50"
+    },
+    {
+      "id": "2f171202f2ec4b68a175c3e7e9795ead",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "2ff682977fa7442a93528a7b98797cde",
+      "datasheet_id": "000002496",
+      "unit_bsdata_id": "6a83-8e1f-63ef-50c3"
+    },
+    {
+      "id": "2ff8a86d9b494b1b84331cbc138d1b9e",
+      "datasheet_id": "a6cc-9a65-dbf1-71b0",
+      "unit_bsdata_id": "a6cc-9a65-dbf1-71b0"
+    },
+    {
+      "id": "300e1ba6a5404d79a95854b42b112e3d",
+      "datasheet_id": "000002082",
+      "unit_bsdata_id": "5797-adb8-930-e832"
+    },
+    {
+      "id": "30631d9767404ac88d85aa4ea670ead1",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "3082e911fa0c42f8a22834577eb1662d",
+      "datasheet_id": "000000028",
+      "unit_bsdata_id": "2d6e-aa3b-c28c-5ef0"
+    },
+    {
+      "id": "30a9ac6593454de1ba55f2374c12dfef",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "312f30c890c449899f6b5219f84a6e52",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "3152bc0b73b9440ebe779ba825d7b1fd",
+      "datasheet_id": "a6cc-9a65-dbf1-71b0",
+      "unit_bsdata_id": "a6cc-9a65-dbf1-71b0"
+    },
+    {
+      "id": "32da72909e664aaa9e5c207c83cfaaa2",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "33b96f6535944e82bdf42ad5e436b53e",
+      "datasheet_id": "000004138",
+      "unit_bsdata_id": "80ad-6e62-65e3-e667"
+    },
+    {
+      "id": "3500e3f5f49e4f778c36fecb08d14c01",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "351c7da807d84dcdbb5de379aedf3a86",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "35c65ebdadae49c4a383a8f40a76af1a",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "35e2118a81404534ae90a58b69c1d7b3",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "360266935aa44b93a535c1f6651c5aa8",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "37e930fe048547b1b082d4f97ed81685",
+      "datasheet_id": "000000470",
+      "unit_bsdata_id": "1de2-b57b-aa0a-1f0d"
+    },
+    {
+      "id": "385e54d0647a4c439d14bda3a8a4392b",
+      "datasheet_id": "000000591",
+      "unit_bsdata_id": "592a-b255-6c58-19ec"
+    },
+    {
+      "id": "38beef3e24d747c2907dcbd33344e299",
+      "datasheet_id": "000000591",
+      "unit_bsdata_id": "592a-b255-6c58-19ec"
+    },
+    {
+      "id": "38c1d3b2f5cc4f8a80a792572e5f8c6f",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "390aa0dcbd8e4861a3d7767e7aee7219",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "390ab1680e9b468699416dd1bef55214",
+      "datasheet_id": "000002776",
+      "unit_bsdata_id": "cdd9-efda-95-e7b2"
+    },
+    {
+      "id": "3a19e70f7fee4ce795efe2e6501a35f0",
+      "datasheet_id": "000004190",
+      "unit_bsdata_id": "a998-9dce-fbab-8d32"
+    },
+    {
+      "id": "3bbf615acb79427a9dcc7c7e18f94559",
+      "datasheet_id": "000002686",
+      "unit_bsdata_id": "6de-ccee-11b4-be3e"
+    },
+    {
+      "id": "3c17407bc0834e00a8ee81fa4316cc8d",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "3c99fbffe2fe477398e64a56c583e302",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "3c9cc250ecd8432f8285b7102a78d3f3",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "3cb712f8f1934ad4a4517a5530289de5",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "3d1a1c9321a24799aa5002c525b07eb5",
+      "datasheet_id": "000000079",
+      "unit_bsdata_id": "2468-24f5-ad9b-8388"
+    },
+    {
+      "id": "3d98894b68c84a8eb8741c0f8417ab88",
+      "datasheet_id": "9f33-ff4a-d948-4636",
+      "unit_bsdata_id": "9f33-ff4a-d948-4636"
+    },
+    {
+      "id": "3db77e84d62f48f189c06061c7eccdc4",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "3f8c48d1c4ab4f4fbcfe64d2b8658509",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "407e67fa39954d0ca9f371ea3adaf707",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "4085943194054131bd93fb6b3e052e8f",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "41aecd08e9514a44820a5ddefb91a96a",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "41c76340659745918fb8a7c52ed6a8bd",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "4205432168c3440384a570f1c3274275",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "434028487a1f458e8da55b7d42f2d4d9",
+      "datasheet_id": "000000691",
+      "unit_bsdata_id": "7e34-20cf-1149-74a1"
+    },
+    {
+      "id": "43a30ab2fefe4947b0471c81a40d050d",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "4444793d992144b0b31d30286f14ec65",
+      "datasheet_id": "000002776",
+      "unit_bsdata_id": "cdd9-efda-95-e7b2"
+    },
+    {
+      "id": "44d61e850fdf47e78642d2b15573ca2d",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "44e5af9c8cc94a679ade7b396e5968e8",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "45bf2b7b520549dda5a74b25af0eecc1",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "47ee5dafaed7404d9d2cec3a07ffd6a9",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "4894bbb94be948ed861d528b08297dae",
+      "datasheet_id": "000000845",
+      "unit_bsdata_id": "bd6c-8683-8bc4-962d"
+    },
+    {
+      "id": "48d8c5d056454b00bed04af4bb9b6501",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "48ddae43b6f24d3a9334867d7d236263",
+      "datasheet_id": "000000470",
+      "unit_bsdata_id": "1de2-b57b-aa0a-1f0d"
+    },
+    {
+      "id": "4abbefe382da4487ba44bd81424b5c92",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "4c33ab001adc4a89bc391291a03c2eb8",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "4c58a9ca869e45f8b238f3d0c700ee7a",
+      "datasheet_id": "000000846",
+      "unit_bsdata_id": "d59d-ef1-9ef8-4f44"
+    },
+    {
+      "id": "4da56b64e7dc4c2f9bd23bbd524e3874",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "4eb41edb18234efc895bd075c8a1e505",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "4ec4bca4f553406e9bde8ce6176a6b4d",
+      "datasheet_id": "000002491",
+      "unit_bsdata_id": "a74a-107a-e2ac-7e4c"
+    },
+    {
+      "id": "4f68651a01244f57ac0d8b6d7f426a58",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "4f712d8ed1904fa9b5cb6b5ab37c8476",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "4f86d49f8c044a6083ab9ea635a42126",
+      "datasheet_id": "000000135",
+      "unit_bsdata_id": "dc24-dd64-5d97-df3c"
+    },
+    {
+      "id": "4fd96289dc0149d09b05c451cd560817",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "502cdc50988348e69d09f98fab332625",
+      "datasheet_id": "000002460",
+      "unit_bsdata_id": "c15c-2b5a-dcab-7627"
+    },
+    {
+      "id": "50d404f308fb4458afad3d7651168682",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "50f17b2c38f94d808ab585e41928e638",
+      "datasheet_id": "000002689",
+      "unit_bsdata_id": "b6ac-f091-a018-dab2"
+    },
+    {
+      "id": "50f8617aaf8a41a3b8eb598226948769",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "521079bbe3df461f8488076ef9a0cc11",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "52c76679364b45fe8616608384053fb9",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "52d5f37bcf2e4dadbf896d899d185393",
+      "datasheet_id": "000000594",
+      "unit_bsdata_id": "7fcb-9262-474a-7cec"
+    },
+    {
+      "id": "5342f681e5ad4e658aa15e2a6256b7bb",
+      "datasheet_id": "000002607",
+      "unit_bsdata_id": "2b49-4d03-aaf5-3532"
+    },
+    {
+      "id": "53dc55aa069b43588a8343bf4233e1ce",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "5488c0499ff74241b232b8a41030893d",
+      "datasheet_id": "000000040",
+      "unit_bsdata_id": "1594-b986-e77e-d89d"
+    },
+    {
+      "id": "54cc23a7a7754d9ab7e5425d902925b4",
+      "datasheet_id": "000000966",
+      "unit_bsdata_id": "946c-d784-c8be-f21"
+    },
+    {
+      "id": "553faa7a49654c15b243a22b9f796ed6",
+      "datasheet_id": "000004190",
+      "unit_bsdata_id": "a998-9dce-fbab-8d32"
+    },
+    {
+      "id": "55526c64f3c84e49852f65500c66040b",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "560daf26d5ca4c858b05e9b6434f790f",
+      "datasheet_id": "000000841",
+      "unit_bsdata_id": "a46f-848-b87d-4484"
+    },
+    {
+      "id": "5642cca125b14795a64bea48998e3bb4",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "56508eeaf6d54ccc9bfcad096b715fac",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "56c56947016a4f5990f50b77056f50bb",
+      "datasheet_id": "000000508",
+      "unit_bsdata_id": "4f4-2157-2cb5-8bb"
+    },
+    {
+      "id": "56e50771eb8d4991b8198e6a0211995d",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "574debf028e84de7a664235ba46d3e35",
+      "datasheet_id": "000001044",
+      "unit_bsdata_id": "9030-f62d-417-fc92"
+    },
+    {
+      "id": "58102df943f948c5b1839f1485cfd3a2",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "5833063be1eb4edd9a103d5bed348248",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "58846358a9a743ae8b1894c8803cca11",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "5892fc132dee4b51b9fad0de1140c832",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "5920ba063d0c4d90ae63b60099c7c691",
+      "datasheet_id": "000000965",
+      "unit_bsdata_id": "2311-fa63-364-22a3"
+    },
+    {
+      "id": "59a2bfe5319b4505bfc5ec88c35b5e45",
+      "datasheet_id": "000000511",
+      "unit_bsdata_id": "04cc-6196-1755-ad58"
+    },
+    {
+      "id": "5be646669d3a4c6dbfa0c1d6b2088106",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "5cb2ee4844004d9d986a8317b22a2e6a",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "5e434a2e4244420baef07df325ff7b5c",
+      "datasheet_id": "000000591",
+      "unit_bsdata_id": "592a-b255-6c58-19ec"
+    },
+    {
+      "id": "5e69e77006a34270b3e643e5bee5bfbd",
+      "datasheet_id": "000000882",
+      "unit_bsdata_id": "91b3-2e1c-e642-d213"
+    },
+    {
+      "id": "5ead41209dd241eca554edbe69caa0b6",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "5eddbfd27802488a901adebc01e505a5",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "5f11b3727aec46e3a6b14405afa4de5e",
+      "datasheet_id": "000004190",
+      "unit_bsdata_id": "a998-9dce-fbab-8d32"
+    },
+    {
+      "id": "5f54d5aa0aa54f6686aadf5ceca3c8e7",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "5f943ee6e2da47a690a3d4fa4d19c511",
+      "datasheet_id": "000004137",
+      "unit_bsdata_id": "a499-86fa-4d0c-b06d"
+    },
+    {
+      "id": "5fff17e83e38449daeac9aebba695260",
+      "datasheet_id": "000000966",
+      "unit_bsdata_id": "946c-d784-c8be-f21"
+    },
+    {
+      "id": "60dc3b742aed4470906b05a15c321256",
+      "datasheet_id": "000003698",
+      "unit_bsdata_id": "f34-e2f9-c98e-1916"
+    },
+    {
+      "id": "60f55397337945ca840e25e328a07aa0",
+      "datasheet_id": "000000966",
+      "unit_bsdata_id": "946c-d784-c8be-f21"
+    },
+    {
+      "id": "6108ad609a49452688d00017c27ce303",
+      "datasheet_id": "000000952",
+      "unit_bsdata_id": "4e85-615b-5d49-dfa4"
+    },
+    {
+      "id": "613f3c25296a4e57a36f142b08a3a1ca",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "616982d4c6a94c73998e0db3be720ed1",
+      "datasheet_id": "000000854",
+      "unit_bsdata_id": "ea05-4db7-9ee6-7a87"
+    },
+    {
+      "id": "61c7a3bb63234ec385dee1c27a4d7eb7",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "61c85778ff624d59b93496397ba6c263",
+      "datasheet_id": "000001370",
+      "unit_bsdata_id": "506c-16a8-68f7-c08a"
+    },
+    {
+      "id": "61d44e830f3a41eb931d0a40aead6618",
+      "datasheet_id": "000000882",
+      "unit_bsdata_id": "91b3-2e1c-e642-d213"
+    },
+    {
+      "id": "6271514a00a64ec3a1d74659ec54a5cc",
+      "datasheet_id": "a6cc-9a65-dbf1-71b0",
+      "unit_bsdata_id": "a6cc-9a65-dbf1-71b0"
+    },
+    {
+      "id": "632b3e09361a4b4e8bc4b51d9875028b",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "640a9001825145e19faceb33b7e79201",
+      "datasheet_id": "000000582",
+      "unit_bsdata_id": "b2f5-8219-f875-917e"
+    },
+    {
+      "id": "64743dede1c94ed5a469f2cf00631d18",
+      "datasheet_id": "000001454",
+      "unit_bsdata_id": "918b-c9ed-7af7-74df"
+    },
+    {
+      "id": "64a98d1fff0f4cdaaccc4030f94bacb0",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "64fa8d47e0a04d2187b2f881aeec8cf6",
+      "datasheet_id": "000002082",
+      "unit_bsdata_id": "5797-adb8-930-e832"
+    },
+    {
+      "id": "659ecbbe08a240ceb6936eb1026e9b94",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "67185931009a403faa634fd80d60bc59",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "676a2c00b51d4454b2ba1e28d863715d",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "693d508b4d964dcb95a0f52408e005d2",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "69542039680b41d486e67185d5df6664",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "69a455bf02e245f68b1a75df48b838a3",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "69ad321b1561422d856d91d92efd3898",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "69c070a9c7df4da39344846c897dc0cd",
+      "datasheet_id": "000002694",
+      "unit_bsdata_id": "507d-5ea4-6ef1-bf66"
+    },
+    {
+      "id": "6c0829e817b143cb859aec5e3ad67d08",
+      "datasheet_id": "000003698",
+      "unit_bsdata_id": "f34-e2f9-c98e-1916"
+    },
+    {
+      "id": "6c9e2c32dd1844f4ac223e16dd2bb51a",
+      "datasheet_id": "000000882",
+      "unit_bsdata_id": "91b3-2e1c-e642-d213"
+    },
+    {
+      "id": "6d270ae564714538a1d6847291d22509",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "6d493b9e0452426b9687be8124479b3c",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "6ee8349dcb9549359e8a80202ba15eaa",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "6eff18c1f82f4f00b05be6735d674815",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "6f422487f3564442b1a7ba55b8795b1e",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "6f7e9bb03a85479080eedd10c0585931",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "6f92b7ffc843414faacc4beb89fe8acd",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "7037bdbf48884783b6ffd9583fa33132",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "7239b2fe6dc54f8ab016e8b7714fec9f",
+      "datasheet_id": "a6cc-9a65-dbf1-71b0",
+      "unit_bsdata_id": "a6cc-9a65-dbf1-71b0"
+    },
+    {
+      "id": "7260150d5f9a4b3aabdd037989aa189f",
+      "datasheet_id": "000001586",
+      "unit_bsdata_id": "3e98-7689-8bf0-96e0"
+    },
+    {
+      "id": "7278c43b91ac41dfb8c5bc40ed5e9510",
+      "datasheet_id": "000004137",
+      "unit_bsdata_id": "a499-86fa-4d0c-b06d"
+    },
+    {
+      "id": "72d0576887334e89b3a398564fb9e07c",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "7393774c84b840a4aba93cf32e43d7fa",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "73c708c16d5340bd9c30d3dcf8772996",
+      "datasheet_id": "000000925",
+      "unit_bsdata_id": "d9e3-8baf-128f-6389"
+    },
+    {
+      "id": "7415652243d04fdaa149344504618ee2",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "752d391b87a54287882375a7e1b36373",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "75599d1be2b74c52832ff9392f1de2d9",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "75ad316f89c342928838ca40869aba4a",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "76658cdf2ab84f649dc93e12fcff52d6",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "768297b3be324b1696178c9e3e21a5be",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "76b0a732e7a74c54a0c236b297271111",
+      "datasheet_id": "000004138",
+      "unit_bsdata_id": "80ad-6e62-65e3-e667"
+    },
+    {
+      "id": "76e32816f90041d4ad4addd944ba8c4d",
+      "datasheet_id": "000000514",
+      "unit_bsdata_id": "f51d-bc51-f301-9dee"
+    },
+    {
+      "id": "78020323415549888e8811598eb2482b",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "78f089df69f841a79c475ae4c4c2913b",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "79c80b485bea432ba8eda39945598c4f",
+      "datasheet_id": "000004190",
+      "unit_bsdata_id": "a998-9dce-fbab-8d32"
+    },
+    {
+      "id": "79eae76aa4e949db8fa94d45adedfe63",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "7ac1e9fec36047b7acf72856ba393a57",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "7b01e9fc65cc46dc96302b5d504aa869",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "7b36ebdf0aba4d59b0e4b151cf364a6a",
+      "datasheet_id": "000002082",
+      "unit_bsdata_id": "5797-adb8-930-e832"
+    },
+    {
+      "id": "7b77f854106f4eecbad96e77ec820af0",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "7bbf32eeae5c4177bf086434c1855b35",
+      "datasheet_id": "000000514",
+      "unit_bsdata_id": "f51d-bc51-f301-9dee"
+    },
+    {
+      "id": "7cc9ed5e123b4745a91dc7d97dc6bc0c",
+      "datasheet_id": "000000028",
+      "unit_bsdata_id": "2d6e-aa3b-c28c-5ef0"
+    },
+    {
+      "id": "7d78808c38d04128978c5a08427cbf28",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "7e6526def9ed4aa08ca066bab9adc42a",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "7ecb099c65bd41e38ef343aab2c5c196",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "7ed02405958f432b8935c2bf85f5fcfe",
+      "datasheet_id": "000000136",
+      "unit_bsdata_id": "1c00-9398-b9e7-446a"
+    },
+    {
+      "id": "7f08374d4d9943d8846fa99bda488af2",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "7f39432efd734fa89f59aa9b90f1bbd2",
+      "datasheet_id": "000000041",
+      "unit_bsdata_id": "8c36-c946-2e0f-f648"
+    },
+    {
+      "id": "7faf71c372e446c1858c968ad03ecab1",
+      "datasheet_id": "000002496",
+      "unit_bsdata_id": "6a83-8e1f-63ef-50c3"
+    },
+    {
+      "id": "8088f91012a843e9b045958c0c2e9e7e",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "80ea42d9ece14aeeb1ddfab53331da7d",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "81ae3ecdfe344f8d835ea9aa15932828",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "82625de5b53b462e91a5633d12d9a57f",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "8284d05c4e8b4270bd3569ddeb0e8cf4",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "82e4738c1b7b4e1f9b45e192da882b3e",
+      "datasheet_id": "000000924",
+      "unit_bsdata_id": "76b4-a2c4-208e-ceb9"
+    },
+    {
+      "id": "832bde2960784e9aa27239ce909e29f5",
+      "datasheet_id": "000000511",
+      "unit_bsdata_id": "04cc-6196-1755-ad58"
+    },
+    {
+      "id": "83387c26ee0844abbc57c115c58b6ad8",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "83a2ee3a17004ab0b41b4ce8ff36f26f",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "83da26b7730a4d66b4638ebf53356f4d",
+      "datasheet_id": "000004138",
+      "unit_bsdata_id": "80ad-6e62-65e3-e667"
+    },
+    {
+      "id": "84f4576ce4834a2f96a4d48111f9fb94",
+      "datasheet_id": "000004190",
+      "unit_bsdata_id": "a998-9dce-fbab-8d32"
+    },
+    {
+      "id": "85f7cae5b5ab4add8db64d83dd2b578c",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "86b9aa5c1b4d4efda28d9f80e7b314e9",
+      "datasheet_id": "000001044",
+      "unit_bsdata_id": "9030-f62d-417-fc92"
+    },
+    {
+      "id": "86baa6e70bf141f588abe7e91e5de03a",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "86e331f44ecc44c2b9eb3a78a3009e46",
+      "datasheet_id": "000002609",
+      "unit_bsdata_id": "4d28-f2a7-67c1-eb2e"
+    },
+    {
+      "id": "8704783f7c3746af82b61ff3fe2050d9",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "8728f9474e524d2090128828ffc5d933",
+      "datasheet_id": "000001371",
+      "unit_bsdata_id": "83e8-ebb7-785a-2115"
+    },
+    {
+      "id": "8750c5a954d6438ca994afd5eb036960",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "87c2230e475e412d93fb50fd898d7c75",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "883cab4fa6b3467a8cf6a55ea396e562",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "884acf403fc447a684d2597f085382b7",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "88b04721c3e14eb6b15de2da46b9b54c",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "8964d658313b4bf3a0a49cacbeb58ab1",
+      "datasheet_id": "000000954",
+      "unit_bsdata_id": "9ff2-45e0-fe97-65f8"
+    },
+    {
+      "id": "8a8e358dbe744d33a38531ebe4bd15d0",
+      "datasheet_id": "000000508",
+      "unit_bsdata_id": "4f4-2157-2cb5-8bb"
+    },
+    {
+      "id": "8a91346e1e3e474c9473e7adecc0da64",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "8c26e6311c9c4e82a9c8614891f88993",
+      "datasheet_id": "000000591",
+      "unit_bsdata_id": "592a-b255-6c58-19ec"
+    },
+    {
+      "id": "8c418acbfc24458bad266fedaec7f000",
+      "datasheet_id": "000002522",
+      "unit_bsdata_id": "dd2d-568a-9c56-1b6e"
+    },
+    {
+      "id": "8cfcda069b664456a90ded4471e8ea57",
+      "datasheet_id": "000002497",
+      "unit_bsdata_id": "eb21-c97f-2d9a-b363"
+    },
+    {
+      "id": "8dd60b886fd24a36809b3a17dbf3e832",
+      "datasheet_id": "8da0-4570-c3c-819f",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "8dd6a406eab7482195f65a8db06f72df",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "8dee9f03cb0746c8a6d194e33e62d8d0",
+      "datasheet_id": "000004078",
+      "unit_bsdata_id": "7b4c-dfe0-6a0a-304a"
+    },
+    {
+      "id": "8e510e9d8f844096b3a2faec463a00a7",
+      "datasheet_id": "000000842",
+      "unit_bsdata_id": "7bee-a476-2167-76e7"
+    },
+    {
+      "id": "8e600c0dd6e643318b6df9286fef0909",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "8f9b7feb94f24ac8be60ef7627e5fcf0",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "8fa2baad009e417889ec9bd5268d0e03",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "8fd2698f2ff04c2c805981f48a0baf64",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "902a9de0469546daba767d1593af9fd7",
+      "datasheet_id": "000000852",
+      "unit_bsdata_id": "7efb-de37-79c4-cccb"
+    },
+    {
+      "id": "903e7b71bfa345249a6d46296f1ae200",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "9124b69b413540feb227788f442dfb07",
+      "datasheet_id": "000002609",
+      "unit_bsdata_id": "4d28-f2a7-67c1-eb2e"
+    },
+    {
+      "id": "91263c57638740629d9d7bfecce57ace",
+      "datasheet_id": "000000509",
+      "unit_bsdata_id": "30e9-42fa-3a6e-e8ef"
+    },
+    {
+      "id": "91393e1c248848c1b61f2a3de97958ec",
+      "datasheet_id": "000001156",
+      "unit_bsdata_id": "24df-fdd6-4d7b-fc0e"
+    },
+    {
+      "id": "91668200a6064c37912bf942b894e0aa",
+      "datasheet_id": "000000842",
+      "unit_bsdata_id": "7bee-a476-2167-76e7"
+    },
+    {
+      "id": "91acdadc86084d82acc0b9a4a8009422",
+      "datasheet_id": "000000882",
+      "unit_bsdata_id": "91b3-2e1c-e642-d213"
+    },
+    {
+      "id": "9236df01fc20474b99a59696609be730",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "925364a9a9dc4d95b4805abc159a04ac",
+      "datasheet_id": "000001377",
+      "unit_bsdata_id": "f5ac-4f37-fe7b-36b6"
+    },
+    {
+      "id": "92ab036cd1de43009d0866dccdce40b1",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "932f4c9f64c5443d8615fb556cb03655",
+      "datasheet_id": "000002686",
+      "unit_bsdata_id": "6de-ccee-11b4-be3e"
+    },
+    {
+      "id": "93f64d99b80c418cb34cdcd53da836f7",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "94c5f5dd55454b329fa93c16adde8e54",
+      "datasheet_id": "000004138",
+      "unit_bsdata_id": "80ad-6e62-65e3-e667"
+    },
+    {
+      "id": "95041b5087464d8cbf59c3a7fb519634",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "957ebf579f2a4fc0b9229ac164777f89",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "95fc28a1cb2844008d5d7abbe695ac8d",
+      "datasheet_id": "000000219",
+      "unit_bsdata_id": "bf62-244b-f9db-6cf"
+    },
+    {
+      "id": "9751cd404a8e48df8ab67cb241188a36",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "97c56bf83b0b453b84db09711d64fae9",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "97f7a257059b48f8b15ff2d6cfd0c297",
+      "datasheet_id": "000000591",
+      "unit_bsdata_id": "592a-b255-6c58-19ec"
+    },
+    {
+      "id": "98267b0f0c7b43ccbb9d6ec1bc3f30cf",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "990d3405dbf548109da2340c75f8934f",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "991db3341de2443289ef67e0ef6bded3",
+      "datasheet_id": "000001447",
+      "unit_bsdata_id": "b61c-b815-65c0-b1cc"
+    },
+    {
+      "id": "9ae0875f972743c2be3d2ae1e1a2365f",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "9aed516e3c8d4810bc6ec575a182c4ff",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "9b42c71250e54cad90dc84ed601df20c",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "9b5b9ae1edcb47af9db9e1211797338b",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "9b7469a96e4e40e1aaf3e52c8c079896",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "9edd1ce945e04bfe875c8a78d3759764",
+      "datasheet_id": "000000841",
+      "unit_bsdata_id": "a46f-848-b87d-4484"
+    },
+    {
+      "id": "9f1bf6b04b2148b8baaadbe1e83465e4",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "9f523ac89eba4cf48245114d91523548",
+      "datasheet_id": "000000966",
+      "unit_bsdata_id": "946c-d784-c8be-f21"
+    },
+    {
+      "id": "9f7c790dc29b4ce9913233ad13887dbb",
+      "datasheet_id": "000000511",
+      "unit_bsdata_id": "04cc-6196-1755-ad58"
+    },
+    {
+      "id": "9fc2e6b4a82c491a8babf2d7bef963c1",
+      "datasheet_id": "000000060",
+      "unit_bsdata_id": "c6e9-c0c8-5f13-5771"
+    },
+    {
+      "id": "9fe06358da6845e2bfce94feb14f186d",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "a03263b0c22a4964b144269b1d6f2290",
+      "datasheet_id": "000002522",
+      "unit_bsdata_id": "dd2d-568a-9c56-1b6e"
+    },
+    {
+      "id": "a04628f4118f4f01ae2c2d79ae742a38",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "a1166fb2637848918a69b963f6e6c235",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "a12642212e9448b786e86c7e12f92265",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "a136c91d3e724ba497d7a497d16aeccc",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "a1894faafddd4cc98cbe644ed5e0eb6a",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "a1c2465a13554348b9225ec5170fc19e",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "a1c3bd1773d140f88ec7c995a3b9a270",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "a1f495c4830a44a59dfab28959223f37",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "a2dc3e6440b64605ac57650a3f27a59c",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "a39e440f34494cc5bc55d20d950afb0e",
+      "datasheet_id": "000003698",
+      "unit_bsdata_id": "f34-e2f9-c98e-1916"
+    },
+    {
+      "id": "a3a6983c40ac4fd58754ad56d9952bde",
+      "datasheet_id": "000000952",
+      "unit_bsdata_id": "4e85-615b-5d49-dfa4"
+    },
+    {
+      "id": "a47f01c671d44908951d0bc84b1bb747",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "a49982ed0c344ee0a84464297ce8a95f",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "a5a518ff769d41328334c9248710a546",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "a5cdb9a1a6c44493a3fb54798e35645c",
+      "datasheet_id": "9f33-ff4a-d948-4636",
+      "unit_bsdata_id": "9f33-ff4a-d948-4636"
+    },
+    {
+      "id": "a656cb1359634b9688e91bcde674e4e3",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "a7e537629b8b4d00b6f082c6deddb158",
+      "datasheet_id": "000002693",
+      "unit_bsdata_id": "9bd8-ac8c-2d3b-79f6"
+    },
+    {
+      "id": "a83d10b5e06b466b82a23e21c3a9246a",
+      "datasheet_id": "000002686",
+      "unit_bsdata_id": "6de-ccee-11b4-be3e"
+    },
+    {
+      "id": "a89a6ab3e8134762a1ac5aff835c4379",
+      "datasheet_id": "000002688",
+      "unit_bsdata_id": "1ae1-ed96-5100-eda5"
+    },
+    {
+      "id": "a8ef4d5d7114496596169094eda088ee",
+      "datasheet_id": "000004083",
+      "unit_bsdata_id": "e390-b58b-db9-816"
+    },
+    {
+      "id": "aa7a21874bd94158b69c73ca114c7205",
+      "datasheet_id": "1117-cda-7f74-196b",
+      "unit_bsdata_id": "1117-cda-7f74-196b"
+    },
+    {
+      "id": "ab670ba64b434a0997ea010160c0092b",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "ab820da5455a48219605bac17b300a62",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "abb0bcfa8390479a91c4630be1c037bd",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "ac398cfb690f4aee8675b1ef13e918a8",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "ac5e78472bb44ba782856d8e392a0c46",
+      "datasheet_id": "000002629",
+      "unit_bsdata_id": "5926-4deb-a85d-c73a"
+    },
+    {
+      "id": "ad08c03e3f54429ea138869e1bb9216c",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "ad7073d5a5624fcebe2ca0f773bb12d4",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "ae18556ee85c4e7eb85b602fa5a357dc",
+      "datasheet_id": "000001044",
+      "unit_bsdata_id": "9030-f62d-417-fc92"
+    },
+    {
+      "id": "ae7ba46c94e54bfdad2204befeacc148",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "aea20d0a15124d71a9d90450e7759f85",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "afc4c291c1bc4af383dee17f9bba754f",
+      "datasheet_id": "000004173",
+      "unit_bsdata_id": "6315-d3e6-aa1c-69e4"
+    },
+    {
+      "id": "b05771e737a34198910dadd01ba1f703",
+      "datasheet_id": "000002609",
+      "unit_bsdata_id": "4d28-f2a7-67c1-eb2e"
+    },
+    {
+      "id": "b081cd9fdfee4089be1bf6f547139125",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "b0d149bfc5504aee81ee2184198b72ab",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "b0e7fc34dd2a4ead8562a8c10731df41",
+      "datasheet_id": "000000511",
+      "unit_bsdata_id": "04cc-6196-1755-ad58"
+    },
+    {
+      "id": "b1234d9ae86b4cb894ab4ddf3b43ab74",
+      "datasheet_id": "000000845",
+      "unit_bsdata_id": "bd6c-8683-8bc4-962d"
+    },
+    {
+      "id": "b1d6753d9953415f92a08669b88d2696",
+      "datasheet_id": "000004137",
+      "unit_bsdata_id": "a499-86fa-4d0c-b06d"
+    },
+    {
+      "id": "b256adc3f7ed43368fa6b918c77f7e4b",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "b2629f26b981418398a8ee622091ad85",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "b26882505e604a099eb022c615a5c864",
+      "datasheet_id": "9f33-ff4a-d948-4636",
+      "unit_bsdata_id": "9f33-ff4a-d948-4636"
+    },
+    {
+      "id": "b270fe3844d047be9b87b20cd3522816",
+      "datasheet_id": "000001454",
+      "unit_bsdata_id": "918b-c9ed-7af7-74df"
+    },
+    {
+      "id": "b33cf2188bb94c98bdd13a627a5181bc",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "b40adb663ce145609537ae759b9b2049",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "b4aac5470f8d4e65b92c38839751b87b",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "b6f0097e72c641718d4495629b3ac5aa",
+      "datasheet_id": "000004137",
+      "unit_bsdata_id": "a499-86fa-4d0c-b06d"
+    },
+    {
+      "id": "b7c637cbd4cf49739f99fcac1070113f",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "b7f349621b3f4601b7c90dd1d39c6643",
+      "datasheet_id": "000004084",
+      "unit_bsdata_id": "ee50-955a-0a81-41f1"
+    },
+    {
+      "id": "b88c47c4c87d40659deb6a57c6bf0d40",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "b9bce38b863e43269e5d71686b407a00",
+      "datasheet_id": "000000594",
+      "unit_bsdata_id": "7fcb-9262-474a-7cec"
+    },
+    {
+      "id": "ba366236a0464796aaa757ae0a27b20f",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "bae2f3ab781f4c7092fccae2c6fb8188",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "bb9bad075b5e449c9d7999810e02cad8",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "bc02329f806040358c8ae90f06a84c64",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "bc5d9c4a285b42268e9f7e0593f52e5f",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "bc979a9ecaef45c38d27ef98bc1fa513",
+      "datasheet_id": "000002679",
+      "unit_bsdata_id": "dcc0-b70c-9779-e6c9"
+    },
+    {
+      "id": "bebd4fe0e56541d5965a20fa1cc36a0f",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "bec161b5647e40729d28c8581cd75ffb",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "bf5513e624244c61b3202c0b6e808ce4",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "bfebbf4db08b476896cbe30a5f8de203",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "c0792ad083af43b8acb0cd21d751e415",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "c07f3654f25549f08fcd6a10b40e447f",
+      "datasheet_id": "000000952",
+      "unit_bsdata_id": "4e85-615b-5d49-dfa4"
+    },
+    {
+      "id": "c0ea9e32c9af459599b2257e21a797a1",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "c0f13bd35f7e4c37a17c652948875c2c",
+      "datasheet_id": "9f33-ff4a-d948-4636",
+      "unit_bsdata_id": "9f33-ff4a-d948-4636"
+    },
+    {
+      "id": "c10fd4a7464f4c8d80ffb70e08cbafd6",
+      "datasheet_id": "000003897",
+      "unit_bsdata_id": "64a9-4cb2-400e-efd1"
+    },
+    {
+      "id": "c11c2efee7d34692b9f2cc62ff1328a0",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "c17cc647b7064c8aa7d5ecaa0c45512d",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "c3f4db4b93944a3dbef5dd9c926e8537",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "c444db5a19ad49b69b94d431f9aa2a61",
+      "datasheet_id": "000000848",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "c4b31629bb5c4badb7a026ad19a11cb2",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "c51151d92913480ca340d5e596d0e597",
+      "datasheet_id": "000004077",
+      "unit_bsdata_id": "1e0a-cf2b-6602-2a34"
+    },
+    {
+      "id": "c53d229a6d2f46ae907e1d3f098d761d",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "c590cef5beb94f888c3b0b185f98e33a",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "c5bab1cc751e4bdcb16e47f9e5bc2d73",
+      "datasheet_id": "000000841",
+      "unit_bsdata_id": "a46f-848-b87d-4484"
+    },
+    {
+      "id": "c60c0f84f341412b9dced65d5c0c2255",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "c625390f466d4c68b5a3a93ca3f50bdc",
+      "datasheet_id": "000000028",
+      "unit_bsdata_id": "2d6e-aa3b-c28c-5ef0"
+    },
+    {
+      "id": "c6a347ca6a9a44a7a7567b1b1e279505",
+      "datasheet_id": "9f33-ff4a-d948-4636",
+      "unit_bsdata_id": "9f33-ff4a-d948-4636"
+    },
+    {
+      "id": "c81ca58e4a8d40a289a28ee400e7aaf4",
+      "datasheet_id": "000000515",
+      "unit_bsdata_id": "965b-496a-3a1b-22a8"
+    },
+    {
+      "id": "c99ce62fb01f4280b52a705cf7690eee",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "c9c5abf514ea4e31b6672efee52178fe",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "c9eaa55a43b3407f859643e587fc1742",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "ca1a0f28c91f4862ba56e5247d3ddf0f",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "cb16454ff02847ee8036a10d27f9fc01",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "cb21bf06d99a4bc6a0e02637050f44a2",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "cb6c16e6d8634d73a2b31926cef67e9d",
+      "datasheet_id": "000000225",
+      "unit_bsdata_id": "9bf9-1e30-e4b4-939c"
+    },
+    {
+      "id": "cbca2652cf1f4effa8bef89a0234580f",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "cbdf466eb2fc43c5b2ed3fcd205cb0cb",
+      "datasheet_id": "000004187",
+      "unit_bsdata_id": "596f-dbdc-41e7-088a"
+    },
+    {
+      "id": "cc23701606684604b9a53eaa4ed84dc0",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "ccb5a146ed9642ecb45d92b4dd7bd08c",
+      "datasheet_id": "000000076",
+      "unit_bsdata_id": "109f-f71d-56-d9eb"
+    },
+    {
+      "id": "ccd3e55a70b34d58b599f94dc82b052a",
+      "datasheet_id": "000001044",
+      "unit_bsdata_id": "9030-f62d-417-fc92"
+    },
+    {
+      "id": "cd157efe94d54ef2804264a5fec1e71a",
+      "datasheet_id": "000000952",
+      "unit_bsdata_id": "4e85-615b-5d49-dfa4"
+    },
+    {
+      "id": "cde2b8df4ad5444e9009c826b34d893f",
+      "datasheet_id": "000000838",
+      "unit_bsdata_id": "1f1e-2989-4762-cf88"
+    },
+    {
+      "id": "ce6d8089dfcc4c5aacf7c270b58027ba",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "ced2a748b5f740aaad8d74d675208453",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "cf2918abd0a5425ba6635c62b2c75deb",
+      "datasheet_id": "000004088",
+      "unit_bsdata_id": "371f-09ee-951e-88b3"
+    },
+    {
+      "id": "cf4695397d9e4277907475287442b4ee",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "cf814ce147c34bc8b8cb01410d0ace1f",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "d097e9d6a19e4f1ea84f853d29093614",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "d0a1dafed81347b3b866e6e46c2f711f",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "d123dba278cf46bcb7740d5a446e732e",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "d16a302d54ac42468efa2a277bd11705",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "d1e1ecdad86548c4be7056f45ea534d5",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "d2185af604874e87a59da964a67f6117",
+      "datasheet_id": "203d-c50f-a438-4982",
+      "unit_bsdata_id": "203d-c50f-a438-4982"
+    },
+    {
+      "id": "d2262e41d0f64550b47ce508688b1874",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "d22665e0d6e94be5b7dea4c241304823",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "d318ac6a99e04f3984319fc91f8a789e",
+      "datasheet_id": "000000841",
+      "unit_bsdata_id": "a46f-848-b87d-4484"
+    },
+    {
+      "id": "d371427bc70f41dc9ee46b6874c52da5",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "d3bf5d41f7114ef29db0764ba4b3f9d7",
+      "datasheet_id": "000002687",
+      "unit_bsdata_id": "8ccc-3f27-7e4e-da81"
+    },
+    {
+      "id": "d519d413084f463191f305e07b7566d9",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "d5305161fdf34d31a77ee528ee259886",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "d546a45780804072bdc4f441356dd15e",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "d590794f33d44be8966b6f986c68eb66",
+      "datasheet_id": "000002589",
+      "unit_bsdata_id": "f69d-2171-5f95-9c88"
+    },
+    {
+      "id": "d60c4eb8b713494c86d2bd1db171d044",
+      "datasheet_id": "000002523",
+      "unit_bsdata_id": "503b-f7be-eeeb-9e31"
+    },
+    {
+      "id": "d730cf9ade9a4afd883d50c52ecd364c",
+      "datasheet_id": "000000840",
+      "unit_bsdata_id": "c0e0-4d86-96d2-ec86"
+    },
+    {
+      "id": "d7cbcfa133ca4602bc6e8ebabb8c4b98",
+      "datasheet_id": "000000946",
+      "unit_bsdata_id": "1267-78f1-7774-859"
+    },
+    {
+      "id": "d8a28e2b0dcb420fa499eb12624fc21c",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "d8d8665786dd495fb2269b9a918dddf4",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "d8ed676b7edb4230b8473659fce19f21",
+      "datasheet_id": "000000511",
+      "unit_bsdata_id": "04cc-6196-1755-ad58"
+    },
+    {
+      "id": "da54f823d6824c64a17953389606008c",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "daae9a91274d4eec80896030ab891a84",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "db2ea0cd4e6f4e9287bcd2e8aad2c802",
+      "datasheet_id": "000004134",
+      "unit_bsdata_id": "c0a2-eb65-6d34-5bc6"
+    },
+    {
+      "id": "db47ab6869b14cefacc3b245c54649ce",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "db9ad08838864ee8b3a5eadf224d6050",
+      "datasheet_id": "000000953",
+      "unit_bsdata_id": "cb1-5bcf-9e36-8136"
+    },
+    {
+      "id": "dbd65b8fd9584df9907a976f533d0fd4",
+      "datasheet_id": "000001044",
+      "unit_bsdata_id": "9030-f62d-417-fc92"
+    },
+    {
+      "id": "dc786ae923984aba9f6b76f62fc9127b",
+      "datasheet_id": "000000591",
+      "unit_bsdata_id": "592a-b255-6c58-19ec"
+    },
+    {
+      "id": "dd1f129d243545bebc5985d2d73ee0ae",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "dd83ce147b204b3ca3722d13e837f78a",
+      "datasheet_id": "000000514",
+      "unit_bsdata_id": "f51d-bc51-f301-9dee"
+    },
+    {
+      "id": "df4efa094a4d4a8db92225137e356bf0",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "df8f29b2bf5f41c9a8f18c594449ff24",
+      "datasheet_id": "000000218",
+      "unit_bsdata_id": "81bd-ce4e-229f-a88"
+    },
+    {
+      "id": "e0853f8c68ac4410b7ce3bb36b0d662a",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "e0cc847f18ec4d5a8ba137646a54a491",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "e16c9a827cbb44d493d89fd21294c898",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "e2de6e9feac04b1985ed99a9316a865d",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "e2fbe028c81a47cda55e673a78fbc681",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "e33e8cfd7d234bfa8a98a1a1e3e47e2e",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "e37895b289d745d48dc8c85b149354a6",
+      "datasheet_id": "000002523",
+      "unit_bsdata_id": "503b-f7be-eeeb-9e31"
+    },
+    {
+      "id": "e39d383eb83f444f900ec126fbcdf708",
+      "datasheet_id": "000000467",
+      "unit_bsdata_id": "853e-48b8-4cc5-3704"
+    },
+    {
+      "id": "e3c81c604c174ec4b45baa6d20770288",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "e3e8d89c74d44918812190a5b7f87303",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "e416e97d4f5843639f7703da8b9f5a31",
+      "datasheet_id": "000002686",
+      "unit_bsdata_id": "6de-ccee-11b4-be3e"
+    },
+    {
+      "id": "e457f35114f6435d8c24d125229704c1",
+      "datasheet_id": "000000126",
+      "unit_bsdata_id": "b007-fc7b-8e4a-b017"
+    },
+    {
+      "id": "e5aa838635d044ab8ffd945e892a7fc9",
+      "datasheet_id": "000000460",
+      "unit_bsdata_id": "3e96-8098-3401-77af"
+    },
+    {
+      "id": "e5ace5b457274b9da402004ea061ca1e",
+      "datasheet_id": "000002682",
+      "unit_bsdata_id": "15d3-ebc7-d28b-daf4"
+    },
+    {
+      "id": "e6333cce8ae54ad8bb68c423e80d34ba",
+      "datasheet_id": "000000469",
+      "unit_bsdata_id": "f15b-9f9c-9bf0-8160"
+    },
+    {
+      "id": "e6480cce76d54bf29e68fbf2d36015fe",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "e69cfdafde3a4413bae5de8009538a03",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "e6ee8663bf53414b8c9296fe89c11b36",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "e76b9439c92642048b0fcbae9ccf3f2e",
+      "datasheet_id": "000002693",
+      "unit_bsdata_id": "9bd8-ac8c-2d3b-79f6"
+    },
+    {
+      "id": "e8078252f04742518b24f2f3f29891e3",
+      "datasheet_id": "000000841",
+      "unit_bsdata_id": "a46f-848-b87d-4484"
+    },
+    {
+      "id": "e851c14df1324f64a155eee525990bc0",
+      "datasheet_id": "000003583",
+      "unit_bsdata_id": "f2e7-80c9-853d-2c6c"
+    },
+    {
+      "id": "e87e0821fb204ec6a8fd3719a30a7640",
+      "datasheet_id": "000001149",
+      "unit_bsdata_id": "497d-e065-f5a5-5e80"
+    },
+    {
+      "id": "e88acf8f71594c2ea2160040a232fe93",
+      "datasheet_id": "1117-cda-7f74-196b",
+      "unit_bsdata_id": "1117-cda-7f74-196b"
+    },
+    {
+      "id": "e9728b23724b4b318a99997476d2c0a9",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "eb04fcbd13c14cc5bebc4ad98333667f",
+      "datasheet_id": "000000017",
+      "unit_bsdata_id": "de8f-24f9-c543-92b7"
+    },
+    {
+      "id": "eb47d846dbe743c6ba5611a293dcb3be",
+      "datasheet_id": "000002522",
+      "unit_bsdata_id": "dd2d-568a-9c56-1b6e"
+    },
+    {
+      "id": "ec369e92e5b947c5b8b9fc8a3a602eec",
+      "datasheet_id": "000000282",
+      "unit_bsdata_id": "c65-46c6-3a62-80c"
+    },
+    {
+      "id": "ec36d5b4a8574a2fabdceb43891595d2",
+      "datasheet_id": "000002570",
+      "unit_bsdata_id": "615-e6bf-cfd2-9384"
+    },
+    {
+      "id": "ed62e1b6fd0249d0a925d064a67d0622",
+      "datasheet_id": "000000594",
+      "unit_bsdata_id": "7fcb-9262-474a-7cec"
+    },
+    {
+      "id": "ef47f98b5b724dfb88bb701f16be41dc",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "eff150f20b3a417ba79784efade803c1",
+      "datasheet_id": "000000849",
+      "unit_bsdata_id": "ba33-c21-bddc-ab0"
+    },
+    {
+      "id": "f07327a5ea7041e7be1a169a65da6e70",
+      "datasheet_id": "000002496",
+      "unit_bsdata_id": "6a83-8e1f-63ef-50c3"
+    },
+    {
+      "id": "f211b591029a418b963519b4a60165d0",
+      "datasheet_id": "000001157",
+      "unit_bsdata_id": "8da0-4570-c3c-819f"
+    },
+    {
+      "id": "f21397b7706d4e43b3ad3286f384d326",
+      "datasheet_id": "000002522",
+      "unit_bsdata_id": "dd2d-568a-9c56-1b6e"
+    },
+    {
+      "id": "f268f7ad63374c65a820cddec748490c",
+      "datasheet_id": "000002523",
+      "unit_bsdata_id": "503b-f7be-eeeb-9e31"
+    },
+    {
+      "id": "f2a63767d3ad428ba9100173abae4402",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "f2fa18088ff54f5799ff063e374a62ef",
+      "datasheet_id": "000002776",
+      "unit_bsdata_id": "cdd9-efda-95-e7b2"
+    },
+    {
+      "id": "f367e48456234710bcffab8a206f9f3b",
+      "datasheet_id": "000001371",
+      "unit_bsdata_id": "83e8-ebb7-785a-2115"
+    },
+    {
+      "id": "f391e32a747643ef8c160e9c0eb2a800",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "f393cb76870b49a8b37d04ff5970ffc8",
+      "datasheet_id": "000000841",
+      "unit_bsdata_id": "a46f-848-b87d-4484"
+    },
+    {
+      "id": "f3aca84fc5864df88520e6d00b77734e",
+      "datasheet_id": "000000936",
+      "unit_bsdata_id": "d2b8-454a-d061-b592"
+    },
+    {
+      "id": "f3c01aacd26744449d42418835e5a938",
+      "datasheet_id": "000002628",
+      "unit_bsdata_id": "6f81-4538-a414-251e"
+    },
+    {
+      "id": "f3e6472e4dfc440594808a49e0f21be7",
+      "datasheet_id": "000000016",
+      "unit_bsdata_id": "e3b1-1240-2476-cd86"
+    },
+    {
+      "id": "f461903b11014c68bef85f6e69e52f7b",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "f4f40e213b304cbb949cc85c0596b965",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "f57b0c519c204d728cd350bb339c042e",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "f5cacb5c81ae4834a4bbde2ab3b6a02a",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "f5e10c363cfd40a7bb2060e86b3e55a8",
+      "datasheet_id": "000000512",
+      "unit_bsdata_id": "b5d2-8681-6bba-f05b"
+    },
+    {
+      "id": "f6496e20cb46402981cd8cb1c311c3f3",
+      "datasheet_id": "000002494",
+      "unit_bsdata_id": "b7c3-d00e-daf2-76fb"
+    },
+    {
+      "id": "f710263425604ad39d2d9fb8f5afad8e",
+      "datasheet_id": "000000966",
+      "unit_bsdata_id": "946c-d784-c8be-f21"
+    },
+    {
+      "id": "f7718d281b65405ba0071ac53c1cf18a",
+      "datasheet_id": "000000842",
+      "unit_bsdata_id": "7bee-a476-2167-76e7"
+    },
+    {
+      "id": "f7ca6ad0cbb74c5d98ff94ba3f8a8f65",
+      "datasheet_id": "000000590",
+      "unit_bsdata_id": "5452-c4a7-59fb-f05c"
+    },
+    {
+      "id": "f7d59813d7b342908beade1012bfacfd",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "f815f287aa38417d801ec3833d7ef231",
+      "datasheet_id": "000000470",
+      "unit_bsdata_id": "1de2-b57b-aa0a-1f0d"
+    },
+    {
+      "id": "f829ae4b30e64264b53ec5e667a7307d",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "f8ab571a4b4946d38478a817b61ba02c",
+      "datasheet_id": "000003876",
+      "unit_bsdata_id": "f666-1f5d-0c20-06c1"
+    },
+    {
+      "id": "f926e87f972343cdbcc6c8d3abd2cac7",
+      "datasheet_id": "000004079",
+      "unit_bsdata_id": "4494-dd7d-69f7-306c"
+    },
+    {
+      "id": "f9f1e73ee617455eb03cffaec8a47f75",
+      "datasheet_id": "000000041",
+      "unit_bsdata_id": "8c36-c946-2e0f-f648"
+    },
+    {
+      "id": "fa914606ae834f37a0ab7938f58e9231",
+      "datasheet_id": "000002612",
+      "unit_bsdata_id": "a2aa-7688-dcb1-4132"
+    },
+    {
+      "id": "fab827c33eab4ce2b678cd018376a361",
+      "datasheet_id": "000000468",
+      "unit_bsdata_id": "359c-db2c-681a-8d62"
+    },
+    {
+      "id": "fad1dd4a945a4f69bac60362b52d4a39",
+      "datasheet_id": "000000521",
+      "unit_bsdata_id": "5ac1-3adb-212a-5e02"
+    },
+    {
+      "id": "fae930dba2c04afbb30ccb4ff54bbe5e",
+      "datasheet_id": "000000952",
+      "unit_bsdata_id": "4e85-615b-5d49-dfa4"
+    },
+    {
+      "id": "fb6023d0449449b8941f9d0c4ef75b22",
+      "datasheet_id": "000002522",
+      "unit_bsdata_id": "dd2d-568a-9c56-1b6e"
+    },
+    {
+      "id": "fbca0e27a6b04d498629e0f93eb329b7",
+      "datasheet_id": "000002627",
+      "unit_bsdata_id": "3832-4208-11e9-ca22"
+    },
+    {
+      "id": "fcd342a3276a4c09892c80c1f8574898",
+      "datasheet_id": "de59-f65c-181a-8509",
+      "unit_bsdata_id": "de59-f65c-181a-8509"
+    },
+    {
+      "id": "fd9ed96635a246d88e18df334c2ea51c",
+      "datasheet_id": "000002493",
+      "unit_bsdata_id": "b42b-ea0-38f1-6300"
+    },
+    {
+      "id": "febbe87a2f3447ef92313b5b14322d74",
+      "datasheet_id": "000000514",
+      "unit_bsdata_id": "f51d-bc51-f301-9dee"
+    }
+  ],
+  "faction_name_to_id": {
+    "Aeldari - Ynnari": "1f1-47f9-a3a4-9bfb",
+    "Chaos - Chaos Daemons": "d265-877b-e03d-30ca",
+    "Chaos - Chaos Knights": "46d8-abc8-ef3a-9f85",
+    "Chaos - Chaos Space Marines": "c8da-e875-58f7-f6d6",
+    "Chaos - Death Guard": "5108-f98-63c2-53cb",
+    "Chaos - Emperor's Children": "03fe-a162-4c02-f07b",
+    "Chaos - Thousand Sons": "1069-10ff-3ba9-873b",
+    "Chaos - World Eaters": "df9a-59b2-f464-59ad",
+    "Imperium - Adepta Sororitas": "b39e-4401-8f3e-fdf7",
+    "Imperium - Adeptus Astartes - Black Templars": "36d3-36bc-68dd-40ac",
+    "Imperium - Adeptus Astartes - Blood Angels": "4ef9-15ce-e3e6-36de",
+    "Imperium - Adeptus Astartes - Dark Angels": "470a-6daa-9014-12df",
+    "Imperium - Adeptus Astartes - Deathwatch": "f89b-84e0-6e3b-f1e2",
+    "Imperium - Adeptus Astartes - Imperial Fists": "5d6e-fd3-330a-11dd",
+    "Imperium - Adeptus Astartes - Iron Hands": "f27e-18c0-b73e-748e",
+    "Imperium - Adeptus Astartes - Raven Guard": "6e59-e1ee-47ad-6ce5",
+    "Imperium - Adeptus Astartes - Salamanders": "2261-79a5-19d9-1668",
+    "Imperium - Adeptus Astartes - Space Marines": "e0af-67df-9d63-8fb7",
+    "Imperium - Adeptus Astartes - Space Wolves": "94bb-3284-ee14-57a1",
+    "Imperium - Adeptus Astartes - Ultramarines": "4029-9237-e8db-af55",
+    "Imperium - Adeptus Astartes - White Scars": "67c1-fc13-f9a1-cbbf",
+    "Imperium - Adeptus Custodes": "1f19-6509-d906-ca10",
+    "Imperium - Adeptus Mechanicus": "77b9-2f66-3f9b-5cf3",
+    "Imperium - Agents of the Imperium": "b00-cd86-4b4c-97ba",
+    "Imperium - Astra Militarum": "b0ae-12a5-c84-ea45",
+    "Imperium - Grey Knights": "50c4-3e83-fe54-97c4",
+    "Imperium - Imperial Knights": "25dd-7aa0-6bf4-f2d5",
+    "Unaligned Forces": "581a-46b9-5b86-44b7",
+    "Xenos - Aeldari": "34a5-8c7e-f468-82d1",
+    "Xenos - Drukhari": "38de-521f-1ce0-44a0",
+    "Xenos - Genestealer Cults": "3bdf-a114-5035-c6ac",
+    "Xenos - Leagues of Votann": "f616-3f08-ee8e-3349",
+    "Xenos - Necrons": "b654-a18a-ea1-3bf2",
+    "Xenos - Orks": "a55f-b7b3-6c65-a05f",
+    "Xenos - T'au Empire": "d81a-61dd-6d27-a3ce",
+    "Xenos - Tyranids": "b984-7317-81cc-20f"
+  }
+}

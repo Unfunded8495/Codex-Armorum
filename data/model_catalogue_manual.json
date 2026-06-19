@@ -25076,7 +25076,7 @@
       "release_year": 2012,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Plastic Daemon Prince kit â€” can be built as any god variant. Approximate release date.",
+      "note": "Plastic Daemon Prince kit,  can be built as any god variant. Approximate release date.",
       "flags": [
         "Shared Multi-kit"
       ],
@@ -25153,8 +25153,8 @@
       "name": "Daemon Prince with Wings",
       "faction_label": "Chaos - Chaos Space Marines",
       "faction_id": "c8da-e875-58f7-f6d6",
-      "release_date": "2012-10",
-      "release_year": 2012,
+      "release_date": "2022-10",
+      "release_year": 2022,
       "material": "Plastic",
       "status": "current_or_unknown",
       "note": "Winged build of the plastic Daemon Prince kit. Approximate release date.",
@@ -27084,7 +27084,7 @@
     {
       "datasheet_links": [],
       "faction_id": "df9a-59b2-f464-59ad",
-      "faction_label": "World Eaters",
+      "faction_label": "Chaos - World Eaters",
       "flags": [],
       "id": "MD-50937",
       "material": "Plastic",

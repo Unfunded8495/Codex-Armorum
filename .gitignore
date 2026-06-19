@@ -1,10 +1,8 @@
-# BSData catalogue repo — cloned locally, not tracked here
-bsdata/
-
 # SQLite database and backups
 collection.db
 collection.db.backup
 collection.db.bak-*
+collection.db.pre-wahapedia
 *.db.bak-*
 warhammer.db
 *.db-journal

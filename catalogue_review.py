@@ -261,8 +261,9 @@ def catalogue_payload():
 # Faction cards for the History view
 #
 # Cards are grouped by canonical faction_label (how a person thinks of a faction),
-# NOT faction_id — a single BSData GUID is shared by every Space Marine chapter and
-# by all the Aeldari branches, so grouping by id would collapse them into one card.
+# NOT faction_id: a single Wahapedia faction code is shared by every Space Marine
+# chapter and by all the Aeldari branches, so grouping by id would collapse them
+# into one card.
 STATIC_IMAGE_DIR = os.path.join(BASE, "static", "images")
 
 # Faction labels whose photographic card image does not match the default slug.
@@ -446,41 +447,12 @@ def _catalogue_models_by_datasheet():
     for entries in by_datasheet.values():
         entries.sort(key=lambda e: (e.get("release_year") or 0, e.get("name", "")))
 
-    # Also index each entry under its BSData GUID so lookups with BSData GUIDs find model
-    # catalogue entries that were imported with Wahapedia IDs. A datasheet can be reachable
-    # under both IDs at once — e.g. one kit resolved straight to the BSData GUID while another
-    # still links via the Wahapedia ID — so MERGE into the BSData bucket (de-duplicating by
-    # catalogue model id) rather than skipping it when it already exists, otherwise the
-    # Wahapedia-linked kits get silently dropped from the BSData view.
-    try:
-        from data_store import get_store as _get_store
-        _store = _get_store()
-        bsdata_additions = {}
-        for wahapedia_id, entries in list(by_datasheet.items()):
-            unit = _store.ds_by_id.get(wahapedia_id)
-            if not unit:
-                continue
-            bsdata_id = unit.get("id")
-            if not bsdata_id or bsdata_id == wahapedia_id:
-                continue
-            merged = bsdata_additions.setdefault(bsdata_id, list(by_datasheet.get(bsdata_id, [])))
-            seen_ids = {e["id"] for e in merged}
-            for entry in entries:
-                if entry["id"] not in seen_ids:
-                    merged.append(entry)
-                    seen_ids.add(entry["id"])
-        for merged in bsdata_additions.values():
-            merged.sort(key=lambda e: (e.get("release_year") or 0, e.get("name", "")))
-        by_datasheet.update(bsdata_additions)
-    except Exception:
-        pass  # fail silently; model catalogue will just show no linked models
-
     _CACHE[key] = by_datasheet
     return by_datasheet
 
 
 def catalogue_faction_datasheet_index():
-    """Return {catalogue_model_id: {bsdata_faction_id: bsdata_datasheet_id}} for every
+    """Return {catalogue_model_id: {faction_id: datasheet_id}} for every
     model release whose resolution (or raw links) covers more than one faction.
 
     Used by the collection API to surface minis in cross-faction views — e.g. a mini

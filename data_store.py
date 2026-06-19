@@ -1,10 +1,14 @@
-"""Loads unit and faction data from the BSData SQLite catalogue tables.
+"""Loads unit and faction data from the Wahapedia-sourced SQLite catalogue tables.
 
 Sourced from catalogue_factions, catalogue_units, catalogue_weapons, and
-catalogue_unit_weapons (populated by bsdata_importer.py).
+catalogue_unit_weapons (populated by wahapedia_importer.py from the Wahapedia
+CSV export). The column names bsdata_id / unit_bsdata_id are kept as a legacy
+misnomer: they now hold native Wahapedia ids (9-digit datasheet ids and faction
+short codes such as "CSM").
 
-The external interface (every public attribute and method) is identical to the
-previous Wahapedia CSV version so that all consuming modules continue to work.
+The external interface (every public attribute and method) is unchanged so all
+consuming modules continue to work; only the data source and the id values
+differ from the previous BSData version.
 """
 import json
 import os
@@ -20,54 +24,6 @@ ROLE_ORDER = [
     "Beast", "Monster", "Vehicle", "Swarm", "Transport",
     "Fortification", "Other", "Unaligned",
 ]
-
-# Maps a display-faction catalogue name to the keyword fragment that identifies
-# its units inside the shared library catalogue.  Only needed when a faction
-# catalogue has 0 direct units and pulls from a library cat instead.
-FACTION_KEYWORD_MAP = {
-    "Xenos - Aeldari":             "Faction: Asuryani",
-    "Xenos - Drukhari":            "Faction: Drukhari",
-    "Aeldari - Ynnari":            "Faction: Ynnari",
-    "Imperium - Astra Militarum":  "Faction: Astra Militarum",
-    "Imperium - Imperial Knights": "Faction: Imperial Knights",
-    "Chaos - Chaos Knights":       "Faction: Chaos Knights",
-    "Chaos - Chaos Daemons":       "Faction: Legiones Daemonica",
-}
-
-# Maps a library-only catalogue name to the display faction it should roll up into.
-# These libraries have no zero-unit partner; units are merged directly into the parent.
-LIBRARY_PARENT_MAP = {
-    "Library - Tyranids": "Xenos - Tyranids",
-}
-
-# Maps Wahapedia faction short codes (from Detachments.csv) to BSData catalogue names.
-# Used to populate detachments_by_faction with BSData GUIDs as keys.
-_WAHAPEDIA_CODE_TO_BSDATA_NAME = {
-    "SM":  "Imperium - Adeptus Astartes - Space Marines",
-    "AC":  "Imperium - Adeptus Custodes",
-    "AE":  "Xenos - Aeldari",
-    "AM":  "Imperium - Astra Militarum",
-    "AS":  "Imperium - Adepta Sororitas",
-    "AdM": "Imperium - Adeptus Mechanicus",
-    "AoI": "Imperium - Agents of the Imperium",
-    "CD":  "Chaos - Chaos Daemons",
-    "CSM": "Chaos - Chaos Space Marines",
-    "DG":  "Chaos - Death Guard",
-    "DRU": "Xenos - Drukhari",
-    "EC":  "Chaos - Emperor’s Children",
-    "GC":  "Xenos - Genestealer Cults",
-    "GK":  "Imperium - Grey Knights",
-    "LoV": "Xenos - Leagues of Votann",
-    "NEC": "Xenos - Necrons",
-    "ORK": "Xenos - Orks",
-    "QI":  "Imperium - Imperial Knights",
-    "QT":  "Chaos - Chaos Knights",
-    "TAU": "Xenos - T’au Empire",
-    "TS":  "Chaos - Thousand Sons",
-    "TYR": "Xenos - Tyranids",
-    "WE":  "Chaos - World Eaters",
-    "UN":  "Unaligned Forces",
-}
 
 
 def strip_html(text):
@@ -111,23 +67,21 @@ class DataStore:
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
 
-        # Load all factions (we'll filter below)
         all_fac_rows = conn.execute(
             "SELECT bsdata_id, name FROM catalogue_factions ORDER BY name"
         ).fetchall()
 
-        # Load every unit
         all_unit_rows = conn.execute(
-            "SELECT bsdata_id, faction_id, name, role, points,"
-            "       stats_json, abilities_json, keywords_json, points_tiers_json"
+            "SELECT bsdata_id, faction_id, name, role, points, virtual,"
+            "       legend, link, loadout,"
+            "       stats_json, abilities_json, keywords_json, points_tiers_json,"
+            "       composition_json, wargear_options_json, leader_targets_json"
             " FROM catalogue_units"
         ).fetchall()
 
-        # Load all weapons joined to unit links
         all_weapon_rows = conn.execute("""
             SELECT cuw.unit_id,
-                   cw.bsdata_id  w_id,
-                   cw.name       w_name,
+                   cw.name        w_name,
                    cw.weapon_type,
                    cw.range,
                    cw.attacks,
@@ -135,7 +89,8 @@ class DataStore:
                    cw.strength,
                    cw.ap,
                    cw.damage,
-                   cw.keywords   w_keywords
+                   cw.keywords    w_keywords,
+                   cw.description w_description
             FROM catalogue_unit_weapons cuw
             JOIN catalogue_weapons cw ON cw.bsdata_id = cuw.weapon_id
         """).fetchall()
@@ -147,7 +102,7 @@ class DataStore:
         for w in all_weapon_rows:
             weapons_by_unit.setdefault(w["unit_id"], []).append(w)
 
-        # --- build unit dicts keyed by bsdata_id ---
+        # --- build unit dicts keyed by Wahapedia datasheet id ---
         raw_units = {}
         for u in all_unit_rows:
             did = u["bsdata_id"]
@@ -156,20 +111,22 @@ class DataStore:
             abilities = json.loads(u["abilities_json"]) if u["abilities_json"] else {}
             points_tiers = (json.loads(u["points_tiers_json"])
                             if u["points_tiers_json"] else None)
+            leader_targets = (json.loads(u["leader_targets_json"])
+                              if u["leader_targets_json"] else [])
 
             ranged = []
             melee = []
             for w in weapons_by_unit.get(did, []):
                 entry = {
-                    "name":    w["w_name"],
-                    "range":   w["range"] or "",
-                    "A":       w["attacks"] or "",
-                    "BS_WS":   w["skill"] or "",
-                    "S":       w["strength"] or "",
-                    "AP":      w["ap"] or "",
-                    "D":       w["damage"] or "",
+                    "name":     w["w_name"],
+                    "range":    w["range"] or "",
+                    "A":        w["attacks"] or "",
+                    "BS_WS":    w["skill"] or "",
+                    "S":        w["strength"] or "",
+                    "AP":       w["ap"] or "",
+                    "D":        w["damage"] or "",
                     "keywords": w["w_keywords"] or "",
-                    "description": "",
+                    "description": w["w_description"] or "",
                 }
                 if w["weapon_type"] == "melee":
                     melee.append(entry)
@@ -177,47 +134,42 @@ class DataStore:
                     ranged.append(entry)
 
             unit_dict = {
-                "id":          did,
-                "bsdata_id":   did,
-                "name":        u["name"],
-                "faction_id":  u["faction_id"],  # may be overridden below
-                "role":        u["role"] or "Other",
-                "points":      u["points"],
+                "id":            did,
+                "bsdata_id":     did,
+                "name":          u["name"],
+                "faction_id":    u["faction_id"],
+                "role":          u["role"] or "Other",
+                "points":        u["points"],
                 "_points_tiers": points_tiers,
-                "virtual_bool": False,
-                "_keywords":   kws,   # internal; used by faction keyword filter
-                "_stats":      stats,
-                "_abilities":  abilities,
-                "_ranged":     ranged,
-                "_melee":      melee,
+                "virtual_bool":  bool(u["virtual"]),
+                "legend":        u["legend"] or "",
+                "link":          u["link"] or "",
+                "_keywords":     kws,
+                "_stats":        stats,
+                "_abilities":    abilities,
+                "_ranged":       ranged,
+                "_melee":        melee,
+                "_composition":  (json.loads(u["composition_json"])
+                                  if u["composition_json"] else None),
+                "_options":      (json.loads(u["wargear_options_json"])
+                                  if u["wargear_options_json"] else None),
+                "_loadout":      u["loadout"],
+                "_leader_targets": leader_targets,
             }
             raw_units[did] = unit_dict
 
-        # --- build keyword index for fast lookup ---
-        # kw_units[keyword_fragment] = list of unit dicts
-        kw_units = {}
+        # --- process factions: a unit belongs to a faction when its faction_id
+        #     equals the faction code (Wahapedia carries this directly) ---
+        units_by_faction = {}
         for u in raw_units.values():
-            for kw in u["_keywords"]:
-                kw_units.setdefault(kw, []).append(u)
+            units_by_faction.setdefault(u["faction_id"], []).append(u)
 
-        # --- process factions ---
         for row in all_fac_rows:
             fid = row["bsdata_id"]
             name = row["name"]
-
-            # Skip library-only catalogues from the visible list
-            if "Library" in name:
-                continue
-
-            if name in FACTION_KEYWORD_MAP:
-                keyword = FACTION_KEYWORD_MAP[name]
-                faction_units = kw_units.get(keyword, [])
-            else:
-                faction_units = [u for u in raw_units.values() if u["faction_id"] == fid]
-
+            faction_units = units_by_faction.get(fid, [])
             if not faction_units:
                 continue
-
             faction_dict = {
                 "id":         fid,
                 "name":       name,
@@ -225,46 +177,15 @@ class DataStore:
             }
             self.factions.append(faction_dict)
             self.faction_by_id[fid] = faction_dict
-
             for u in faction_units:
-                # For keyword-mapped factions, use a copy with overridden faction_id
-                if name in FACTION_KEYWORD_MAP:
-                    unit = dict(u)
-                    unit["faction_id"] = fid
-                else:
-                    unit = u
-
-                self.ds_by_faction.setdefault(fid, []).append(unit)
-                # ds_by_id: last keyword-mapped faction wins for shared units
-                self.ds_by_id[unit["id"]] = unit
+                self.ds_by_faction.setdefault(fid, []).append(u)
+                self.ds_by_id[u["id"]] = u
 
         self.datasheets = list(self.ds_by_id.values())
 
-        # Merge library-catalogue units into their parent display faction
-        fac_by_name = {f["name"]: f for f in self.factions}
-        for lib_name, display_name in LIBRARY_PARENT_MAP.items():
-            display_fac = fac_by_name.get(display_name)
-            if not display_fac:
-                continue
-            fid = display_fac["id"]
-            lib_fac = next((r for r in all_fac_rows if r["name"] == lib_name), None)
-            if not lib_fac:
-                continue
-            lib_units = [u for u in raw_units.values()
-                         if u["faction_id"] == lib_fac["bsdata_id"]]
-            for u in lib_units:
-                if u["id"] in self.ds_by_id:
-                    continue
-                unit = dict(u)
-                unit["faction_id"] = fid
-                self.ds_by_id[unit["id"]] = unit
-                self.ds_by_faction.setdefault(fid, []).append(unit)
-                display_fac["unit_count"] += 1
-            self.datasheets = list(self.ds_by_id.values())
-
-        # cost: {did: [{"cost": points, "description": label}]} — used by the
+        # cost: {did: [{"cost": points, "description": label}]}: used by the
         # datasheet Points section and the army builder. Multi-size units carry
-        # reconstructed per-size tiers; everything else is a single base price.
+        # per-size tiers; everything else is a single base price.
         for u in self.datasheets:
             tiers = u.get("_points_tiers")
             if tiers:
@@ -272,96 +193,56 @@ class DataStore:
             elif u.get("points") is not None:
                 self.cost[u["id"]] = [{"cost": u["points"]}]
 
-        # keywords: {did: list of kw strings} — kept for API compat
+        # keywords: {did: list of kw strings} (kept for API compat)
         for u in self.datasheets:
             kws = u.get("_keywords", [])
             if kws:
                 self.keywords[u["id"]] = kws
 
-        # Add Wahapedia 9-digit ID aliases so box_sets / purchases keep working
-        self._build_wahapedia_aliases()
+        # composition / wargear_options / loadout / wargear
+        for u in self.datasheets:
+            if u.get("_composition"):
+                self.composition[u["id"]] = u["_composition"]
+            if u.get("_options"):
+                self.wargear_options[u["id"]] = u["_options"]
+            if u.get("_loadout"):
+                self.loadout[u["id"]] = u["_loadout"]
+            gear = [{"name": w["name"], "type": "melee"} for w in u["_melee"]]
+            gear += [{"name": w["name"], "type": "ranged"} for w in u["_ranged"]]
+            if gear:
+                self.wargear[u["id"]] = gear
 
-        # Populate composition, wargear, leaders_for, led_by from DB
-        conn2 = sqlite3.connect(DB_PATH)
-        conn2.row_factory = sqlite3.Row
-
-        for row in conn2.execute(
-            "SELECT bsdata_id, composition_json FROM catalogue_units"
-            " WHERE composition_json IS NOT NULL"
-        ).fetchall():
-            self.composition[row["bsdata_id"]] = json.loads(row["composition_json"])
-
-        for row in conn2.execute(
-            "SELECT bsdata_id, wargear_options_json FROM catalogue_units"
-            " WHERE wargear_options_json IS NOT NULL"
-        ).fetchall():
-            self.wargear_options[row["bsdata_id"]] = json.loads(row["wargear_options_json"])
-
-        for row in conn2.execute(
-            "SELECT bsdata_id, loadout FROM catalogue_units WHERE loadout IS NOT NULL"
-        ).fetchall():
-            self.loadout[row["bsdata_id"]] = row["loadout"]
-
-        for row in conn2.execute("""
-            SELECT cuw.unit_id,
-                   json_group_array(json_object('name', cw.name, 'type', cw.weapon_type)) AS gear
-            FROM catalogue_unit_weapons cuw
-            JOIN catalogue_weapons cw ON cuw.weapon_id = cw.bsdata_id
-            GROUP BY cuw.unit_id
-        """).fetchall():
-            self.wargear[row["unit_id"]] = json.loads(row["gear"])
-
-        # Datasheet names are mostly Title Case while leader_targets_json stores
-        # them in the source's UPPER CASE; match case-insensitively so forward
-        # attachment links resolve.
-        _name_to_id = {u["name"]: u["id"] for u in self.datasheets}
-        _lower_to_id = {u["name"].lower(): u["id"] for u in self.datasheets}
-        _id_to_name = {u["id"]: u["name"] for u in self.datasheets}
+        # leaders: leader_targets are attached datasheet ids (Wahapedia native).
         leaders_for_name = {}
         led_by_id = {}
         leads_id = {}
-        for row in conn2.execute(
-            "SELECT bsdata_id, name, leader_targets_json FROM catalogue_units"
-            " WHERE leader_targets_json IS NOT NULL"
-        ).fetchall():
-            targets = json.loads(row["leader_targets_json"])
-            leader_id = row["bsdata_id"]
-            leader_name = row["name"]
-            for target_name in targets:
-                leaders_for_name.setdefault(target_name, []).append(leader_name)
-                target_id = _name_to_id.get(target_name) or _lower_to_id.get(target_name.lower())
-                if target_id:
-                    led_by_id.setdefault(target_id, []).append(leader_id)
-                # Forward: units this leader can attach to (for the Leader block)
+        for u in self.datasheets:
+            targets = u.get("_leader_targets") or []
+            leader_id = u["id"]
+            leader_name = u["name"]
+            for target_id in targets:
+                target = self.ds_by_id.get(target_id)
+                if not target:
+                    continue
+                leaders_for_name.setdefault(target["name"], []).append(leader_name)
+                led_by_id.setdefault(target_id, []).append(leader_id)
                 leads_id.setdefault(leader_id, []).append(
-                    {"id": target_id, "name": _id_to_name.get(target_id, target_name)})
+                    {"id": target_id, "name": target["name"]})
         self.leaders_for = leaders_for_name
         self.led_by = led_by_id
         self.leads = leads_id
 
-        conn2.close()
-
         self._load_detachment_data()
 
     def _load_detachment_data(self):
-        """Populate detachments_by_faction, detachment_by_id, enhancements_by_detachment
-        from the Wahapedia CSVs. These data sets have no equivalent in BSData XML.
+        """Populate detachments_by_faction, detachment_by_id,
+        enhancements_by_detachment from the Wahapedia CSVs. Faction ids are now
+        native Wahapedia codes, matching Detachments.csv directly.
         """
         import csv as _csv
 
         data_dir = os.path.join(os.path.dirname(__file__), "data")
 
-        # Build BSData faction name → GUID map (only display factions, not libraries)
-        bsdata_name_to_id = {f["name"]: f["id"] for f in self.factions}
-
-        # Wahapedia faction code → BSData faction GUID
-        code_to_fid = {}
-        for code, bsdata_name in _WAHAPEDIA_CODE_TO_BSDATA_NAME.items():
-            fid = bsdata_name_to_id.get(bsdata_name)
-            if fid:
-                code_to_fid[code] = fid
-
-        # Load detachments
         det_path = os.path.join(data_dir, "Detachments.csv")
         if not os.path.exists(det_path):
             return
@@ -369,13 +250,10 @@ class DataStore:
             with open(det_path, encoding="utf-8-sig", newline="") as fh:
                 reader = _csv.DictReader(fh, delimiter="|")
                 for row in reader:
-                    dtid  = (row.get("id") or "").strip()
-                    wcode = (row.get("faction_id") or "").strip()
-                    name  = (row.get("name") or "").strip()
-                    if not dtid or not name or not wcode:
-                        continue
-                    fid = code_to_fid.get(wcode)
-                    if not fid:
+                    dtid = (row.get("id") or "").strip()
+                    fid  = (row.get("faction_id") or "").strip()
+                    name = (row.get("name") or "").strip()
+                    if not dtid or not name or not fid:
                         continue
                     det = {
                         "id":         dtid,
@@ -388,7 +266,6 @@ class DataStore:
         except Exception:
             pass
 
-        # Load enhancements
         enh_path = os.path.join(data_dir, "Enhancements.csv")
         if not os.path.exists(enh_path):
             return
@@ -396,9 +273,9 @@ class DataStore:
             with open(enh_path, encoding="utf-8-sig", newline="") as fh:
                 reader = _csv.DictReader(fh, delimiter="|")
                 for row in reader:
-                    eid   = (row.get("id") or "").strip()
-                    dtid  = (row.get("detachment_id") or "").strip()
-                    name  = (row.get("name") or "").strip()
+                    eid  = (row.get("id") or "").strip()
+                    dtid = (row.get("detachment_id") or "").strip()
+                    name = (row.get("name") or "").strip()
                     if not eid or not dtid or not name:
                         continue
                     try:
@@ -406,65 +283,13 @@ class DataStore:
                     except ValueError:
                         cost = 0
                     enh = {
-                        "id":             eid,
-                        "name":           name,
-                        "cost":           cost,
-                        "detachment_id":  dtid,
-                        "description":    strip_html((row.get("description") or "").strip()),
+                        "id":            eid,
+                        "name":          name,
+                        "cost":          cost,
+                        "detachment_id": dtid,
+                        "description":   strip_html((row.get("description") or "").strip()),
                     }
                     self.enhancements_by_detachment.setdefault(dtid, []).append(enh)
-        except Exception:
-            pass
-
-    def _build_wahapedia_aliases(self):
-        """Populate ds_by_id with Wahapedia 9-digit ID → BSData unit aliases.
-
-        box_sets.json and custom_box_set_contents still store Wahapedia IDs.
-        We use two sources:
-          1. minis table (migration-verified exact matches, highest confidence)
-          2. Datasheets.csv name-matching for any IDs not yet covered
-        """
-        import csv as _csv
-
-        # 1. Exact matches from the Phase 3 migration
-        try:
-            conn = sqlite3.connect(DB_PATH)
-            rows = conn.execute(
-                "SELECT DISTINCT datasheet_id, unit_bsdata_id FROM minis"
-                " WHERE unit_bsdata_id IS NOT NULL"
-            ).fetchall()
-            conn.close()
-            for r in rows:
-                wid, bsid = r[0], r[1]
-                if wid and bsid and bsid in self.ds_by_id and wid not in self.ds_by_id:
-                    self.ds_by_id[wid] = self.ds_by_id[bsid]
-        except Exception:
-            pass
-
-        # 2. Name-based fallback from Datasheets.csv for remaining IDs
-        ds_path = os.path.join(os.path.dirname(__file__), "data", "Datasheets.csv")
-        if not os.path.exists(ds_path):
-            return
-
-        _R = "’"
-        _L = "‘"
-
-        def _norm(s):
-            return s.replace(_R, "'").replace(_L, "'").lower()
-
-        name_to_unit = {_norm(u["name"]): u for u in self.datasheets}
-
-        try:
-            with open(ds_path, encoding="utf-8-sig", newline="") as fh:
-                reader = _csv.DictReader(fh, delimiter="|")
-                for row in reader:
-                    wid = (row.get("id") or "").strip()
-                    name = (row.get("name") or "").strip()
-                    if not wid or not name or wid in self.ds_by_id:
-                        continue
-                    unit = name_to_unit.get(_norm(name))
-                    if unit:
-                        self.ds_by_id[wid] = unit
         except Exception:
             pass
 
@@ -508,8 +333,8 @@ class DataStore:
         faction_kw_prefix = "Faction: "
         fkw = [k for k in kws if k.startswith(faction_kw_prefix)]
         kw = [k for k in kws if not k.startswith(faction_kw_prefix)]
-        # Single-model datasheets (one stat profile) carry no composition group
-        # in BSData; synthesise the "1 <name>" line so the section still shows.
+        # Single-model datasheets carry a stats dict; synthesise the "1 <name>"
+        # composition line if Wahapedia gave no composition rows.
         composition = self.composition.get(d["id"], [])
         if not composition and isinstance(d.get("_stats"), dict) and d["_stats"]:
             composition = [{"name": d["name"], "min": 1, "max": 1}]
@@ -521,9 +346,9 @@ class DataStore:
             "faction_id":          d["faction_id"],
             "faction_name":        self.faction_by_id.get(d["faction_id"], {}).get("name", ""),
             "role":                d.get("role") or "Other",
-            "legend":              "",
+            "legend":              d.get("legend") or "",
             "loadout":             self.loadout.get(d["id"], ""),
-            "link":                "",
+            "link":                d.get("link") or "",
             "transport":           abilities.get("transport") or "",
             "damaged_w":           damaged.get("threshold", ""),
             "damaged_description": damaged.get("description", ""),

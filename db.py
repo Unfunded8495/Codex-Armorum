@@ -165,14 +165,14 @@ def init_db():
             caption TEXT DEFAULT '',
             uploaded_at REAL NOT NULL)""")
 
-        # Unit-level "Work in Progress" notes — one free-text record per
+        # Unit-level "Work in Progress" notes: one free-text record per
         # datasheet, independent of any individual mini.
         c.execute("""CREATE TABLE IF NOT EXISTS unit_wip(
             datasheet_id TEXT PRIMARY KEY,
             notes TEXT DEFAULT '',
             updated_at REAL NOT NULL)""")
 
-        # Unit-level WIP photos — shared gallery for the datasheet, separate
+        # Unit-level WIP photos: shared gallery for the datasheet, separate
         # from the per-mini `photos` table (which requires a mini_id).
         c.execute("""CREATE TABLE IF NOT EXISTS unit_wip_photos(
             id TEXT PRIMARY KEY,
@@ -268,7 +268,9 @@ def init_db():
 
         _migrate_legacy_loadouts(c, legacy_photos_table)
 
-        # BSData catalogue tables
+        # Wahapedia catalogue tables (populated by wahapedia_importer.py). The
+        # bsdata_id / unit_bsdata_id column names are a legacy misnomer: they now
+        # hold native Wahapedia ids (datasheet ids and faction codes).
         c.execute("""CREATE TABLE IF NOT EXISTS catalogue_factions (
             bsdata_id   TEXT PRIMARY KEY,
             name        TEXT NOT NULL,
@@ -309,7 +311,7 @@ def init_db():
             PRIMARY KEY (unit_id, weapon_id)
         )""")
 
-        # BSData ID columns on existing tables
+        # Legacy id columns on existing tables (now hold Wahapedia ids)
         if "unit_bsdata_id" not in _columns(c, "minis"):
             c.execute("ALTER TABLE minis ADD COLUMN unit_bsdata_id TEXT")
 

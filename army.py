@@ -86,7 +86,7 @@ def _army_unit_row(c, au):
     store = get_store()
     did = au["datasheet_id"]
     ds = store.ds_by_id.get(did, {})
-    # Normalize old Wahapedia IDs to canonical BSData GUID on access
+    # Normalize to the canonical Wahapedia datasheet id on access
     canonical_did = ds.get("id") or did
     if canonical_did != did:
         c.execute("UPDATE army_units SET datasheet_id=? WHERE id=?", (canonical_did, au["id"]))

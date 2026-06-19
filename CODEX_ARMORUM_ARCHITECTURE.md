@@ -1,174 +1,121 @@
 # Codex Armorum: Data Architecture and Migration Reference
 
-Last reviewed: June 2026. Update this document whenever data sources, tables, or ID mappings change.
+Last reviewed: June 2026 (Wahapedia migration). Update this document whenever data sources, tables, or ID mappings change.
 
 ---
 
 ## Overview
 
-The app draws from three independent data source tracks. They are not interchangeable and must be treated differently during any migration, deployment, or Docker rebuild.
+The app draws from two independent data source tracks. They are not interchangeable and must be treated differently during any migration, deployment, or Docker rebuild.
 
 | Track | Source | Regenerable? | Powers |
 |---|---|---|---|
-| BSData | GitHub wh40k-10e repo (.cat/.gst XML) | Yes -- run bsdata_importer.py | Unit browser, army builder, Arsenal wargear |
-| Wahapedia CSVs | 3 CSV files in data/ | No -- must keep | Detachments, Enhancements, Wahapedia ID bridge |
-| Model catalogue | 3 JSON files in data/ | No -- must migrate manually | Purchase browser |
+| Wahapedia CSV export | CSV files in `data/` | Yes: re-fetch then re-import | Factions, unit browser, datasheets, weapons, abilities, points, detachments, enhancements, army builder, Arsenal |
+| Model catalogue | JSON files in `data/` | No: must migrate manually | Purchase browser, sculpt-aware tracking |
+
+BSData has been fully retired. There is no `bsdata/` repo, no `bsdata_importer.py`, and no runtime Wahapedia-to-BSData alias bridge. Every unit lookup now keys on the native Wahapedia datasheet id.
 
 ---
 
-## Track 1: BSData GitHub repo (purple)
+## Track 1: Wahapedia CSV export
 
-**Source:** `bsdata/wh40k-10e/` -- cloned from https://github.com/BSData/wh40k-10e
+**Source:** pipe-delimited CSV files under `data/`, downloaded from `https://wahapedia.ru/wh40k10ed/`.
 
-**Importer:** `bsdata_importer.py`
-- Drops and repopulates all four `catalogue_*` tables on every run
-- Safe to run at any time; no data is permanently lost
-- Run after any `git pull` on the bsdata subdir to pick up ruleset updates
+**Fetcher:** `scripts/fetch_wahapedia.py` downloads the full set (raw bytes, preserving the UTF-8 BOM and pipe delimiter).
+
+**Importer:** `wahapedia_importer.py`
+- Drops and repopulates all four `catalogue_*` tables on every run.
+- Safe to run at any time; no user data is touched.
+- Keys every row on native Wahapedia ids.
+
+**Files used by the importer (all in `data/`):**
+
+```
+Factions.csv                     Datasheets_keywords.csv
+Datasheets.csv                   Datasheets_abilities.csv
+Datasheets_models.csv            Datasheets_leader.csv
+Datasheets_wargear.csv           Abilities.csv
+Datasheets_options.csv           Detachments.csv
+Datasheets_unit_composition.csv  Enhancements.csv
+Datasheets_models_cost.csv
+```
+
+`Detachments.csv` and `Enhancements.csv` are read directly by `data_store._load_detachment_data()` (the detachment and enhancement browsers). The remaining Wahapedia files (`Source.csv`, `Stratagems.csv`, `Datasheets_stratagems.csv`, etc.) are downloaded for completeness but are not yet consumed.
 
 **Database tables populated:**
 
 | Table | Content |
 |---|---|
-| `catalogue_factions` | Faction names and BSData GUIDs |
-| `catalogue_units` | Units with stats, abilities, keywords, points, composition, leader targets |
-| `catalogue_weapons` | Weapon profiles (ranged and melee) |
+| `catalogue_factions` | Faction names, keyed by Wahapedia faction code |
+| `catalogue_units` | Units with stats, abilities, keywords, points, composition, options, loadout, leader targets, legend, link, virtual flag |
+| `catalogue_weapons` | Weapon profiles (ranged and melee), including a `description` column |
 | `catalogue_unit_weapons` | Many-to-many link between units and weapons |
 
-**ID format:** GUID hex strings, e.g. `6de-ccee-11b4-be3e`
+**ID formats:**
+- Faction id: Wahapedia faction short code, e.g. `CSM`, `SM`, `TYR`.
+- Datasheet id: 9-digit zero-padded string, e.g. `000002570`.
+- Weapon id: synthetic `datasheet_id:line:line_in_wargear` (Wahapedia weapons are scoped to a datasheet line, not globally unique).
 
-**Stored in minis as:** `minis.unit_bsdata_id`
-
-**Migration rule:** These tables can be dropped entirely and reimported. No backup needed.
+**Migration rule:** these tables can be dropped entirely and reimported. Re-fetch with `scripts/fetch_wahapedia.py`, then run `python wahapedia_importer.py`.
 
 ---
 
-## Track 2: Wahapedia CSVs (teal)
+## Track 2: Model catalogue JSONs
 
 **Files (all in `data/`):**
 
 | File | Purpose | Can be deleted? |
 |---|---|---|
-| `Datasheets.csv` | Name-based Wahapedia ID bridge (see below) | No |
-| `Detachments.csv` | Detachment browser -- no BSData equivalent | No |
-| `Enhancements.csv` | Enhancement browser -- no BSData equivalent | No |
-
-**Why Datasheets.csv is still required:**
-
-`data_store._build_wahapedia_aliases()` runs at startup and builds a reverse map of Wahapedia 9-digit IDs to BSData unit dicts. This is done in two steps:
-
-1. **Step 1 (highest confidence):** Reads `minis.unit_bsdata_id` for any rows where that column is populated (set during the Phase 3 migration). Uses those as verified exact matches.
-2. **Step 2 (fallback):** Walks `Datasheets.csv` and name-matches any remaining Wahapedia IDs to BSData units by unit name.
-
-Without `Datasheets.csv`, step 2 fails silently and any Wahapedia IDs not yet covered by step 1 (i.e. units not in the user's collection) resolve to nothing. This breaks datasheet link resolution in the purchase browser.
-
-**Why Detachments.csv and Enhancements.csv are permanent:**
-
-BSData XML carries no detachment or enhancement data. There is no pathway to replace these files from any other source. They stay forever regardless of how many times BSData is re-imported.
-
-**ID format (Wahapedia):** 9-digit zero-padded numeric strings, e.g. `000002686`
-
-**Stored in minis as:** `minis.datasheet_id` (legacy column, set at time of mini creation)
-
-**Migration rule:** These three CSV files must be copied verbatim into the new `data/` directory on every migration.
-
----
-
-## Track 3: Model catalogue JSONs (amber)
-
-**Files (all in `data/`):**
-
-| File | Purpose | Can be deleted? |
-|---|---|---|
-| `model_catalogue_manual.json` | 971 physical model releases -- the primary catalogue the app reads | No |
-| `model_catalogue_resolutions.json` | 423 manual review decisions (link_datasheet, exclude, etc.) | No |
-| `model_catalogue_images.json` | 330 cached image references for catalogue entries | No |
-| `model_catalogue.json` | Original import archive (853 entries from GW Excel spreadsheet) | Advisable to keep |
+| `model_catalogue_manual.json` | Physical model releases: the primary catalogue the app reads | No |
+| `model_catalogue_resolutions.json` | Manual review decisions (link_datasheet, exclude, etc.) | No |
+| `model_catalogue_images.json` | Cached image references for catalogue entries | No |
+| `model_catalogue.json` | Original import archive (GW Excel spreadsheet) | Advisable to keep |
 | `model_catalogue.schema.json` | JSON schema for the above | Advisable to keep |
 | `model_catalogue_issues.json` | Import-time issue log | Advisable to keep |
 | `model_catalogue_imported_archive.json` | Pre-review import snapshot | Advisable to keep |
 
 **How it works:**
 
-`catalogue_review.py` reads `model_catalogue_manual.json` at startup and builds the purchase browser payload. For each catalogue entry it resolves the `datasheet_links` (which contain Wahapedia 9-digit IDs) by looking them up in `data_store.ds_by_id`. This is why the Wahapedia ID bridge (Track 2) must be working for the purchase browser to show datasheet links correctly.
+`catalogue_review.py` reads `model_catalogue_manual.json` and builds the purchase browser payload. For each catalogue entry it resolves the `datasheet_links` (Wahapedia 9-digit ids) by looking them up directly in `data_store.ds_by_id`. Because the store is now Wahapedia-native, these links resolve without any bridge.
 
-**ID format (catalogue model):** `MD-` prefixed numeric strings, e.g. `MD-50836`
+**ID format (catalogue model):** `MD-` prefixed numeric strings, e.g. `MD-50836`.
 
-**Stored in minis as:** `minis.catalogue_model_id`
+**Stored in minis as:** `minis.catalogue_model_id`. Also in `custom_box_set_contents.catalogue_model_id`.
 
-**Also stored in:** `custom_box_set_contents.catalogue_model_id`
+**What these files are NOT:** they are not generated from any ruleset source. They were built from a hand-curated GW model range spreadsheet and enriched over multiple sessions. They are source data, not build artefacts.
 
-**What these files are NOT:** They are not generated from BSData. They were built from a hand-curated GW model range Excel spreadsheet and enriched over multiple sessions. They are source data, not build artefacts.
-
-**Migration rule:** These files must be explicitly listed in any migration checklist and copied to the new `data/` directory. They cannot be recreated from BSData or from the database.
+**Migration rule:** these files must be explicitly listed in any migration checklist and copied to the new `data/` directory.
 
 ---
 
-## Three ID systems summary
+## ID system
+
+There is now a single ruleset id system plus the catalogue model id.
 
 | ID type | Format | Example | Primary column | Also in |
 |---|---|---|---|---|
-| Wahapedia ID | 9-digit zero-padded | `000002686` | `minis.datasheet_id` | `custom_box_set_contents.datasheet_id`, `model_catalogue_resolutions.json` datasheet_ids |
-| BSData GUID | GUID hex string | `6de-ccee-11b4-be3e` | `minis.unit_bsdata_id` | `catalogue_units.bsdata_id`, `army_units.unit_bsdata_id` |
-| Catalogue model ID | MD-NNNNN | `MD-50836` | `minis.catalogue_model_id` | `custom_box_set_contents.catalogue_model_id` |
+| Wahapedia datasheet id | 9-digit zero-padded | `000002570` | `minis.datasheet_id` and `minis.unit_bsdata_id` | `catalogue_units.bsdata_id`, `custom_box_set_contents.datasheet_id`, `arsenal_weapon_datasheet.datasheet_id`, `model_catalogue` `datasheet_links` |
+| Wahapedia faction code | short alpha | `CSM` | `catalogue_factions.bsdata_id` | `favourite_factions.faction_id`, `custom_box_sets.faction_id`, `army_lists.faction_id`, `catalogue_units.faction_id` |
+| Catalogue model id | MD-NNNNN | `MD-50836` | `minis.catalogue_model_id` | `custom_box_set_contents.catalogue_model_id` |
 
-The Wahapedia-to-BSData bridge is built at runtime by `data_store._build_wahapedia_aliases()` and lives in `data_store.ds_by_id`. It is not persisted to the database; it is rebuilt every startup.
+### Legacy column names
+
+The column names `catalogue_units.bsdata_id`, `minis.unit_bsdata_id`, `army_units.unit_bsdata_id`, and `arsenal_weapon.weapon_bsdata_id` are a deliberate legacy misnomer. They now hold Wahapedia ids, not BSData GUIDs. The names were kept to avoid touching about thirty query sites. After the migration, `minis.datasheet_id` and `minis.unit_bsdata_id` hold the same Wahapedia datasheet id for every row.
+
+A future cosmetic rename (`catalogue_units.bsdata_id` to `datasheet_id`, `minis.unit_bsdata_id` to `canonical_datasheet_id`) is possible but not required.
 
 ---
 
-## The Wahapedia datasheet-ID bridge: status and removability
+## Refresh procedure
 
-### The app is already BSData-native internally
+To pull a newer Wahapedia ruleset:
 
-Every runtime unit lookup keys on the **BSData GUID**. `ds_by_id` is keyed by GUID,
-`unit_detail()` and `units_for_faction()` return GUIDs, and new minis are written with
-both `datasheet_id` *and* `unit_bsdata_id`. The Wahapedia 9-digit IDs survive only as
-**alias keys** added to `ds_by_id` so that legacy stored data keeps resolving — namely
-older `minis.datasheet_id`, `custom_box_set_contents.datasheet_id`, and the
-`model_catalogue` `datasheet_links`. The bridge is a backward-compatibility layer, not the
-live data path.
+1. `python scripts/fetch_wahapedia.py` (re-downloads the CSVs into `data/`).
+2. `python wahapedia_importer.py` (drops and repopulates the four `catalogue_*` tables).
 
-As of the June 2026 audit, **all 509 owned minis carry `unit_bsdata_id`**, so the live
-collection resolves to BSData without needing the `Datasheets.csv` name-match fallback
-(step 2 of `_build_wahapedia_aliases`). One mini required a manual backfill to reach this
-state — see the maintenance note below.
+The arsenal weapon catalogue is rebuilt automatically on the next app start (`init_arsenal` calls `sync_datasheets`), preserving user-entered spotting notes and photos.
 
-### Can the bridge be removed entirely?
-
-Not fully, and not worth it. Two **separate** Wahapedia dependencies must be distinguished:
-
-| Wahapedia dependency | Removable? | Reason |
-|---|---|---|
-| The 9-digit **datasheet-ID bridge** | In principle, via a one-time data migration | BSData carries the same units under GUIDs |
-| **Detachments.csv / Enhancements.csv** | **No** | BSData XML has no detachment/enhancement data; no alternative source exists anywhere |
-
-A June 2026 audit measured how much stored data still keys on Wahapedia IDs, and how much
-of it the runtime bridge can translate to a BSData GUID:
-
-| Store | Wahapedia-keyed | Converts cleanly | Cannot auto-translate |
-|---|---|---|---|
-| `minis` | 501 / 509 | 508 (already carry bsid) | 0 *(after backfill)* |
-| `custom_box_set_contents` | 157 rows / 139 units | 138 | 0 *(after backfill)* |
-| `army_units` | 0 | — | — |
-| `photos` | 32 / 40 | all (ride on their mini's link) | 0 |
-| `model_catalogue` `datasheet_links` | 968 / 968 | 738 | **75 (~9%)** |
-| `model_catalogue_resolutions.json` | 265 | 248 | 17 |
-
-The owned collection converts essentially for free, but **~75 curated catalogue links point
-at datasheets BSData does not carry** (Forge World, `[Legends]`, renamed, or absent units)
-and cannot be auto-translated by name. Those are hand-curated decisions that a migration
-would orphan. Combined with the permanent Detachments/Enhancements dependency, the
-verdict is to **keep the bridge**: it is cheap (built once at startup, in memory, isolated
-in a single function) and invisible at request time.
-
-### Maintenance note — June 2026 backfill
-
-The mini *"Ostromandeus and Stentor-I-52 (2024 release)"* (catalogue `MD-50472`) was the
-only owned mini missing `unit_bsdata_id`. Its Wahapedia ID `000004173` ("Inquisitor
-Ostromandeus") did not name-match because **BSData lists the unit as "Inquisitor
-Ostromandeus [Legends]"** (`6315-d3e6-aa1c-69e4`). The GUID was backfilled onto that mini
-row. Because bridge step 1 derives aliases from minis, this single backfill also makes the
-otherwise-orphaned `custom_box_set_contents` reference `000004173` (box "Inquisitor
-Ostromandeus") resolve. No join keys were changed.
+User data in `minis`, `photos`, `purchases`, box sets, armies, arsenal notes/photos, and the model catalogue JSONs is untouched by a refresh.
 
 ---
 
@@ -178,9 +125,6 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 
 ### Must copy (cannot be regenerated)
 
-- [ ] `data/Datasheets.csv`
-- [ ] `data/Detachments.csv`
-- [ ] `data/Enhancements.csv`
 - [ ] `data/model_catalogue_manual.json`
 - [ ] `data/model_catalogue_resolutions.json`
 - [ ] `data/model_catalogue_images.json`
@@ -189,22 +133,21 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 - [ ] `data/model_catalogue_issues.json`
 - [ ] `data/model_catalogue_imported_archive.json`
 - [ ] `data/arsenal_wiki_overrides_full.csv`
-- [ ] `data/box_sets.json` (if present)
 - [ ] `collection.db` (user data)
 - [ ] `uploads/` directory (mini photos)
 - [ ] `cache/images/catalogue/` (catalogue images)
 
-### Must regenerate after migration
+### Regenerable (re-fetch and re-import)
 
-- [ ] Run `python bsdata_importer.py` to populate `catalogue_*` tables
-- [ ] Confirm `catalogue_units` count is non-zero (currently ~1533)
-- [ ] Confirm purchase browser loads entries (currently 971 in manual catalogue)
+- [ ] Run `python scripts/fetch_wahapedia.py` to download the Wahapedia CSVs into `data/`.
+- [ ] Run `python wahapedia_importer.py` to populate the `catalogue_*` tables.
+- [ ] Confirm `catalogue_units` count is non-zero (currently ~1712).
+- [ ] Confirm purchase browser loads entries.
 
 ### Safe to drop and rebuild
 
-- `catalogue_factions`, `catalogue_units`, `catalogue_weapons`, `catalogue_unit_weapons` -- all rebuilt by `bsdata_importer.py`
-- `__pycache__/` directories -- rebuilt by Python at runtime
-- `bsdata/wh40k-10e/` -- re-cloneable from GitHub
+- `catalogue_factions`, `catalogue_units`, `catalogue_weapons`, `catalogue_unit_weapons`: all rebuilt by `wahapedia_importer.py`.
+- `__pycache__/` directories: rebuilt by Python at runtime.
 
 ---
 
@@ -216,6 +159,7 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 |---|---|
 | `minis` | Individual model instances in the collection |
 | `photos` | Photos linked to minis |
+| `unit_wip`, `unit_wip_photos` | Unit-level work-in-progress notes and photos |
 | `purchases` | Purchase log entries |
 | `custom_box_sets` | User-defined box sets |
 | `custom_box_set_contents` | Contents of each box set |
@@ -226,13 +170,13 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | `arsenal_weapon_datasheet` | Weapon-to-datasheet links |
 | `arsenal_weapon_photo` | Photos for Arsenal weapons |
 
-### BSData import tables (safe to drop and rebuild)
+### Wahapedia import tables (safe to drop and rebuild)
 
 | Table | Description |
 |---|---|
-| `catalogue_factions` | Faction index from BSData |
-| `catalogue_units` | Unit definitions from BSData |
-| `catalogue_weapons` | Weapon profiles from BSData |
+| `catalogue_factions` | Faction index from Wahapedia |
+| `catalogue_units` | Unit definitions from Wahapedia |
+| `catalogue_weapons` | Weapon profiles from Wahapedia |
 | `catalogue_unit_weapons` | Unit/weapon many-to-many links |
 
 ---
@@ -241,17 +185,22 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 
 | File | Role | Regenerable? |
 |---|---|---|
-| `app.py` | Flask routes and API endpoints | Code -- in git |
-| `data_store.py` | Loads BSData tables, builds ID bridges, exposes unit/faction data | Code -- in git |
-| `bsdata_importer.py` | Parses BSData XML, populates catalogue_* tables | Code -- in git |
-| `catalogue_review.py` | Builds purchase browser payload from model_catalogue_manual.json | Code -- in git |
-| `box_sets.py` | Box set logic, purchase creation | Code -- in git |
-| `db.py` | Schema init and legacy migrations | Code -- in git |
-| `collection.db` | SQLite database containing all user data and BSData tables | User data -- back up |
-| `data/Datasheets.csv` | Wahapedia datasheet index (ID bridge fallback) | No |
-| `data/Detachments.csv` | Detachment definitions (no BSData source) | No |
-| `data/Enhancements.csv` | Enhancement definitions (no BSData source) | No |
-| `data/model_catalogue_manual.json` | 971-entry physical model range catalogue | No |
+| `app.py` | Flask routes and API endpoints | Code: in git |
+| `data_store.py` | Loads the Wahapedia catalogue tables, exposes unit/faction data | Code: in git |
+| `wahapedia_importer.py` | Parses the Wahapedia CSVs, populates catalogue_* tables | Code: in git |
+| `scripts/fetch_wahapedia.py` | Downloads the Wahapedia CSV export into `data/` | Code: in git |
+| `catalogue_review.py` | Builds purchase browser payload from model_catalogue_manual.json | Code: in git |
+| `box_sets.py` | Box set logic, purchase creation | Code: in git |
+| `db.py` | Schema init and legacy migrations | Code: in git |
+| `collection.db` | SQLite database containing all user data and catalogue tables | User data: back up |
+| `data/Datasheets*.csv`, `data/Factions.csv`, `data/Abilities.csv` | Wahapedia ruleset export | Re-fetchable |
+| `data/Detachments.csv`, `data/Enhancements.csv` | Detachment and enhancement definitions | Re-fetchable |
+| `data/model_catalogue_manual.json` | Physical model range catalogue | No |
 | `data/model_catalogue_resolutions.json` | Manual review decisions for catalogue entries | No |
 | `data/model_catalogue_images.json` | Catalogue entry image references | No |
-| `bsdata/wh40k-10e/` | Cloned BSData ruleset XML | Re-cloneable from GitHub |
+
+---
+
+## Migration history
+
+The June 2026 migration replaced BSData (GitHub wh40k-10e .cat/.gst XML) with the Wahapedia CSV export as the sole ruleset source. The migration scripts live in `scripts/` (`capture_baseline.py`, `fetch_wahapedia.py`, `reconcile_ids.py`). The pre-migration database snapshot is `collection.db.pre-wahapedia`. The most visible behavioural change: Space Marine chapters (Blood Angels, Space Wolves, Dark Angels, Deathwatch, and others) are no longer separate factions; Wahapedia groups them all under `Space Marines` (`SM`).

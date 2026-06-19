@@ -183,7 +183,7 @@ def _normalize_box(box, source="seeded", ctx=None):
         catalogue_model_id, catalogue_model = _catalogue_model_for_box_item(
             did, catalogue_model_id, box.get("release_date", ""), unit_name, faction_id, ctx)
         contents.append({
-            "datasheet_id": ds["id"],  # always BSData GUID for consistent keys downstream
+            "datasheet_id": ds["id"],  # canonical Wahapedia id for consistent keys downstream
             "catalogue_model_id": catalogue_model_id,
             "catalogue_model": catalogue_model,
             "catalogue_label": _catalogue_model_label(unit_name, catalogue_model),
