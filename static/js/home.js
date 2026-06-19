@@ -204,7 +204,7 @@ function factionCard(f, i, extraClass=''){
 }
 
 async function toggleFavouriteFaction(fid, favourite){
-  await api(`/api/factions/${fid}/favourite`, {method: favourite?'DELETE':'POST'});
+  await api(`/api/factions/${encodeURIComponent(fid)}/favourite`, {method: favourite?'DELETE':'POST'});
   factionCache = null;
   showHome();
 }

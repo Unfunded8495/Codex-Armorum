@@ -1368,6 +1368,12 @@ def api_search_model_catalogue():
     if len(q) < 2:
         return jsonify([])
 
+    # Parent-aware scope: the chapter rollup collapses catalogue items back to the
+    # parent (a Dark Angels model keeps faction_id/army_ids "SM"), so a chapter
+    # scope (e.g. SM::Dark Angels) must also match its parent's catalogue items —
+    # otherwise a chapter-scoped box editor search finds nothing.
+    scopes = {fid, store.faction_parent(fid)} if fid else set()
+
     results = []
     for item in catalogue_payload().get("items", []):
         links = item.get("datasheet_links", [])
@@ -1376,7 +1382,7 @@ def api_search_model_catalogue():
         if faction_label and item.get("faction_label", "") != faction_label:
             continue
         army_ids = set(item.get("army_ids") or [])
-        if fid and fid not in army_ids and item.get("faction_id") != fid:
+        if fid and not (scopes & army_ids) and item.get("faction_id") not in scopes:
             continue
         searchable = " ".join([
             item.get("name", ""),

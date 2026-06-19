@@ -94,7 +94,7 @@ function renderSidebar(army){
 async function wireSidebarInputs(army){
   let dts = state.detachCache[army.faction_id];
   if(!dts){
-    dts = await api(`/api/factions/${army.faction_id}/detachments`);
+    dts = await api(`/api/factions/${encodeURIComponent(army.faction_id)}/detachments`);
     state.detachCache[army.faction_id] = dts;
   }
   const sel = document.getElementById('abDetachment');

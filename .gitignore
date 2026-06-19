@@ -2,7 +2,7 @@
 collection.db
 collection.db.backup
 collection.db.bak-*
-collection.db.pre-wahapedia
+collection.db.pre-*
 *.db.bak-*
 warhammer.db
 *.db-journal
