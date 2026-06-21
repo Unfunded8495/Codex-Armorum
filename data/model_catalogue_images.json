@@ -103,6 +103,12 @@
       "caption": ""
     },
     {
+      "catalogue_model_id": "MD-50044",
+      "local_path": "cache/images/catalogue/MD-50044.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
       "catalogue_model_id": "MD-50045",
       "local_path": "cache/images/catalogue/MD-50045.jpg",
       "source": "user",
@@ -1278,6 +1284,12 @@
     {
       "catalogue_model_id": "MD-50264",
       "local_path": "cache/images/catalogue/MD-50264.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50267",
+      "local_path": "cache/images/catalogue/MD-50267.jpg",
       "source": "user",
       "caption": ""
     },
@@ -4607,6 +4619,12 @@
     {
       "catalogue_model_id": "MD-50983",
       "local_path": "cache/images/catalogue/MD-50983.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50984",
+      "local_path": "cache/images/catalogue/MD-50984.jpg",
       "source": "user",
       "caption": ""
     }

@@ -104,6 +104,16 @@ A load-time assertion warns loudly (without raising) if any of `CORE_EXPECTED_CH
 
 ---
 
+## Track 2b: Edition timeline
+
+**File:** `data/editions_timeline.json` (loaded by `editions.py`, served at `GET /api/editions`).
+
+The hand-curated Warhammer 40,000 edition timeline that powers the **Codex Archive** model browser (`/#/history`, `static/js/history.js`). It is curated source data, treated exactly like the model catalogue JSONs: copied on every migration, never regenerated from any ruleset source. Model releases in `model_catalogue_manual.json` hang off it via their `release_date` / `release_year` against the per-edition era ranges. `editions.py` is a read-once, cache-by-mtime loader; no database table is involved.
+
+**Migration rule:** copy `data/editions_timeline.json` alongside the model catalogue JSONs.
+
+---
+
 ## ID system
 
 There is now a single ruleset id system plus the catalogue model id.
@@ -148,6 +158,7 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 - [ ] `data/model_catalogue.schema.json`
 - [ ] `data/model_catalogue_issues.json`
 - [ ] `data/model_catalogue_imported_archive.json`
+- [ ] `data/editions_timeline.json`
 - [ ] `data/arsenal_wiki_overrides_full.csv`
 - [ ] `collection.db` (user data)
 - [ ] `uploads/` directory (mini photos)
@@ -206,6 +217,7 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | `wahapedia_importer.py` | Parses the Wahapedia CSVs, populates catalogue_* tables | Code: in git |
 | `scripts/fetch_wahapedia.py` | Downloads the Wahapedia CSV export into `data/` | Code: in git |
 | `catalogue_review.py` | Builds purchase browser payload from model_catalogue_manual.json | Code: in git |
+| `editions.py` | Loads the edition timeline for the Codex Archive | Code: in git |
 | `box_sets.py` | Box set logic, purchase creation | Code: in git |
 | `db.py` | Schema init and legacy migrations | Code: in git |
 | `collection.db` | SQLite database containing all user data and catalogue tables | User data: back up |
@@ -214,6 +226,7 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | `data/model_catalogue_manual.json` | Physical model range catalogue | No |
 | `data/model_catalogue_resolutions.json` | Manual review decisions for catalogue entries | No |
 | `data/model_catalogue_images.json` | Catalogue entry image references | No |
+| `data/editions_timeline.json` | Hand-curated edition timeline (Codex Archive) | No |
 
 ---
 

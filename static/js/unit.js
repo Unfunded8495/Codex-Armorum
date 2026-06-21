@@ -3,6 +3,7 @@ import { clearFactionCache } from './home.js';
 import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
 import { openLightbox } from './lightbox.js';
 import { renderDatasheetModels, renderInvuln, renderDamaged, renderTransport, renderWargear, renderAbilities, renderUnitComposition, renderLeaderAttach, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
+import { renderDatasheetCard } from './datasheet-card.js';
 import { setupArsenalHover } from './arsenal-hover.js';
 
 const view       = document.getElementById('view');
@@ -73,19 +74,28 @@ export async function showUnit(did){
           <button class="unit-tab" id="collectionTab" data-unit-tab="collection">My Collection</button>
         </div>
         <div class="unit-tab-panel" id="unitInfoPanel">
-          ${d.legend?`<p class="legend">${esc(d.legend)}</p>`:''}
-          ${renderDatasheetModels(d.models)}
-          ${renderInvuln(d.abilities)}
-          ${renderDamaged(d)}
-          ${renderWargear('Ranged Weapons', d.ranged)}
-          ${renderWargear('Melee Weapons', d.melee)}
-          ${renderAbilities(d.abilities)}
-          ${renderUnitComposition(d.composition, d.loadout, d.led_by)}
-          ${renderLeaderAttach(d.leads)}
-          ${renderOptions(d.options)}
-          ${renderTransport(d)}
-          ${renderPoints(d.costs)}
-          ${renderKeywords(d)}
+          <div class="ds-view-toggle" role="tablist">
+            <button class="ds-view-btn is-active" data-ds-view="detailed">Detailed</button>
+            <button class="ds-view-btn" data-ds-view="card">Card</button>
+          </div>
+          <div class="ds-mode ds-mode-detailed">
+            ${d.legend?`<p class="legend">${esc(d.legend)}</p>`:''}
+            ${renderDatasheetModels(d.models)}
+            ${renderInvuln(d.abilities)}
+            ${renderDamaged(d)}
+            ${renderWargear('Ranged Weapons', d.ranged)}
+            ${renderWargear('Melee Weapons', d.melee)}
+            ${renderAbilities(d.abilities)}
+            ${renderUnitComposition(d.composition, d.loadout, d.led_by)}
+            ${renderLeaderAttach(d.leads)}
+            ${renderOptions(d.options)}
+            ${renderTransport(d)}
+            ${renderPoints(d.costs)}
+            ${renderKeywords(d)}
+          </div>
+          <div class="ds-mode ds-mode-card" hidden>
+            ${renderDatasheetCard(d)}
+          </div>
         </div>
         <div class="unit-tab-panel" id="collectionPanel" hidden>
           ${renderCollectionShell(d)}
@@ -94,6 +104,7 @@ export async function showUnit(did){
     </div>`;
 
   wireUnitTabs();
+  wireDatasheetViewToggle();
   setupArsenalHover(document.getElementById('unitInfoPanel'));
   populateMiniList(d.collection_minis, d.squad_suggestions);
   setupGallery();
@@ -103,6 +114,22 @@ export async function showUnit(did){
 function wireUnitTabs(){
   document.querySelectorAll('[data-unit-tab]').forEach(btn=>{
     btn.addEventListener('click', ()=>switchUnitTab(btn.dataset.unitTab));
+  });
+}
+
+function wireDatasheetViewToggle(){
+  const panel = document.getElementById('unitInfoPanel');
+  if(!panel) return;
+  const detailed = panel.querySelector('.ds-mode-detailed');
+  const card     = panel.querySelector('.ds-mode-card');
+  panel.querySelectorAll('[data-ds-view]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const showCard = btn.dataset.dsView === 'card';
+      detailed.hidden = showCard;
+      card.hidden     = !showCard;
+      panel.querySelectorAll('[data-ds-view]').forEach(b=>
+        b.classList.toggle('is-active', b === btn));
+    });
   });
 }
 

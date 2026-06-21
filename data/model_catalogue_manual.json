@@ -8022,13 +8022,13 @@
     {
       "id": "MD-50267",
       "name": "Chaos Lord on Jump Pack",
-      "faction_label": "Chaos - Chaos Space Marines",
+      "faction_label": "Chaos Space Marines",
       "faction_id": "CSM",
       "release_date": "2024-05",
       "release_year": 2024,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "Dread Talons Battleforce - Solo release TBA",
+      "note": "Dread Talons Battleforce - Released also with Murderwing Kill Team",
       "flags": [],
       "datasheet_links": [
         {
@@ -27106,8 +27106,8 @@
       "flags": [],
       "id": "MD-50938",
       "material": "Plastic",
-      "name": "Lord Invocatus / Chaos Lord on Juggernaut",
-      "note": "Dual-build kit â€” Lord Invocatus (named) or generic Chaos Lord on Juggernaut",
+      "name": "Chaos Lord on Juggernaut",
+      "note": "Dual-build kit Lord Invocatus (named) or generic Chaos Lord on Juggernaut",
       "release_date": "2023-02",
       "release_year": 2023,
       "source": {
@@ -28078,6 +28078,24 @@
         "sheet": "Imperium - Adeptus Astartes - Space Marines",
         "row": 0
       }
+    },
+    {
+      "datasheet_links": [],
+      "faction_id": "WE",
+      "faction_label": "World Eaters",
+      "flags": [],
+      "id": "MD-50984",
+      "material": "Plastic",
+      "name": "Lord Invocatus",
+      "note": "Dual-build kit (Chaos Lord on Juggernaut or this)",
+      "release_date": "2023-02",
+      "release_year": 2023,
+      "source": {
+        "workbook": "manual",
+        "sheet": "World Eaters",
+        "row": 0
+      },
+      "status": "current_or_unknown"
     }
   ]
 }

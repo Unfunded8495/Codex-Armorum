@@ -1330,16 +1330,24 @@ a.brand{text-decoration:none;color:inherit}
   flex:1;font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:var(--gold-bright);
 }
 
-/* ---- horizontal photo strip at base of group card ---- */
-.mgc-photo-strip{
-  display:flex;flex-direction:row;gap:6px;
-  overflow-x:auto;overflow-y:hidden;
-  padding:8px 0 4px;margin-top:10px;
-  border-top:1px solid rgba(44,42,53,.4);
+/* ---- mini page: photos pinned to the left, content to the right ---- */
+.mp-mini-list .mini-group-card{display:flex;gap:14px;align-items:flex-start}
+.mp-mini-list .mgc-body{flex:1 1 auto;min-width:0}
+.mp-mini-list .mgc-media{
+  flex:0 0 184px;max-height:430px;overflow-y:auto;overflow-x:hidden;padding-right:2px;
   scrollbar-width:thin;scrollbar-color:rgba(199,154,58,.2) transparent;
 }
-.mgc-photo-strip::-webkit-scrollbar{height:4px}
-.mgc-photo-strip::-webkit-scrollbar-thumb{background:rgba(199,154,58,.2);border-radius:2px}
+.mp-mini-list .mgc-media::-webkit-scrollbar{width:4px}
+.mp-mini-list .mgc-media::-webkit-scrollbar-thumb{background:rgba(199,154,58,.2);border-radius:2px}
+.mp-mini-list .mgc-media-gallery{grid-template-columns:repeat(2,1fr)}
+.mp-mini-list .mgc-media-gallery .uploader:only-child{aspect-ratio:auto;height:64px;width:auto;padding:0;grid-column:1/-1}
+@media(max-width:620px){
+  .mp-mini-list .mini-group-card{flex-direction:column}
+  .mp-mini-list .mgc-media{flex-basis:auto;width:100%;max-height:none}
+  .mp-mini-list .mgc-media-gallery{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}
+}
+
+/* ---- view-only thumbnail (still used by the datasheet/unit page) ---- */
 .mgc-thumb{
   flex:0 0 auto;height:140px;width:auto;padding:0;border:1px solid rgba(44,42,53,.8);
   background:transparent;cursor:pointer;overflow:hidden;display:inline-flex;align-items:center;
@@ -2251,4 +2259,104 @@ a.brand{text-decoration:none;color:inherit}
   .hist-year-group{grid-template-columns:48px 1fr;gap:10px}
   .hist-year{font-size:16px;position:static}
   .he-img-row{flex-direction:column}
+}
+
+/* ============================================================
+   Datasheet Card View (printed card mimic, faction coloured)
+   ============================================================ */
+.ds-view-toggle{display:inline-flex;margin:0 0 14px;border:1px solid var(--line,#3a3a3a);border-radius:8px;overflow:hidden;}
+.ds-view-btn{background:transparent;color:var(--ink-dim,#b8b8b8);border:none;padding:6px 16px;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;}
+.ds-view-btn + .ds-view-btn{border-left:1px solid var(--line,#3a3a3a);}
+.ds-view-btn.is-active{background:var(--gold,#c79a3a);color:#1a1a1a;font-weight:600;}
+
+.dsc-card{
+  --dsc-primary:#444;
+  max-width:1160px;margin:0 auto;background:#f6f5f3;color:#1a1a1a;
+  border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,.3);
+  box-shadow:0 10px 30px rgba(0,0,0,.45);font-family:'Oswald',sans-serif;
+}
+
+/* Header */
+.dsc-hdr{position:relative;overflow:hidden;background:#242421;color:#fff;padding:14px 18px 14px;display:flex;align-items:flex-start;gap:16px;min-height:135px;}
+.dsc-hdr-shape{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+.dsc-hdr-shape path{fill:var(--dsc-primary);}
+.dsc-hdr-main{position:relative;z-index:1;flex:0 0 auto;max-width:60%;min-width:0;}
+.dsc-base{font-family:'Oswald',sans-serif;font-weight:400;font-size:15px;letter-spacing:.3px;text-transform:none;opacity:.8;margin-left:6px;}
+.dsc-legend{position:absolute;top:20px;right:20px;z-index:1;max-width:42%;font-family:'EB Garamond',serif;font-style:italic;font-size:13px;line-height:1.4;color:rgba(255,255,255,.92);}
+.dsc-name{font-family:'Mulish','Oswald',sans-serif;font-weight:900;font-size:28px;letter-spacing:.5px;text-transform:uppercase;margin:0 0 12px;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+.dsc-models{display:flex;flex-direction:column;gap:10px;}
+.dsc-model-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px;opacity:.85;}
+.dsc-statline{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}
+.dsc-stat{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.dsc-stat-lbl{font-size:11px;font-weight:600;letter-spacing:.5px;opacity:.92;}
+.dsc-stat-val{width:42px;height:42px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:700;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12);clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);}
+.dsc-invuln{display:flex;flex-direction:column;align-items:center;gap:3px;margin-left:6px;}
+.dsc-invuln-lbl{font-size:9px;font-weight:600;text-align:center;max-width:76px;line-height:1.05;letter-spacing:.3px;text-transform:uppercase;}
+.dsc-invuln-val{width:46px;height:50px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;padding-bottom:8px;font-size:20px;font-weight:700;clip-path:polygon(0 0,100% 0,100% 64%,50% 100%,0 64%);}
+
+/* Body */
+.dsc-body{display:grid;grid-template-columns:1.45fr 1fr;}
+.dsc-col-left{border-right:1px solid #cfcfcf;}
+
+/* Section header bar: faction colour at 70 percent, darker solid border, inset */
+.dsc-head{display:flex;align-items:center;gap:9px;background:color-mix(in srgb,var(--dsc-primary) 70%,transparent);border:1px solid color-mix(in srgb,var(--dsc-primary) 70%,black);color:#fff;padding:6px 12px;margin:12px 12px 4px;font-size:14px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;}
+.dsc-ico{width:18px;height:18px;flex:0 0 18px;background-color:#fff;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;}
+.ico-range{-webkit-mask-image:url('/static/icons/Range.svg');mask-image:url('/static/icons/Range.svg');}
+.ico-melee{-webkit-mask-image:url('/static/icons/Melee.svg');mask-image:url('/static/icons/Melee.svg');}
+.ico-skull{-webkit-mask-image:url('/static/icons/Skulls.svg');mask-image:url('/static/icons/Skulls.svg');width:15px;flex-basis:15px;}
+
+/* Weapon tables: title and column labels share one inset bar */
+.dsc-wpn{width:calc(100% - 24px);margin:12px 12px 0;border-collapse:collapse;font-size:13px;}
+.dsc-wpn-bar th{background:color-mix(in srgb,var(--dsc-primary) 70%,transparent);border-top:1px solid color-mix(in srgb,var(--dsc-primary) 70%,black);border-bottom:1px solid color-mix(in srgb,var(--dsc-primary) 70%,black);color:#fff;text-align:center;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 4px;}
+.dsc-wpn-bar th:first-child{border-left:1px solid color-mix(in srgb,var(--dsc-primary) 70%,black);}
+.dsc-wpn-bar th:last-child{border-right:1px solid color-mix(in srgb,var(--dsc-primary) 70%,black);}
+.dsc-wpn-titlewrap{display:flex;align-items:center;gap:9px;}
+.dsc-wpn th.dsc-wname,.dsc-wpn td.dsc-wname{text-align:left;width:40%;padding-left:12px;}
+.dsc-wpn td{padding:5px 4px;text-align:center;border-bottom:1px solid #e4e3e1;vertical-align:top;}
+.dsc-wrow-alt td{background:rgba(40,40,40,.06);}
+.dsc-w-base{font-weight:600;}
+.dsc-wkw{display:inline;font-size:10px;font-weight:700;color:var(--dsc-primary);letter-spacing:.3px;text-transform:uppercase;margin-left:6px;filter:brightness(.7);}
+.dsc-kwref{color:var(--dsc-primary);font-weight:700;font-style:normal;filter:brightness(.7);}
+
+/* Generic blocks */
+.dsc-block{padding:9px 12px 11px;font-family:'EB Garamond',serif;}
+.dsc-coreline{font-size:14px;margin:0 0 6px;}
+.dsc-k{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.4px;}
+.dsc-ability{font-size:14px;line-height:1.34;margin:0 0 9px;}
+.dsc-an{font-family:'Oswald',sans-serif;font-weight:700;}
+.dsc-ability ul{margin:3px 0 0;padding-left:18px;}
+.dsc-opt{margin:3px 0 0;padding-left:6px;list-style:none;}
+.dsc-opt li{margin:3px 0;font-size:14px;line-height:1.32;padding-left:14px;position:relative;}
+.dsc-opt li::before{content:"";position:absolute;left:0;top:.5em;width:6px;height:6px;background:var(--dsc-primary);}
+.dsc-opt ul,.dsc-opt .rule-sublist{list-style:none;padding-left:14px;margin:3px 0;}
+.dsc-opt ul li::before,.dsc-opt .rule-sublist li::before{content:"";width:6px;height:6px;border:1.5px solid var(--dsc-primary);background:transparent;border-radius:50%;top:.45em;}
+.dsc-loadout{font-size:13.5px;line-height:1.34;margin:0 0 8px;}
+.dsc-kv{font-size:14px;margin:0 0 5px;}
+.dsc-lead{font-size:14px;margin:0 0 5px;}
+.dsc-block a{color:var(--dsc-primary);font-weight:600;text-decoration:none;filter:brightness(.8);}
+
+/* Damaged bracket: dark bar, skull marker */
+.dsc-damaged .dsc-head{background:#2b1620;color:#fff;border-color:#2b1620;}
+.dsc-damaged .dsc-ico{background-color:#fff;}
+
+/* Footer: two keyword boxes with the faction diamond overlapping the seam */
+.dsc-footer{position:relative;background:transparent;color:#fff;padding:12px 0;display:grid;grid-template-columns:1.45fr 1fr;align-items:center;}
+.dsc-kwbox{background:#0e0e0e;display:flex;align-items:center;gap:10px;padding:9px 14px;min-height:44px;}
+.dsc-kwbox-keywords{margin:0 6px 0 12px;padding-right:30px;justify-content:center;text-align:center;}
+.dsc-kwbox-faction{margin:0 12px 0 6px;padding-left:30px;justify-content:center;text-align:center;}
+.dsc-fac-diamond{position:absolute;left:59.18%;top:50%;z-index:3;width:40px;height:40px;transform:translate(-50%,-50%) rotate(45deg);background:var(--dsc-primary);border:2px solid color-mix(in srgb,var(--dsc-primary) 70%,black);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(0,0,0,.55);}
+.dsc-fac-ico{transform:rotate(-45deg);width:24px;height:24px;background-color:#fff;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;}
+.dsc-kwgroup{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.dsc-kwbox-faction .dsc-kwgroup{justify-content:center;}
+.dsc-kwlist{display:inline;}
+.dsc-kwlbl{font-size:10px;font-weight:700;letter-spacing:.5px;opacity:.6;text-transform:uppercase;}
+.dsc-kw{font-weight:600;text-transform:uppercase;letter-spacing:.3px;font-size:11.5px;}
+
+@media(max-width:760px){
+  .dsc-body{grid-template-columns:1fr;}
+  .dsc-col-left{border-right:none;border-bottom:1px solid #cfcfcf;}
+  .dsc-stat-val{width:38px;height:38px;font-size:18px;}
+  .dsc-name{font-size:23px;}
+  .dsc-hdr{flex-direction:column;padding-bottom:14px;}
+  .dsc-legend{position:static;max-width:none;margin-top:6px;}
 }

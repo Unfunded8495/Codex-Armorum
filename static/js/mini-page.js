@@ -320,16 +320,27 @@ function mpStageSelect(mid, stage, multikitGroup){
 }
 
 
-function mpPhotoThumb(p, gcid, idx){
-  return `<button class="mgc-thumb" onclick="mpOpenGroupOverlay('${gcid}',${idx})" title="${esc(p.caption||'')}">
-    <img src="${esc(p.url)}" alt="${esc(p.caption||'')}">
-  </button>`;
+/* A single photo tile in the left-hand media column. Clicking the image opens the
+   group carousel overlay; the × deletes it from whichever mini actually owns it. */
+function mpMediaTile(p, mid, gcid, idx){
+  return `<div class="shot" data-id="${p.id}">
+    <img src="${esc(p.url)}" alt="${esc(p.caption||'')}" onclick="mpOpenGroupOverlay('${gcid}',${idx})">
+    <button class="del" onclick="mpDeletePhoto('${p.id}','${mid}')">&times;</button>
+  </div>`;
 }
 
-function mpPhotoTile(p, mid){
-  return `<div class="shot" data-id="${p.id}">
-    <img src="${esc(p.url)}" alt="${esc(p.caption||'')}" onclick="openLightbox(${esc(jsStr(p.url))},${esc(jsStr(p.caption||''))})">
-    <button class="del" onclick="mpDeletePhoto('${p.id}','${mid}')">&times;</button>
+/* The card's single photo surface, pinned to the left of the card. It pools every
+   photo across the minis in the group so a shot is never shown twice: uploads attach
+   to the lead mini, while each delete targets the photo's own mini. */
+function mpMediaColumn(group, gcid){
+  const rep = group[0];
+  const allPhotos = group.flatMap(m => (m.photos||[]).map(p => ({...p, _mid:m.id})));
+  MP_GROUP_PHOTOS.set(gcid, allPhotos.map(p => ({url:p.url, caption:p.caption||''})));
+  return `<div class="mgc-media">
+    <div class="mc-gallery mgc-media-gallery" id="mpcgal-${rep.id}">
+      ${allPhotos.map((p,i)=>mpMediaTile(p, p._mid, gcid, i)).join('')}
+      ${mpUploaderTile(rep.id)}
+    </div>
   </div>`;
 }
 
@@ -371,9 +382,6 @@ function mpRenderGroup(group){
 
   const labelText = rep.label || 'Standard';
 
-  const allPhotos = group.flatMap(m=>m.photos||[]);
-  MP_GROUP_PHOTOS.set(gcid, allPhotos.map(p=>({url:p.url, caption:p.caption||''})));
-
   const badge = count > 1 ? `<span class="mgc-badge">×${count}</span>` : '';
   const deleteButton = count > 1
     ? `<button class="mc-del" onclick="mpDeleteOneFromGroup('${gcid}')" title="Remove one mini">−1</button>`
@@ -393,57 +401,41 @@ function mpRenderGroup(group){
     </div>
     <div class="mc-gear-ed" id="mpged-${gcid}" hidden></div>`;
 
+  // Photos sit in one column pinned to the left of the card; the body (right) holds
+  // the head, loadout, stage controls and — for squads — the per-mini manager. Only
+  // built minis get a photo column, so the unbuilt "to build" cards stay compact.
+  const hasPhotos = group.some(m => (m.photos||[]).length);
+  const media = (!isUnbuilt || hasPhotos) ? mpMediaColumn(group, gcid) : '';
+
+  let body;
   if(count === 1){
     const s = rep.stage || 'unbuilt';
-    // Mirror the grouped layout: notes + editable gallery tuck behind the same
-    // collapsible <details>, with a view-only thumbnail strip below the card.
-    const editBody = s !== 'unbuilt'
-      ? `<details class="mgc-details">
-          <summary class="mgc-summary">Notes &amp; photos</summary>
-          <div class="mgc-minis">
-            <textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
-              oninput="mpSaveMiniNotes('${rep.id}',this.value)">${esc(rep.notes||'')}</textarea>
-            <div class="mc-gallery" id="mpcgal-${rep.id}">
-              ${(rep.photos||[]).map(p=>mpPhotoTile(p,rep.id)).join('')}
-              ${mpUploaderTile(rep.id)}
-            </div>
-          </div>
-        </details>`
+    const notes = s !== 'unbuilt'
+      ? `<textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
+          oninput="mpSaveMiniNotes('${rep.id}',this.value)">${esc(rep.notes||'')}</textarea>`
       : '';
-    const photoStrip = allPhotos.length
-      ? `<div class="mgc-photo-strip">
-        ${allPhotos.map((p,i)=>mpPhotoThumb(p,gcid,i)).join('')}
-      </div>`
-      : '';
-    return `<div class="mini-group-card is-solo${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
+    body = `<div class="mgc-body">
       ${head}
       ${mpStageSelect(rep.id, s, rep.multikit_group)}
       ${gearBlock}
-      ${editBody}
-      ${photoStrip}
+      ${notes}
+    </div>`;
+  }else{
+    body = `<div class="mgc-body">
+      ${head}
+      ${gearBlock}
+      <details class="mgc-details">
+        <summary class="mgc-summary">Manage ${count} minis individually</summary>
+        <div class="mgc-minis">
+          ${group.map((m,i)=>mpRenderSubCard(m,i+1)).join('')}
+        </div>
+      </details>
     </div>`;
   }
 
-  const cardContent = `${head}
-    ${gearBlock}
-    <details class="mgc-details">
-      <summary class="mgc-summary">Manage ${count} minis individually</summary>
-      <div class="mgc-minis">
-        ${group.map((m,i)=>mpRenderSubCard(m,i+1)).join('')}
-      </div>
-    </details>`;
-
-  const hasPhotos = allPhotos.length > 0;
-  if(hasPhotos){
-    return `<div class="mini-group-card${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
-      ${cardContent}
-      <div class="mgc-photo-strip">
-        ${allPhotos.map((p,i)=>mpPhotoThumb(p,gcid,i)).join('')}
-      </div>
-    </div>`;
-  }
-  return `<div class="mini-group-card${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
-    ${cardContent}
+  const soloCls = count === 1 ? ' is-solo' : '';
+  return `<div class="mini-group-card${soloCls}${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
+    ${media}${body}
   </div>`;
 }
 
@@ -464,10 +456,6 @@ function mpRenderSubCard(m, num){
     <div class="mc-gear-ed" id="mpmed-${mid}" hidden></div>` : ''}
     ${s !== 'unbuilt' ? `<textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
               oninput="mpSaveMiniNotes('${mid}',this.value)">${esc(m.notes||'')}</textarea>` : ''}
-    ${s !== 'unbuilt' ? `<div class="mc-gallery" id="mpcgal-${mid}">
-      ${(m.photos||[]).map(p=>mpPhotoTile(p,mid)).join('')}
-      ${mpUploaderTile(mid)}
-    </div>` : ''}
   </div>`;
 }
 

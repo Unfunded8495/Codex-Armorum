@@ -25,6 +25,8 @@ collection. Each mini can keep its own label, wargear, paint stage, notes, and p
   stage breakdown, and per-faction progress with links back to each faction's roster.
 - **Model catalogue** — maintain model-release records, datasheet links, and release images used by
   unit pages and box contents.
+- **Codex Archive** — browse the model catalogue along a Warhammer 40,000 edition timeline, with an
+  in-place model editor for release dates and images.
 - **Army Builder** — assign owned models to rosters, add detachments and enhancements, track points
   totals, and flag short squads or wishlist units.
 
@@ -152,14 +154,15 @@ command each time you open a new terminal window.
 
 ## Unit data
 
-Unit data (factions, datasheets, weapon profiles, points) comes from the BSData Warhammer 40,000
-10th Edition XML repository cloned into `bsdata/wh40k-10e/`. The database tables that power the
-unit browser are populated by running `python bsdata_importer.py` — this is safe to re-run at any
-time to pick up ruleset updates.
+Unit data (factions, datasheets, weapon profiles, points, detachments, enhancements) comes from the
+Wahapedia Warhammer 40,000 10th Edition CSV export — pipe-delimited CSV files stored in `data/`.
+Re-fetch the export with `python scripts/fetch_wahapedia.py`, then populate the database tables that
+power the unit browser by running `python wahapedia_importer.py`. The importer drops and rebuilds the
+`catalogue_*` tables and is safe to re-run at any time to pick up ruleset updates; no user data is
+touched.
 
-The `data/` folder also holds three Wahapedia CSV files (detachments, enhancements, and a
-Wahapedia-to-BSData ID bridge) plus the model and box catalogue JSON files. Runtime catalogue edits
-are stored in `data/model_catalogue_manual.json`, with linking decisions in
+The `data/` folder also holds the hand-curated model catalogue JSON files and the edition timeline.
+Runtime catalogue edits are stored in `data/model_catalogue_manual.json`, with linking decisions in
 `data/model_catalogue_resolutions.json` and image metadata in `data/model_catalogue_images.json`.
 
 See `CODEX_ARMORUM_ARCHITECTURE.md` for a full breakdown of all data sources, ID systems, and what
@@ -187,20 +190,20 @@ are stored locally for your personal collection reference only.
 ```
 warhammer-catalogue/
   app.py                  Flask backend + REST API
-  data_store.py           reads BSData catalogue tables; builds faction/unit indexes
-  bsdata_importer.py      parses BSData XML; populates catalogue_* tables in the DB
+  data_store.py           reads Wahapedia catalogue tables; builds faction/unit indexes
+  wahapedia_importer.py   parses Wahapedia CSVs; populates catalogue_* tables in the DB
   catalogue_review.py     model catalogue management logic
   collection.py           mini ownership queries and wargear helpers
   box_sets.py             box set definitions and purchase creation
   army.py                 army builder helpers (points, detachments, enhancements)
+  editions.py             loads the hand-curated edition timeline (Codex Archive)
   arsenal.py              Arsenal wargear feature (Flask blueprint)
   arsenal_store.py        Arsenal sqlite3 data access and sync helpers
   db.py                   SQLite schema init and legacy migrations
   factions_theme.py       faction colours and placeholder SVGs
   images.py               image upload and reference-image handling
   utils.py                shared utility helpers
-  bsdata/wh40k-10e/       BSData 40K 10th Edition XML repo (gitignored — re-cloneable)
-  data/                   Wahapedia CSVs (detachments/enhancements) + model catalogue JSONs
+  data/                   Wahapedia ruleset CSVs + model catalogue & edition-timeline JSONs
   scripts/                one-off import, migration, image, and audit helpers
   static/                 css + js + faction icons
   templates/              Flask page templates

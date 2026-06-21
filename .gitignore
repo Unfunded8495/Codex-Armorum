@@ -17,3 +17,9 @@ __pycache__/
 cache/
 uploads/
 *.log
+
+# Diagnostic output (scripts/inspect_chapters.py writes chapters_inspect.json to the repo root)
+/chapters_*.json
+
+# Local archive of superseded / unused files (not part of the app)
+archive/
