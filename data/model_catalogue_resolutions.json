@@ -6666,11 +6666,13 @@
     },
     {
       "catalogue_model_id": "MD-50977",
-      "action": "no_current_datasheet",
+      "action": "link_datasheet",
       "catalogue_type": "",
-      "datasheet_ids": [],
+      "datasheet_ids": [
+        "000000001"
+      ],
       "notes": "",
-      "updated_at": 1781684186.2137837
+      "updated_at": 1782046599.3696358
     },
     {
       "catalogue_model_id": "MD-50978",

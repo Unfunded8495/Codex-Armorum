@@ -36,6 +36,7 @@ def _new_catalogue_context():
         "model_index": None,
         "models_by_datasheet": {},
         "payload_items": None,
+        "payload_index": None,
         "name_matches": {},
     }
 
@@ -76,6 +77,139 @@ def _catalogue_payload_items(ctx=None):
         return catalogue_payload().get("items", [])
     except Exception:
         return []
+
+
+# ── Datasheet-less catalogue models ───────────────────────────────────────
+# A catalogue model with no Wahapedia datasheet is still trackable: it is keyed
+# by the synthetic id "cat:<catalogue_model_id>" wherever a datasheet_id is
+# expected (box contents, minis). Everything downstream treats datasheet_id as
+# an opaque string, so only the spots that resolve a key to a *real* datasheet
+# record need the fallback below.
+CAT_PREFIX = "cat:"
+_cat_item_index = {"key": None, "data": {}}
+
+
+def is_catalogue_key(did):
+    return isinstance(did, str) and did.startswith(CAT_PREFIX)
+
+
+def catalogue_model_id_from_key(did):
+    return did[len(CAT_PREFIX):] if is_catalogue_key(did) else None
+
+
+def _catalogue_item_index():
+    key = _catalogue_dependency_key()
+    if _cat_item_index["key"] != key:
+        _cat_item_index["data"] = {it.get("id"): it for it in _catalogue_payload_items()}
+        _cat_item_index["key"] = key
+    return _cat_item_index["data"]
+
+
+def catalogue_unit_ref(did, ctx=None):
+    """Pseudo-datasheet for a ``cat:<catalogue_model_id>`` key.
+
+    Returns ``{id, catalogue_model_id, name, faction_id (parent-collapsed),
+    faction_label, army_ids, catalogue_only: True}`` built from
+    ``catalogue_payload()`` items, or ``None`` for a non-cat key or unknown model.
+    """
+    cid = catalogue_model_id_from_key(did)
+    if not cid:
+        return None
+    if ctx is not None:
+        idx = ctx.get("payload_index")
+        if idx is None:
+            idx = {it.get("id"): it for it in _catalogue_payload_items(ctx)}
+            ctx["payload_index"] = idx
+        item = idx.get(cid)
+    else:
+        item = _catalogue_item_index().get(cid)
+    if not item:
+        return None
+    return {
+        "id": did,
+        "catalogue_model_id": cid,
+        "name": item.get("name", ""),
+        "faction_id": item.get("faction_id", ""),
+        "faction_label": item.get("faction_label", ""),
+        "army_ids": item.get("army_ids", []),
+        "catalogue_only": True,
+    }
+
+
+def _catalogue_model_in_faction(ref, fid):
+    """Parent-aware faction membership check for a datasheet-less model, mirroring
+    the catalogue search scoping in ``_catalogue_search_pool``."""
+    store = get_store()
+    scopes = {fid, store.faction_parent(fid)}
+    return bool(scopes & set(ref.get("army_ids") or [])) or ref.get("faction_id") in scopes
+
+
+def relink_catalogue_minis(catalogue_model_id, datasheet_ids):
+    """Re-key a datasheet-less model's tracked data onto real datasheet(s) once a
+    datasheet is linked to it, so the collection "updates throughout".
+
+    Single datasheet  → re-key ``cat:`` minis and box-content rows directly.
+    Multiple datasheets → the kit is now a multikit choice: rebuild affected box
+    rows as a multikit group, and assign existing minis to the first datasheet
+    (best-effort) with a note, since a standalone mini carries no box reference to
+    rebuild a per-box build choice from. Returns the number of minis migrated.
+    """
+    store = get_store()
+    dids = [d for d in (datasheet_ids or []) if d in store.ds_by_id]
+    if not dids:
+        return 0
+    cat_key = CAT_PREFIX + catalogue_model_id
+    with db() as c:
+        if not _table_exists(c, "minis"):
+            return 0
+        if len(dids) == 1:
+            did = dids[0]
+            new_bid = store.ds_by_id.get(did, {}).get("id") or did
+            cur = c.execute(
+                "UPDATE minis SET datasheet_id=?, unit_bsdata_id=?, catalogue_model_id=? "
+                "WHERE datasheet_id=? OR unit_bsdata_id=?",
+                (did, new_bid, catalogue_model_id, cat_key, cat_key),
+            )
+            migrated = cur.rowcount
+            if _table_exists(c, "custom_box_set_contents"):
+                c.execute(
+                    "UPDATE custom_box_set_contents SET datasheet_id=? WHERE datasheet_id=?",
+                    (did, cat_key),
+                )
+        else:
+            migrated = _relink_catalogue_minis_multi(c, catalogue_model_id, cat_key, dids)
+    # Box caches embed the old cat: key — force a rebuild on next read.
+    _box_cache["key"] = None
+    _custom_box_cache["key"] = None
+    return migrated
+
+
+def _relink_catalogue_minis_multi(c, cid, cat_key, dids):
+    store = get_store()
+    mg = f"relink-{cid}"
+    if _table_exists(c, "custom_box_set_contents"):
+        rows = c.execute(
+            "SELECT rowid, * FROM custom_box_set_contents WHERE datasheet_id=?",
+            (cat_key,)).fetchall()
+        for row in rows:
+            c.execute("DELETE FROM custom_box_set_contents WHERE rowid=?", (row["rowid"],))
+            for did in dids:
+                c.execute(
+                    """INSERT INTO custom_box_set_contents(box_set_id, datasheet_id,
+                       catalogue_model_id, datasheet_count, physical_miniatures, notes,
+                       sort_order, multikit_group) VALUES(?,?,?,?,?,?,?,?)""",
+                    (row["box_set_id"], did, cid, row["datasheet_count"],
+                     row["physical_miniatures"], row["notes"], row["sort_order"], mg))
+    first = dids[0]
+    new_bid = store.ds_by_id.get(first, {}).get("id") or first
+    names = ", ".join(store.ds_by_id.get(d, {}).get("name", d) for d in dids)
+    note = f"Auto-assigned on relink (buildable as {names})."
+    cur = c.execute(
+        "UPDATE minis SET datasheet_id=?, unit_bsdata_id=?, catalogue_model_id=?, "
+        "notes = CASE WHEN COALESCE(notes,'')='' THEN ? ELSE notes || char(10) || ? END "
+        "WHERE datasheet_id=? OR unit_bsdata_id=?",
+        (first, new_bid, cid, note, note, cat_key, cat_key))
+    return cur.rowcount
 
 
 def _release_year(value):
@@ -171,10 +305,29 @@ def _normalize_box(box, source="seeded", ctx=None):
     contents = []
     for item in box["contents"]:
         did = str(item.get("datasheet_id", ""))
-        if did not in store.ds_by_id:
-            continue
         count = _as_int(item.get("datasheet_count"), 0, minimum=0)
         if count <= 0:
+            continue
+        if is_catalogue_key(did):
+            ref = catalogue_unit_ref(did, ctx)
+            if not ref:
+                continue
+            cat_cid = catalogue_model_id_from_key(did)
+            catalogue_model = _catalogue_model_lookup(cat_cid, ctx)
+            contents.append({
+                "datasheet_id": did,
+                "catalogue_model_id": cat_cid,
+                "catalogue_model": catalogue_model,
+                "catalogue_label": _catalogue_model_label(ref["name"], catalogue_model),
+                "name": item.get("name") or ref["name"],
+                "faction_id": item.get("faction_id") or ref["faction_id"],
+                "datasheet_count": count,
+                "physical_miniatures": _as_int(item.get("physical_miniatures"), count, minimum=0),
+                "notes": item.get("notes", ""),
+                "multikit_group": str(item.get("multikit_group") or "").strip() or None,
+            })
+            continue
+        if did not in store.ds_by_id:
             continue
         ds = store.ds_by_id[did]
         unit_name = item.get("name") or ds.get("name", "")
@@ -271,15 +424,26 @@ def custom_box_sets(conn=None):
             contents = []
             for cr in content_rows:
                 did = cr["datasheet_id"]
-                ds = store.ds_by_id.get(did)
-                if not ds:
-                    continue
+                cat_cid = cr["catalogue_model_id"] if "catalogue_model_id" in cr.keys() else None
+                if is_catalogue_key(did):
+                    ref = catalogue_unit_ref(did, ctx)
+                    if not ref:
+                        continue
+                    name = ref["name"]
+                    faction_id = ref["faction_id"]
+                    cat_cid = cat_cid or catalogue_model_id_from_key(did)
+                else:
+                    ds = store.ds_by_id.get(did)
+                    if not ds:
+                        continue
+                    name = ds.get("name", "")
+                    faction_id = ds.get("faction_id", "")
                 count = _as_int(cr["datasheet_count"], 1, minimum=1)
                 contents.append({
                     "datasheet_id": did,
-                    "catalogue_model_id": cr["catalogue_model_id"] if "catalogue_model_id" in cr.keys() else None,
-                    "name": ds.get("name", ""),
-                    "faction_id": ds.get("faction_id", ""),
+                    "catalogue_model_id": cat_cid,
+                    "name": name,
+                    "faction_id": faction_id,
                     "datasheet_count": count,
                     "physical_miniatures": _as_int(cr["physical_miniatures"], count, minimum=1),
                     "notes": cr["notes"] or "",
@@ -539,26 +703,36 @@ def _clean_box_payload(data, existing_id=None):
     catalogue_cache = {}
     for item in contents:
         did = str(item.get("datasheet_id", ""))
-        ds = store.ds_by_id.get(did)
-        if not ds:
-            return None, "Unknown unit in box contents."
-        # Parent-aware: an SM-tagged box accepts chapter units (a Blood Angels
-        # unit is in SM); a chapter-tagged box accepts that chapter's units.
-        if fid and not store.unit_in_faction(did, fid):
-            return None, "One or more units do not belong to the selected army."
+        if is_catalogue_key(did):
+            # Datasheet-less catalogue model: validate against the catalogue and
+            # take the model id straight from the synthetic key.
+            ref = catalogue_unit_ref(did)
+            if not ref:
+                return None, "Unknown model in box contents."
+            if fid and not _catalogue_model_in_faction(ref, fid):
+                return None, "One or more units do not belong to the selected army."
+            catalogue_model_id = catalogue_model_id_from_key(did)
+        else:
+            ds = store.ds_by_id.get(did)
+            if not ds:
+                return None, "Unknown unit in box contents."
+            # Parent-aware: an SM-tagged box accepts chapter units (a Blood Angels
+            # unit is in SM); a chapter-tagged box accepts that chapter's units.
+            if fid and not store.unit_in_faction(did, fid):
+                return None, "One or more units do not belong to the selected army."
+            catalogue_model_id = str(item.get("catalogue_model_id") or "").strip()[:160] or None
+            if catalogue_model_id:
+                if did not in catalogue_cache:
+                    from catalogue_review import catalogue_models_for_datasheet
+                    catalogue_cache[did] = {
+                        m["id"] for m in catalogue_models_for_datasheet(did)
+                    }
+                if catalogue_model_id not in catalogue_cache[did]:
+                    catalogue_model_id = None  # stale reference — drop silently
         count    = min(500, _as_int(item.get("datasheet_count"), 1, minimum=1))
         physical = min(500, _as_int(item.get("physical_miniatures"), count, minimum=1))
         notes    = str(item.get("notes", ""))[:300]
         mg       = str(item.get("multikit_group") or "").strip()[:80] or None
-        catalogue_model_id = str(item.get("catalogue_model_id") or "").strip()[:160] or None
-        if catalogue_model_id:
-            if did not in catalogue_cache:
-                from catalogue_review import catalogue_models_for_datasheet
-                catalogue_cache[did] = {
-                    m["id"] for m in catalogue_models_for_datasheet(did)
-                }
-            if catalogue_model_id not in catalogue_cache[did]:
-                catalogue_model_id = None  # stale reference — drop silently
         seen_key = (did, catalogue_model_id)
         # Only merge duplicate standalone entries; multikit items always get their own row.
         if not mg and seen_key in seen and not cleaned[seen[seen_key]].get("multikit_group"):

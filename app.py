@@ -25,8 +25,9 @@ from army import (
 from box_sets import (
     _clean_box_payload, _save_custom_box, _unit_search_pool,
     bought_info, bought_totals, box_set_by_id, box_sets,
-    compute_unlogged_map, dedup_group_total, parse_box_text,
-    purchase_payload,
+    catalogue_model_id_from_key, catalogue_unit_ref, compute_unlogged_map,
+    dedup_group_total, is_catalogue_key, parse_box_text, purchase_payload,
+    relink_catalogue_minis,
 )
 from catalogue_review import (
     add_manual_model, catalogue_faction_datasheet_index, catalogue_image_for_datasheet,
@@ -168,6 +169,16 @@ def _box_set_payloads(box_list):
     } for b in box_list]
 
 
+def _faction_id_for_unit_key(key):
+    """Faction id for a minis/bought key: a real datasheet, or a datasheet-less
+    ``cat:`` catalogue model. Returns None when neither resolves."""
+    d = store.ds_by_id.get(key)
+    if d:
+        return d.get("faction_id")
+    ref = catalogue_unit_ref(key)
+    return ref["faction_id"] if ref else None
+
+
 def _summary_payload(c, info=None, owned=None):
     total_minis = c.execute("SELECT COUNT(*) n FROM minis").fetchone()["n"]
     stage_counts = c.execute("""
@@ -211,9 +222,8 @@ def _factions_payload(info=None, owned=None):
     ul_by_faction = {}
 
     for did, qty in owned.items():
-        d = store.ds_by_id.get(did)
-        if d and qty > 0:
-            fid = d["faction_id"]
+        fid = _faction_id_for_unit_key(did)
+        if fid and qty > 0:
             by_faction[fid]      = by_faction.get(fid, 0) + 1
             minis_by_faction[fid] = minis_by_faction.get(fid, 0) + qty
 
@@ -225,10 +235,9 @@ def _factions_payload(info=None, owned=None):
             GROUP BY unit_bsdata_id, COALESCE(stage, 'unbuilt')
         """).fetchall()
     for r in rows:
-        d = store.ds_by_id.get(r["unit_bsdata_id"])
-        if not d:
+        fid = _faction_id_for_unit_key(r["unit_bsdata_id"])
+        if not fid:
             continue
-        fid = d["faction_id"]
         if r["stage"] == "unbuilt":
             unbuilt_minis_by_faction[fid] = unbuilt_minis_by_faction.get(fid, 0) + r["cnt"]
         if r["stage"] in ("finished", "display"):
@@ -240,10 +249,9 @@ def _factions_payload(info=None, owned=None):
     standalone    = info.get("standalone", {})
     standalone_ul = info.get("standalone_ul", {})
     for did, qty in bought.items():
-        d = store.ds_by_id.get(did)
-        if not d or qty <= 0:
+        fid = _faction_id_for_unit_key(did)
+        if not fid or qty <= 0:
             continue
-        fid   = d["faction_id"]
         gkeys = info["did_groups"].get(did, [])
         cb    = counted_bought_by_fid.setdefault(fid, set())
         cu    = counted_ul_by_fid.setdefault(fid, set())
@@ -493,8 +501,10 @@ def _create_minis(datasheet_id, catalogue_model_id, label, wargear, count, multi
     from db import db
     import uuid as _uuid
     # Resolve to the canonical Wahapedia datasheet id (unit_bsdata_id is a legacy
-    # column name that now holds the Wahapedia id).
-    unit_bsdata_id = store.ds_by_id.get(datasheet_id, {}).get("id")
+    # column name that now holds the Wahapedia id). For a datasheet-less catalogue
+    # model the key is a synthetic "cat:<id>"; keep it as-is so the mini is still
+    # counted by owned_totals and surfaced by the collection API.
+    unit_bsdata_id = store.ds_by_id.get(datasheet_id, {}).get("id") or datasheet_id
     now = time.time()
     created = []
     with db() as c:
@@ -1342,10 +1352,19 @@ def api_clear_model_catalogue_image(catalogue_model_id):
 @app.route("/api/catalogue-review/<catalogue_model_id>/resolution", methods=["POST"])
 def api_catalogue_review_resolution(catalogue_model_id):
     data = request.get_json(force=True)
+    # Snapshot link state before saving: if this resolution gives a previously
+    # datasheet-less model its first datasheet(s), re-key its tracked minis/box
+    # rows onto the real datasheet so the collection updates throughout.
+    before = next((i for i in catalogue_payload().get("items", [])
+                   if i["id"] == catalogue_model_id), None)
+    had_links = bool(before and before.get("datasheet_links"))
     resolution, error = save_resolution(catalogue_model_id, data)
     if error:
         return jsonify({"ok": False, "error": error}), 400
-    return jsonify({"ok": True, "resolution": resolution})
+    relinked = 0
+    if not had_links and resolution.get("action") in ("link_datasheet", "link_multiple_datasheets"):
+        relinked = relink_catalogue_minis(catalogue_model_id, resolution.get("datasheet_ids", []))
+    return jsonify({"ok": True, "resolution": resolution, "relinked_minis": relinked})
 
 
 def _catalogue_display_label(item):
@@ -1377,8 +1396,6 @@ def api_search_model_catalogue():
     results = []
     for item in catalogue_payload().get("items", []):
         links = item.get("datasheet_links", [])
-        if not links:
-            continue
         if faction_label and item.get("faction_label", "") != faction_label:
             continue
         army_ids = set(item.get("army_ids") or [])
@@ -1418,6 +1435,7 @@ def api_search_model_catalogue():
             "status": item.get("status", ""),
             "note": item.get("note", ""),
             "datasheet_links": links,
+            "datasheet_less": not links,
         }))
 
     results.sort(key=lambda r: (
@@ -1632,6 +1650,50 @@ def _multikit_options_for_group(gkey):
     return options
 
 
+def _catalogue_only_collection_entry(r, did, faction_id, datasheet_id, stage_filter, search, photos_by_mid):
+    """Build a collection entry for a datasheet-less ``cat:`` mini (no real
+    datasheet, so no multikit options / weapons). Returns the dict, or None when
+    the row isn't a cat key or is filtered out."""
+    ref = catalogue_unit_ref(did)
+    if not ref:
+        return None
+    if datasheet_id and datasheet_id != did:
+        return None
+    fid = ref["faction_id"]
+    if faction_id and fid != faction_id:
+        return None
+    mini_stage = r["stage"] if "stage" in r.keys() else "unbuilt"
+    if stage_filter and mini_stage != stage_filter:
+        return None
+    name = ref["name"]
+    label = r["label"] or ""
+    if search and search not in name.lower() and search not in label.lower():
+        return None
+    faction_name = store.faction_by_id.get(fid, {}).get("name", ref.get("faction_label") or fid)
+    try:
+        wg = json.loads(r["wargear"] or "[]")
+    except (ValueError, TypeError):
+        wg = []
+    return {
+        "id": r["id"],
+        "datasheet_id": did,
+        "datasheet_name": name,
+        "faction_id": fid,
+        "faction_name": faction_name,
+        "label": label,
+        "wargear": wg if isinstance(wg, list) else [],
+        "notes": r["notes"] or "",
+        "stage": mini_stage,
+        "multikit_group": r["multikit_group"] if "multikit_group" in r.keys() else None,
+        "multikit_options": [],
+        "assigned_datasheet_id": did,
+        "catalogue_model_id": ref["catalogue_model_id"],
+        "created_at": r["created_at"],
+        "photos": photos_by_mid.get(r["id"], []),
+        "catalogue_only": True,
+    }
+
+
 @app.route("/api/collection")
 def api_collection():
     faction_id = request.args.get("faction_id", "").strip()
@@ -1672,6 +1734,10 @@ def api_collection():
         did = r["unit_bsdata_id"]
         ds = store.ds_by_id.get(did) if did else None
         if not ds:
+            entry = _catalogue_only_collection_entry(
+                r, did, faction_id, datasheet_id, stage_filter, search, photos_by_mid)
+            if entry:
+                result.append(entry)
             continue
         fid = ds["faction_id"]
 

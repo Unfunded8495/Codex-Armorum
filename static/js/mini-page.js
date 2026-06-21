@@ -41,11 +41,19 @@ export async function showMiniPage(did){
   mpUnit  = null;
   view.innerHTML = `<div class="loading">Mustering your minis…</div>`;
 
+  // A datasheet-less catalogue model ("cat:<id>") has no datasheet, so skip the
+  // unit fetch and render a reduced page (paint tracker + owned sculpt card only).
+  const isCat = did.startsWith('cat:');
   try{
-    [mpMinis, mpUnit] = await withTimeout(Promise.all([
-      api(`/api/collection?datasheet_id=${encodeURIComponent(did)}`),
-      api(`/api/units/${did}`),
-    ]));
+    if(isCat){
+      mpMinis = await withTimeout(api(`/api/collection?datasheet_id=${encodeURIComponent(did)}`));
+      mpUnit  = null;
+    }else{
+      [mpMinis, mpUnit] = await withTimeout(Promise.all([
+        api(`/api/collection?datasheet_id=${encodeURIComponent(did)}`),
+        api(`/api/units/${did}`),
+      ]));
+    }
   }catch(e){
     const isTimeout = e.message === 'timeout';
     view.innerHTML = `<div class="loading load-error">
@@ -102,6 +110,7 @@ export async function showMiniPage(did){
    ==================================================================== */
 function mpRenderPage(){
   const rep    = mpMinis[0];
+  const isCat  = (mpDatasheetId || '').startsWith('cat:');
   const total  = mpMinis.length;
   const done   = mpMinis.filter(m=>m.stage==='finished'||m.stage==='display').length;
   const pct    = total > 0 ? Math.round(done/total*100) : 0;
@@ -137,16 +146,16 @@ function mpRenderPage(){
         <div class="mp-mini-list" id="mpMiniList">
           ${groups.map(g=>mpRenderGroup(g)).join('')}
         </div>
-        <div style="margin-top:18px">
+        ${isCat ? '' : `<div style="margin-top:18px">
           <a class="mp-ds-link" href="/#/unit/${esc(rep.datasheet_id)}">View Full Datasheet →</a>
-        </div>
-        ${mpRenderWipSection()}
+        </div>`}
+        ${isCat ? '' : mpRenderWipSection()}
       </div>
     </div>`;
 
   mpWireLeftMedia();
   mpWireDropZones();
-  mpWireWipDropZone();
+  if(!isCat) mpWireWipDropZone();
 }
 
 /* Build the left-column media: a swipeable carousel of the owned sculpt cards when the

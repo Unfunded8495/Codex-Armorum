@@ -1,5 +1,5 @@
 import { esc, api, jsStr, intOr } from './utils.js';
-import { clearFactionCache } from './home.js';
+import { clearFactionCache, buildUnitTiles } from './home.js';
 import { setActiveNav, setBreadcrumb, updateLedger } from './header.js';
 
 const view       = document.getElementById('view');
@@ -11,6 +11,7 @@ let _lastPurchases= [];
 let activeTab     = 'purchases';
 let purchViewMode = 'grid';
 let purchSortMode = 'name';
+let selectedPurchaseId = null;
 let boxCatalogueLoading = null;
 let pageFactions = [];
 const CARD_CHUNK_SIZE = 12;
@@ -20,6 +21,7 @@ const CARD_CHUNK_SIZE = 12;
 // ══════════════════════════════════════════════════════════════
 
 export async function showPurchases(){
+  selectedPurchaseId = null;
   setActiveNav('purchases');
   setBreadcrumb([
     {label:'My Armies', href:'#/'},
@@ -80,22 +82,25 @@ function _buildPage(boxes, data, factions){
 
   <!-- ── PURCHASES TAB ── -->
   <div class="al-panel" id="tab-purchases"${activeTab!=='purchases'?' hidden':''}>
-    ${_renderQuickAdd(boxes)}
-    <div class="al-plist-head">
-      <span class="al-plist-count">${purchases.length} record${purchases.length===1?'':'s'}</span>
-      <div class="al-plist-controls">
-        <select id="purchSort" class="al-sort-sel">
-          <option value="name"${purchSortMode==='name'?' selected':''}>A–Z</option>
-          <option value="release"${purchSortMode==='release'?' selected':''}>Release date</option>
-        </select>
-        <div class="al-view-toggle">
-          <button class="al-view-btn${purchViewMode==='grid'?' is-active':''}" data-view="grid" title="Grid view">⊞</button>
-          <button class="al-view-btn${purchViewMode==='list'?' is-active':''}" data-view="list" title="List view">☰</button>
+    <div id="purchGridWrap">
+      ${_renderQuickAdd(boxes)}
+      <div class="al-plist-head">
+        <span class="al-plist-count">${purchases.length} record${purchases.length===1?'':'s'}</span>
+        <div class="al-plist-controls">
+          <select id="purchSort" class="al-sort-sel">
+            <option value="name"${purchSortMode==='name'?' selected':''}>A–Z</option>
+            <option value="release"${purchSortMode==='release'?' selected':''}>Release date</option>
+          </select>
+          <div class="al-view-toggle">
+            <button class="al-view-btn${purchViewMode==='grid'?' is-active':''}" data-view="grid" title="Grid view">⊞</button>
+            <button class="al-view-btn${purchViewMode==='list'?' is-active':''}" data-view="list" title="List view">☰</button>
+          </div>
+          <button class="al-edit-toggle${purchEditMode?' is-active':''}" id="purchEditToggle">${purchEditMode?'Done':'Edit'}</button>
         </div>
-        <button class="al-edit-toggle${purchEditMode?' is-active':''}" id="purchEditToggle">${purchEditMode?'Done':'Edit'}</button>
       </div>
+      <div id="purchaseList" class="al-plist${purchEditMode?' is-editing':''}">${_renderPurchaseList(purchases)}</div>
     </div>
-    <div id="purchaseList" class="al-plist${purchEditMode?' is-editing':''}">${_renderPurchaseList(purchases)}</div>
+    <div id="purchDetailWrap" hidden></div>
   </div>
 
   <!-- ── CATALOGUE TAB ── -->
@@ -220,6 +225,10 @@ function _boxBadges(box, purchase=null){
 
 function _factionData(fid){
   return pageFactions.find(f=>f.id===fid) || null;
+}
+
+function _factionName(fid){
+  return _factionData(fid)?.name || fid;
 }
 
 function _boxSurface(box){
@@ -435,7 +444,7 @@ function _renderPurchaseList(purchases){
   const sorted = _sortPurchases(purchases, purchSortMode);
   if(!sorted.length) return `<div class="al-plist-empty">No purchases recorded yet. Use the form above to log a box.</div>`;
   if(purchViewMode === 'list') return _renderPurchaseListView(sorted);
-  return `<div id="purchaseCards" class="al-cat-grid al-purchase-grid">${sorted.slice(0, CARD_CHUNK_SIZE).map(p=>_renderPurchaseCard(p)).join('')}</div>`;
+  return `<div id="purchaseCards" class="al-ptile-grid">${sorted.slice(0, CARD_CHUNK_SIZE).map(p=>_renderPurchaseTile(p)).join('')}</div>`;
 }
 
 function _renderPurchaseListView(purchases){
@@ -459,17 +468,26 @@ function _renderPurchaseListView(purchases){
   </table>`;
 }
 
-function _renderPurchaseCard(p){
-  return _renderBoxCard({
-    id: p.box_set_id,
-    box_set_id: p.box_set_id,
-    name: p.box_name,
-    faction_id: p.faction_id,
-    source: p.source,
-    contents: p.contents || [],
-    total_datasheet_models: p.total_datasheet_models,
-    total_physical_miniatures: p.total_physical_miniatures,
-  }, {purchase: p, miniLimit: 99});
+// ── Purchase tile (grid view) ──────────────────────────────────
+// Mimics the army-list tiles: box art forward, minimal text. Clicking a
+// tile opens the box detail where its miniatures are grouped together.
+function _renderPurchaseTile(p){
+  const surface = _boxSurface({faction_id: p.faction_id});
+  const minis   = p.total_physical_miniatures || 0;
+  const faction = p.faction_id ? _factionName(p.faction_id) : 'Mixed';
+  return `
+  <div class="al-ptile${surface.cls}"${surface.style} data-purchase-id="${esc(p.id)}" onclick='openPurchaseDetail(${jsStr(p.id)})'>
+    ${surface.mark}
+    <button class="al-ptile-del" onclick='event.stopPropagation();deletePurchase(${jsStr(p.id)})' title="Remove this purchase record">✕</button>
+    <div class="al-ptile-img-wrap">
+      <img class="al-ptile-img" src="/api/box-sets/${esc(p.box_set_id)}/image" alt="${esc(p.box_name)}" loading="lazy">
+      ${p.quantity>1?`<span class="al-ptile-qty">&times;${p.quantity}</span>`:''}
+    </div>
+    <div class="al-ptile-body">
+      <div class="al-ptile-name">${esc(p.box_name)}</div>
+      <div class="al-ptile-meta">${esc(faction)} &middot; ${minis} mini${minis===1?'':'s'}</div>
+    </div>
+  </div>`;
 }
 
 function _schedulePurchaseCards(purchases){
@@ -478,11 +496,153 @@ function _schedulePurchaseCards(purchases){
   let idx = CARD_CHUNK_SIZE;
   const append = () => {
     const batch = purchases.slice(idx, idx + CARD_CHUNK_SIZE);
-    if(batch.length) grid.insertAdjacentHTML('beforeend', batch.map(_renderPurchaseCard).join(''));
+    if(batch.length) grid.insertAdjacentHTML('beforeend', batch.map(_renderPurchaseTile).join(''));
     idx += CARD_CHUNK_SIZE;
     if(idx < purchases.length) _defer(append);
   };
   _defer(append);
+}
+
+// ── Purchase detail (box contents as collection tiles + list summary) ──
+
+function _factionMarkInner(f){
+  return f?.icon_url
+    ? `<img src="${esc(f.icon_url)}" alt="" loading="lazy">`
+    : `<span class="faction-bg-letter">${esc((f?.name||'?')[0]||'?')}</span>`;
+}
+
+// Pull the live collection tiles (same cards as the faction page, with paint
+// progress + /mini links) for just the datasheets contained in this box.
+async function _loadPurchaseDetailCards(p){
+  const host = document.getElementById('pdCards');
+  if(!host) return;
+  const boxDids    = new Set((p.contents || []).map(i => i.datasheet_id));
+  const factionIds = [...new Set((p.contents || []).map(i => i.faction_id || p.faction_id).filter(Boolean))];
+  if(!factionIds.length){ host.innerHTML = `<p class="empty-note">No army data for this box.</p>`; return; }
+  try{
+    const perFaction = await Promise.all(factionIds.map(async fid => {
+      const f = _factionData(fid);
+      const [minis, unitPayload] = await Promise.all([
+        api(`/api/collection?faction_id=${encodeURIComponent(fid)}`),
+        api(`/api/factions/${encodeURIComponent(fid)}/units`),
+      ]);
+      const tiles = buildUnitTiles({
+        fid, minis,
+        units:   unitPayload?.units || [],
+        primary: f?.primary || 'var(--panel)',
+        accent:  f?.accent  || 'var(--gold)',
+        facMark: _factionMarkInner(f),
+      }).filter(t => boxDids.has(t.id));
+      return { fid, name: f?.name || fid, tiles };
+    }));
+    if(selectedPurchaseId !== p.id) return;   // detail closed/changed while loading
+    const groups = perFaction.filter(g => g.tiles.length);
+    if(!groups.length){ host.innerHTML = `<p class="empty-note">No tracked models found for this box.</p>`; return; }
+    const showHeads = groups.length > 1;
+    host.innerHTML = groups.map(g => `
+      <div class="al-pd-cardgroup">
+        ${showHeads ? `<div class="al-pd-group-head">${esc(g.name)}</div>` : ''}
+        <div class="unit-grid al-pd-cardgrid">${g.tiles.map(t => t.html).join('')}</div>
+      </div>`).join('');
+  }catch(e){
+    host.innerHTML = `<p class="empty-note">Could not load model details.</p>`;
+  }
+}
+
+function _renderPurchaseSummaryList(p){
+  const rows = _summarizedContents(p.contents || []);
+  if(!rows.length) return '';
+  return `<div class="al-pd-sumlist">${rows.map(_renderMiniRow).join('')}</div>`;
+}
+
+function _renderPurchaseDetail(p){
+  const surface = _boxSurface({faction_id: p.faction_id});
+  const note    = p.notes ? `<div class="al-pd-note">${esc(p.notes)}</div>` : '';
+  const release = p.release_date ? ` &middot; ${esc(p.release_date.slice(0,7))}` : '';
+  return `
+  <div class="al-pd">
+    <button class="al-pd-back" onclick="closePurchaseDetail()">&larr; Back to purchases</button>
+    <div class="al-pd-hero${surface.cls}"${surface.style}>
+      ${surface.mark}
+      <div class="al-pd-hero-img">
+        <img src="/api/box-sets/${esc(p.box_set_id)}/image" alt="${esc(p.box_name)}">
+      </div>
+      <div class="al-pd-hero-info">
+        <div class="al-pd-badges">${_boxBadges({faction_id: p.faction_id, source: p.source}, p)}</div>
+        <h3 class="al-pd-name">${esc(p.box_name)}</h3>
+        <div class="al-pd-stat">${p.total_physical_miniatures} physical &middot; ${p.total_datasheet_models} tracked${release}</div>
+        ${note}
+        <div class="al-pd-actions">
+          <button class="al-cedit" onclick='switchToEditor(${jsStr(p.box_set_id)})'>Edit box</button>
+          <button class="al-pd-del" onclick='deletePurchase(${jsStr(p.id)})'>Remove purchase</button>
+        </div>
+      </div>
+    </div>
+    <div class="al-pd-content">
+      <div class="al-pd-main">
+        <div class="al-pd-sec-label">Models in this box</div>
+        <div id="pdCards" class="al-pd-cards"><p class="empty-note">Loading models…</p></div>
+      </div>
+      <aside class="al-pd-aside">
+        <div class="al-pd-sec-label">Summary</div>
+        ${_renderPurchaseSummaryList(p)}
+        <div class="al-pd-sumtot">${p.total_physical_miniatures} physical &middot; ${p.total_datasheet_models} tracked</div>
+      </aside>
+    </div>
+  </div>`;
+}
+
+// ── DOM-level open/close (no history change) ──
+function _openDetailDom(pid){
+  const p = (_lastPurchases || []).find(x => x.id === pid);
+  if(!p) return;
+  selectedPurchaseId = pid;
+  const grid   = document.getElementById('purchGridWrap');
+  const detail = document.getElementById('purchDetailWrap');
+  if(grid)   grid.hidden = true;
+  if(detail){ detail.hidden = false; detail.innerHTML = _renderPurchaseDetail(p); }
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  _loadPurchaseDetailCards(p);
+}
+
+function _closeDetailDom(){
+  selectedPurchaseId = null;
+  const grid   = document.getElementById('purchGridWrap');
+  const detail = document.getElementById('purchDetailWrap');
+  if(detail){ detail.hidden = true; detail.innerHTML = ''; }
+  if(grid)   grid.hidden = false;
+}
+
+// Drop the "/<pid>" off the hash without re-triggering the router (used after
+// mutations / tab switches so the URL doesn't claim a detail is open).
+function _resetPurchaseHash(){
+  if(location.hash.startsWith('#/purchases/')) history.replaceState(null, '', '#/purchases');
+}
+
+// ── Navigation entry points ──
+// Opening/closing the detail drives the hash so the browser Back button
+// returns to the grid (and Forward re-opens the detail).
+export function openPurchaseDetail(pid){
+  location.hash = '/purchases/' + encodeURIComponent(pid);
+}
+
+export function closePurchaseDetail(){
+  if(location.hash.startsWith('#/purchases/')) location.hash = '/purchases';
+  else _closeDetailDom();
+}
+
+// Called by the router on every #/purchases[/pid] hashchange. Builds the page
+// if we're arriving fresh, then syncs the detail open/closed to match the route
+// — so navigating between grid and detail never refetches or rebuilds.
+export async function routePurchases(openPid = null){
+  if(!document.getElementById('purchGridWrap')){
+    await showPurchases();
+  }
+  if(openPid){
+    if(selectedPurchaseId !== openPid) _openDetailDom(openPid);
+  } else if(selectedPurchaseId){
+    _closeDetailDom();
+  }
 }
 
 export async function submitPurchase(){
@@ -500,6 +660,7 @@ export async function deletePurchase(pid){
   if(!confirm('Remove this purchase?')) return;
   await fetch(`/api/purchases/${pid}`, {method:'DELETE'});
   clearFactionCache();
+  _resetPurchaseHash();
   showPurchases();
 }
 
@@ -586,6 +747,10 @@ function _wireTabs(){
       activeTab = btn.dataset.tab;
       document.querySelectorAll('.al-tab').forEach(b=>b.classList.toggle('is-active', b===btn));
       document.querySelectorAll('.al-panel').forEach(p=>{ p.hidden = p.id!==`tab-${activeTab}`; });
+      if(activeTab === 'purchases' && selectedPurchaseId){
+        _closeDetailDom();
+        _resetPurchaseHash();
+      }
       if(activeTab === 'catalogue'){
         document.getElementById('catSearch')?.dispatchEvent(new Event('input'));
       }
@@ -610,6 +775,7 @@ export function quickPurchase(boxId){
   activeTab = 'purchases';
   document.querySelectorAll('.al-tab').forEach(b=>b.classList.toggle('is-active', b.dataset.tab==='purchases'));
   document.querySelectorAll('.al-panel').forEach(p=>{ p.hidden = p.id!=='tab-purchases'; });
+  if(selectedPurchaseId){ _closeDetailDom(); _resetPurchaseHash(); }
   const sel = document.getElementById('purchaseBox');
   if(sel){ sel.value = boxId; renderPurchasePreview(); }
   window.scrollTo({top: 0, behavior: 'smooth'});
@@ -1008,6 +1174,14 @@ export function searchBoxUnits(){
         links: JSON.parse(btn.dataset.addLinks || '[]')
       });
     });
+    out.querySelectorAll('[data-add-model-only]').forEach(btn=>{
+      btn.onclick = ()=>addCatalogueModelOnlyToBox({
+        id: btn.dataset.addModelOnly,
+        name: btn.dataset.addName,
+        label: btn.dataset.addLabel || btn.dataset.addName,
+        faction_id: btn.dataset.addFaction || ''
+      });
+    });
     out.querySelectorAll('[data-add-single-link]').forEach(btn=>{
       const link = JSON.parse(btn.dataset.addSingleLink);
       const item = JSON.parse(btn.dataset.addItem);
@@ -1022,6 +1196,18 @@ export function searchBoxUnits(){
 
 function _renderCatalogueResult(u){
   const links = u.datasheet_links || [];
+  if(u.datasheet_less || !links.length){
+    // Datasheet-less model: tracked by catalogue model id only, no game unit behind it.
+    return `
+      <button type="button" class="box-unit-modelonly"
+        data-add-model-only="${esc(u.catalogue_model_id||u.id)}"
+        data-add-name="${esc(u.name)}"
+        data-add-label="${esc(u.display_label||u.catalogue_label||u.name)}"
+        data-add-faction="${esc(u.faction_id||'')}">
+        <span>${esc(u.display_label||u.name)}</span>
+        <small>${esc([u.faction_label, 'model only — no datasheet'].filter(Boolean).join(' · '))}</small>
+      </button>`;
+  }
   if(links.length <= 1){
     return `
       <button type="button" data-add-catalogue-model="${esc(u.catalogue_model_id||u.id)}"
@@ -1075,6 +1261,12 @@ export function addCatalogueModelToBox(item){
   document.getElementById('boxUnitSearch').value = '';
   document.getElementById('boxUnitResults').innerHTML = '';
   renderBoxContentRows();
+}
+
+// Add a datasheet-less model as a standalone box row, keyed by the synthetic
+// "cat:<catalogue_model_id>" id. addUnitToBox clears the search + re-renders.
+export function addCatalogueModelOnlyToBox(item){
+  addUnitToBox('cat:' + item.id, item.name, item.faction_id || '', item.id, item.label, null, true);
 }
 
 function _existingCatalogueGroup(catalogueModelId){
@@ -1285,6 +1477,7 @@ export async function saveBoxSet(forceConflict=false){
   const savedBoxId = res.id || (boxEditor.editing ? boxEditor.id : _boxSlug(name));
   boxSetCache = null; boxCatalogueLoading = null;
   activeTab = 'catalogue';
+  _resetPurchaseHash();
   await showPurchases();
   _defer(() => {
     const el = document.querySelector(`[data-box-id="${CSS.escape(savedBoxId)}"]`);
@@ -1297,5 +1490,6 @@ export async function deleteBoxSet(boxId){
   const res = await fetch(`/api/box-sets/${boxId}`, {method:'DELETE'});
   if(!res.ok){alert('Could not delete this box. Remove purchases for it first.');return;}
   boxSetCache = null; boxCatalogueLoading = null;
+  _resetPurchaseHash();
   showPurchases();
 }

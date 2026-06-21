@@ -6,6 +6,8 @@ let factionCache = null;
 let unassignedGroups = [];
 export function clearFactionCache(){ factionCache = null; }
 
+const isCompleteStage = stage => stage === 'finished' || stage === 'display';
+
 export async function showHome(){
   setActiveNav('armies');
   setBreadcrumb([{label:'My Armies'}]);
@@ -288,11 +290,37 @@ export async function showFaction(fid, browseAll=false){
     return;
   }
 
-  // Group minis by datasheet, expanding unresolved multikits into buildable choices.
-  const unitStats = new Map((unitPayload?.units || []).map(u => [u.id, u]));
+  const total   = minis.length;
+  const painted = minis.filter(m=>isCompleteStage(m.stage)).length;
+  const pct     = total > 0 ? Math.round(painted/total*100) : 0;
+
+  const tiles = buildUnitTiles({
+    fid, minis, units: unitPayload?.units || [], primary, accent, facMark,
+  }).map(t => t.html).join('');
+
+  view.innerHTML = `
+    <h2 class="view-title" style="color:${readableInk(accent)}">${esc(facName)}</h2>
+    <div class="fc-summary">
+      <span><b>${total}</b> mini${total===1?'':'s'} owned</span>
+      <span class="fc-sep">·</span>
+      <span><b>${painted}</b> painted</span>
+      <span class="fc-sep">·</span>
+      <span><b>${pct}%</b> complete</span>
+      <a href="/#/purchases" class="btn-secondary fc-add-btn" style="text-decoration:none">+ Record Purchase</a>
+    </div>
+    <div class="rule" style="background:linear-gradient(90deg,transparent,${accent},transparent)"></div>
+    <div class="unit-grid">${tiles}</div>`;
+}
+
+/* ---- shared unit-tile builder -------------------------------------------
+   Groups a faction's owned minis by datasheet (expanding unbuilt multikits
+   into their buildable choices) and returns one collection tile per datasheet
+   with painting progress. Reused by the faction page and the purchases box
+   detail so both render identical cards that link to the same mini page. */
+export function buildUnitTiles({ fid, minis, units, primary, accent, facMark }){
+  const unitStats = new Map((units || []).map(u => [u.id, u]));
   const completeByDid = new Map();
   const unitMap = new Map();
-  const isCompleteStage = stage => stage === 'finished' || stage === 'display';
   const addUnitMini = (did, name, mini, potential=false) => {
     if(!unitMap.has(did)){
       unitMap.set(did, { id:did, name, minis:[], potential:false });
@@ -301,7 +329,7 @@ export async function showFaction(fid, browseAll=false){
     unit.minis.push(mini);
     unit.potential = unit.potential || potential;
   };
-  for(const m of minis){
+  for(const m of (minis || [])){
     addUnitMini(m.datasheet_id, m.datasheet_name, m, false);
     if(isCompleteStage(m.stage)) completeByDid.set(m.datasheet_id, (completeByDid.get(m.datasheet_id) || 0) + 1);
     if((m.stage || 'unbuilt') !== 'unbuilt') continue;
@@ -329,11 +357,7 @@ export async function showFaction(fid, browseAll=false){
     return complete;
   };
 
-  const total   = minis.length;
-  const painted = minis.filter(m=>isCompleteStage(m.stage)).length;
-  const pct     = total > 0 ? Math.round(painted/total*100) : 0;
-
-  const tiles = [...unitMap.values()].map(unit=>{
+  return [...unitMap.values()].map(unit=>{
     const stat = unitStats.get(unit.id);
     const purchased = Math.max(Number(stat?.bought || 0), unit.minis.length);
     const complete = completeByDid.get(unit.id) || 0;
@@ -370,7 +394,7 @@ export async function showFaction(fid, browseAll=false){
             <span class="fc-shared-ico" aria-hidden="true">⚒</span>${sharedPool} shared multi-build kit
           </div>` : '';
 
-    return `
+    const html = `
       <div class="unit-card fc-mini-tile" style="--cardarmy:${primary};--cardaccent:${accent};--cardglow:${accent}" onclick="location.hash='/mini/${esc(unit.id)}'">
         <div class="unit-thumb">
           <img src="${imgSrc}" onerror="this.src='${imgFallback}';this.onerror=null" alt="${esc(unit.name)}" loading="lazy">
@@ -389,20 +413,8 @@ export async function showFaction(fid, browseAll=false){
           </div>
         </div>
       </div>`;
-  }).join('');
-
-  view.innerHTML = `
-    <h2 class="view-title" style="color:${readableInk(accent)}">${esc(facName)}</h2>
-    <div class="fc-summary">
-      <span><b>${total}</b> mini${total===1?'':'s'} owned</span>
-      <span class="fc-sep">·</span>
-      <span><b>${painted}</b> painted</span>
-      <span class="fc-sep">·</span>
-      <span><b>${pct}%</b> complete</span>
-      <a href="/#/purchases" class="btn-secondary fc-add-btn" style="text-decoration:none">+ Record Purchase</a>
-    </div>
-    <div class="rule" style="background:linear-gradient(90deg,transparent,${accent},transparent)"></div>
-    <div class="unit-grid">${tiles}</div>`;
+    return { id: unit.id, faction_id: fid, html };
+  });
 }
 
 function renderFactionBrowse(fid, facName, primary, accent, units, ownedCount){

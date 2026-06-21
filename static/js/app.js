@@ -1,8 +1,9 @@
 import { showHome, showFaction } from './home.js';
-import { showPurchases, renderPurchasePreview, submitPurchase, deletePurchase,
+import { showPurchases, routePurchases, renderPurchasePreview, submitPurchase, deletePurchase,
          startBoxEditor, resetBoxEditor, renderBoxContentRows, searchBoxUnits,
          addUnitToBox, quickImportBoxText, saveBoxSet, deleteBoxSet,
-         quickPurchase, switchToEditor, saveBoxRef, clearBoxRef } from './purchases.js';
+         quickPurchase, switchToEditor, saveBoxRef, clearBoxRef,
+         openPurchaseDetail, closePurchaseDetail } from './purchases.js';
 import { showUnit } from './unit.js';
 import { showMiniPage } from './mini-page.js';
 import { showHistory, showHistoryFaction } from './history.js';
@@ -13,7 +14,7 @@ import { wireHomeButton } from './header.js';
 function router(){
   const h = location.hash.slice(1) || '/';
   const p = h.split('/').filter(Boolean);
-  if(p[0]==='purchases')          return showPurchases();
+  if(p[0]==='purchases')          return routePurchases(p[1] ? decodeURIComponent(p[1]) : null);
   if(p[0]==='history')            return p[1] ? showHistoryFaction(decodeURIComponent(p[1])) : showHistory();
   // Chapter faction ids carry "::" and a space (e.g. "SM::Blood Angels"); the
   // browser percent-encodes the space in the hash, so decode each id segment
@@ -37,6 +38,7 @@ Object.assign(window, {
   saveBoxSet, deleteBoxSet,
   quickPurchase, switchToEditor,
   saveBoxRef, clearBoxRef,
+  openPurchaseDetail, closePurchaseDetail,
 });
 
 router();
