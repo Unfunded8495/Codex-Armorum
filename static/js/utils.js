@@ -12,7 +12,7 @@ export function withTimeout(promise, ms = 8000){
 
 /* ---- contrast-safe accent for text on the dark theme ---------------------
    Faction accents range from near-white to near-black. Using a near-black
-   accent (e.g. Adeptus Custodes #1a1a1a, Necrons #101a12) as heading text on
+   accent (e.g. Imperial Fists #0d0d0d, Iron Hands #1a1a1a) as heading text on
    the dark background makes titles unreadable. readableInk keeps the faction
    hue where it is already legible, lightens dark hued accents toward the
    parchment tone, and falls back to bright gold for near-greyscale darks so

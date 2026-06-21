@@ -1,56 +1,74 @@
 """Per-faction colour schemes and placeholder SVG generation."""
 
-# Keyed by display name (last segment of BSData faction name after " - ").
-# theme_for() accepts any of: display name, full BSData name, or old short code.
+import re as _re
+
+# The *primary* (first value) is the official Games Workshop faction colour and
+# is the base colour used for that faction everywhere in the app. The *accent*
+# (second value) is a complementary trim used for borders, glow, glyph tint and
+# title ink; the *glyph* key selects the placeholder mark. Lookups are normalised
+# (case, straight/curly apostrophes, spacing) by theme_for(), so "T'au Empire",
+# "T’au Empire" and "tau empire" all resolve to the same theme.
 THEME = {
-    # ── Chaos ──────────────────────────────────────────────────────────────────
-    "Chaos Daemons":        ("#7a1030", "#caa1d6", "star"),
-    "Chaos Knights":        ("#3a3f44", "#9c2a2a", "star"),
-    "Chaos Space Marines":  ("#3f5840", "#b88a3a", "star"),
-    "Death Guard":          ("#6f7536", "#c8b44a", "triskull"),
-    "Emperor's Children":   ("#b0457f", "#e9c6dd", "star"),
-    "Thousand Sons":        ("#1f5e8a", "#c79a3a", "star"),
-    "World Eaters":         ("#7c1018", "#b88a3a", "skull"),
+    # ── Official GW faction colours (the 25 playable factions) ──────────────────
+    "Adepta Sororitas":     ("#5d0301", "#d9c08a", "skull"),
+    "Adeptus Custodes":     ("#755d44", "#d4af37", "aquila"),
+    "Adeptus Mechanicus":   ("#9f352b", "#c79a3a", "gear"),
+    "Aeldari":              ("#19767f", "#eef3f2", "blade"),
+    "Astra Militarum":      ("#32513f", "#c7b27a", "aquila"),
+    "Black Templars":       ("#221f21", "#c79a3a", "aquila"),
+    "Blood Angels":         ("#921315", "#c79a3a", "aquila"),
+    "Chaos Knights":        ("#256551", "#9c2a2a", "star"),
+    "Chaos Space Marines":  ("#1b3038", "#b88a3a", "star"),
+    "Dark Angels":          ("#004b21", "#c79a3a", "aquila"),
+    "Death Guard":          ("#566010", "#c8b44a", "triskull"),
+    "Drukhari":             ("#005b5b", "#d9cdb0", "blade"),
+    "Emperor's Children":   ("#814a60", "#e9c6dd", "star"),
+    "Genestealer Cults":    ("#3e1532", "#caa23a", "claw"),
+    "Grey Knights":         ("#486571", "#cdd6dd", "skull"),
+    "Imperial Agents":      ("#055374", "#c79a3a", "skull"),
+    "Imperial Knights":     ("#004961", "#c79a3a", "aquila"),
+    "Leagues of Votann":    ("#3d544c", "#d8a33a", "hex"),
+    "Necrons":              ("#00592f", "#4dcc6e", "ankh"),
+    "Orks":                 ("#63711f", "#9c2a2a", "jaw"),
+    "Space Marines":        ("#516765", "#c79a3a", "aquila"),
+    "Space Wolves":         ("#3f676f", "#c7b27a", "skull"),
+    "T'au Empire":          ("#006d9c", "#d68a2a", "hex"),
+    "Thousand Sons":        ("#004e5f", "#c79a3a", "star"),
+    "Tyranids":             ("#462e64", "#d9cdb0", "claw"),
+    "World Eaters":         ("#521618", "#b88a3a", "skull"),
 
-    # ── Imperium – General ─────────────────────────────────────────────────────
-    "Adepta Sororitas":         ("#7c1224", "#d9c08a", "skull"),
-    "Adeptus Custodes":         ("#b8902f", "#1a1a1a", "aquila"),
-    "Adeptus Mechanicus":       ("#8a1d1d", "#c79a3a", "gear"),
-    "Agents of the Imperium":   ("#1c1c1f", "#9c2a2a", "skull"),
-    "Astra Militarum":          ("#5d6b3a", "#c7b27a", "aquila"),
-    "Grey Knights":             ("#8a929c", "#3b6ea5", "skull"),
-    "Imperial Knights":         ("#23456e", "#c79a3a", "aquila"),
+    # "Agents of the Imperium" is the cross-faction keyword form of the Imperial
+    # Agents faction (used on shared Space Marine datasheets and the catalogue
+    # drill-in); share its colours so neither surface falls back to grey.
+    "Agents of the Imperium": ("#055374", "#c79a3a", "skull"),
 
-    # ── Imperium – Adeptus Astartes chapters ───────────────────────────────────
-    "Space Marines":    ("#1f3d6e", "#c79a3a", "aquila"),   # generic blue
-    "Black Templars":   ("#0d0d0d", "#c79a3a", "aquila"),
-    "Blood Angels":     ("#8c1818", "#c79a3a", "aquila"),
-    "Dark Angels":      ("#1f3d22", "#c79a3a", "aquila"),
+    # ── Space Marine chapters outside GW's faction-colour list ──────────────────
+    # Kept thematic so chapter rollups stay visually distinct from one another.
     "Deathwatch":       ("#0d0d0d", "#9c9c9c", "skull"),
     "Imperial Fists":   ("#c8a432", "#0d0d0d", "aquila"),
     "Iron Hands":       ("#1a1a1a", "#707070", "gear"),
     "Raven Guard":      ("#0d0d0d", "#d0d0d0", "blade"),
     "Salamanders":      ("#1a4a28", "#c79a3a", "aquila"),
-    "Space Wolves":     ("#3a4a6a", "#c7b27a", "skull"),
     "Ultramarines":     ("#1f3d6e", "#c79a3a", "aquila"),
     "White Scars":      ("#c8c8d0", "#8a1818", "aquila"),
 
-    # ── Xenos ──────────────────────────────────────────────────────────────────
-    "Aeldari":              ("#1f8a8a", "#eef3f2", "blade"),
-    "Ynnari":               ("#5a2d6e", "#d9cdb0", "blade"),
-    "Drukhari":             ("#3c2150", "#d9cdb0", "blade"),
-    "Genestealer Cults":    ("#1f6f6a", "#caa23a", "claw"),
-    "Leagues of Votann":    ("#9c6a2a", "#1f8a8a", "hex"),
-    "Necrons":              ("#1a2a1a", "#4dcc6e", "ankh"),
-    "Orks":                 ("#3f7a2a", "#9c2a2a", "jaw"),
-    "T'au Empire":          ("#b6863f", "#2aa6c4", "hex"),
-    "Tyranids":             ("#5a2d6e", "#d9cdb0", "claw"),
-
-    # ── Unaligned ──────────────────────────────────────────────────────────────
-    "Unaligned Forces":     ("#4a4a4a", "#cccccc", "skull"),
+    # ── Other sub-factions / unaligned ──────────────────────────────────────────
+    "Chaos Daemons":    ("#7a1030", "#caa1d6", "star"),
+    "Ynnari":           ("#5a2d6e", "#d9cdb0", "blade"),
+    "Unaligned Forces": ("#4a4a4a", "#cccccc", "skull"),
 }
 
 DEFAULT = ("#4a4a4a", "#cccccc", "skull")
+
+
+def _norm(name):
+    """Normalise a faction name for lookup: drop apostrophes (straight or curly),
+    collapse whitespace and lowercase. Mirrors the client-side facKey()."""
+    s = (name or "").replace("’", "").replace("‘", "").replace("'", "")
+    return _re.sub(r"\s+", " ", s).strip().lower()
+
+
+_THEME_NORM = {_norm(k): v for k, v in THEME.items()}
 
 
 def theme_for(name):
@@ -59,14 +77,19 @@ def theme_for(name):
     Accepts:
       - Display name:      "Space Marines"
       - Full BSData name:  "Imperium - Adeptus Astartes - Space Marines"
+    Tolerant of casing and straight vs curly apostrophes, so "T'au Empire",
+    "T’au Empire" and "Imperial Agents" all resolve rather than falling to grey.
     """
     if name in THEME:
         return THEME[name]
-    # Strip BSData prefix hierarchy — try progressively shorter suffixes
-    if " - " in name:
-        short = name.rsplit(" - ", 1)[-1]
-        if short in THEME:
-            return THEME[short]
+    norm = _norm(name)
+    if norm in _THEME_NORM:
+        return _THEME_NORM[norm]
+    # Strip BSData/keyword prefix hierarchy — match on the trailing segment.
+    if name and " - " in name:
+        tail = _norm(name.rsplit(" - ", 1)[-1])
+        if tail in _THEME_NORM:
+            return _THEME_NORM[tail]
     return DEFAULT
 
 

@@ -1,21 +1,10 @@
 import { esc } from './utils.js';
 
-/* Faction primary colours supplied for Codex Armorum cards. See faction_colours.json.
-   Lookup normalises case, apostrophes, and spacing so curly or straight apostrophes
-   and names like "T'au Empire" all resolve. Falls back to d.primary then grey. */
-const FACTION_COLOURS_RAW = {
-  "Adepta Sororitas":"#5d0301","Adeptus Custodes":"#755d44","Adeptus Mechanicus":"#9f352b",
-  "Aeldari":"#19767f","Astra Militarum":"#32513f","Black Templars":"#221f21","Blood Angels":"#921315",
-  "Chaos Knights":"#256551","Chaos Space Marines":"#1b3038","Dark Angels":"#004b21","Death Guard":"#566010",
-  "Drukhari":"#005b5b","Emperor's Children":"#814a60","Genestealer Cults":"#3e1532","Grey Knights":"#486571",
-  "Imperial Agents":"#055374","Imperial Knights":"#004961","Leagues of Votann":"#3d544c","Necrons":"#00592f",
-  "Orks":"#63711f","Space Marines":"#516765","Space Wolves":"#3f676f","T'au Empire":"#006d9c",
-  "Thousand Sons":"#004e5f","Tyranids":"#462e64","World Eaters":"#521618"
-};
-function facKey(n){return (n||"").toLowerCase().replace(/[’']/g,"").replace(/\s+/g," ").trim();}
-const FACTION_COLOURS = {}; for(const k in FACTION_COLOURS_RAW) FACTION_COLOURS[facKey(k)] = FACTION_COLOURS_RAW[k];
-function shortFac(fn){return (fn||"").includes(" - ") ? fn.split(" - ").pop() : (fn||"");}
-function factionColour(d){return FACTION_COLOURS[facKey(shortFac(d.faction_name))] || d.primary || "#444";}
+/* The card's base colour comes straight from the API payload's `primary`, which
+   the backend resolves from the official faction colours in factions_theme.py —
+   the single source of truth shared with every other surface. Falls back to grey
+   only when a datasheet has no themed faction. */
+function factionColour(d){return d.primary || "#444";}
 
 function statVal(m, ...keys){for(const k of keys){if(m && m[k]!=null && m[k]!=='') return m[k];} return '';}
 
