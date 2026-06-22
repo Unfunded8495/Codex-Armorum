@@ -30,6 +30,7 @@ from box_sets import (
     relink_catalogue_minis,
 )
 from catalogue_review import (
+    _faction_card_image_url,
     add_manual_model, catalogue_faction_datasheet_index, catalogue_image_for_datasheet,
     catalogue_image_path, catalogue_payload, clear_catalogue_model_image,
     delete_manual_model, save_catalogue_model_image, save_resolution,
@@ -294,6 +295,7 @@ def _factions_payload(info=None, owned=None):
         dn, group = _faction_display_name(f["name"])
         f["display_name"] = dn
         f["group"] = group
+        f["banner_url"] = _faction_card_image_url(dn, f["name"])
         f["initial"] = dn[:1].upper() or "?"
         f["favourite"] = f["id"] in favourites
     return factions
@@ -1291,6 +1293,15 @@ def api_duplicate_catalogue_model(catalogue_model_id):
 
 @app.route("/api/model-catalogue/<catalogue_model_id>/image")
 def api_model_catalogue_image(catalogue_model_id):
+    # Serve the pre-generated transparent cut-out when requested and available.
+    if request.args.get("cut"):
+        cut_path = os.path.join(BASE, "cache", "images", "cutouts",
+                                f"{catalogue_model_id}.webp")
+        if os.path.exists(cut_path):
+            resp = send_file(cut_path)
+            resp.headers["Cache-Control"] = "no-cache"
+            return resp
+        # fall through to the original image if no cutout exists yet
     path = catalogue_image_path(catalogue_model_id)
     if not path:
         abort(404)

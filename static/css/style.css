@@ -2450,3 +2450,238 @@ a.brand{text-decoration:none;color:inherit}
   .dsc-hdr{flex-direction:column;padding-bottom:14px;}
   .dsc-legend{position:static;max-width:none;margin-top:6px;}
 }
+
+/* =====================================================================
+   CODEX ARMORUM — redesign additions
+   Append this block to static/css/style.css (after the existing rules).
+   Everything below reuses the existing :root tokens and the per-card
+   --cardarmy / --cardaccent / --cardglow variables, so nothing else
+   needs to change. New class names are namespaced to avoid collisions.
+   ===================================================================== */
+
+/* ---- Home masthead + aggregate ledger -------------------------------- */
+.home-masthead{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:34px;
+  flex-wrap:wrap;margin:0 0 22px;
+}
+.home-masthead .mh-eyebrow{
+  font-family:'Oswald',sans-serif;font-size:11px;font-weight:400;letter-spacing:2.4px;
+  text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:8px;
+}
+.home-masthead h2.view-title{margin:0}
+.home-masthead .mh-sub{
+  font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;letter-spacing:1.2px;
+  color:var(--parch-dim);margin:8px 0 0;
+}
+.mh-stats{display:flex}
+.mh-stat{text-align:center;padding:0 20px}
+.mh-stat + .mh-stat{border-left:1px solid rgba(199,154,58,.2)}
+.mh-stat b{
+  display:block;font-family:'Oswald',sans-serif;font-weight:600;font-size:30px;line-height:1;
+  color:var(--gold-bright);
+}
+.mh-stat span{
+  display:block;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--parch-dim);margin-top:4px;
+}
+
+/* collection-wide painted meter */
+.collection-meter{margin:0 0 8px}
+.collection-meter .cm-head{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
+  color:var(--parch-dim);margin-bottom:6px;
+}
+.collection-meter .cm-head b{color:var(--gold-bright)}
+.collection-meter .cm-track{
+  height:8px;background:rgba(44,42,53,.7);border:1px solid var(--edge);
+  position:relative;overflow:hidden;
+}
+.collection-meter .cm-fill{
+  height:100%;background:var(--metal-gold);box-shadow:0 0 14px rgba(199,154,58,.5);
+}
+
+/* ---- "Your Armies" — banner photo cards ------------------------------ */
+.faction-grid.army-banner-grid{
+  grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px;
+}
+.army-banner-card{
+  position:relative;overflow:hidden;cursor:pointer;
+  background:var(--panel);border:2px solid var(--cardarmy,var(--edge));
+  clip-path:polygon(0 12px,12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px));
+  box-shadow:0 18px 40px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(14px);animation:rise .5s forwards;
+  transition:transform .25s ease,border-color .25s ease,box-shadow .3s ease;
+}
+.army-banner-card:hover{
+  transform:translateY(-5px);border-color:var(--cardaccent,var(--gold));
+  box-shadow:0 22px 48px rgba(0,0,0,.6);
+}
+.abc-head{position:relative;height:152px;overflow:hidden}
+.abc-head img{width:100%;height:100%;object-fit:cover;display:block}
+.abc-head .abc-scrim{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,10,12,.05) 0%,rgba(10,10,12,.5) 58%,var(--panel) 100%);
+}
+/* fallback head when no banner photo: tinted gradient + glyph */
+.abc-head.is-glyph{
+  background:
+    radial-gradient(circle at 22% 0%,color-mix(in srgb,var(--cardaccent,var(--gold)) 34%,transparent),transparent 52%),
+    linear-gradient(150deg,color-mix(in srgb,var(--cardarmy,var(--panel-2)) 82%,#1c1a22),color-mix(in srgb,var(--cardarmy,var(--panel)) 44%,#09090c));
+}
+.abc-tag{
+  position:absolute;top:13px;left:0;background:rgba(10,10,12,.82);
+  border-left:3px solid var(--cardaccent,var(--gold));color:var(--parch);
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;
+  padding:5px 12px 5px 11px;z-index:2;
+}
+.abc-emblem{
+  position:absolute;top:12px;right:14px;width:50px;height:50px;z-index:2;
+  filter:drop-shadow(0 2px 7px rgba(0,0,0,.75));
+}
+.abc-emblem img{width:100%;height:100%;object-fit:contain;display:block}
+.abc-fav{
+  position:absolute;bottom:11px;right:12px;z-index:3;
+  width:30px;height:30px;line-height:28px;text-align:center;cursor:pointer;
+  background:rgba(10,10,12,.55);border:1px solid rgba(199,154,58,.4);
+  color:var(--gold-bright);font-size:15px;
+}
+.abc-fav:hover{background:rgba(10,10,12,.8);border-color:var(--gold)}
+.abc-body{padding:13px 18px 18px;background:var(--panel)}
+.abc-group{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--cardaccent,var(--gold));opacity:.9;
+}
+.abc-name{
+  font-family:'Cinzel',serif;font-weight:700;font-size:21px;letter-spacing:1px;
+  color:#f3ead5;margin:2px 0 13px;
+}
+.abc-prog-head{
+  display:flex;justify-content:space-between;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.6px;text-transform:uppercase;
+  color:var(--parch-dim);margin-bottom:5px;
+}
+.abc-prog-head .abc-pct{color:var(--cardaccent,var(--gold));font-weight:600}
+.abc-track{height:5px;background:rgba(44,42,53,.7)}
+.abc-fill{height:100%;background:var(--cardaccent,var(--gold))}
+.abc-stats{
+  display:flex;gap:20px;margin-top:14px;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--parch-dim);
+}
+.abc-stats b{color:var(--gold-bright);font-size:13px;font-weight:600}
+
+/* ---- Faction page hero ----------------------------------------------- */
+.fac-hero{
+  position:relative;overflow:hidden;margin:0 0 24px;
+  border:2px solid var(--cardarmy,var(--edge));
+  clip-path:polygon(0 14px,14px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0 calc(100% - 14px));
+  box-shadow:0 18px 44px rgba(0,0,0,.5);
+  animation:rise .4s forwards;opacity:0;transform:translateY(10px);
+}
+.fac-hero > img.fac-hero-bg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 32%;display:block;
+}
+.fac-hero.is-glyph{
+  background:
+    radial-gradient(circle at 20% 0%,color-mix(in srgb,var(--cardaccent,var(--gold)) 30%,transparent),transparent 55%),
+    linear-gradient(150deg,color-mix(in srgb,var(--cardarmy,var(--panel-2)) 82%,#1c1a22),color-mix(in srgb,var(--cardarmy,var(--panel)) 42%,#09090c));
+}
+.fac-hero .fh-scrim{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,rgba(8,9,14,.92) 0%,rgba(8,9,14,.72) 42%,rgba(8,9,14,.42) 100%),
+    linear-gradient(180deg,transparent 40%,rgba(10,10,12,.7) 100%);
+}
+.fh-inner{
+  position:relative;padding:30px 34px 26px;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;
+}
+.fh-eyebrow{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.fh-emblem{width:52px;height:52px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,.7))}
+.fh-emblem img{width:100%;height:100%;object-fit:contain}
+.fh-kicker{
+  font-family:'Oswald',sans-serif;font-size:11px;font-weight:400;letter-spacing:2.4px;
+  text-transform:uppercase;color:var(--cardaccent,var(--gold));
+}
+.fh-inner h1{
+  font-family:'Cinzel',serif;font-weight:900;font-size:42px;letter-spacing:5px;margin:0;
+  color:#f5eede;text-transform:uppercase;text-shadow:0 3px 14px rgba(0,0,0,.9);
+}
+.fh-tagline{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:#cfc6ad;margin:8px 0 0}
+.fh-actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.fh-stats{display:flex}
+.fh-stat{text-align:center;padding:0 18px}
+.fh-stat + .fh-stat{border-left:1px solid rgba(199,154,58,.3)}
+.fh-stat b{display:block;font-family:'Oswald',sans-serif;font-weight:600;font-size:32px;line-height:1;color:#f5eede;text-shadow:0 2px 8px #000}
+.fh-stat.is-accent b{color:var(--gold-bright)}
+.fh-stat span{display:block;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#cfc6ad;margin-top:4px}
+.fh-meter{margin-top:18px;min-width:240px}
+.fh-meter .fhm-head{
+  display:flex;justify-content:space-between;
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;
+  color:#cfc6ad;margin-bottom:5px;
+}
+.fh-meter .fhm-head b{color:var(--gold-bright)}
+.fh-meter .fhm-track{height:7px;background:rgba(10,10,12,.6);border:1px solid rgba(199,154,58,.25)}
+.fh-meter .fhm-fill{height:100%;background:var(--metal-gold);box-shadow:0 0 12px rgba(199,154,58,.5)}
+
+/* ---- Role filter bar (faction page) ---------------------------------- */
+.unit-filter{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  margin:0 0 18px;
+}
+.unit-filter-tabs{display:flex;gap:2px;flex-wrap:wrap}
+.uf-tab{
+  font-family:'Oswald',sans-serif;font-size:12px;font-weight:400;letter-spacing:1.2px;text-transform:uppercase;
+  background:transparent;border:none;border-bottom:2px solid transparent;color:var(--parch-dim);
+  padding:8px 14px;cursor:pointer;transition:color .2s ease,border-color .2s ease;
+}
+.uf-tab:hover{color:var(--gold-bright)}
+.uf-tab.is-active{color:#f0e4c8;border-bottom-color:var(--gold)}
+.uf-tab .uf-count{font-size:10px;opacity:.65;margin-left:3px}
+.unit-legend{
+  display:flex;gap:16px;
+  font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--parch-dim);
+}
+.unit-legend span{display:flex;align-items:center;gap:6px}
+.ul-dot{width:8px;height:8px;transform:rotate(45deg);display:inline-block}
+.ul-dot.is-done{background:#6fae5a}
+.ul-dot.is-wip{background:#c8923a}
+.ul-dot.is-raw{background:#6f6a5e}
+
+/* ---- Display-niche unit thumb (replaces flat cover photo) ------------ */
+.unit-thumb.is-niche{
+  aspect-ratio:auto;height:202px;
+  background:radial-gradient(ellipse 135% 100% at 50% 20%,#322d39 0%,#1c1a23 54%,#111017 100%);
+  border-bottom:1px solid var(--edge);
+}
+.unit-thumb.is-niche::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:46px;
+  background:linear-gradient(180deg,rgba(199,154,58,.10),transparent);pointer-events:none;z-index:1;
+}
+.unit-thumb.is-niche .niche-shadow{
+  position:absolute;left:50%;bottom:15px;transform:translateX(-50%);
+  width:72%;height:24px;filter:blur(2px);z-index:0;
+  background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.6),transparent 72%);
+}
+.unit-thumb.is-niche img{
+  position:relative;z-index:1;width:100%;height:100%;object-fit:contain;
+  padding:16px 14px 18px;filter:drop-shadow(0 12px 14px rgba(0,0,0,.55));transform:none;
+}
+.unit-card:hover .unit-thumb.is-niche img{transform:scale(1.04)}
+.unit-thumb .role-tag{
+  position:absolute;top:0;left:0;z-index:2;background:rgba(10,10,12,.82);color:var(--gold);
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
+  padding:5px 11px;
+}
+.unit-thumb .bench-tag{
+  position:absolute;bottom:9px;right:9px;z-index:2;background:rgba(200,146,58,.92);color:#1a140a;
+  font-family:'Oswald',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  padding:3px 8px;
+}
+/* richer 3-way stat row on the niche tiles */
+.fc-unit-stats.is-tri{justify-content:flex-start;gap:13px}
+.fc-unit-stats.is-tri span{display:flex;align-items:center;gap:5px}
+.fc-unit-stats.is-tri b{color:var(--parch);font-weight:600}
