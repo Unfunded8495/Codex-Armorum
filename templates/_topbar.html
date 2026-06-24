@@ -45,9 +45,40 @@
             title="More tools">
       &#9776; Tools
     </button>
+    <button type="button" class="nav-army-btn mfm-open-btn" id="mfmOpenBtn"
+            title="Munitorum Field Manual points overlay">MFM Points</button>
     <button type="button" class="nav-army-btn shutdown-btn" data-shutdown-btn title="Stop Codex Armorum">Seal Vault</button>
   </div>
 </header>
+
+<!-- Munitorum Field Manual points overlay: per-faction switch to show newer MFM
+     points in place of the Wahapedia base data. Self-contained so every page
+     that includes the topbar (SPA and server-rendered tool pages) gets it. -->
+<div class="am-backdrop mfm-backdrop" id="mfmModal" hidden>
+  <div class="am-box mfm-box">
+    <div class="am-head">
+      <span class="am-title">Munitorum Field Manual Points</span>
+      <button class="am-close" id="mfmCloseBtn" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="am-body mfm-body">
+      <p class="mfm-intro" id="mfmIntro">Loading the field manual...</p>
+      <div class="mfm-master-row">
+        <div class="mfm-master-text">
+          <strong>All factions</strong>
+          <span class="mfm-sub" id="mfmMasterSub"></span>
+        </div>
+        <label class="mfm-switch">
+          <input type="checkbox" id="mfmMasterSwitch">
+          <span class="mfm-slider"></span>
+        </label>
+      </div>
+      <div class="mfm-faction-list" id="mfmFactionList"></div>
+    </div>
+    <div class="am-foot mfm-foot">
+      <span class="mfm-foot-note" id="mfmFootNote"></span>
+    </div>
+  </div>
+</div>
 <script>
   const toolsToggle = document.getElementById('toolsToggle');
   const secondaryNav = document.getElementById('secondaryNav');
@@ -63,5 +94,93 @@
       }
     });
   }
+</script>
+<script>
+  /* MFM points overlay modal: opens from the topbar, lists factions with a
+     switch each, and posts toggles to /api/mfm. A toggle reloads the page so
+     the current view (SPA fetches or server-rendered points) reflects the new
+     numbers. Self-contained and runs on every page that includes the topbar. */
+  (function(){
+    const openBtn = document.getElementById('mfmOpenBtn');
+    const modal   = document.getElementById('mfmModal');
+    if(!openBtn || !modal || modal.dataset.wired) return;
+    modal.dataset.wired = '1';
+    const closeBtn  = document.getElementById('mfmCloseBtn');
+    const list      = document.getElementById('mfmFactionList');
+    const intro     = document.getElementById('mfmIntro');
+    const footNote  = document.getElementById('mfmFootNote');
+    const masterSub = document.getElementById('mfmMasterSub');
+    const master    = document.getElementById('mfmMasterSwitch');
+    let busy = false;
+
+    const escHtml = s => String(s==null?'':s).replace(/[&<>"']/g, c =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    function open(){ modal.removeAttribute('hidden'); load(); }
+    function close(){ modal.setAttribute('hidden',''); }
+
+    async function load(){
+      list.innerHTML = '';
+      intro.textContent = 'Loading the field manual...';
+      try{
+        const st = await (await fetch('/api/mfm/status')).json();
+        render(st);
+      }catch(e){
+        intro.textContent = 'Could not load MFM status. Is the app still running?';
+      }
+    }
+
+    function render(st){
+      const ver = st.version || 'not imported';
+      intro.innerHTML = 'Show <strong>Munitorum Field Manual ' + escHtml(ver) +
+        '</strong> points in place of Wahapedia for the factions you switch on.' +
+        (st.imported_at ? ' <span class="mfm-imported">Imported ' + escHtml(st.imported_at) + '.</span>' : '');
+      const onCount = st.factions.filter(f => f.enabled).length;
+      masterSub.textContent = onCount
+        ? onCount + ' of ' + st.factions.length + ' factions on'
+        : 'All off, Wahapedia points everywhere';
+      master.checked = !!st.any_enabled;
+      if(!st.factions.length){
+        list.innerHTML = '<p class="mfm-empty">No resolved MFM factions yet. Drop the CSVs into data/mfm and re-import.</p>';
+      } else {
+        list.innerHTML = st.factions.map(f =>
+          '<label class="mfm-row">' +
+            '<span class="mfm-row-name">' + escHtml(f.name) + '</span>' +
+            '<span class="mfm-row-count">' + f.matched_units + ' unit' + (f.matched_units===1?'':'s') + '</span>' +
+            '<span class="mfm-switch"><input type="checkbox" data-mfm-code="' + escHtml(f.code) + '"' +
+              (f.enabled?' checked':'') + '><span class="mfm-slider"></span></span>' +
+          '</label>').join('');
+      }
+      footNote.textContent = st.unmatched_units + ' MFM unit' + (st.unmatched_units===1?'':'s') +
+        ' and ' + st.unmatched_enh + ' enhancement' + (st.unmatched_enh===1?'':'s') +
+        ' have no matching Codex entry yet.';
+    }
+
+    async function postToggle(url, body){
+      if(busy) return;
+      busy = true;
+      try{
+        await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(body)});
+        location.reload();
+      }catch(e){
+        busy = false;
+        intro.textContent = 'That change did not save. Is the app still running?';
+      }
+    }
+
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    modal.addEventListener('click', e => { if(e.target === modal) close(); });
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && !modal.hasAttribute('hidden')) close();
+    });
+    master.addEventListener('change', () =>
+      postToggle('/api/mfm/toggle-all', {enabled: master.checked}));
+    list.addEventListener('change', e => {
+      const cb = e.target.closest('input[data-mfm-code]');
+      if(cb) postToggle('/api/mfm/toggle', {faction_id: cb.dataset.mfmCode, enabled: cb.checked});
+    });
+  })();
 </script>
 <script type="module" src="{{ url_for('static', filename='js/shutdown.js') }}"></script>

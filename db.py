@@ -284,9 +284,17 @@ def init_db():
             name            TEXT NOT NULL,
             role            TEXT,
             points          INTEGER,
+            virtual         INTEGER DEFAULT 0,
+            legend          TEXT,
+            link            TEXT,
             stats_json      TEXT,
             abilities_json  TEXT,
             keywords_json   TEXT,
+            composition_json TEXT,
+            wargear_options_json TEXT,
+            loadout          TEXT,
+            leader_targets_json TEXT,
+            points_tiers_json TEXT,
             imported_at     TEXT NOT NULL
         )""")
 
@@ -302,6 +310,7 @@ def init_db():
             ap           TEXT,
             damage       TEXT,
             keywords     TEXT,
+            description  TEXT,
             imported_at  TEXT NOT NULL
         )""")
 
@@ -318,10 +327,12 @@ def init_db():
         if "unit_bsdata_id" not in _columns(c, "army_units"):
             c.execute("ALTER TABLE army_units ADD COLUMN unit_bsdata_id TEXT")
 
-        if "weapon_bsdata_id" not in _columns(c, "arsenal_weapon"):
+        # Arsenal owns these tables and initialises them after this general
+        # schema pass.  On a brand-new database they do not exist yet.
+        if _table_exists(c, "arsenal_weapon") and "weapon_bsdata_id" not in _columns(c, "arsenal_weapon"):
             c.execute("ALTER TABLE arsenal_weapon ADD COLUMN weapon_bsdata_id TEXT")
 
-        if "unit_bsdata_id" not in _columns(c, "arsenal_weapon_datasheet"):
+        if _table_exists(c, "arsenal_weapon_datasheet") and "unit_bsdata_id" not in _columns(c, "arsenal_weapon_datasheet"):
             c.execute("ALTER TABLE arsenal_weapon_datasheet ADD COLUMN unit_bsdata_id TEXT")
 
         # Backfill unit_bsdata_id for any minis that have a resolvable datasheet_id
@@ -342,13 +353,18 @@ def init_db():
         except Exception:
             pass  # data_store may not be ready on first run before catalogue import
 
-        # Migration: add composition and leader target columns to catalogue_units
+        # Keep the empty-database schema compatible with data_store as well as
+        # with the importer, which may add these fields later on existing DBs.
         for stmt in [
             "ALTER TABLE catalogue_units ADD COLUMN composition_json TEXT",
             "ALTER TABLE catalogue_units ADD COLUMN wargear_options_json TEXT",
             "ALTER TABLE catalogue_units ADD COLUMN loadout TEXT",
             "ALTER TABLE catalogue_units ADD COLUMN leader_targets_json TEXT",
             "ALTER TABLE catalogue_units ADD COLUMN points_tiers_json TEXT",
+            "ALTER TABLE catalogue_units ADD COLUMN legend TEXT",
+            "ALTER TABLE catalogue_units ADD COLUMN link TEXT",
+            "ALTER TABLE catalogue_units ADD COLUMN virtual INTEGER DEFAULT 0",
+            "ALTER TABLE catalogue_weapons ADD COLUMN description TEXT",
         ]:
             try:
                 c.execute(stmt)
@@ -370,3 +386,13 @@ def init_db():
             "CREATE INDEX IF NOT EXISTS idx_purchases_box ON purchases(box_set_id)",
         ]:
             c.execute(stmt)
+
+        # MFM points overlay tables (separate from the Wahapedia catalogue;
+        # applied non-destructively at read time by data_store). Imported lazily
+        # to avoid a circular import; reuses this open connection so the schema
+        # is created in the same transaction.
+        try:
+            import mfm_store
+            mfm_store.ensure_tables(c)
+        except Exception:
+            pass

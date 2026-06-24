@@ -1,0 +1,1186 @@
+faction,section,detachment,enhancement,points,version
+adepta-sororitas,DETACHMENTS,ARMY OF FAITH,Blade of Saint Ellynor,15,v1.0
+adepta-sororitas,DETACHMENTS,ARMY OF FAITH,Divine Aspect,5,v1.0
+adepta-sororitas,DETACHMENTS,ARMY OF FAITH,Litanies of Faith,10,v1.0
+adepta-sororitas,DETACHMENTS,ARMY OF FAITH,Triptych of the Macharian Crusade,20,v1.0
+adepta-sororitas,DETACHMENTS,BRINGERS OF FLAME,Fire and Fury,30,v1.0
+adepta-sororitas,DETACHMENTS,BRINGERS OF FLAME,Iron Surplice of Saint Istalela,10,v1.0
+adepta-sororitas,DETACHMENTS,BRINGERS OF FLAME,Manual of Saint Griselda,20,v1.0
+adepta-sororitas,DETACHMENTS,BRINGERS OF FLAME,Righteous Rage,15,v1.0
+adepta-sororitas,DETACHMENTS,CHAMPIONS OF FAITH,Eyes of the Oracle,10,v1.0
+adepta-sororitas,DETACHMENTS,CHAMPIONS OF FAITH,Mark of Devotion,30,v1.0
+adepta-sororitas,DETACHMENTS,CHAMPIONS OF FAITH,Sanctified Amulet,25,v1.0
+adepta-sororitas,DETACHMENTS,CHAMPIONS OF FAITH,Triptych of Judgement,15,v1.0
+adepta-sororitas,DETACHMENTS,CHORUS OF CONDEMNATION,Clarion of Urgency,15,v1.0
+adepta-sororitas,DETACHMENTS,CHORUS OF CONDEMNATION,Symphonic Payload (Upgrade),10,v1.0
+adepta-sororitas,DETACHMENTS,HALLOWED MARTYRS,Chaplet of Sacrifice,25,v1.0
+adepta-sororitas,DETACHMENTS,HALLOWED MARTYRS,Mantle of Ophelia,20,v1.0
+adepta-sororitas,DETACHMENTS,HALLOWED MARTYRS,Saintly Example,10,v1.0
+adepta-sororitas,DETACHMENTS,HALLOWED MARTYRS,"Through Suffering, Strength",25,v1.0
+adepta-sororitas,DETACHMENTS,PENITENT HOST,Catechism of Divine Penitence,20,v1.0
+adepta-sororitas,DETACHMENTS,PENITENT HOST,Psalm of Righteous Judgement,30,v1.0
+adepta-sororitas,DETACHMENTS,PENITENT HOST,Refrain of Enduring Faith,25,v1.0
+adepta-sororitas,DETACHMENTS,PENITENT HOST,Verse of Holy Piety,15,v1.0
+adepta-sororitas,DETACHMENTS,SACRED CHAMPIONS,Perfervid Haste,10,v1.0
+adepta-sororitas,DETACHMENTS,SACRED CHAMPIONS,Writ of Compunction (Upgrade),20,v1.0
+adepta-sororitas,DETACHMENTS,SANCTIFIED ORATORS,Hagiomnifex (Upgrade),25,v1.0
+adeptus-custodes,DETACHMENTS,AURIC CHAMPIONS,Blade Imperator,25,v1.0
+adeptus-custodes,DETACHMENTS,AURIC CHAMPIONS,Inspirational Exemplar,10,v1.0
+adeptus-custodes,DETACHMENTS,AURIC CHAMPIONS,Martial Philosopher,30,v1.0
+adeptus-custodes,DETACHMENTS,AURIC CHAMPIONS,Veiled Blade,25,v1.0
+adeptus-custodes,DETACHMENTS,LIONS OF THE EMPEROR,Admonimortis,20,v1.0
+adeptus-custodes,DETACHMENTS,LIONS OF THE EMPEROR,Fierce Conqueror,15,v1.0
+adeptus-custodes,DETACHMENTS,LIONS OF THE EMPEROR,Praesidius,25,v1.0
+adeptus-custodes,DETACHMENTS,LIONS OF THE EMPEROR,Superior Creation,25,v1.0
+adeptus-custodes,DETACHMENTS,MIGHT OF THE MORITOI,Auramite Sarcophagus (Upgrade),15,v1.0
+adeptus-custodes,DETACHMENTS,MIGHT OF THE MORITOI,Interred Expertise (Upgrade),25,v1.0
+adeptus-custodes,DETACHMENTS,NULL MAIDEN VIGIL,Enhanced Voidsheen Cloak,10,v1.0
+adeptus-custodes,DETACHMENTS,NULL MAIDEN VIGIL,Huntress’ Eye,15,v1.0
+adeptus-custodes,DETACHMENTS,NULL MAIDEN VIGIL,Oblivion Knight,25,v1.0
+adeptus-custodes,DETACHMENTS,NULL MAIDEN VIGIL,Raptor Blade,5,v1.0
+adeptus-custodes,DETACHMENTS,SHIELD HOST,Auric Mantle,15,v1.0
+adeptus-custodes,DETACHMENTS,SHIELD HOST,Castellan’s Mark,20,v1.0
+adeptus-custodes,DETACHMENTS,SHIELD HOST,From the Hall of Armouries,25,v1.0
+adeptus-custodes,DETACHMENTS,SHIELD HOST,Panoptispex,5,v1.0
+adeptus-custodes,DETACHMENTS,SILENT HUNTERS,Encircling Hunter,15,v1.0
+adeptus-custodes,DETACHMENTS,SILENT HUNTERS,Psyk-out Grenades (Upgrade),10,v1.0
+adeptus-custodes,DETACHMENTS,SOLAR SPEARHEAD,Adamantine Talisman,25,v1.0
+adeptus-custodes,DETACHMENTS,SOLAR SPEARHEAD,Augury Uplink,35,v1.0
+adeptus-custodes,DETACHMENTS,SOLAR SPEARHEAD,Honoured Fallen,15,v1.0
+adeptus-custodes,DETACHMENTS,SOLAR SPEARHEAD,Veteran of the Kataphraktoi,10,v1.0
+adeptus-custodes,DETACHMENTS,TALONS OF THE EMPEROR,Aegis Projector,20,v1.0
+adeptus-custodes,DETACHMENTS,TALONS OF THE EMPEROR,Champion of the Imperium,25,v1.0
+adeptus-custodes,DETACHMENTS,TALONS OF THE EMPEROR,Gift of Terran Artifice,15,v1.0
+adeptus-custodes,DETACHMENTS,TALONS OF THE EMPEROR,Radiant Mantle,30,v1.0
+adeptus-custodes,DETACHMENTS,THARANATOI HAMMERBLOW,Efficient Aggression,25,v1.0
+adeptus-custodes,DETACHMENTS,THARANATOI HAMMERBLOW,Mnemo-locked Shrine Cipher,25,v1.0
+adeptus-mechanicus,DETACHMENTS,COHORT ACQUISITUS,Explorator Dispensation,20,v1.0
+adeptus-mechanicus,DETACHMENTS,COHORT ACQUISITUS,Stealth-screened Cybercanids (Upgrade),15,v1.0
+adeptus-mechanicus,DETACHMENTS,COHORT CYBERNETICA,Arch-negator,5,v1.0
+adeptus-mechanicus,DETACHMENTS,COHORT CYBERNETICA,Emotionless Clarity,10,v1.0
+adeptus-mechanicus,DETACHMENTS,COHORT CYBERNETICA,Lord of Machines,15,v1.0
+adeptus-mechanicus,DETACHMENTS,COHORT CYBERNETICA,Necromechanic,20,v1.0
+adeptus-mechanicus,DETACHMENTS,DATA-PSALM CONCLAVE,Data-blessed Autosermon,15,v1.0
+adeptus-mechanicus,DETACHMENTS,DATA-PSALM CONCLAVE,Mantle of the Gnosticarch,10,v1.0
+adeptus-mechanicus,DETACHMENTS,DATA-PSALM CONCLAVE,Mechanicus Locum,5,v1.0
+adeptus-mechanicus,DETACHMENTS,DATA-PSALM CONCLAVE,Temporcopia,20,v1.0
+adeptus-mechanicus,DETACHMENTS,ERADICATION COHORT,Belicosa-class Capacitor Vanes,25,v1.0
+adeptus-mechanicus,DETACHMENTS,ERADICATION COHORT,Martial Signatum Amplificator,15,v1.0
+adeptus-mechanicus,DETACHMENTS,ERADICATION COHORT,Omnicogitator,25,v1.0
+adeptus-mechanicus,DETACHMENTS,ERADICATION COHORT,Omnissiah’s Fury,10,v1.0
+adeptus-mechanicus,DETACHMENTS,EXPLORATOR MANIPLE,Artisan,10,v1.0
+adeptus-mechanicus,DETACHMENTS,EXPLORATOR MANIPLE,Genetor,20,v1.0
+adeptus-mechanicus,DETACHMENTS,EXPLORATOR MANIPLE,Logis,15,v1.0
+adeptus-mechanicus,DETACHMENTS,EXPLORATOR MANIPLE,Magos,10,v1.0
+adeptus-mechanicus,DETACHMENTS,HALOSCREED BATTLE CLADE,Cognitive Reinforcement,30,v1.0
+adeptus-mechanicus,DETACHMENTS,HALOSCREED BATTLE CLADE,Inloaded Lethality,15,v1.0
+adeptus-mechanicus,DETACHMENTS,HALOSCREED BATTLE CLADE,Sanctified Ordnance,10,v1.0
+adeptus-mechanicus,DETACHMENTS,HALOSCREED BATTLE CLADE,Transoracular Dyad Wafers,15,v1.0
+adeptus-mechanicus,DETACHMENTS,LORDS OF THE FORGE,TL-4ø9,30,v1.0
+adeptus-mechanicus,DETACHMENTS,LORDS OF THE FORGE,Vingh’s Wafers of Dynamism,25,v1.0
+adeptus-mechanicus,DETACHMENTS,LUMINEN AUTO-CHOIR,Electromiasmic Brazier,10,v1.0
+adeptus-mechanicus,DETACHMENTS,LUMINEN AUTO-CHOIR,Voltagheist Reliquary,15,v1.0
+adeptus-mechanicus,DETACHMENTS,RAD-ZONE CORPS,Autoclavic Denunciation,15,v1.0
+adeptus-mechanicus,DETACHMENTS,RAD-ZONE CORPS,Malphonic Susurrus,20,v1.0
+adeptus-mechanicus,DETACHMENTS,RAD-ZONE CORPS,Peerless Eradicator,20,v1.0
+adeptus-mechanicus,DETACHMENTS,RAD-ZONE CORPS,Radial Suffusion,25,v1.0
+adeptus-mechanicus,DETACHMENTS,SKITARII HUNTER COHORT,Battle-sphere Uplink,25,v1.0
+adeptus-mechanicus,DETACHMENTS,SKITARII HUNTER COHORT,Cantic Thrallnet,25,v1.0
+adeptus-mechanicus,DETACHMENTS,SKITARII HUNTER COHORT,Clandestine Infiltrator,15,v1.0
+adeptus-mechanicus,DETACHMENTS,SKITARII HUNTER COHORT,Veiled Hunter,10,v1.0
+aeldari,DETACHMENTS,ARMOURED WARHOST,Guiding Presence,25,v1.0
+aeldari,DETACHMENTS,ARMOURED WARHOST,Spirit Stone of Raelyth,20,v1.0
+aeldari,DETACHMENTS,ASPECT HOST,Aspect of Murder,15,v1.0
+aeldari,DETACHMENTS,ASPECT HOST,Mantle of Wisdom,20,v1.0
+aeldari,DETACHMENTS,ASPECT HOST,Shimmerstone,10,v1.0
+aeldari,DETACHMENTS,ASPECT HOST,Strategic Savant,10,v1.0
+aeldari,DETACHMENTS,CORSAIR COTERIE,Archraider,35,v1.0
+aeldari,DETACHMENTS,CORSAIR COTERIE,Infamy,25,v1.0
+aeldari,DETACHMENTS,CORSAIR COTERIE,Voidstone,15,v1.0
+aeldari,DETACHMENTS,CORSAIR COTERIE,Webway Pathstone,25,v1.0
+aeldari,DETACHMENTS,DEVOTED OF YNNEAD,Borrowed Vigour,10,v1.0
+aeldari,DETACHMENTS,DEVOTED OF YNNEAD,Gaze of Ynnead,15,v1.0
+aeldari,DETACHMENTS,DEVOTED OF YNNEAD,Morbid Might,15,v1.0
+aeldari,DETACHMENTS,DEVOTED OF YNNEAD,Storm of Whispers,10,v1.0
+aeldari,DETACHMENTS,ELDRITCH RAIDERS,Adrenal Infusions,20,v1.0
+aeldari,DETACHMENTS,ELDRITCH RAIDERS,Alacritous Assault,20,v1.0
+aeldari,DETACHMENTS,ELDRITCH RAIDERS,Exotic Munitions,15,v1.0
+aeldari,DETACHMENTS,ELDRITCH RAIDERS,Pirate Prince,15,v1.0
+aeldari,DETACHMENTS,FATEFUL PERFORMANCE,A Foot in the Future,15,v1.0
+aeldari,DETACHMENTS,FATEFUL PERFORMANCE,Mistweave,20,v1.0
+aeldari,DETACHMENTS,GHOSTS OF THE WEBWAY,Cegorach’s Coil,25,v1.0
+aeldari,DETACHMENTS,GHOSTS OF THE WEBWAY,Mask of Secrets,15,v1.0
+aeldari,DETACHMENTS,GHOSTS OF THE WEBWAY,Mistweave,15,v1.0
+aeldari,DETACHMENTS,GHOSTS OF THE WEBWAY,Murder’s Jest,20,v1.0
+aeldari,DETACHMENTS,GUARDIAN BATTLEHOST,Breath of Vaul,10,v1.0
+aeldari,DETACHMENTS,GUARDIAN BATTLEHOST,Craftworld’s Champion,25,v1.0
+aeldari,DETACHMENTS,GUARDIAN BATTLEHOST,Ethereal Pathway,30,v1.0
+aeldari,DETACHMENTS,GUARDIAN BATTLEHOST,Protector of the Paths,20,v1.0
+aeldari,DETACHMENTS,PATH OF THE OUTCAST,Assassins' Eye (Upgrade),15,v1.0
+aeldari,DETACHMENTS,PATH OF THE OUTCAST,Camouflaged Snipers (Upgrade),10,v1.0
+aeldari,DETACHMENTS,SEER COUNCIL,Lucid Eye,30,v1.0
+aeldari,DETACHMENTS,SEER COUNCIL,Runes of Warding,25,v1.0
+aeldari,DETACHMENTS,SEER COUNCIL,Stone of Eldritch Fury,15,v1.0
+aeldari,DETACHMENTS,SEER COUNCIL,Torc of Morai-Heg,20,v1.0
+aeldari,DETACHMENTS,SERPENT’S BROOD,Fanged Leer,10,v1.0
+aeldari,DETACHMENTS,SERPENT’S BROOD,Key of Ghosts,20,v1.0
+aeldari,DETACHMENTS,SERPENT’S BROOD,Shedskin Raiment,25,v1.0
+aeldari,DETACHMENTS,SERPENT’S BROOD,Weavers' Wail,20,v1.0
+aeldari,DETACHMENTS,SPIRIT CONCLAVE,Higher Duty,25,v1.0
+aeldari,DETACHMENTS,SPIRIT CONCLAVE,Light of Clarity,30,v1.0
+aeldari,DETACHMENTS,SPIRIT CONCLAVE,Rune of Mists,10,v1.0
+aeldari,DETACHMENTS,SPIRIT CONCLAVE,Stave of Kurnous,15,v1.0
+aeldari,DETACHMENTS,TWILIGHT FLICKERS,Prelude Performer,20,v1.0
+aeldari,DETACHMENTS,TWILIGHT FLICKERS,Shadowfall Masks (Upgrade),15,v1.0
+aeldari,DETACHMENTS,WARHOST,Gift of Foresight,15,v1.0
+aeldari,DETACHMENTS,WARHOST,Phoenix Gem,35,v1.0
+aeldari,DETACHMENTS,WARHOST,Psychic Destroyer,30,v1.0
+aeldari,DETACHMENTS,WARHOST,Timeless Strategist,15,v1.0
+aeldari,DETACHMENTS,WINDRIDER HOST,Echoes of Ulthanesh,20,v1.0
+aeldari,DETACHMENTS,WINDRIDER HOST,Firstdrawn Blade,10,v1.0
+aeldari,DETACHMENTS,WINDRIDER HOST,Mirage Field,25,v1.0
+aeldari,DETACHMENTS,WINDRIDER HOST,Seersight Strike,15,v1.0
+astra-militarum,DETACHMENTS,ABHUMAN AUXILIARIES,Exemplar of Duty (Upgrade),10,v1.0
+astra-militarum,DETACHMENTS,ABHUMAN AUXILIARIES,Sharp Eyes (Upgrade),10,v1.0
+astra-militarum,DETACHMENTS,ARMOURED INFANTRY,Exemplary Officer,20,v1.0
+astra-militarum,DETACHMENTS,ARMOURED INFANTRY,Grand Strategist,25,v1.0
+astra-militarum,DETACHMENTS,ARMOURED INFANTRY,Master Manoeuvrist,15,v1.0
+astra-militarum,DETACHMENTS,ARMOURED INFANTRY,Omnissian Unguents,35,v1.0
+astra-militarum,DETACHMENTS,BRIDGEHEAD STRIKE,Bombast-class Vox-array,15,v1.0
+astra-militarum,DETACHMENTS,BRIDGEHEAD STRIKE,Priority Drop Beacon,25,v1.0
+astra-militarum,DETACHMENTS,COMBINED ARMS,Death Mask of Ollanius,10,v1.0
+astra-militarum,DETACHMENTS,COMBINED ARMS,Drill Commander,20,v1.0
+astra-militarum,DETACHMENTS,COMBINED ARMS,Grand Strategist,15,v1.0
+astra-militarum,DETACHMENTS,COMBINED ARMS,Reactive Command,15,v1.0
+astra-militarum,DETACHMENTS,DESIGNATION FORCE,Long-range Scout (Upgrade),10,v1.0
+astra-militarum,DETACHMENTS,DESIGNATION FORCE,Recon Star (Upgrade),10,v1.0
+astra-militarum,DETACHMENTS,GRIZZLED COMPANY,Abhuman Detail,20,v1.0
+astra-militarum,DETACHMENTS,GRIZZLED COMPANY,Aquilan Eye,20,v1.0
+astra-militarum,DETACHMENTS,GRIZZLED COMPANY,Laud Hailer,10,v1.0
+astra-militarum,DETACHMENTS,GRIZZLED COMPANY,Spec Ops Veteran,15,v1.0
+astra-militarum,DETACHMENTS,HAMMER OF THE EMPEROR,Calm Under Fire,15,v1.0
+astra-militarum,DETACHMENTS,HAMMER OF THE EMPEROR,Indomitable Steed,15,v1.0
+astra-militarum,DETACHMENTS,HAMMER OF THE EMPEROR,Regimental Banner,20,v1.0
+astra-militarum,DETACHMENTS,HAMMER OF THE EMPEROR,Veteran Crew,20,v1.0
+astra-militarum,DETACHMENTS,MECHANISED ASSAULT,Bold Leadership,25,v1.0
+astra-militarum,DETACHMENTS,MECHANISED ASSAULT,Sacred Unguents,10,v1.0
+astra-militarum,DETACHMENTS,MECHANISED ASSAULT,Smoke Grenades,10,v1.0
+astra-militarum,DETACHMENTS,MECHANISED ASSAULT,Vanguard Honours,15,v1.0
+astra-militarum,DETACHMENTS,RECON ELEMENT,Guerrilla Honours,25,v1.0
+astra-militarum,DETACHMENTS,RECON ELEMENT,Scare Gas Grenades,5,v1.0
+astra-militarum,DETACHMENTS,RECON ELEMENT,Survival Gear,5,v1.0
+astra-militarum,DETACHMENTS,RECON ELEMENT,Tripwires,20,v1.0
+astra-militarum,DETACHMENTS,SIEGE REGIMENT,Eager Advance,20,v1.0
+astra-militarum,DETACHMENTS,SIEGE REGIMENT,Flash Grenades,20,v1.0
+astra-militarum,DETACHMENTS,SIEGE REGIMENT,Legacy Sidearm,10,v1.0
+astra-militarum,DETACHMENTS,SIEGE REGIMENT,Stalwart’s Honours,15,v1.0
+astra-militarum,DETACHMENTS,STEEL HAMMER,Assault Hatches,25,v1.0
+astra-militarum,DETACHMENTS,STEEL HAMMER,Battalion Commander,30,v1.0
+astra-militarum,DETACHMENTS,STEEL HAMMER,Engine Speaker,15,v1.0
+astra-militarum,DETACHMENTS,STEEL HAMMER,Titan Killer,20,v1.0
+black-templars,DETACHMENTS,ANVIL SIEGE FORCE,Architect of War,25,v1.0
+black-templars,DETACHMENTS,ANVIL SIEGE FORCE,Fleet Commander,15,v1.0
+black-templars,DETACHMENTS,ANVIL SIEGE FORCE,Indomitable Fury,20,v1.0
+black-templars,DETACHMENTS,ANVIL SIEGE FORCE,Stoic Defender,15,v1.0
+black-templars,DETACHMENTS,ARMOURED SPEARTIP,Armoured Commander,25,v1.0
+black-templars,DETACHMENTS,ARMOURED SPEARTIP,Liberator,15,v1.0
+black-templars,DETACHMENTS,ARMOURED SPEARTIP,Shock Deployment,20,v1.0
+black-templars,DETACHMENTS,ARMOURED SPEARTIP,Tip of the Spear,40,v1.0
+black-templars,DETACHMENTS,BASTION TASK FORCE,Blades of Valour,15,v1.0
+black-templars,DETACHMENTS,BASTION TASK FORCE,Bombast Omnivox,15,v1.0
+black-templars,DETACHMENTS,BASTION TASK FORCE,Eye of the Primarch,10,v1.0
+black-templars,DETACHMENTS,BASTION TASK FORCE,Hero of the Chapter,20,v1.0
+black-templars,DETACHMENTS,CERAMITE SENTINELS,Castellum Omnivox,20,v1.0
+black-templars,DETACHMENTS,CERAMITE SENTINELS,Defensive Mastery,25,v1.0
+black-templars,DETACHMENTS,CERAMITE SENTINELS,Honour Indefatigable,25,v1.0
+black-templars,DETACHMENTS,CERAMITE SENTINELS,Spy-skull Data Link,15,v1.0
+black-templars,DETACHMENTS,COMPANIONS OF VEHEMENCE,Incendiary Animus,25,v1.0
+black-templars,DETACHMENTS,COMPANIONS OF VEHEMENCE,Merciless Denunciation,25,v1.0
+black-templars,DETACHMENTS,COMPANIONS OF VEHEMENCE,Oathbound Exemplar,15,v1.0
+black-templars,DETACHMENTS,COMPANIONS OF VEHEMENCE,Zealous Vanguard,20,v1.0
+black-templars,DETACHMENTS,FIRESTORM ASSAULT FORCE,Adamantine Mantle,20,v1.0
+black-templars,DETACHMENTS,FIRESTORM ASSAULT FORCE,Champion of Humanity,10,v1.0
+black-templars,DETACHMENTS,FIRESTORM ASSAULT FORCE,Forged in Battle,15,v1.0
+black-templars,DETACHMENTS,FIRESTORM ASSAULT FORCE,War-tempered Artifice,25,v1.0
+black-templars,DETACHMENTS,FULGURIS TASK FORCE,Bellicose Weapon Spirits (Upgrade),15,v1.0
+black-templars,DETACHMENTS,FULGURIS TASK FORCE,Raptorial Cogitator Core (Upgrade),15,v1.0
+black-templars,DETACHMENTS,GLADIUS TASK FORCE,Adept of the Codex,20,v1.0
+black-templars,DETACHMENTS,GLADIUS TASK FORCE,Artificer Armour,10,v1.0
+black-templars,DETACHMENTS,GLADIUS TASK FORCE,Fire Discipline,25,v1.0
+black-templars,DETACHMENTS,GLADIUS TASK FORCE,The Honour Vehement,15,v1.0
+black-templars,DETACHMENTS,GODHAMMER ASSAULT FORCE,Augury Servo-Host,15,v1.0
+black-templars,DETACHMENTS,GODHAMMER ASSAULT FORCE,Battle-Psalm Precentor,10,v1.0
+black-templars,DETACHMENTS,GODHAMMER ASSAULT FORCE,Herald of Sacred Slaughter,15,v1.0
+black-templars,DETACHMENTS,GODHAMMER ASSAULT FORCE,Paragon of Fury,25,v1.0
+black-templars,DETACHMENTS,HEADHUNTER TASK FORCE,Astartes Tank Ace,40,v1.0
+black-templars,DETACHMENTS,HEADHUNTER TASK FORCE,Firestorm Coordinators,20,v1.0
+black-templars,DETACHMENTS,HEADHUNTER TASK FORCE,Gunnery Honours,20,v1.0
+black-templars,DETACHMENTS,HEADHUNTER TASK FORCE,Redoubtable Machine Spirit,25,v1.0
+black-templars,DETACHMENTS,IRONSTORM SPEARHEAD,Adept of the Omnissiah,35,v1.0
+black-templars,DETACHMENTS,IRONSTORM SPEARHEAD,Master of Machine War,20,v1.0
+black-templars,DETACHMENTS,IRONSTORM SPEARHEAD,Target Augury Web,30,v1.0
+black-templars,DETACHMENTS,IRONSTORM SPEARHEAD,The Flesh Is Weak,10,v1.0
+black-templars,DETACHMENTS,MARSHAL'S HOUSEHOLD,Fervent Exemplars (Upgrade),10,v1.0
+black-templars,DETACHMENTS,MARSHAL'S HOUSEHOLD,Inheritors of Sigismund (Upgrade),15,v1.0
+black-templars,DETACHMENTS,ORBITAL ASSAULT FORCE,Dedicated Gunship,15,v1.0
+black-templars,DETACHMENTS,ORBITAL ASSAULT FORCE,Laurels of Thunder,15,v1.0
+black-templars,DETACHMENTS,ORBITAL ASSAULT FORCE,Orbital Uplink Reliquary,25,v1.0
+black-templars,DETACHMENTS,ORBITAL ASSAULT FORCE,Veteran of the Vanguard,20,v1.0
+black-templars,DETACHMENTS,STORMLANCE TASK FORCE,Feinting Withdrawal,10,v1.0
+black-templars,DETACHMENTS,STORMLANCE TASK FORCE,Fury of the Storm,25,v1.0
+black-templars,DETACHMENTS,STORMLANCE TASK FORCE,Hunter’s Instincts,25,v1.0
+black-templars,DETACHMENTS,STORMLANCE TASK FORCE,Portents of Wisdom,15,v1.0
+black-templars,DETACHMENTS,SUBVERSION ASSETS,Death in the Dark (Upgrade),15,v1.0
+black-templars,DETACHMENTS,SUBVERSION ASSETS,Shroud Field,20,v1.0
+black-templars,DETACHMENTS,THE LIVING MIRACLE,Guiding Omens,15,v1.0
+black-templars,DETACHMENTS,VANGUARD SPEARHEAD,Execute and Redeploy,20,v1.0
+black-templars,DETACHMENTS,VANGUARD SPEARHEAD,Ghostweave Cloak,15,v1.0
+black-templars,DETACHMENTS,VANGUARD SPEARHEAD,Shadow War Veteran,30,v1.0
+black-templars,DETACHMENTS,VANGUARD SPEARHEAD,The Blade Driven Deep,25,v1.0
+black-templars,DETACHMENTS,VINDICATION TASK FORCE,Consecrating Aura,25,v1.0
+black-templars,DETACHMENTS,VINDICATION TASK FORCE,Imperialis of the Eternal Crusade,15,v1.0
+black-templars,DETACHMENTS,VINDICATION TASK FORCE,Orb of the Emperor’s Aegis,10,v1.0
+black-templars,DETACHMENTS,VINDICATION TASK FORCE,Warden of Honour,20,v1.0
+black-templars,DETACHMENTS,WRATHFUL PROCESSION,Adaptable Executioner,20,v1.0
+black-templars,DETACHMENTS,WRATHFUL PROCESSION,Benediction of Fury,15,v1.0
+blood-angels,DETACHMENTS,1ST COMPANY TASK FORCE,Fear Made Manifest,30,v1.0
+blood-angels,DETACHMENTS,1ST COMPANY TASK FORCE,Iron Resolve,15,v1.0
+blood-angels,DETACHMENTS,1ST COMPANY TASK FORCE,Rites of War,10,v1.0
+blood-angels,DETACHMENTS,1ST COMPANY TASK FORCE,The Imperium’s Sword,25,v1.0
+blood-angels,DETACHMENTS,ANGELIC INHERITORS,Blazing Icon,20,v1.0
+blood-angels,DETACHMENTS,ANGELIC INHERITORS,Ordained Sacrifice,25,v1.0
+blood-angels,DETACHMENTS,ANGELIC INHERITORS,Prescient Flash,20,v1.0
+blood-angels,DETACHMENTS,ANGELIC INHERITORS,Troubling Visions,15,v1.0
+blood-angels,DETACHMENTS,ANVIL SIEGE FORCE,Architect of War,25,v1.0
+blood-angels,DETACHMENTS,ANVIL SIEGE FORCE,Fleet Commander,15,v1.0
+blood-angels,DETACHMENTS,ANVIL SIEGE FORCE,Indomitable Fury,20,v1.0
+blood-angels,DETACHMENTS,ANVIL SIEGE FORCE,Stoic Defender,15,v1.0
+blood-angels,DETACHMENTS,ARMOURED SPEARTIP,Armoured Commander,25,v1.0
+blood-angels,DETACHMENTS,ARMOURED SPEARTIP,Liberator,15,v1.0
+blood-angels,DETACHMENTS,ARMOURED SPEARTIP,Shock Deployment,20,v1.0
+blood-angels,DETACHMENTS,ARMOURED SPEARTIP,Tip of the Spear,40,v1.0
+blood-angels,DETACHMENTS,BASTION TASK FORCE,Blades of Valour,15,v1.0
+blood-angels,DETACHMENTS,BASTION TASK FORCE,Bombast Omnivox,15,v1.0
+blood-angels,DETACHMENTS,BASTION TASK FORCE,Eye of the Primarch,10,v1.0
+blood-angels,DETACHMENTS,BASTION TASK FORCE,Hero of the Chapter,20,v1.0
+blood-angels,DETACHMENTS,CERAMITE SENTINELS,Castellum Omnivox,20,v1.0
+blood-angels,DETACHMENTS,CERAMITE SENTINELS,Defensive Mastery,25,v1.0
+blood-angels,DETACHMENTS,CERAMITE SENTINELS,Honour Indefatigable,25,v1.0
+blood-angels,DETACHMENTS,CERAMITE SENTINELS,Spy-skull Data Link,15,v1.0
+blood-angels,DETACHMENTS,ENCARMINE SPEARTIP,Angelic Executioner,25,v1.0
+blood-angels,DETACHMENTS,ENCARMINE SPEARTIP,Shadow of Abomination,25,v1.0
+blood-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,Adamantine Mantle,20,v1.0
+blood-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,Champion of Humanity,10,v1.0
+blood-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,Forged in Battle,15,v1.0
+blood-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,War-tempered Artifice,25,v1.0
+blood-angels,DETACHMENTS,FULGURIS TASK FORCE,Bellicose Weapon Spirits (Upgrade),15,v1.0
+blood-angels,DETACHMENTS,FULGURIS TASK FORCE,Raptorial Cogitator Core (Upgrade),15,v1.0
+blood-angels,DETACHMENTS,GLADIUS TASK FORCE,Adept of the Codex,20,v1.0
+blood-angels,DETACHMENTS,GLADIUS TASK FORCE,Artificer Armour,10,v1.0
+blood-angels,DETACHMENTS,GLADIUS TASK FORCE,Fire Discipline,25,v1.0
+blood-angels,DETACHMENTS,GLADIUS TASK FORCE,The Honour Vehement,15,v1.0
+blood-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Astartes Tank Ace,40,v1.0
+blood-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Firestorm Coordinators,20,v1.0
+blood-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Gunnery Honours,20,v1.0
+blood-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Redoubtable Machine Spirit,25,v1.0
+blood-angels,DETACHMENTS,IRONSTORM SPEARHEAD,Adept of the Omnissiah,35,v1.0
+blood-angels,DETACHMENTS,IRONSTORM SPEARHEAD,Master of Machine War,20,v1.0
+blood-angels,DETACHMENTS,IRONSTORM SPEARHEAD,Target Augury Web,30,v1.0
+blood-angels,DETACHMENTS,IRONSTORM SPEARHEAD,The Flesh Is Weak,10,v1.0
+blood-angels,DETACHMENTS,LEGACY OF GRACE,Aureole of the Angel,20,v1.0
+blood-angels,DETACHMENTS,LEGACY OF GRACE,Blood Boil,10,v1.0
+blood-angels,DETACHMENTS,LIBERATOR ASSAULT GROUP,Gift of Foresight,15,v1.0
+blood-angels,DETACHMENTS,LIBERATOR ASSAULT GROUP,Icon of the Angel,20,v1.0
+blood-angels,DETACHMENTS,LIBERATOR ASSAULT GROUP,Rage-fuelled Warrior,35,v1.0
+blood-angels,DETACHMENTS,LIBERATOR ASSAULT GROUP,Speed of the Primarch,25,v1.0
+blood-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Celerity,35,v1.0
+blood-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Fusillade,20,v1.0
+blood-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Obfuscation,25,v1.0
+blood-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Prescience,20,v1.0
+blood-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Temporal Corridor,15,v1.0
+blood-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Dedicated Gunship,15,v1.0
+blood-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Laurels of Thunder,15,v1.0
+blood-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Orbital Uplink Reliquary,25,v1.0
+blood-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Veteran of the Vanguard,20,v1.0
+blood-angels,DETACHMENTS,RAGE-CURSED ONSLAUGHT,Angel’s Fang,25,v1.0
+blood-angels,DETACHMENTS,RAGE-CURSED ONSLAUGHT,Carmine Reliquary,30,v1.0
+blood-angels,DETACHMENTS,RAGE-CURSED ONSLAUGHT,Master of the Red Thirst,25,v1.0
+blood-angels,DETACHMENTS,RAGE-CURSED ONSLAUGHT,Sanguinary Tear,35,v1.0
+blood-angels,DETACHMENTS,STORMLANCE TASK FORCE,Feinting Withdrawal,10,v1.0
+blood-angels,DETACHMENTS,STORMLANCE TASK FORCE,Fury of the Storm,25,v1.0
+blood-angels,DETACHMENTS,STORMLANCE TASK FORCE,Hunter’s Instincts,25,v1.0
+blood-angels,DETACHMENTS,STORMLANCE TASK FORCE,Portents of Wisdom,15,v1.0
+blood-angels,DETACHMENTS,SUBVERSION ASSETS,Death in the Dark (Upgrade),15,v1.0
+blood-angels,DETACHMENTS,SUBVERSION ASSETS,Shroud Field,20,v1.0
+blood-angels,DETACHMENTS,THE ANGELIC HOST,Archangel’s Shard,15,v1.0
+blood-angels,DETACHMENTS,THE ANGELIC HOST,Artisan of War,20,v1.0
+blood-angels,DETACHMENTS,THE ANGELIC HOST,Gleaming Pinions,25,v1.0
+blood-angels,DETACHMENTS,THE ANGELIC HOST,Visage of Death,15,v1.0
+blood-angels,DETACHMENTS,THE LOST BRETHREN,Blood Shard,25,v1.0
+blood-angels,DETACHMENTS,THE LOST BRETHREN,Sanguinius’ Grace,20,v1.0
+blood-angels,DETACHMENTS,THE LOST BRETHREN,To Slay The Warmaster,15,v1.0
+blood-angels,DETACHMENTS,THE LOST BRETHREN,Vengeful Onslaught,10,v1.0
+blood-angels,DETACHMENTS,VANGUARD SPEARHEAD,Execute and Redeploy,20,v1.0
+blood-angels,DETACHMENTS,VANGUARD SPEARHEAD,Ghostweave Cloak,15,v1.0
+blood-angels,DETACHMENTS,VANGUARD SPEARHEAD,Shadow War Veteran,30,v1.0
+blood-angels,DETACHMENTS,VANGUARD SPEARHEAD,The Blade Driven Deep,25,v1.0
+blood-angels,DETACHMENTS,WRATH OF THE DOOMED,Instinctive Interception,10,v1.0
+blood-angels,DETACHMENTS,WRATH OF THE DOOMED,On the Archtraitor's Bridge,20,v1.0
+chaos-daemons,DETACHMENTS,BLOOD LEGION,Brazenmaw,15,v1.0
+chaos-daemons,DETACHMENTS,BLOOD LEGION,Fury’s Cage,20,v1.0
+chaos-daemons,DETACHMENTS,BLOOD LEGION,Gateway Unto Damnation,10,v1.0
+chaos-daemons,DETACHMENTS,BLOOD LEGION,Slaughterthirst,25,v1.0
+chaos-daemons,DETACHMENTS,CAVALCADE OF CHAOS,Apocalyptic Steeds (Upgrade),10,v1.0
+chaos-daemons,DETACHMENTS,CAVALCADE OF CHAOS,Soul-shattering Charge (Upgrade),10,v1.0
+chaos-daemons,DETACHMENTS,DAEMONIC INCURSION,"A’rgath, The King of Blades",20,v1.0
+chaos-daemons,DETACHMENTS,DAEMONIC INCURSION,Soulstealer,15,v1.0
+chaos-daemons,DETACHMENTS,DAEMONIC INCURSION,The Endless Gift,30,v1.0
+chaos-daemons,DETACHMENTS,DAEMONIC INCURSION,The Everstave,25,v1.0
+chaos-daemons,DETACHMENTS,LEGION OF EXCESS,Avatar of Perfection,15,v1.0
+chaos-daemons,DETACHMENTS,LEGION OF EXCESS,Dreaming Crown,30,v1.0
+chaos-daemons,DETACHMENTS,LEGION OF EXCESS,False Majesty,30,v1.0
+chaos-daemons,DETACHMENTS,LEGION OF EXCESS,Soul Glutton,10,v1.0
+chaos-daemons,DETACHMENTS,LORDS OF THE WARP,Swollen with Power (Upgrade),10,v1.0
+chaos-daemons,DETACHMENTS,PLAGUE LEGION,Cankerblight,15,v1.0
+chaos-daemons,DETACHMENTS,PLAGUE LEGION,Droning Shroud,35,v1.0
+chaos-daemons,DETACHMENTS,PLAGUE LEGION,Font of Spores,20,v1.0
+chaos-daemons,DETACHMENTS,PLAGUE LEGION,Maggot Maws,15,v1.0
+chaos-daemons,DETACHMENTS,SCINTILLATING LEGION,Improbable Shield,30,v1.0
+chaos-daemons,DETACHMENTS,SCINTILLATING LEGION,Inescapable Eye,10,v1.0
+chaos-daemons,DETACHMENTS,SCINTILLATING LEGION,Infernal Puppeteer,25,v1.0
+chaos-daemons,DETACHMENTS,SCINTILLATING LEGION,Neverblade,20,v1.0
+chaos-daemons,DETACHMENTS,SHADOW LEGION,Fade to Darkness,30,v1.0
+chaos-daemons,DETACHMENTS,SHADOW LEGION,Leaping Shadows,25,v1.0
+chaos-daemons,DETACHMENTS,SHADOW LEGION,Malice Made Manifest,25,v1.0
+chaos-daemons,DETACHMENTS,SHADOW LEGION,Mantle of Gloom,20,v1.0
+chaos-daemons,DETACHMENTS,WARPTIDE,Bane-forged Weapons (Upgrade),15,v1.0
+chaos-daemons,DETACHMENTS,WARPTIDE,Soul-hungry Slaughterers (Upgrade),10,v1.0
+chaos-knights,DETACHMENTS,BASTIONS OF TYRANNY,Hate-filled Dominion,20,v1.0
+chaos-knights,DETACHMENTS,BASTIONS OF TYRANNY,Pterrorshade Rookery,20,v1.0
+chaos-knights,DETACHMENTS,HELHUNT LANCE,Aspect of the Beast,30,v1.0
+chaos-knights,DETACHMENTS,HELHUNT LANCE,Hunter’s Helm,15,v1.0
+chaos-knights,DETACHMENTS,HELHUNT LANCE,Octagram of Conjuration,40,v1.0
+chaos-knights,DETACHMENTS,HELHUNT LANCE,Throne Tyrannicus,25,v1.0
+chaos-knights,DETACHMENTS,HOUNDPACK LANCE,Final Howl,20,v1.0
+chaos-knights,DETACHMENTS,HOUNDPACK LANCE,Loping Predator,10,v1.0
+chaos-knights,DETACHMENTS,HOUNDPACK LANCE,Panoply of the Cursed Knights,15,v1.0
+chaos-knights,DETACHMENTS,HOUNDPACK LANCE,Preyslayer’s Mantle,15,v1.0
+chaos-knights,DETACHMENTS,HUNTING WARPACK,Snarling Rivalry (Upgrade),10,v1.0
+chaos-knights,DETACHMENTS,HUNTING WARPACK,Soul-spoor Auspicator (Upgrade),15,v1.0
+chaos-knights,DETACHMENTS,ICONOCLAST FIEFDOM,Cruel Lashmaster (Aura),25,v1.0
+chaos-knights,DETACHMENTS,ICONOCLAST FIEFDOM,Iconoclast Idol (Aura),20,v1.0
+chaos-knights,DETACHMENTS,INFERNAL LANCE,Bestial Aspect,30,v1.0
+chaos-knights,DETACHMENTS,INFERNAL LANCE,Blasphemous Engine,35,v1.0
+chaos-knights,DETACHMENTS,INFERNAL LANCE,Fleshmetal Fusion,35,v1.0
+chaos-knights,DETACHMENTS,INFERNAL LANCE,Knight Diabolus,25,v1.0
+chaos-knights,DETACHMENTS,LORDS OF DREAD,Blade of Celerity,35,v1.0
+chaos-knights,DETACHMENTS,LORDS OF DREAD,Blessing of the Dark Master,20,v1.0
+chaos-knights,DETACHMENTS,LORDS OF DREAD,Mirror of Fates,30,v1.0
+chaos-knights,DETACHMENTS,LORDS OF DREAD,Putrid Carapace,30,v1.0
+chaos-knights,DETACHMENTS,LORDS OF DREAD,Throne Mechanicum of Skulls,25,v1.0
+chaos-knights,DETACHMENTS,LORDS OF DREAD,Warp-borne Stalker,25,v1.0
+chaos-knights,DETACHMENTS,TRAITORIS LANCE,Malevolent Heraldry,30,v1.0
+chaos-knights,DETACHMENTS,TRAITORIS LANCE,Nightmare’s Master,20,v1.0
+chaos-knights,DETACHMENTS,TRAITORIS LANCE,Tyrant’s Shadow,25,v1.0
+chaos-knights,DETACHMENTS,TRAITORIS LANCE,Veil of Medrengard,35,v1.0
+chaos-space-marines,DETACHMENTS,CABAL OF CHAOS,Conduit of Chaos,20,v1.0
+chaos-space-marines,DETACHMENTS,CABAL OF CHAOS,Touched by the Warp,10,v1.0
+chaos-space-marines,DETACHMENTS,CHAOS CULT,Amulet of Tainted Vigour,20,v1.0
+chaos-space-marines,DETACHMENTS,CHAOS CULT,Cultist’s Brand,30,v1.0
+chaos-space-marines,DETACHMENTS,CHAOS CULT,Incendiary Goad,25,v1.0
+chaos-space-marines,DETACHMENTS,CHAOS CULT,Warped Foresight,10,v1.0
+chaos-space-marines,DETACHMENTS,CREATIONS OF BILE,Helm of All-Seeing,25,v1.0
+chaos-space-marines,DETACHMENTS,CREATIONS OF BILE,Living Carapace,15,v1.0
+chaos-space-marines,DETACHMENTS,CREATIONS OF BILE,Prime Test Subject,35,v1.0
+chaos-space-marines,DETACHMENTS,CREATIONS OF BILE,Surgical Precision,10,v1.0
+chaos-space-marines,DETACHMENTS,CULT OF THE ARKIFANE,Crown of Worms,15,v1.0
+chaos-space-marines,DETACHMENTS,CULT OF THE ARKIFANE,Cybinfernal Font,20,v1.0
+chaos-space-marines,DETACHMENTS,CULT OF THE ARKIFANE,Mark of the Soul Forges,20,v1.0
+chaos-space-marines,DETACHMENTS,CULT OF THE ARKIFANE,Wyredjinn,25,v1.0
+chaos-space-marines,DETACHMENTS,DECEPTORS,Cursed Fang,10,v1.0
+chaos-space-marines,DETACHMENTS,DECEPTORS,Falsehood,10,v1.0
+chaos-space-marines,DETACHMENTS,DECEPTORS,Shroud of Obfuscation,15,v1.0
+chaos-space-marines,DETACHMENTS,DECEPTORS,Soul Link,5,v1.0
+chaos-space-marines,DETACHMENTS,DEVOTEES OF DESTRUCTION,Eye of Oblivion,20,v1.0
+chaos-space-marines,DETACHMENTS,DEVOTEES OF DESTRUCTION,Pact of Destruction,15,v1.0
+chaos-space-marines,DETACHMENTS,DREAD TALONS,Eater of Dread,15,v1.0
+chaos-space-marines,DETACHMENTS,DREAD TALONS,Night’s Shroud,10,v1.0
+chaos-space-marines,DETACHMENTS,DREAD TALONS,Warp-Fuelled Thrusters,20,v1.0
+chaos-space-marines,DETACHMENTS,DREAD TALONS,Willbreaker,10,v1.0
+chaos-space-marines,DETACHMENTS,FELLHAMMER SIEGE-HOST,Bastion Plate,10,v1.0
+chaos-space-marines,DETACHMENTS,FELLHAMMER SIEGE-HOST,Iron Artifice,10,v1.0
+chaos-space-marines,DETACHMENTS,FELLHAMMER SIEGE-HOST,Ironbound Enmity,15,v1.0
+chaos-space-marines,DETACHMENTS,FELLHAMMER SIEGE-HOST,Warp Tracer,20,v1.0
+chaos-space-marines,DETACHMENTS,HURON’S MARAUDERS,Dread Reputation,25,v1.0
+chaos-space-marines,DETACHMENTS,HURON’S MARAUDERS,Eager for Bloodshed,30,v1.0
+chaos-space-marines,DETACHMENTS,HURON’S MARAUDERS,Raid Leader,20,v1.0
+chaos-space-marines,DETACHMENTS,HURON’S MARAUDERS,Voice of the Tyrant,25,v1.0
+chaos-space-marines,DETACHMENTS,MURDERTALON RAIDERS,Pact of Cursed Pinions,20,v1.0
+chaos-space-marines,DETACHMENTS,MURDERTALON RAIDERS,Shadowcowl Talisman,20,v1.0
+chaos-space-marines,DETACHMENTS,NIGHTMARE HUNT,Greyveil Hex,25,v1.0
+chaos-space-marines,DETACHMENTS,NIGHTMARE HUNT,Sorrowscent Vulture,35,v1.0
+chaos-space-marines,DETACHMENTS,NIGHTMARE HUNT,Terrorglut Parasite,20,v1.0
+chaos-space-marines,DETACHMENTS,NIGHTMARE HUNT,Warp-Fuelled Thrusters,20,v1.0
+chaos-space-marines,DETACHMENTS,PACTBOUND ZEALOTS,Eye of Tzeentch,15,v1.0
+chaos-space-marines,DETACHMENTS,PACTBOUND ZEALOTS,Intoxicating Elixir,15,v1.0
+chaos-space-marines,DETACHMENTS,PACTBOUND ZEALOTS,Orbs of Unlife,15,v1.0
+chaos-space-marines,DETACHMENTS,PACTBOUND ZEALOTS,Talisman of Burning Blood,15,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE RAIDERS,Despot’s Claim,15,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE RAIDERS,Dread Reaver,15,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE RAIDERS,Mark of the Hound,25,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE RAIDERS,Tyrant’s Lash,20,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE WARBAND,Empyric Symbiote,15,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE WARBAND,Eyes of the Hunter,15,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE WARBAND,Fratricidal Trophies,5,v1.0
+chaos-space-marines,DETACHMENTS,RENEGADE WARBAND,Weaponised Hatred,35,v1.0
+chaos-space-marines,DETACHMENTS,SOULFORGED WARPACK,Forge’s Blessing,20,v1.0
+chaos-space-marines,DETACHMENTS,SOULFORGED WARPACK,Invigorated Mechatendrils,15,v1.0
+chaos-space-marines,DETACHMENTS,SOULFORGED WARPACK,Soul Harvester,15,v1.0
+chaos-space-marines,DETACHMENTS,SOULFORGED WARPACK,Tempting Addendum,25,v1.0
+chaos-space-marines,DETACHMENTS,VETERANS OF THE LONG WAR,Eager for Vengeance,20,v1.0
+chaos-space-marines,DETACHMENTS,VETERANS OF THE LONG WAR,Eye of Abaddon,15,v1.0
+chaos-space-marines,DETACHMENTS,VETERANS OF THE LONG WAR,Mark of Legend,10,v1.0
+chaos-space-marines,DETACHMENTS,VETERANS OF THE LONG WAR,Warmaster’s Gift,15,v1.0
+chaos-space-marines,DETACHMENTS,WARPSTRIKE CHAMPIONS,Akshur’s Binding Runes,20,v1.0
+chaos-space-marines,DETACHMENTS,WARPSTRIKE CHAMPIONS,Eye of the Warp,15,v1.0
+chaos-space-marines,DETACHMENTS,WARPSTRIKE CHAMPIONS,Infernal Fulgurite,20,v1.0
+chaos-space-marines,DETACHMENTS,WARPSTRIKE CHAMPIONS,Tzagulla,25,v1.0
+dark-angels,DETACHMENTS,1ST COMPANY TASK FORCE,Fear Made Manifest,30,v1.0
+dark-angels,DETACHMENTS,1ST COMPANY TASK FORCE,Iron Resolve,15,v1.0
+dark-angels,DETACHMENTS,1ST COMPANY TASK FORCE,Rites of War,10,v1.0
+dark-angels,DETACHMENTS,1ST COMPANY TASK FORCE,The Imperium’s Sword,25,v1.0
+dark-angels,DETACHMENTS,ANVIL SIEGE FORCE,Architect of War,25,v1.0
+dark-angels,DETACHMENTS,ANVIL SIEGE FORCE,Fleet Commander,15,v1.0
+dark-angels,DETACHMENTS,ANVIL SIEGE FORCE,Indomitable Fury,20,v1.0
+dark-angels,DETACHMENTS,ANVIL SIEGE FORCE,Stoic Defender,15,v1.0
+dark-angels,DETACHMENTS,ARMOURED SPEARTIP,Armoured Commander,25,v1.0
+dark-angels,DETACHMENTS,ARMOURED SPEARTIP,Liberator,15,v1.0
+dark-angels,DETACHMENTS,ARMOURED SPEARTIP,Shock Deployment,20,v1.0
+dark-angels,DETACHMENTS,ARMOURED SPEARTIP,Tip of the Spear,40,v1.0
+dark-angels,DETACHMENTS,BASTION TASK FORCE,Blades of Valour,15,v1.0
+dark-angels,DETACHMENTS,BASTION TASK FORCE,Bombast Omnivox,15,v1.0
+dark-angels,DETACHMENTS,BASTION TASK FORCE,Eye of the Primarch,10,v1.0
+dark-angels,DETACHMENTS,BASTION TASK FORCE,Hero of the Chapter,20,v1.0
+dark-angels,DETACHMENTS,CERAMITE SENTINELS,Castellum Omnivox,20,v1.0
+dark-angels,DETACHMENTS,CERAMITE SENTINELS,Defensive Mastery,25,v1.0
+dark-angels,DETACHMENTS,CERAMITE SENTINELS,Honour Indefatigable,25,v1.0
+dark-angels,DETACHMENTS,CERAMITE SENTINELS,Spy-skull Data Link,15,v1.0
+dark-angels,DETACHMENTS,COMPANY OF HUNTERS,Master-crafted Weapon,10,v1.0
+dark-angels,DETACHMENTS,COMPANY OF HUNTERS,Master of Manoeuvre,15,v1.0
+dark-angels,DETACHMENTS,COMPANY OF HUNTERS,Mounted Strategist,30,v1.0
+dark-angels,DETACHMENTS,COMPANY OF HUNTERS,Recon Hunter,20,v1.0
+dark-angels,DETACHMENTS,DARK AGE ARSENAL,Entreaty of Perpetual Ardour (Upgrade),15,v1.0
+dark-angels,DETACHMENTS,DARK AGE ARSENAL,Petition of Stability (Upgrade),15,v1.0
+dark-angels,DETACHMENTS,DARKFLIGHT PURSUIT,Nightforged Battery (Upgrade),15,v1.0
+dark-angels,DETACHMENTS,DARKFLIGHT PURSUIT,Thundercowl Turbines (Upgrade),15,v1.0
+dark-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,Adamantine Mantle,20,v1.0
+dark-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,Champion of Humanity,10,v1.0
+dark-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,Forged in Battle,15,v1.0
+dark-angels,DETACHMENTS,FIRESTORM ASSAULT FORCE,War-tempered Artifice,25,v1.0
+dark-angels,DETACHMENTS,FULGURIS TASK FORCE,Bellicose Weapon Spirits (Upgrade),15,v1.0
+dark-angels,DETACHMENTS,FULGURIS TASK FORCE,Raptorial Cogitator Core (Upgrade),15,v1.0
+dark-angels,DETACHMENTS,GLADIUS TASK FORCE,Adept of the Codex,20,v1.0
+dark-angels,DETACHMENTS,GLADIUS TASK FORCE,Artificer Armour,10,v1.0
+dark-angels,DETACHMENTS,GLADIUS TASK FORCE,Fire Discipline,25,v1.0
+dark-angels,DETACHMENTS,GLADIUS TASK FORCE,The Honour Vehement,15,v1.0
+dark-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Astartes Tank Ace,40,v1.0
+dark-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Firestorm Coordinators,20,v1.0
+dark-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Gunnery Honours,20,v1.0
+dark-angels,DETACHMENTS,HEADHUNTER TASK FORCE,Redoubtable Machine Spirit,25,v1.0
+dark-angels,DETACHMENTS,INNER CIRCLE TASK FORCE,Champion of the Deathwing,15,v1.0
+dark-angels,DETACHMENTS,INNER CIRCLE TASK FORCE,Deathwing Assault,30,v1.0
+dark-angels,DETACHMENTS,INNER CIRCLE TASK FORCE,Eye of the Unseen,10,v1.0
+dark-angels,DETACHMENTS,INNER CIRCLE TASK FORCE,Singular Will,20,v1.0
+dark-angels,DETACHMENTS,INTERROGATION CONCLAVE,Inescapable Interrogation,20,v1.0
+dark-angels,DETACHMENTS,INTERROGATION CONCLAVE,Limitless Zeal,10,v1.0
+dark-angels,DETACHMENTS,IRONSTORM SPEARHEAD,Adept of the Omnissiah,35,v1.0
+dark-angels,DETACHMENTS,IRONSTORM SPEARHEAD,Master of Machine War,20,v1.0
+dark-angels,DETACHMENTS,IRONSTORM SPEARHEAD,Target Augury Web,30,v1.0
+dark-angels,DETACHMENTS,IRONSTORM SPEARHEAD,The Flesh Is Weak,10,v1.0
+dark-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Celerity,35,v1.0
+dark-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Fusillade,20,v1.0
+dark-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Obfuscation,25,v1.0
+dark-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Prescience,20,v1.0
+dark-angels,DETACHMENTS,LIBRARIUS CONCLAVE,Temporal Corridor,15,v1.0
+dark-angels,DETACHMENTS,LION’S BLADE TASK FORCE,Calibanite Armaments,15,v1.0
+dark-angels,DETACHMENTS,LION’S BLADE TASK FORCE,Fulgus Magna,20,v1.0
+dark-angels,DETACHMENTS,LION’S BLADE TASK FORCE,Lord of the Hunt,15,v1.0
+dark-angels,DETACHMENTS,LION’S BLADE TASK FORCE,Stalwart Champion,25,v1.0
+dark-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Dedicated Gunship,15,v1.0
+dark-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Laurels of Thunder,15,v1.0
+dark-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Orbital Uplink Reliquary,25,v1.0
+dark-angels,DETACHMENTS,ORBITAL ASSAULT FORCE,Veteran of the Vanguard,20,v1.0
+dark-angels,DETACHMENTS,STORMLANCE TASK FORCE,Feinting Withdrawal,10,v1.0
+dark-angels,DETACHMENTS,STORMLANCE TASK FORCE,Fury of the Storm,25,v1.0
+dark-angels,DETACHMENTS,STORMLANCE TASK FORCE,Hunter’s Instincts,25,v1.0
+dark-angels,DETACHMENTS,STORMLANCE TASK FORCE,Portents of Wisdom,15,v1.0
+dark-angels,DETACHMENTS,SUBVERSION ASSETS,Death in the Dark (Upgrade),15,v1.0
+dark-angels,DETACHMENTS,SUBVERSION ASSETS,Shroud Field,20,v1.0
+dark-angels,DETACHMENTS,UNFORGIVEN TASK FORCE,Pennant of Remembrance,10,v1.0
+dark-angels,DETACHMENTS,UNFORGIVEN TASK FORCE,Shroud of Heroes,25,v1.0
+dark-angels,DETACHMENTS,UNFORGIVEN TASK FORCE,Stubborn Tenacity,15,v1.0
+dark-angels,DETACHMENTS,UNFORGIVEN TASK FORCE,Weapons of the First Legion,15,v1.0
+dark-angels,DETACHMENTS,VANGUARD SPEARHEAD,Execute and Redeploy,20,v1.0
+dark-angels,DETACHMENTS,VANGUARD SPEARHEAD,Ghostweave Cloak,15,v1.0
+dark-angels,DETACHMENTS,VANGUARD SPEARHEAD,Shadow War Veteran,30,v1.0
+dark-angels,DETACHMENTS,VANGUARD SPEARHEAD,The Blade Driven Deep,25,v1.0
+dark-angels,DETACHMENTS,WRATH OF THE ROCK,Ancient Weapons,25,v1.0
+dark-angels,DETACHMENTS,WRATH OF THE ROCK,Deathwing Assault,15,v1.0
+dark-angels,DETACHMENTS,WRATH OF THE ROCK,Lord of the Ravenwing,10,v1.0
+dark-angels,DETACHMENTS,WRATH OF THE ROCK,Tempered in Battle (Aura),10,v1.0
+death-guard,DETACHMENTS,CHAMPIONS OF CONTAGION,Cornucophagus,35,v1.0
+death-guard,DETACHMENTS,CHAMPIONS OF CONTAGION,Final Ingredient,20,v1.0
+death-guard,DETACHMENTS,CHAMPIONS OF CONTAGION,Needle of Nurgle,25,v1.0
+death-guard,DETACHMENTS,CHAMPIONS OF CONTAGION,Visions of Virulence,15,v1.0
+death-guard,DETACHMENTS,CONTAGION ENGINES,Lancet of the Worldsore (Upgrade),15,v1.0
+death-guard,DETACHMENTS,CONTAGION ENGINES,Parasitic Woe‑reaper (Upgrade),15,v1.0
+death-guard,DETACHMENTS,DEATH LORD’S CHOSEN,Face of Death,10,v1.0
+death-guard,DETACHMENTS,DEATH LORD’S CHOSEN,Helm of The Fly King,20,v1.0
+death-guard,DETACHMENTS,DEATH LORD’S CHOSEN,Vile Vigour,15,v1.0
+death-guard,DETACHMENTS,DEATH LORD’S CHOSEN,Warprot Talisman,30,v1.0
+death-guard,DETACHMENTS,FLYBLOWN HOST,Insectile Murmuration (Upgrade),15,v1.0
+death-guard,DETACHMENTS,FLYBLOWN HOST,Plagueveil (Upgrade),15,v1.0
+death-guard,DETACHMENTS,MORTARION’S HAMMER,Bilemaw Blight,10,v1.0
+death-guard,DETACHMENTS,MORTARION’S HAMMER,Eye of Affliction,20,v1.0
+death-guard,DETACHMENTS,MORTARION’S HAMMER,Shriekworm Familiar,15,v1.0
+death-guard,DETACHMENTS,MORTARION’S HAMMER,Tendrilous Emissions,30,v1.0
+death-guard,DETACHMENTS,PARAGONS OF PUTRESCENCE,Host of the Hybridised Pox,40,v1.0
+death-guard,DETACHMENTS,PARAGONS OF PUTRESCENCE,Rejuvenating Swarm,20,v1.0
+death-guard,DETACHMENTS,SHAMBLEROT VECTORIUM,Lord of the Walking Pox,15,v1.0
+death-guard,DETACHMENTS,SHAMBLEROT VECTORIUM,Sorrowsyphon,10,v1.0
+death-guard,DETACHMENTS,SHAMBLEROT VECTORIUM,Talisman of Burgeoning,25,v1.0
+death-guard,DETACHMENTS,SHAMBLEROT VECTORIUM,Witherbone Pipes,25,v1.0
+death-guard,DETACHMENTS,TALLYBAND SUMMONERS,Beckoning Blight,20,v1.0
+death-guard,DETACHMENTS,TALLYBAND SUMMONERS,Entropic Knell,15,v1.0
+death-guard,DETACHMENTS,TALLYBAND SUMMONERS,Fell Harvester,10,v1.0
+death-guard,DETACHMENTS,TALLYBAND SUMMONERS,Tome of Bounteous Blessings,20,v1.0
+death-guard,DETACHMENTS,VIRULENT VECTORIUM,Arch Contaminator,25,v1.0
+death-guard,DETACHMENTS,VIRULENT VECTORIUM,Daemon Weapon of Nurgle,10,v1.0
+death-guard,DETACHMENTS,VIRULENT VECTORIUM,Furnace of Plagues,25,v1.0
+death-guard,DETACHMENTS,VIRULENT VECTORIUM,Revolting Regeneration,30,v1.0
+deathwatch,DETACHMENTS,1ST COMPANY TASK FORCE,Fear Made Manifest,30,v1.0
+deathwatch,DETACHMENTS,1ST COMPANY TASK FORCE,Iron Resolve,15,v1.0
+deathwatch,DETACHMENTS,1ST COMPANY TASK FORCE,Rites of War,10,v1.0
+deathwatch,DETACHMENTS,1ST COMPANY TASK FORCE,The Imperium’s Sword,25,v1.0
+deathwatch,DETACHMENTS,ANVIL SIEGE FORCE,Architect of War,25,v1.0
+deathwatch,DETACHMENTS,ANVIL SIEGE FORCE,Fleet Commander,15,v1.0
+deathwatch,DETACHMENTS,ANVIL SIEGE FORCE,Indomitable Fury,20,v1.0
+deathwatch,DETACHMENTS,ANVIL SIEGE FORCE,Stoic Defender,15,v1.0
+deathwatch,DETACHMENTS,ARMOURED SPEARTIP,Armoured Commander,25,v1.0
+deathwatch,DETACHMENTS,ARMOURED SPEARTIP,Liberator,15,v1.0
+deathwatch,DETACHMENTS,ARMOURED SPEARTIP,Shock Deployment,20,v1.0
+deathwatch,DETACHMENTS,ARMOURED SPEARTIP,Tip of the Spear,40,v1.0
+deathwatch,DETACHMENTS,BASTION TASK FORCE,Blades of Valour,15,v1.0
+deathwatch,DETACHMENTS,BASTION TASK FORCE,Bombast Omnivox,15,v1.0
+deathwatch,DETACHMENTS,BASTION TASK FORCE,Eye of the Primarch,10,v1.0
+deathwatch,DETACHMENTS,BASTION TASK FORCE,Hero of the Chapter,20,v1.0
+deathwatch,DETACHMENTS,BLACK SPEAR TASK FORCE,Beacon Angelis,25,v1.0
+deathwatch,DETACHMENTS,BLACK SPEAR TASK FORCE,Osseus Key,15,v1.0
+deathwatch,DETACHMENTS,BLACK SPEAR TASK FORCE,The Tome of Ectoclades,30,v1.0
+deathwatch,DETACHMENTS,BLACK SPEAR TASK FORCE,Thief of Secrets,25,v1.0
+deathwatch,DETACHMENTS,CERAMITE SENTINELS,Castellum Omnivox,20,v1.0
+deathwatch,DETACHMENTS,CERAMITE SENTINELS,Defensive Mastery,25,v1.0
+deathwatch,DETACHMENTS,CERAMITE SENTINELS,Honour Indefatigable,25,v1.0
+deathwatch,DETACHMENTS,CERAMITE SENTINELS,Spy-skull Data Link,15,v1.0
+deathwatch,DETACHMENTS,FIRESTORM ASSAULT FORCE,Adamantine Mantle,20,v1.0
+deathwatch,DETACHMENTS,FIRESTORM ASSAULT FORCE,Champion of Humanity,10,v1.0
+deathwatch,DETACHMENTS,FIRESTORM ASSAULT FORCE,Forged in Battle,15,v1.0
+deathwatch,DETACHMENTS,FIRESTORM ASSAULT FORCE,War-tempered Artifice,25,v1.0
+deathwatch,DETACHMENTS,FULGURIS TASK FORCE,Bellicose Weapon Spirits (Upgrade),15,v1.0
+deathwatch,DETACHMENTS,FULGURIS TASK FORCE,Raptorial Cogitator Core (Upgrade),15,v1.0
+deathwatch,DETACHMENTS,GLADIUS TASK FORCE,Adept of the Codex,20,v1.0
+deathwatch,DETACHMENTS,GLADIUS TASK FORCE,Artificer Armour,10,v1.0
+deathwatch,DETACHMENTS,GLADIUS TASK FORCE,Fire Discipline,25,v1.0
+deathwatch,DETACHMENTS,GLADIUS TASK FORCE,The Honour Vehement,15,v1.0
+deathwatch,DETACHMENTS,HEADHUNTER TASK FORCE,Astartes Tank Ace,40,v1.0
+deathwatch,DETACHMENTS,HEADHUNTER TASK FORCE,Firestorm Coordinators,20,v1.0
+deathwatch,DETACHMENTS,HEADHUNTER TASK FORCE,Gunnery Honours,20,v1.0
+deathwatch,DETACHMENTS,HEADHUNTER TASK FORCE,Redoubtable Machine Spirit,25,v1.0
+deathwatch,DETACHMENTS,IRONSTORM SPEARHEAD,Adept of the Omnissiah,35,v1.0
+deathwatch,DETACHMENTS,IRONSTORM SPEARHEAD,Master of Machine War,20,v1.0
+deathwatch,DETACHMENTS,IRONSTORM SPEARHEAD,Target Augury Web,30,v1.0
+deathwatch,DETACHMENTS,IRONSTORM SPEARHEAD,The Flesh Is Weak,10,v1.0
+deathwatch,DETACHMENTS,LIBRARIUS CONCLAVE,Celerity,35,v1.0
+deathwatch,DETACHMENTS,LIBRARIUS CONCLAVE,Fusillade,20,v1.0
+deathwatch,DETACHMENTS,LIBRARIUS CONCLAVE,Obfuscation,25,v1.0
+deathwatch,DETACHMENTS,LIBRARIUS CONCLAVE,Prescience,20,v1.0
+deathwatch,DETACHMENTS,LIBRARIUS CONCLAVE,Temporal Corridor,15,v1.0
+deathwatch,DETACHMENTS,ORBITAL ASSAULT FORCE,Dedicated Gunship,15,v1.0
+deathwatch,DETACHMENTS,ORBITAL ASSAULT FORCE,Laurels of Thunder,15,v1.0
+deathwatch,DETACHMENTS,ORBITAL ASSAULT FORCE,Orbital Uplink Reliquary,25,v1.0
+deathwatch,DETACHMENTS,ORBITAL ASSAULT FORCE,Veteran of the Vanguard,20,v1.0
+deathwatch,DETACHMENTS,STORMLANCE TASK FORCE,Feinting Withdrawal,10,v1.0
+deathwatch,DETACHMENTS,STORMLANCE TASK FORCE,Fury of the Storm,25,v1.0
+deathwatch,DETACHMENTS,STORMLANCE TASK FORCE,Hunter’s Instincts,25,v1.0
+deathwatch,DETACHMENTS,STORMLANCE TASK FORCE,Portents of Wisdom,15,v1.0
+deathwatch,DETACHMENTS,SUBVERSION ASSETS,Death in the Dark (Upgrade),15,v1.0
+deathwatch,DETACHMENTS,SUBVERSION ASSETS,Shroud Field,20,v1.0
+deathwatch,DETACHMENTS,VANGUARD SPEARHEAD,Execute and Redeploy,20,v1.0
+deathwatch,DETACHMENTS,VANGUARD SPEARHEAD,Ghostweave Cloak,15,v1.0
+deathwatch,DETACHMENTS,VANGUARD SPEARHEAD,Shadow War Veteran,30,v1.0
+deathwatch,DETACHMENTS,VANGUARD SPEARHEAD,The Blade Driven Deep,25,v1.0
+drukhari,DETACHMENTS,COVENITE COTERIE,Master Artisan,20,v1.0
+drukhari,DETACHMENTS,COVENITE COTERIE,Master Nemesine,5,v1.0
+drukhari,DETACHMENTS,COVENITE COTERIE,Master Regenesist,25,v1.0
+drukhari,DETACHMENTS,COVENITE COTERIE,Master Repugnomancer,15,v1.0
+drukhari,DETACHMENTS,EXHIBITION OF SLAUGHTER,Hyperstimm Trafficker,20,v1.0
+drukhari,DETACHMENTS,EXHIBITION OF SLAUGHTER,Periapt of Torments,20,v1.0
+drukhari,DETACHMENTS,KABALITE AGONYSTS,Contempt for Rivals,20,v1.0
+drukhari,DETACHMENTS,KABALITE AGONYSTS,Towering Arrogance,15,v1.0
+drukhari,DETACHMENTS,KABALITE CARTEL,Informant Network,30,v1.0
+drukhari,DETACHMENTS,KABALITE CARTEL,Leechbite Plate,5,v1.0
+drukhari,DETACHMENTS,KABALITE CARTEL,Towering Arrogance,20,v1.0
+drukhari,DETACHMENTS,KABALITE CARTEL,Webway Awl,25,v1.0
+drukhari,DETACHMENTS,REALSPACE RAIDERS,Crucible of Malediction,15,v1.0
+drukhari,DETACHMENTS,REALSPACE RAIDERS,Dark Vitality,20,v1.0
+drukhari,DETACHMENTS,REALSPACE RAIDERS,Eye of Spite,15,v1.0
+drukhari,DETACHMENTS,REALSPACE RAIDERS,Labyrinthine Cunning,25,v1.0
+drukhari,DETACHMENTS,REAPER’S WAGER,Archraider,15,v1.0
+drukhari,DETACHMENTS,REAPER’S WAGER,Conductor of Torment,20,v1.0
+drukhari,DETACHMENTS,REAPER’S WAGER,Reaper’s Cowl,25,v1.0
+drukhari,DETACHMENTS,REAPER’S WAGER,Webway Walker,15,v1.0
+drukhari,DETACHMENTS,SKYSPLINTER ASSAULT,Nightmare Shroud,20,v1.0
+drukhari,DETACHMENTS,SKYSPLINTER ASSAULT,Phantasmal Smoke,15,v1.0
+drukhari,DETACHMENTS,SKYSPLINTER ASSAULT,Sadistic Fulcrum,15,v1.0
+drukhari,DETACHMENTS,SKYSPLINTER ASSAULT,Spiteful Raider,10,v1.0
+drukhari,DETACHMENTS,SPECTACLE OF SPITE,Chronoshard,15,v1.0
+drukhari,DETACHMENTS,SPECTACLE OF SPITE,Morghenna’s Curse,20,v1.0
+drukhari,DETACHMENTS,SPECTACLE OF SPITE,Periapt of Torments,25,v1.0
+drukhari,DETACHMENTS,SPECTACLE OF SPITE,Pharmacophex,15,v1.0
+drukhari,DETACHMENTS,TOOLS OF TORMENT,Elixir of the Corpse Courts (Upgrade),15,v1.0
+drukhari,DETACHMENTS,TOOLS OF TORMENT,Gnarlskin Experimentor,20,v1.0
+emperors-children,DETACHMENTS,CARNIVAL OF EXCESS,Dark Blessings,10,v1.0
+emperors-children,DETACHMENTS,CARNIVAL OF EXCESS,Empyric Suffusion,15,v1.0
+emperors-children,DETACHMENTS,CARNIVAL OF EXCESS,Possessed Blade,25,v1.0
+emperors-children,DETACHMENTS,CARNIVAL OF EXCESS,Warp Walker,30,v1.0
+emperors-children,DETACHMENTS,COTERIE OF THE CONCEITED,Pledge of Dark Glory,25,v1.0
+emperors-children,DETACHMENTS,COTERIE OF THE CONCEITED,Pledge of Eternal Servitude,25,v1.0
+emperors-children,DETACHMENTS,COTERIE OF THE CONCEITED,Pledge of Mortal Pain,15,v1.0
+emperors-children,DETACHMENTS,COTERIE OF THE CONCEITED,Pledge of Unholy Fortune,30,v1.0
+emperors-children,DETACHMENTS,COURT OF THE PHOENICIAN,Exalted Patron,15,v1.0
+emperors-children,DETACHMENTS,COURT OF THE PHOENICIAN,Soulstain Made Manifest,15,v1.0
+emperors-children,DETACHMENTS,COURT OF THE PHOENICIAN,Spiritsliver,20,v1.0
+emperors-children,DETACHMENTS,COURT OF THE PHOENICIAN,Tears of the Phoenix,25,v1.0
+emperors-children,DETACHMENTS,ELEGANT BRUTES,Cacophonic Accompaniment,20,v1.0
+emperors-children,DETACHMENTS,ELEGANT BRUTES,Frenzied Ferocity (Upgrade),15,v1.0
+emperors-children,DETACHMENTS,FRENZIED HOST,Euphoric Crown,20,v1.0
+emperors-children,DETACHMENTS,FRENZIED HOST,Howling Plate,20,v1.0
+emperors-children,DETACHMENTS,MERCURIAL HOST,Intoxicating Musk,20,v1.0
+emperors-children,DETACHMENTS,MERCURIAL HOST,Loathsome Dexterity,10,v1.0
+emperors-children,DETACHMENTS,MERCURIAL HOST,Steeped in Suffering,20,v1.0
+emperors-children,DETACHMENTS,MERCURIAL HOST,Tactical Perfection,15,v1.0
+emperors-children,DETACHMENTS,PEERLESS BLADESMEN,Blinding Speed,25,v1.0
+emperors-children,DETACHMENTS,PEERLESS BLADESMEN,Distortion,25,v1.0
+emperors-children,DETACHMENTS,PEERLESS BLADESMEN,Faultless Opportunist,15,v1.0
+emperors-children,DETACHMENTS,PEERLESS BLADESMEN,Rise to the Challenge,30,v1.0
+emperors-children,DETACHMENTS,RAPID EVISCERATION,Accomplished Tactician,35,v1.0
+emperors-children,DETACHMENTS,RAPID EVISCERATION,Heretek Adept,35,v1.0
+emperors-children,DETACHMENTS,RAPID EVISCERATION,Spearhead Striker,20,v1.0
+emperors-children,DETACHMENTS,RAPID EVISCERATION,Sublime Prescience,25,v1.0
+emperors-children,DETACHMENTS,SLAANESH’S CHOSEN,Eager to Prove,15,v1.0
+emperors-children,DETACHMENTS,SLAANESH’S CHOSEN,Proud and Vainglorious,20,v1.0
+emperors-children,DETACHMENTS,SLAANESH’S CHOSEN,Repulsed by Weakness,25,v1.0
+emperors-children,DETACHMENTS,SLAANESH’S CHOSEN,Slayer of Champions,15,v1.0
+emperors-children,DETACHMENTS,SPECTACLE OF SLAUGHTER,Beguiling Grotesquerie (Upgrade),15,v1.0
+emperors-children,DETACHMENTS,SPECTACLE OF SLAUGHTER,Eager Patrons (Upgrade),20,v1.0
+genestealer-cults,DETACHMENTS,BIOSANCTIC BROODSURGE,Alien Majesty,15,v1.0
+genestealer-cults,DETACHMENTS,BIOSANCTIC BROODSURGE,Biomorph Adaptation,25,v1.0
+genestealer-cults,DETACHMENTS,BIOSANCTIC BROODSURGE,Mutagenic Regeneration,10,v1.0
+genestealer-cults,DETACHMENTS,BIOSANCTIC BROODSURGE,Predatory Instincts,20,v1.0
+genestealer-cults,DETACHMENTS,BROOD BROTHERS AUXILIA,Adaptive Reprisal,15,v1.0
+genestealer-cults,DETACHMENTS,BROOD BROTHERS AUXILIA,Fire-point Commander,10,v1.0
+genestealer-cults,DETACHMENTS,BROOD BROTHERS AUXILIA,Martial Espionage,25,v1.0
+genestealer-cults,DETACHMENTS,BROOD BROTHERS AUXILIA,The Hero Returned,20,v1.0
+genestealer-cults,DETACHMENTS,FINAL DAY,Enraptured Damnation,10,v1.0
+genestealer-cults,DETACHMENTS,FINAL DAY,Inhuman Integration,20,v1.0
+genestealer-cults,DETACHMENTS,FINAL DAY,Synaptic Auger,15,v1.0
+genestealer-cults,DETACHMENTS,FINAL DAY,Vanguard Tyrant,25,v1.0
+genestealer-cults,DETACHMENTS,HEROES OF THE UPRISING,Contraband Munitions,20,v1.0
+genestealer-cults,DETACHMENTS,HEROES OF THE UPRISING,Gene-tailored Toxins,35,v1.0
+genestealer-cults,DETACHMENTS,HOST OF ASCENSION,A Chink In Their Armour,20,v1.0
+genestealer-cults,DETACHMENTS,HOST OF ASCENSION,Assassination Edict,15,v1.0
+genestealer-cults,DETACHMENTS,HOST OF ASCENSION,Our Time is Nigh,20,v1.0
+genestealer-cults,DETACHMENTS,HOST OF ASCENSION,Prowling Agitant,15,v1.0
+genestealer-cults,DETACHMENTS,OUTLANDER CLAW,Assault Commando,15,v1.0
+genestealer-cults,DETACHMENTS,OUTLANDER CLAW,Cartographic Data-leech,10,v1.0
+genestealer-cults,DETACHMENTS,OUTLANDER CLAW,Serpentine Tactics,10,v1.0
+genestealer-cults,DETACHMENTS,OUTLANDER CLAW,Starfall Shells,10,v1.0
+genestealer-cults,DETACHMENTS,PURESTRAIN BROODSWARM,Mark of the Star Children (Upgrade),30,v1.0
+genestealer-cults,DETACHMENTS,PURESTRAIN BROODSWARM,Talons of the Sire,15,v1.0
+genestealer-cults,DETACHMENTS,XENOCREED CONGREGATION,Deeds that Speak to the Masses,25,v1.0
+genestealer-cults,DETACHMENTS,XENOCREED CONGREGATION,Denunciator of Tyrants,25,v1.0
+genestealer-cults,DETACHMENTS,XENOCREED CONGREGATION,Gene-sire’s Reliquant,5,v1.0
+genestealer-cults,DETACHMENTS,XENOCREED CONGREGATION,Incendiary Inspiration,15,v1.0
+genestealer-cults,DETACHMENTS,XENOCULT MASSES,Devious Disguises (Upgrade),15,v1.0
+genestealer-cults,DETACHMENTS,XENOCULT MASSES,Inspired to Greatness,15,v1.0
+grey-knights,DETACHMENTS,ARGENT ASSAULT,Psychic Celerity,15,v1.0
+grey-knights,DETACHMENTS,ARGENT ASSAULT,Vigilance of Titan,20,v1.0
+grey-knights,DETACHMENTS,AUGURIUM TASK FORCE,Doomseer’s Amulet,25,v1.0
+grey-knights,DETACHMENTS,AUGURIUM TASK FORCE,Grimoire of Conjunctions,10,v1.0
+grey-knights,DETACHMENTS,AUGURIUM TASK FORCE,One Foot in the Future,15,v1.0
+grey-knights,DETACHMENTS,AUGURIUM TASK FORCE,Shield of Prophecy,20,v1.0
+grey-knights,DETACHMENTS,BANISHERS,Ephemeral Tome,15,v1.0
+grey-knights,DETACHMENTS,BANISHERS,Pyresoul,20,v1.0
+grey-knights,DETACHMENTS,BANISHERS,Sigil of the Hunt,10,v1.0
+grey-knights,DETACHMENTS,BANISHERS,Sixty-sixth Seal,25,v1.0
+grey-knights,DETACHMENTS,BROTHERHOOD STRIKE,Banishing Wave,20,v1.0
+grey-knights,DETACHMENTS,BROTHERHOOD STRIKE,Blinding Aura,10,v1.0
+grey-knights,DETACHMENTS,BROTHERHOOD STRIKE,Purity of Purpose,15,v1.0
+grey-knights,DETACHMENTS,BROTHERHOOD STRIKE,Tome of Forbidden Ways,25,v1.0
+grey-knights,DETACHMENTS,FIRES OF PURGATION,Boons of Deimos (Upgrade),20,v1.0
+grey-knights,DETACHMENTS,FIRES OF PURGATION,Precognicient Volleys (Upgrade),10,v1.0
+grey-knights,DETACHMENTS,HALLOWED CONCLAVE,Eye of the Augurium,25,v1.0
+grey-knights,DETACHMENTS,HALLOWED CONCLAVE,Inescapable Judgement,20,v1.0
+grey-knights,DETACHMENTS,HALLOWED CONCLAVE,Nemesis Rounds,10,v1.0
+grey-knights,DETACHMENTS,HALLOWED CONCLAVE,Sanctic Reaper,15,v1.0
+grey-knights,DETACHMENTS,IMMATERIAL INTERDICTION,Astral Overlap (Upgrade),10,v1.0
+grey-knights,DETACHMENTS,IMMATERIAL INTERDICTION,Predestined Coordinates (Upgrade),10,v1.0
+grey-knights,DETACHMENTS,SANCTIC SPEARHEAD,Driven by Duty,10,v1.0
+grey-knights,DETACHMENTS,SANCTIC SPEARHEAD,Quickening Foci,15,v1.0
+grey-knights,DETACHMENTS,SANCTIC SPEARHEAD,Sigil of Exigence,30,v1.0
+grey-knights,DETACHMENTS,SANCTIC SPEARHEAD,Spiritus Machina,25,v1.0
+grey-knights,DETACHMENTS,WARPBANE TASK FORCE,Mandulian Reliquary,20,v1.0
+grey-knights,DETACHMENTS,WARPBANE TASK FORCE,Paragon of Sanctity,10,v1.0
+grey-knights,DETACHMENTS,WARPBANE TASK FORCE,Phial of the Abyss,15,v1.0
+grey-knights,DETACHMENTS,WARPBANE TASK FORCE,Radiant Champion,15,v1.0
+imperial-agents,DETACHMENTS,IMPERIALIS FLEET,Clandestine Operation,15,v1.0
+imperial-agents,DETACHMENTS,IMPERIALIS FLEET,Combat Landers,10,v1.0
+imperial-agents,DETACHMENTS,IMPERIALIS FLEET,Digital Weapons,10,v1.0
+imperial-agents,DETACHMENTS,IMPERIALIS FLEET,Fleetmaster,20,v1.0
+imperial-agents,DETACHMENTS,"ORDO HERETICUS, PURGATION FORCE",Ignis Judicium,10,v1.0
+imperial-agents,DETACHMENTS,"ORDO HERETICUS, PURGATION FORCE",Liber Heresius,10,v1.0
+imperial-agents,DETACHMENTS,"ORDO HERETICUS, PURGATION FORCE",No Escape,25,v1.0
+imperial-agents,DETACHMENTS,"ORDO HERETICUS, PURGATION FORCE",Witch Hunter,15,v1.0
+imperial-agents,DETACHMENTS,"ORDO MALLEUS, DAEMON HUNTERS",Daemon Slayer,10,v1.0
+imperial-agents,DETACHMENTS,"ORDO MALLEUS, DAEMON HUNTERS",Formidable Resolve,5,v1.0
+imperial-agents,DETACHMENTS,"ORDO MALLEUS, DAEMON HUNTERS",Gift of the Prescient,20,v1.0
+imperial-agents,DETACHMENTS,"ORDO MALLEUS, DAEMON HUNTERS",Grimoire of True Names,10,v1.0
+imperial-agents,DETACHMENTS,"ORDO XENOS, ALIEN HUNTERS",Amulet of Auto-chastisement,25,v1.0
+imperial-agents,DETACHMENTS,"ORDO XENOS, ALIEN HUNTERS",Beacon Angelis,30,v1.0
+imperial-agents,DETACHMENTS,"ORDO XENOS, ALIEN HUNTERS",Blackweave Shroud,15,v1.0
+imperial-agents,DETACHMENTS,"ORDO XENOS, ALIEN HUNTERS",Universal Anathema,10,v1.0
+imperial-agents,DETACHMENTS,VEILED BLADE ELIMINATION FORCE,Decoy Targets,40,v1.0
+imperial-agents,DETACHMENTS,VEILED BLADE ELIMINATION FORCE,Esoteric Explosives,40,v1.0
+imperial-agents,DETACHMENTS,VEILED BLADE ELIMINATION FORCE,Introneural Biotech,35,v1.0
+imperial-agents,DETACHMENTS,VEILED BLADE ELIMINATION FORCE,Micromelta Rounds,45,v1.0
+imperial-knights,DETACHMENTS,DOMINUS FOEBREAKERS,Archeotech Autoloaders,25,v1.0
+imperial-knights,DETACHMENTS,DOMINUS FOEBREAKERS,Blessed Plate,30,v1.0
+imperial-knights,DETACHMENTS,FREEBLADE COMPANY,Bringer of Justice,30,v1.0
+imperial-knights,DETACHMENTS,FREEBLADE COMPANY,Hunter’s Eye,25,v1.0
+imperial-knights,DETACHMENTS,FREEBLADE COMPANY,Mysterious Guardian,35,v1.0
+imperial-knights,DETACHMENTS,FREEBLADE COMPANY,Sanctuary,20,v1.0
+imperial-knights,DETACHMENTS,GATE WARDEN LANCE,Acquisitor-at-Arms,15,v1.0
+imperial-knights,DETACHMENTS,GATE WARDEN LANCE,Augury Halo,20,v1.0
+imperial-knights,DETACHMENTS,GATE WARDEN LANCE,Purgation’s Hand,20,v1.0
+imperial-knights,DETACHMENTS,GATE WARDEN LANCE,Vengeful Tread,15,v1.0
+imperial-knights,DETACHMENTS,QUESTOR FORGEPACT,Knight of the Opus Machina (Aura),15,v1.0
+imperial-knights,DETACHMENTS,QUESTOR FORGEPACT,Magos Questoris,20,v1.0
+imperial-knights,DETACHMENTS,QUESTORIS COMPANIONS,Crushing Condemnation,10,v1.0
+imperial-knights,DETACHMENTS,QUESTORIS COMPANIONS,Herald of Triumph,15,v1.0
+imperial-knights,DETACHMENTS,QUESTORIS COMPANIONS,Pennant of Silvered Fury,15,v1.0
+imperial-knights,DETACHMENTS,QUESTORIS COMPANIONS,Wyrmslayer Divination,10,v1.0
+imperial-knights,DETACHMENTS,SPEARHEAD-AT-ARMS,Fables of Nightmare,10,v1.0
+imperial-knights,DETACHMENTS,SPEARHEAD-AT-ARMS,Martial Tuition,15,v1.0
+imperial-knights,DETACHMENTS,SPEARHEAD-AT-ARMS,Mentor’s Pride,20,v1.0
+imperial-knights,DETACHMENTS,SPEARHEAD-AT-ARMS,Tales of Heroism,10,v1.0
+imperial-knights,DETACHMENTS,THRONE-BONDED OUTRIDERS,Ancestral Overbleed (Upgrade),10,v1.0
+imperial-knights,DETACHMENTS,THRONE-BONDED OUTRIDERS,Gyro-optimised Actuators (Upgrade),15,v1.0
+imperial-knights,DETACHMENTS,VALOURSTRIKE LANCE,Bearer of the Evanescent Ion,15,v1.0
+imperial-knights,DETACHMENTS,VALOURSTRIKE LANCE,Bearer of the Iron Chalice,20,v1.0
+imperial-knights,DETACHMENTS,VALOURSTRIKE LANCE,Bearer of the Judicant’s Helm,25,v1.0
+imperial-knights,DETACHMENTS,VALOURSTRIKE LANCE,Bearer of the Lancer’s Sigil,25,v1.0
+leagues-of-votann,DETACHMENTS,ARMOURED TRAILBLAZERS,Optimised Attack Lines (Upgrade),15,v1.0
+leagues-of-votann,DETACHMENTS,ARMOURED TRAILBLAZERS,Saturation Rounds (Upgrade),10,v1.0
+leagues-of-votann,DETACHMENTS,BRANDFAST OATHBAND,Precursive Judgement,15,v1.0
+leagues-of-votann,DETACHMENTS,BRANDFAST OATHBAND,Signature Restoration,5,v1.0
+leagues-of-votann,DETACHMENTS,BRANDFAST OATHBAND,Tactical Alchemy,10,v1.0
+leagues-of-votann,DETACHMENTS,BRANDFAST OATHBAND,Trivärg Cyber Implant,40,v1.0
+leagues-of-votann,DETACHMENTS,DÊLVE ASSAULT SHIFT,Dêlvewerke Navigator,25,v1.0
+leagues-of-votann,DETACHMENTS,DÊLVE ASSAULT SHIFT,Multiwave System Jammer,10,v1.0
+leagues-of-votann,DETACHMENTS,DÊLVE ASSAULT SHIFT,Piledriver,15,v1.0
+leagues-of-votann,DETACHMENTS,DÊLVE ASSAULT SHIFT,Quake Supervisor,20,v1.0
+leagues-of-votann,DETACHMENTS,FARSEEKERS,Pan-spectral Lockons (Upgrade),10,v1.0
+leagues-of-votann,DETACHMENTS,FARSEEKERS,Shroudwërke Talismans (Upgrade),15,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHBAND,Bastion Shield,25,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHBAND,High Kâhl,30,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHBAND,Ironskein,10,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHBAND,Quake Multigenerator,15,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHFYRE ARSENAL,Calculated Tenacity,15,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHFYRE ARSENAL,Fârstrydr Node,20,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHFYRE ARSENAL,Graviton Vault,5,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHFYRE ARSENAL,Mantle of Elders,10,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHGUARD COVENANT,High Kâhl,30,v1.0
+leagues-of-votann,DETACHMENTS,HEARTHGUARD COVENANT,Ironskein,10,v1.0
+leagues-of-votann,DETACHMENTS,MERCENARY OATHBAND,Asset Manipulator,25,v1.0
+leagues-of-votann,DETACHMENTS,MERCENARY OATHBAND,Etacarn SB9 Targeting Implant,15,v1.0
+leagues-of-votann,DETACHMENTS,MERCENARY OATHBAND,Mercenary Prospector,20,v1.0
+leagues-of-votann,DETACHMENTS,MERCENARY OATHBAND,Metaphysical Brokerage,20,v1.0
+leagues-of-votann,DETACHMENTS,NEEDGAÂRD OATHBAND,Ancestral Crest,15,v1.0
+leagues-of-votann,DETACHMENTS,NEEDGAÂRD OATHBAND,Dead Reckoning,10,v1.0
+leagues-of-votann,DETACHMENTS,NEEDGAÂRD OATHBAND,Iron Ambassador,5,v1.0
+leagues-of-votann,DETACHMENTS,NEEDGAÂRD OATHBAND,Oathbound Speculator,30,v1.0
+leagues-of-votann,DETACHMENTS,PERSECUTION PROSPECT,Eye for Weakness,25,v1.0
+leagues-of-votann,DETACHMENTS,PERSECUTION PROSPECT,Nomad Strategist,20,v1.0
+leagues-of-votann,DETACHMENTS,PERSECUTION PROSPECT,Surgical Saboteur,10,v1.0
+leagues-of-votann,DETACHMENTS,PERSECUTION PROSPECT,Writ of Acquisition,10,v1.0
+necrons,DETACHMENTS,ANNIHILATION LEGION,Eldritch Nightmare,10,v1.0
+necrons,DETACHMENTS,ANNIHILATION LEGION,Eternal Madness,20,v1.0
+necrons,DETACHMENTS,ANNIHILATION LEGION,Ingrained Superiority,5,v1.0
+necrons,DETACHMENTS,ANNIHILATION LEGION,Soulless Reaper,15,v1.0
+necrons,DETACHMENTS,AWAKENED DYNASTY,Enaegic Dermal Bond,30,v1.0
+necrons,DETACHMENTS,AWAKENED DYNASTY,Nether-realm Casket,20,v1.0
+necrons,DETACHMENTS,AWAKENED DYNASTY,Phasal Subjugator,35,v1.0
+necrons,DETACHMENTS,AWAKENED DYNASTY,Veil of Darkness,20,v1.0
+necrons,DETACHMENTS,CANOPTEK COURT,Autodivinator,15,v1.0
+necrons,DETACHMENTS,CANOPTEK COURT,Dimensional Sanctum,20,v1.0
+necrons,DETACHMENTS,CANOPTEK COURT,Hyperphasic Fulcrum,15,v1.0
+necrons,DETACHMENTS,CANOPTEK COURT,Metalodermal Tesla Weave,10,v1.0
+necrons,DETACHMENTS,CRYPTEK CONCLAVE,Atomic Disintegrators,10,v1.0
+necrons,DETACHMENTS,CRYPTEK CONCLAVE,Gauntlet of Compression,20,v1.0
+necrons,DETACHMENTS,CRYPTEK CONCLAVE,Gravitic Bolas,15,v1.0
+necrons,DETACHMENTS,CRYPTEK CONCLAVE,Quantum Abacus,15,v1.0
+necrons,DETACHMENTS,CURSED LEGION,Cursed Circlet,25,v1.0
+necrons,DETACHMENTS,CURSED LEGION,Destroyer Ankh,20,v1.0
+necrons,DETACHMENTS,CURSED LEGION,Mark of the Nekrosor,20,v1.0
+necrons,DETACHMENTS,CURSED LEGION,Murdermind,15,v1.0
+necrons,DETACHMENTS,HAND OF THE DYNASTY,Enlivened Sentinels (Upgrade),20,v1.0
+necrons,DETACHMENTS,HAND OF THE DYNASTY,Tools of Dominion (Upgrade),15,v1.0
+necrons,DETACHMENTS,HYPERCRYPT LEGION,Arisen Tyrant,25,v1.0
+necrons,DETACHMENTS,HYPERCRYPT LEGION,Dimensional Overseer,25,v1.0
+necrons,DETACHMENTS,HYPERCRYPT LEGION,Hyperspatial Transfer Node,15,v1.0
+necrons,DETACHMENTS,HYPERCRYPT LEGION,Osteoclave Fulcrum,20,v1.0
+necrons,DETACHMENTS,OBEISANCE PHALANX,Eternal Conqueror,25,v1.0
+necrons,DETACHMENTS,OBEISANCE PHALANX,Honourable Combatant,10,v1.0
+necrons,DETACHMENTS,OBEISANCE PHALANX,Unflinching Will,20,v1.0
+necrons,DETACHMENTS,OBEISANCE PHALANX,Warrior Noble,15,v1.0
+necrons,DETACHMENTS,PANTHEON OF WOE,Animus Damper,35,v1.0
+necrons,DETACHMENTS,PANTHEON OF WOE,Quantum Goad,45,v1.0
+necrons,DETACHMENTS,PANTHEON OF WOE,Reletavistic Tether,40,v1.0
+necrons,DETACHMENTS,PANTHEON OF WOE,Singularity Matrix,45,v1.0
+necrons,DETACHMENTS,SKYSHROUD SPEARHEAD,Deepening Madness (Upgrade),20,v1.0
+necrons,DETACHMENTS,SKYSHROUD SPEARHEAD,Recursive Reanimation (Upgrade),5,v1.0
+necrons,DETACHMENTS,STARSHATTER ARSENAL,Chrono-impedance Fields,25,v1.0
+necrons,DETACHMENTS,STARSHATTER ARSENAL,Demanding Leader,10,v1.0
+necrons,DETACHMENTS,STARSHATTER ARSENAL,Dread Majesty,30,v1.0
+necrons,DETACHMENTS,STARSHATTER ARSENAL,Miniaturised Nebuloscope,15,v1.0
+necrons,DETACHMENTS,THE PHAERON'S ARMOURY,Mortality Shroud (Aura) (Upgrade),10,v1.0
+necrons,DETACHMENTS,THE PHAERON'S ARMOURY,Prelocational Optimiser,25,v1.0
+orks,DETACHMENTS,BLITZ BRIGADE,Blitzkaptin,25,v1.0
+orks,DETACHMENTS,BLITZ BRIGADE,Runnin’ Boots,10,v1.0
+orks,DETACHMENTS,BLITZ BRIGADE,Supercharged Squig Oil,10,v1.0
+orks,DETACHMENTS,BLITZ BRIGADE,Tuff Git,5,v1.0
+orks,DETACHMENTS,BULLY BOYZ,Big Gob,20,v1.0
+orks,DETACHMENTS,BULLY BOYZ,Da Biggest Boss,15,v1.0
+orks,DETACHMENTS,BULLY BOYZ,’Eadstompa,10,v1.0
+orks,DETACHMENTS,BULLY BOYZ,Tellyporta,25,v1.0
+orks,DETACHMENTS,DA BIG HUNT,Glory Hog,30,v1.0
+orks,DETACHMENTS,DA BIG HUNT,Proper Killy,15,v1.0
+orks,DETACHMENTS,DA BIG HUNT,Skrag Every Stash!,25,v1.0
+orks,DETACHMENTS,DA BIG HUNT,Surly as a Squiggoth,20,v1.0
+orks,DETACHMENTS,DREAD MOB,Gitfinder Gogglez,10,v1.0
+orks,DETACHMENTS,DREAD MOB,Press It Fasta!,35,v1.0
+orks,DETACHMENTS,DREAD MOB,Smoky Gubbinz,15,v1.0
+orks,DETACHMENTS,DREAD MOB,Supa-glowy Fing,20,v1.0
+orks,DETACHMENTS,FREEBOOTER KREW,Bionik Workshop,15,v1.0
+orks,DETACHMENTS,FREEBOOTER KREW,Da Kaptin,10,v1.0
+orks,DETACHMENTS,FREEBOOTER KREW,Git-Spotter Squig,20,v1.0
+orks,DETACHMENTS,FREEBOOTER KREW,Razgit’s Magik Map,25,v1.0
+orks,DETACHMENTS,GREEN TIDE,Bloodthirsty Belligerence,15,v1.0
+orks,DETACHMENTS,GREEN TIDE,Brutal But Kunnin’,25,v1.0
+orks,DETACHMENTS,GREEN TIDE,Ferocious Show Off,10,v1.0
+orks,DETACHMENTS,GREEN TIDE,Raucous Warcaller,20,v1.0
+orks,DETACHMENTS,KULT OF SPEED,Fasta Than Yooz,35,v1.0
+orks,DETACHMENTS,KULT OF SPEED,Speed Makes Right,25,v1.0
+orks,DETACHMENTS,KULT OF SPEED,Squig-hide Tyres,15,v1.0
+orks,DETACHMENTS,KULT OF SPEED,Wazblasta,10,v1.0
+orks,DETACHMENTS,MORE DAKKA!,Da Gobshot Thunderbuss,15,v1.0
+orks,DETACHMENTS,MORE DAKKA!,Dead Shiny Shootas (Upgrade),15,v1.0
+orks,DETACHMENTS,ROLLIN' DEFF,Boarding Ramps (Upgrade),10,v1.0
+orks,DETACHMENTS,ROLLIN' DEFF,Targetin’ Gizmos (Upgrade),15,v1.0
+orks,DETACHMENTS,SPEEDWAAAGH!,Dakkamek,25,v1.0
+orks,DETACHMENTS,SPEEDWAAAGH!,Kustom Shokk Box,10,v1.0
+orks,DETACHMENTS,SPEEDWAAAGH!,Master Meknologist,20,v1.0
+orks,DETACHMENTS,SPEEDWAAAGH!,Supa-Burny Fuel,15,v1.0
+orks,DETACHMENTS,TAKTIKAL BRIGADE,Mork’s Kunnin’,20,v1.0
+orks,DETACHMENTS,TAKTIKAL BRIGADE,Slippery Git,15,v1.0
+orks,DETACHMENTS,WAR HORDE,Follow Me Ladz,25,v1.0
+orks,DETACHMENTS,WAR HORDE,Headwoppa’s Killchoppa,20,v1.0
+orks,DETACHMENTS,WAR HORDE,Kunnin’ But Brutal,15,v1.0
+orks,DETACHMENTS,WAR HORDE,Supa-Cybork Body,15,v1.0
+space-marines,DETACHMENTS,1ST COMPANY TASK FORCE,Fear Made Manifest,30,v1.0
+space-marines,DETACHMENTS,1ST COMPANY TASK FORCE,Iron Resolve,15,v1.0
+space-marines,DETACHMENTS,1ST COMPANY TASK FORCE,Rites of War,10,v1.0
+space-marines,DETACHMENTS,1ST COMPANY TASK FORCE,The Imperium’s Sword,25,v1.0
+space-marines,DETACHMENTS,ANVIL SIEGE FORCE,Architect of War,25,v1.0
+space-marines,DETACHMENTS,ANVIL SIEGE FORCE,Fleet Commander,15,v1.0
+space-marines,DETACHMENTS,ANVIL SIEGE FORCE,Indomitable Fury,20,v1.0
+space-marines,DETACHMENTS,ANVIL SIEGE FORCE,Stoic Defender,15,v1.0
+space-marines,DETACHMENTS,ARMOURED SPEARTIP,Armoured Commander,25,v1.0
+space-marines,DETACHMENTS,ARMOURED SPEARTIP,Liberator,15,v1.0
+space-marines,DETACHMENTS,ARMOURED SPEARTIP,Shock Deployment,20,v1.0
+space-marines,DETACHMENTS,ARMOURED SPEARTIP,Tip of the Spear,40,v1.0
+space-marines,DETACHMENTS,BASTION TASK FORCE,Blades of Valour,15,v1.0
+space-marines,DETACHMENTS,BASTION TASK FORCE,Bombast Omnivox,15,v1.0
+space-marines,DETACHMENTS,BASTION TASK FORCE,Eye of the Primarch,10,v1.0
+space-marines,DETACHMENTS,BASTION TASK FORCE,Hero of the Chapter,20,v1.0
+space-marines,DETACHMENTS,BLADE OF ULTRAMAR,Armour of Antoninus,10,v1.0
+space-marines,DETACHMENTS,BLADE OF ULTRAMAR,Oath of Macragge,15,v1.0
+space-marines,DETACHMENTS,BLADE OF ULTRAMAR,Student of the Codex,20,v1.0
+space-marines,DETACHMENTS,BLADE OF ULTRAMAR,Veteran of Behemoth,25,v1.0
+space-marines,DETACHMENTS,CERAMITE SENTINELS,Castellum Omnivox,20,v1.0
+space-marines,DETACHMENTS,CERAMITE SENTINELS,Defensive Mastery,25,v1.0
+space-marines,DETACHMENTS,CERAMITE SENTINELS,Honour Indefatigable,25,v1.0
+space-marines,DETACHMENTS,CERAMITE SENTINELS,Spy-skull Data Link,15,v1.0
+space-marines,DETACHMENTS,EMPEROR’S SHIELD,Champion of the Feast,25,v1.0
+space-marines,DETACHMENTS,EMPEROR’S SHIELD,Disciple of Rhetoricus,10,v1.0
+space-marines,DETACHMENTS,EMPEROR’S SHIELD,Indomitable Champion,20,v1.0
+space-marines,DETACHMENTS,EMPEROR’S SHIELD,Malodraxian Standard,20,v1.0
+space-marines,DETACHMENTS,FIRESTORM ASSAULT FORCE,Adamantine Mantle,20,v1.0
+space-marines,DETACHMENTS,FIRESTORM ASSAULT FORCE,Champion of Humanity,10,v1.0
+space-marines,DETACHMENTS,FIRESTORM ASSAULT FORCE,Forged in Battle,15,v1.0
+space-marines,DETACHMENTS,FIRESTORM ASSAULT FORCE,War-tempered Artifice,25,v1.0
+space-marines,DETACHMENTS,FORGEFATHER’S SEEKERS,Adamantine Mantle,20,v1.0
+space-marines,DETACHMENTS,FORGEFATHER’S SEEKERS,Forged in Battle,15,v1.0
+space-marines,DETACHMENTS,FORGEFATHER’S SEEKERS,Immolator,10,v1.0
+space-marines,DETACHMENTS,FORGEFATHER’S SEEKERS,War-tempered Artifice,25,v1.0
+space-marines,DETACHMENTS,FULGURIS TASK FORCE,Bellicose Weapon Spirits (Upgrade),15,v1.0
+space-marines,DETACHMENTS,FULGURIS TASK FORCE,Raptorial Cogitator Core (Upgrade),15,v1.0
+space-marines,DETACHMENTS,GLADIUS TASK FORCE,Adept of the Codex,20,v1.0
+space-marines,DETACHMENTS,GLADIUS TASK FORCE,Artificer Armour,10,v1.0
+space-marines,DETACHMENTS,GLADIUS TASK FORCE,Fire Discipline,25,v1.0
+space-marines,DETACHMENTS,GLADIUS TASK FORCE,The Honour Vehement,15,v1.0
+space-marines,DETACHMENTS,HAMMER OF AVERNII,Iron Laurel,10,v1.0
+space-marines,DETACHMENTS,HAMMER OF AVERNII,Medusan Roar,30,v1.0
+space-marines,DETACHMENTS,HAMMER OF AVERNII,Spiritus Ferrum,25,v1.0
+space-marines,DETACHMENTS,HAMMER OF AVERNII,Steel Font,15,v1.0
+space-marines,DETACHMENTS,HEADHUNTER TASK FORCE,Astartes Tank Ace,40,v1.0
+space-marines,DETACHMENTS,HEADHUNTER TASK FORCE,Firestorm Coordinators,20,v1.0
+space-marines,DETACHMENTS,HEADHUNTER TASK FORCE,Gunnery Honours,20,v1.0
+space-marines,DETACHMENTS,HEADHUNTER TASK FORCE,Redoubtable Machine Spirit,25,v1.0
+space-marines,DETACHMENTS,IRONSTORM SPEARHEAD,Adept of the Omnissiah,35,v1.0
+space-marines,DETACHMENTS,IRONSTORM SPEARHEAD,Master of Machine War,20,v1.0
+space-marines,DETACHMENTS,IRONSTORM SPEARHEAD,Target Augury Web,30,v1.0
+space-marines,DETACHMENTS,IRONSTORM SPEARHEAD,The Flesh Is Weak,10,v1.0
+space-marines,DETACHMENTS,LIBRARIUS CONCLAVE,Celerity,35,v1.0
+space-marines,DETACHMENTS,LIBRARIUS CONCLAVE,Fusillade,20,v1.0
+space-marines,DETACHMENTS,LIBRARIUS CONCLAVE,Obfuscation,25,v1.0
+space-marines,DETACHMENTS,LIBRARIUS CONCLAVE,Prescience,20,v1.0
+space-marines,DETACHMENTS,LIBRARIUS CONCLAVE,Temporal Corridor,15,v1.0
+space-marines,DETACHMENTS,ORBITAL ASSAULT FORCE,Dedicated Gunship,15,v1.0
+space-marines,DETACHMENTS,ORBITAL ASSAULT FORCE,Laurels of Thunder,15,v1.0
+space-marines,DETACHMENTS,ORBITAL ASSAULT FORCE,Orbital Uplink Reliquary,25,v1.0
+space-marines,DETACHMENTS,ORBITAL ASSAULT FORCE,Veteran of the Vanguard,20,v1.0
+space-marines,DETACHMENTS,RECLAMATION FORCE,Avenging Avatar,10,v1.0
+space-marines,DETACHMENTS,RECLAMATION FORCE,Liberatum,25,v1.0
+space-marines,DETACHMENTS,RECLAMATION FORCE,Scroll of Proclamation,15,v1.0
+space-marines,DETACHMENTS,RECLAMATION FORCE,Seals of Reconquest,20,v1.0
+space-marines,DETACHMENTS,SHADOWMARK TALON,Blackwing Shroud,25,v1.0
+space-marines,DETACHMENTS,SHADOWMARK TALON,Coronal Susurrant,30,v1.0
+space-marines,DETACHMENTS,SHADOWMARK TALON,Hunter’s Instincts,25,v1.0
+space-marines,DETACHMENTS,SHADOWMARK TALON,Umbral Raptor,15,v1.0
+space-marines,DETACHMENTS,SPEARPOINT TASK FORCE,Chogorian Huntmaster,25,v1.0
+space-marines,DETACHMENTS,SPEARPOINT TASK FORCE,Hunter’s Eye,20,v1.0
+space-marines,DETACHMENTS,SPEARPOINT TASK FORCE,Spearpoint Paragon,25,v1.0
+space-marines,DETACHMENTS,SPEARPOINT TASK FORCE,Stormseers' Wisdom,15,v1.0
+space-marines,DETACHMENTS,STORMLANCE TASK FORCE,Feinting Withdrawal,10,v1.0
+space-marines,DETACHMENTS,STORMLANCE TASK FORCE,Fury of the Storm,25,v1.0
+space-marines,DETACHMENTS,STORMLANCE TASK FORCE,Hunter’s Instincts,25,v1.0
+space-marines,DETACHMENTS,STORMLANCE TASK FORCE,Portents of Wisdom,15,v1.0
+space-marines,DETACHMENTS,SUBVERSION ASSETS,Death in the Dark (Upgrade),15,v1.0
+space-marines,DETACHMENTS,SUBVERSION ASSETS,Shroud Field,20,v1.0
+space-marines,DETACHMENTS,VANGUARD SPEARHEAD,Execute and Redeploy,20,v1.0
+space-marines,DETACHMENTS,VANGUARD SPEARHEAD,Ghostweave Cloak,15,v1.0
+space-marines,DETACHMENTS,VANGUARD SPEARHEAD,Shadow War Veteran,30,v1.0
+space-marines,DETACHMENTS,VANGUARD SPEARHEAD,The Blade Driven Deep,25,v1.0
+space-wolves,DETACHMENTS,1ST COMPANY TASK FORCE,Fear Made Manifest,30,v1.0
+space-wolves,DETACHMENTS,1ST COMPANY TASK FORCE,Iron Resolve,15,v1.0
+space-wolves,DETACHMENTS,1ST COMPANY TASK FORCE,Rites of War,10,v1.0
+space-wolves,DETACHMENTS,1ST COMPANY TASK FORCE,The Imperium’s Sword,25,v1.0
+space-wolves,DETACHMENTS,ANVIL SIEGE FORCE,Architect of War,25,v1.0
+space-wolves,DETACHMENTS,ANVIL SIEGE FORCE,Fleet Commander,15,v1.0
+space-wolves,DETACHMENTS,ANVIL SIEGE FORCE,Indomitable Fury,20,v1.0
+space-wolves,DETACHMENTS,ANVIL SIEGE FORCE,Stoic Defender,15,v1.0
+space-wolves,DETACHMENTS,ARMOURED SPEARTIP,Armoured Commander,25,v1.0
+space-wolves,DETACHMENTS,ARMOURED SPEARTIP,Liberator,15,v1.0
+space-wolves,DETACHMENTS,ARMOURED SPEARTIP,Shock Deployment,20,v1.0
+space-wolves,DETACHMENTS,ARMOURED SPEARTIP,Tip of the Spear,40,v1.0
+space-wolves,DETACHMENTS,BASTION TASK FORCE,Blades of Valour,15,v1.0
+space-wolves,DETACHMENTS,BASTION TASK FORCE,Bombast Omnivox,15,v1.0
+space-wolves,DETACHMENTS,BASTION TASK FORCE,Eye of the Primarch,10,v1.0
+space-wolves,DETACHMENTS,BASTION TASK FORCE,Hero of the Chapter,20,v1.0
+space-wolves,DETACHMENTS,CERAMITE SENTINELS,Castellum Omnivox,20,v1.0
+space-wolves,DETACHMENTS,CERAMITE SENTINELS,Defensive Mastery,25,v1.0
+space-wolves,DETACHMENTS,CERAMITE SENTINELS,Honour Indefatigable,25,v1.0
+space-wolves,DETACHMENTS,CERAMITE SENTINELS,Spy-skull Data Link,15,v1.0
+space-wolves,DETACHMENTS,CHAMPIONS OF FENRIS,A Giant Amongst Giants,15,v1.0
+space-wolves,DETACHMENTS,CHAMPIONS OF FENRIS,Preyslayer,15,v1.0
+space-wolves,DETACHMENTS,FIRESTORM ASSAULT FORCE,Adamantine Mantle,20,v1.0
+space-wolves,DETACHMENTS,FIRESTORM ASSAULT FORCE,Champion of Humanity,10,v1.0
+space-wolves,DETACHMENTS,FIRESTORM ASSAULT FORCE,Forged in Battle,15,v1.0
+space-wolves,DETACHMENTS,FIRESTORM ASSAULT FORCE,War-tempered Artifice,25,v1.0
+space-wolves,DETACHMENTS,FULGURIS TASK FORCE,Bellicose Weapon Spirits (Upgrade),15,v1.0
+space-wolves,DETACHMENTS,FULGURIS TASK FORCE,Raptorial Cogitator Core (Upgrade),15,v1.0
+space-wolves,DETACHMENTS,GLADIUS TASK FORCE,Adept of the Codex,20,v1.0
+space-wolves,DETACHMENTS,GLADIUS TASK FORCE,Artificer Armour,10,v1.0
+space-wolves,DETACHMENTS,GLADIUS TASK FORCE,Fire Discipline,25,v1.0
+space-wolves,DETACHMENTS,GLADIUS TASK FORCE,The Honour Vehement,15,v1.0
+space-wolves,DETACHMENTS,HEADHUNTER TASK FORCE,Astartes Tank Ace,40,v1.0
+space-wolves,DETACHMENTS,HEADHUNTER TASK FORCE,Firestorm Coordinators,20,v1.0
+space-wolves,DETACHMENTS,HEADHUNTER TASK FORCE,Gunnery Honours,20,v1.0
+space-wolves,DETACHMENTS,HEADHUNTER TASK FORCE,Redoubtable Machine Spirit,25,v1.0
+space-wolves,DETACHMENTS,IRONSTORM SPEARHEAD,Adept of the Omnissiah,35,v1.0
+space-wolves,DETACHMENTS,IRONSTORM SPEARHEAD,Master of Machine War,20,v1.0
+space-wolves,DETACHMENTS,IRONSTORM SPEARHEAD,Target Augury Web,30,v1.0
+space-wolves,DETACHMENTS,IRONSTORM SPEARHEAD,The Flesh Is Weak,10,v1.0
+space-wolves,DETACHMENTS,LEGENDS OF SAGA AND SONG,Fierce Example (Upgrade),25,v1.0
+space-wolves,DETACHMENTS,LEGENDS OF SAGA AND SONG,Thirst for Glory (Upgrade),15,v1.0
+space-wolves,DETACHMENTS,LIBRARIUS CONCLAVE,Celerity,35,v1.0
+space-wolves,DETACHMENTS,LIBRARIUS CONCLAVE,Fusillade,20,v1.0
+space-wolves,DETACHMENTS,LIBRARIUS CONCLAVE,Obfuscation,25,v1.0
+space-wolves,DETACHMENTS,LIBRARIUS CONCLAVE,Prescience,20,v1.0
+space-wolves,DETACHMENTS,LIBRARIUS CONCLAVE,Temporal Corridor,15,v1.0
+space-wolves,DETACHMENTS,ORBITAL ASSAULT FORCE,Dedicated Gunship,15,v1.0
+space-wolves,DETACHMENTS,ORBITAL ASSAULT FORCE,Laurels of Thunder,15,v1.0
+space-wolves,DETACHMENTS,ORBITAL ASSAULT FORCE,Orbital Uplink Reliquary,25,v1.0
+space-wolves,DETACHMENTS,ORBITAL ASSAULT FORCE,Veteran of the Vanguard,20,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BEASTSLAYER,Elder’s Guidance,20,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BEASTSLAYER,Helm of the Beastslayer,15,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BEASTSLAYER,Hunter’s Guile,20,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BEASTSLAYER,Wolf-touched,15,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BOLD,Braggart’s Steel,20,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BOLD,Hordeslayer,15,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BOLD,Skjald,15,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE BOLD,Thunderwolf’s Fortitude,25,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE GREAT WOLF,Chariots of the Storm,25,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE GREAT WOLF,Grimnar’s Mark,20,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE GREAT WOLF,Howlmaw,15,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE GREAT WOLF,Skjald’s Foretelling,25,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE HUNTER,Fenrisian Grit,15,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE HUNTER,Feral Rage,10,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE HUNTER,Swift Hunter,20,v1.0
+space-wolves,DETACHMENTS,SAGA OF THE HUNTER,Wolf Master,5,v1.0
+space-wolves,DETACHMENTS,STORMLANCE TASK FORCE,Feinting Withdrawal,10,v1.0
+space-wolves,DETACHMENTS,STORMLANCE TASK FORCE,Fury of the Storm,25,v1.0
+space-wolves,DETACHMENTS,STORMLANCE TASK FORCE,Hunter’s Instincts,25,v1.0
+space-wolves,DETACHMENTS,STORMLANCE TASK FORCE,Portents of Wisdom,15,v1.0
+space-wolves,DETACHMENTS,SUBVERSION ASSETS,Death in the Dark (Upgrade),15,v1.0
+space-wolves,DETACHMENTS,SUBVERSION ASSETS,Shroud Field,20,v1.0
+space-wolves,DETACHMENTS,VANGUARD SPEARHEAD,Execute and Redeploy,20,v1.0
+space-wolves,DETACHMENTS,VANGUARD SPEARHEAD,Ghostweave Cloak,15,v1.0
+space-wolves,DETACHMENTS,VANGUARD SPEARHEAD,Shadow War Veteran,30,v1.0
+space-wolves,DETACHMENTS,VANGUARD SPEARHEAD,The Blade Driven Deep,25,v1.0
+space-wolves,DETACHMENTS,VETERANS OF THE FANG,Eye of the Hunter,20,v1.0
+space-wolves,DETACHMENTS,VETERANS OF THE FANG,Weaver of Sagas,15,v1.0
+tau-empire,DETACHMENTS,ADVANCED ACQUISITION CADRE,Negation Emitters (Upgrade),15,v1.0
+tau-empire,DETACHMENTS,ADVANCED ACQUISITION CADRE,Unmasking Suite (Upgrade),15,v1.0
+tau-empire,DETACHMENTS,AUXILIARY CADRE,Admired Leader,20,v1.0
+tau-empire,DETACHMENTS,AUXILIARY CADRE,Student of Kauyon,20,v1.0
+tau-empire,DETACHMENTS,EXPERIMENTAL PROTOTYPE CADRE,Plasma Accelerator Rifle,20,v1.0
+tau-empire,DETACHMENTS,EXPERIMENTAL PROTOTYPE CADRE,Supernova Launcher,15,v1.0
+tau-empire,DETACHMENTS,EXPERIMENTAL PROTOTYPE CADRE,Thermoneutronic Projector,15,v1.0
+tau-empire,DETACHMENTS,KAUYON,Exemplar of the Kauyon,20,v1.0
+tau-empire,DETACHMENTS,KAUYON,Precision of the Patient Hunter,15,v1.0
+tau-empire,DETACHMENTS,KAUYON,Solid-image Projection Unit,20,v1.0
+tau-empire,DETACHMENTS,KAUYON,"Through Unity, Devastation",30,v1.0
+tau-empire,DETACHMENTS,KROOT HUNTING PACK,Borthrod Gland,15,v1.0
+tau-empire,DETACHMENTS,KROOT HUNTING PACK,Kroothawk Flock,10,v1.0
+tau-empire,DETACHMENTS,KROOT HUNTING PACK,Nomadic Hunter,20,v1.0
+tau-empire,DETACHMENTS,KROOT HUNTING PACK,Root-carved Weapons,10,v1.0
+tau-empire,DETACHMENTS,MONT’KA,Coordinated Exploitation,30,v1.0
+tau-empire,DETACHMENTS,MONT’KA,Exemplar of the Mont’ka,10,v1.0
+tau-empire,DETACHMENTS,MONT’KA,Strategic Conqueror,15,v1.0
+tau-empire,DETACHMENTS,MONT’KA,Strike Swiftly,35,v1.0
+tau-empire,DETACHMENTS,RETALIATION CADRE,Internal Grenade Racks,20,v1.0
+tau-empire,DETACHMENTS,RETALIATION CADRE,Prototype Weapon System,15,v1.0
+tau-empire,DETACHMENTS,RETALIATION CADRE,Puretide Engram Neurochip,15,v1.0
+tau-empire,DETACHMENTS,RETALIATION CADRE,Starflare Ignition System,20,v1.0
+thousand-sons,DETACHMENTS,CHANGEHOST OF DECEIT,Diabolic Savant,20,v1.0
+thousand-sons,DETACHMENTS,CHANGEHOST OF DECEIT,Duplicitous Malediction,15,v1.0
+thousand-sons,DETACHMENTS,CHANGEHOST OF DECEIT,Nethershriek Mind-Eater,10,v1.0
+thousand-sons,DETACHMENTS,CHANGEHOST OF DECEIT,Tome of True Names,20,v1.0
+thousand-sons,DETACHMENTS,GRAND COVEN,Eldritch Vortex of E’Taph,35,v1.0
+thousand-sons,DETACHMENTS,GRAND COVEN,Incandaeum,15,v1.0
+thousand-sons,DETACHMENTS,GRAND COVEN,Lord of Forbidden Lore,20,v1.0
+thousand-sons,DETACHMENTS,GRAND COVEN,Umbralefic Crystal,20,v1.0
+thousand-sons,DETACHMENTS,HEXWARP THRALLBAND,Arcane Might,20,v1.0
+thousand-sons,DETACHMENTS,HEXWARP THRALLBAND,Empowered Manifestation,20,v1.0
+thousand-sons,DETACHMENTS,HEXWARP THRALLBAND,Empyric Onslaught,25,v1.0
+thousand-sons,DETACHMENTS,HEXWARP THRALLBAND,Noctilith Mantle,15,v1.0
+thousand-sons,DETACHMENTS,RITUAL OF REGENERATION,Curse of Life,20,v1.0
+thousand-sons,DETACHMENTS,RITUAL OF REGENERATION,Eruption of Vitality,35,v1.0
+thousand-sons,DETACHMENTS,RUBRICAE PHALANX,Arcane Thralls,5,v1.0
+thousand-sons,DETACHMENTS,RUBRICAE PHALANX,Lord of the Rubricae,15,v1.0
+thousand-sons,DETACHMENTS,RUBRICAE PHALANX,Risen Rubricae,30,v1.0
+thousand-sons,DETACHMENTS,RUBRICAE PHALANX,Stave Abominus,20,v1.0
+thousand-sons,DETACHMENTS,SEKHETAR COHORT,Occulus Infernum,20,v1.0
+thousand-sons,DETACHMENTS,SEKHETAR COHORT,Walking Rampart,30,v1.0
+thousand-sons,DETACHMENTS,SERVANTS OF CHANGE,Thicket of Bladed Bone (Upgrade),10,v1.0
+thousand-sons,DETACHMENTS,SERVANTS OF CHANGE,Unravelled Fates,15,v1.0
+thousand-sons,DETACHMENTS,WARPFORGED CABAL,Biomechanical Mutation,15,v1.0
+thousand-sons,DETACHMENTS,WARPFORGED CABAL,Perplexing Cloak,20,v1.0
+thousand-sons,DETACHMENTS,WARPFORGED CABAL,Warp-Cursed Runemaster,10,v1.0
+thousand-sons,DETACHMENTS,WARPFORGED CABAL,Warp Syphon,5,v1.0
+thousand-sons,DETACHMENTS,WARPMELD PACT,Bray Lord,15,v1.0
+thousand-sons,DETACHMENTS,WARPMELD PACT,Diamond of Distortion,20,v1.0
+thousand-sons,DETACHMENTS,WARPMELD PACT,Flowing Flesh,10,v1.0
+thousand-sons,DETACHMENTS,WARPMELD PACT,Warpmeld Dagger,10,v1.0
+tyranids,DETACHMENTS,AMBUSH PREDATORS,Cryptophotaic Camouflage (Upgrade),15,v1.0
+tyranids,DETACHMENTS,AMBUSH PREDATORS,Encircling Horrors (Upgrade),20,v1.0
+tyranids,DETACHMENTS,ASSIMILATION SWARM,Biophagic Flow,10,v1.0
+tyranids,DETACHMENTS,ASSIMILATION SWARM,Instinctive Defence,15,v1.0
+tyranids,DETACHMENTS,ASSIMILATION SWARM,Parasitic Biomorphology,25,v1.0
+tyranids,DETACHMENTS,ASSIMILATION SWARM,Regenerating Monstrosity,20,v1.0
+tyranids,DETACHMENTS,CRUSHER STAMPEDE,Enraged Reserves,20,v1.0
+tyranids,DETACHMENTS,CRUSHER STAMPEDE,Monstrous Nemesis,25,v1.0
+tyranids,DETACHMENTS,CRUSHER STAMPEDE,Null Nodules,10,v1.0
+tyranids,DETACHMENTS,CRUSHER STAMPEDE,Ominous Presence,15,v1.0
+tyranids,DETACHMENTS,INVASION FLEET,Adaptive Biology,25,v1.0
+tyranids,DETACHMENTS,INVASION FLEET,Alien Cunning,30,v1.0
+tyranids,DETACHMENTS,INVASION FLEET,Perfectly Adapted,15,v1.0
+tyranids,DETACHMENTS,INVASION FLEET,Synaptic Linchpin,20,v1.0
+tyranids,DETACHMENTS,SUBTERRANEAN ASSAULT,Synaptic Strategy,15,v1.0
+tyranids,DETACHMENTS,SUBTERRANEAN ASSAULT,Tremor Senses,20,v1.0
+tyranids,DETACHMENTS,SUBTERRANEAN ASSAULT,Trygon Prime,20,v1.0
+tyranids,DETACHMENTS,SUBTERRANEAN ASSAULT,Vanguard Intellect,15,v1.0
+tyranids,DETACHMENTS,SYNAPTIC NEXUS,Power of the Hive Mind,10,v1.0
+tyranids,DETACHMENTS,SYNAPTIC NEXUS,Psychostatic Disruption,30,v1.0
+tyranids,DETACHMENTS,SYNAPTIC NEXUS,Synaptic Control,20,v1.0
+tyranids,DETACHMENTS,SYNAPTIC NEXUS,The Dirgeheart of Kharis,15,v1.0
+tyranids,DETACHMENTS,TALONS OF THE NORN QUEEN,Destabilising Predation (Upgrade),20,v1.0
+tyranids,DETACHMENTS,TALONS OF THE NORN QUEEN,Synaptoprescience (Upgrade),25,v1.0
+tyranids,DETACHMENTS,UNENDING SWARM,Adrenalised Onslaught,15,v1.0
+tyranids,DETACHMENTS,UNENDING SWARM,Naturalised Camouflage,30,v1.0
+tyranids,DETACHMENTS,UNENDING SWARM,Piercing Talons,25,v1.0
+tyranids,DETACHMENTS,UNENDING SWARM,Relentless Hunger,20,v1.0
+tyranids,DETACHMENTS,VANGUARD ONSLAUGHT,Chameleonic,15,v1.0
+tyranids,DETACHMENTS,VANGUARD ONSLAUGHT,Hunting Grounds,20,v1.0
+tyranids,DETACHMENTS,VANGUARD ONSLAUGHT,Neuronode,20,v1.0
+tyranids,DETACHMENTS,VANGUARD ONSLAUGHT,Stalker,10,v1.0
+tyranids,DETACHMENTS,WARRIOR BIOFORM ONSLAUGHT,Elevated Might,30,v1.0
+tyranids,DETACHMENTS,WARRIOR BIOFORM ONSLAUGHT,Ocular Adaptation,20,v1.0
+world-eaters,DETACHMENTS,BERZERKER WARBAND,Battle-lust,20,v1.0
+world-eaters,DETACHMENTS,BERZERKER WARBAND,Berzerker Glaive,35,v1.0
+world-eaters,DETACHMENTS,BERZERKER WARBAND,Favoured of Khorne,20,v1.0
+world-eaters,DETACHMENTS,BERZERKER WARBAND,Helm of Brazen Ire,30,v1.0
+world-eaters,DETACHMENTS,BRAZEN ENGINES,Murder-forged Entity (Upgrade),15,v1.0
+world-eaters,DETACHMENTS,BRAZEN ENGINES,Talons of Butchery (Upgrade),20,v1.0
+world-eaters,DETACHMENTS,BUTCHERS OF KHORNE,Gore-stained Veterans (Upgrade),25,v1.0
+world-eaters,DETACHMENTS,BUTCHERS OF KHORNE,Sanctified in Slaughter (Upgrade),15,v1.0
+world-eaters,DETACHMENTS,CULT OF BLOOD,Brazen Form,25,v1.0
+world-eaters,DETACHMENTS,CULT OF BLOOD,Butcher Lord,10,v1.0
+world-eaters,DETACHMENTS,CULT OF BLOOD,Chosen of the Blood God,15,v1.0
+world-eaters,DETACHMENTS,CULT OF BLOOD,Strategic Slaughter,20,v1.0
+world-eaters,DETACHMENTS,GORETRACK ONSLAUGHT,Aggressive Deployment,20,v1.0
+world-eaters,DETACHMENTS,GORETRACK ONSLAUGHT,Infernal Infusion,25,v1.0
+world-eaters,DETACHMENTS,GORETRACK ONSLAUGHT,Murderous Onslaught,5,v1.0
+world-eaters,DETACHMENTS,GORETRACK ONSLAUGHT,Unleash Hell,10,v1.0
+world-eaters,DETACHMENTS,KHORNE DAEMONKIN,Blade of Endless Bloodshed,30,v1.0
+world-eaters,DETACHMENTS,KHORNE DAEMONKIN,Blood-Forged Armour,20,v1.0
+world-eaters,DETACHMENTS,KHORNE DAEMONKIN,Disciple of Khorne,15,v1.0
+world-eaters,DETACHMENTS,KHORNE DAEMONKIN,Icon of War,25,v1.0
+world-eaters,DETACHMENTS,POSSESSED SLAUGHTERBAND,Frenzied Focus,20,v1.0
+world-eaters,DETACHMENTS,POSSESSED SLAUGHTERBAND,Killing Clarity,15,v1.0
+world-eaters,DETACHMENTS,POSSESSED SLAUGHTERBAND,Malicious Vigour,30,v1.0
+world-eaters,DETACHMENTS,POSSESSED SLAUGHTERBAND,Violent Demise,10,v1.0
+world-eaters,DETACHMENTS,VESSELS OF WRATH,Archslaughterer,40,v1.0
+world-eaters,DETACHMENTS,VESSELS OF WRATH,Gateways to Glory,10,v1.0

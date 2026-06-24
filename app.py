@@ -104,9 +104,19 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "codex-armorum-local")
 
-store = get_store()
-init_db()
+init_db()                 # creates the collection schema and the MFM tables
 init_arsenal(app)
+import mfm_store
+mfm_store.auto_import_if_empty()  # seed the MFM resolved data on first boot
+get_store.cache_clear()
+store = get_store()       # built after seeding so any enabled overlay applies
+
+
+def _reload_store():
+    """Rebuild the cached DataStore so an MFM toggle change takes effect. The
+    route closures read `store` as a module global, so reassign it in globals."""
+    get_store.cache_clear()
+    globals()["store"] = get_store()
 
 
 # ---------------------------------------------------------------- icon helpers
@@ -430,6 +440,49 @@ def api_detachment_enhancements(dtid):
         "cost": _int(e.get("cost", 0)),
         "description": e.get("description", ""),
     } for e in enhs])
+
+
+# ---------------------------------------------------------------- MFM points overlay
+@app.route("/api/mfm/status")
+def api_mfm_status():
+    return jsonify(mfm_store.status())
+
+
+@app.route("/api/mfm/toggle", methods=["POST"])
+def api_mfm_toggle():
+    data = request.get_json(silent=True) or {}
+    code = (data.get("faction_id") or "").strip()
+    if not isinstance(data.get("enabled"), bool):
+        return jsonify({"ok": False, "error": "enabled must be a boolean."}), 400
+    enabled = data["enabled"]
+    valid = {f["code"] for f in mfm_store.status()["factions"]}
+    if code not in valid:
+        abort(404)
+    mfm_store.set_faction(code, enabled)
+    _reload_store()
+    return jsonify(mfm_store.status())
+
+
+@app.route("/api/mfm/toggle-all", methods=["POST"])
+def api_mfm_toggle_all():
+    data = request.get_json(silent=True) or {}
+    if not isinstance(data.get("enabled"), bool):
+        return jsonify({"ok": False, "error": "enabled must be a boolean."}), 400
+    mfm_store.set_all(data["enabled"])
+    _reload_store()
+    return jsonify(mfm_store.status())
+
+
+@app.route("/api/mfm/import", methods=["POST"])
+def api_mfm_import():
+    # Re-run the resolver from data/mfm/ (for refreshing when a new MFM extract
+    # is dropped in). Preserves the user's per-faction toggles.
+    try:
+        mfm_store.import_mfm()
+    except (OSError, ValueError) as exc:
+        return jsonify({"ok": False, "error": f"Could not import MFM data: {exc}"}), 400
+    _reload_store()
+    return jsonify(mfm_store.status())
 
 
 # ---------------------------------------------------------------- unit api

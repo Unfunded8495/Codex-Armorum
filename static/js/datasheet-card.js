@@ -129,11 +129,12 @@ function leaderBlock(d){
 
 function compositionBlock(d){
   if(!d.composition || !d.composition.length) return "";
-  const lines = d.composition.map(c=>{
+  const items = d.composition.map(c=>{
     const name = (c.name||'').trim();
-    return name ? `<p class="dsc-kv">${esc(name)}</p>` : '';
+    return name ? `<li>${esc(name)}</li>` : '';
   }).join('');
-  return `<div class="dsc-head">Unit Composition</div><div class="dsc-block">${lines}</div>`;
+  if(!items) return "";
+  return `<div class="dsc-head">Unit Composition</div><div class="dsc-block"><ul class="dsc-opt">${items}</ul></div>`;
 }
 
 function damagedBlock(d){
@@ -175,7 +176,8 @@ export function renderDatasheetCard(d){
   return `
     <div class="dsc-card" style="--dsc-primary:${primary}">
       <div class="dsc-hdr">
-        <svg class="dsc-hdr-shape" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0 L35 0 C42 0,47 40,47 80 L100 80 L100 100 L0 100 Z"/></svg>
+        <div class="dsc-hdr-logo" style="-webkit-mask-image:url('/api/factions/${esc(d.faction_id)}/icon');mask-image:url('/api/factions/${esc(d.faction_id)}/icon');"></div>
+        <div class="dsc-hdr-rule"></div>
         <div class="dsc-hdr-main">
           <h2 class="dsc-name">${esc(d.name)}${baseSize ? ` <span class="dsc-base">(Ø${esc(baseSize)})</span>` : ''}</h2>
           <div class="dsc-models">${statBlocks}</div>

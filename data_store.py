@@ -117,6 +117,9 @@ class DataStore:
         # Chapter rollup bookkeeping (populated by _apply_chapter_rollup).
         self.chapter_faction_ids = set()
         self.chapters_by_parent = {}
+        # MFM overlay version tag, set by _apply_mfm_overrides ("" when off or
+        # not imported). Surfaced on the unit detail payload for the points stamp.
+        self.mfm_version = ""
         self._load()
 
     def _load(self):
@@ -295,6 +298,50 @@ class DataStore:
         self.leads = leads_id
 
         self._load_detachment_data()
+
+        # Apply the MFM points overlay last, after self.cost and the detachment
+        # enhancements are fully populated, so it overrides the final values.
+        self._apply_mfm_overrides()
+
+    # ---- MFM points overlay --------------------------------------------
+
+    def _apply_mfm_overrides(self):
+        """Overlay MFM points for any faction toggled on, over the Wahapedia
+        base data. Non-destructive: only the in-memory unit dicts, self.cost,
+        and enhancement cost values are touched, never the catalogue tables.
+        Defensive on first boot, when the mfm_* tables may not exist yet."""
+        try:
+            from mfm_store import (
+                enabled_overrides, meta_version,
+            )
+        except Exception:
+            return
+        try:
+            self.mfm_version = meta_version() or ""
+        except Exception:
+            self.mfm_version = ""
+        unit_ov, enh_ov, active_sources = enabled_overrides()
+        for u in self.datasheets:
+            did = u["id"]
+            parent = self.faction_parent(u.get("faction_id"))
+            slug = active_sources.get(parent)
+            override = unit_ov.get((did, slug))
+            if not override:
+                continue
+            base, tiers = override
+            u["points"] = base
+            u["_points_tiers"] = tiers
+            u["mfm"] = True
+            self.cost[did] = (tiers if tiers
+                              else ([{"cost": base}] if base is not None else []))
+        for detachment_id, enhs in self.enhancements_by_detachment.items():
+            detachment = self.detachment_by_id.get(detachment_id, {})
+            slug = active_sources.get(detachment.get("faction_id"))
+            for e in enhs:
+                override = enh_ov.get((e.get("id"), slug))
+                if override is not None:
+                    e["cost"] = override
+                    e["mfm"] = True
 
     # ---- chapter rollup ------------------------------------------------
 
@@ -494,6 +541,7 @@ class DataStore:
                 "name":   d["name"],
                 "role":   d.get("role") or "Other",
                 "points": self._cheapest_points(d["id"]),
+                "mfm":    bool(d.get("mfm")),
             })
         units.sort(key=lambda u: (_role_rank(u["role"]), u["name"]))
         return units
@@ -566,6 +614,8 @@ class DataStore:
             "melee":               d.get("_melee", []),
             "keywords":            kw,
             "faction_keywords":    fkw,
+            "points_source":       "mfm" if d.get("mfm") else "wahapedia",
+            "mfm_version":         self.mfm_version,
         }
 
 

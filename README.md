@@ -186,6 +186,8 @@ Along the top of every page is the **navigation bar**:
 - **Paint Progress** — your painting stats dashboard.
 - **☰ Tools** — a menu holding the extra tools: **Army Builder**, **Weapon Loadouts**, and
   **Model Catalogue**.
+- **MFM Points** — choose the active Munitorum Field Manual source. Conflicting Space Marine
+  chapter sources are mutually exclusive, so displayed points never mix sources.
 - **Seal Vault** — stops the app (see *Closing the app* at the end).
 
 You will also see a small running tally in the bar — how many minis you have **Bought**, how many are
@@ -289,6 +291,10 @@ The `data/` folder also holds the hand-curated model catalogue JSON files and th
 Runtime catalogue edits are stored in `data/model_catalogue_manual.json`, with linking decisions in
 `data/model_catalogue_resolutions.json` and image metadata in `data/model_catalogue_images.json`.
 
+The optional MFM points overlay is sourced from `data/mfm/` and never changes the Wahapedia
+catalogue tables. After replacing either MFM CSV, run
+`python -c "import mfm_store; mfm_store.import_mfm()"` while the app is stopped, then restart it.
+
 See `CODEX_ARMORUM_ARCHITECTURE.md` for a full breakdown of all data sources, ID systems, and what
 must be preserved when migrating to a new environment.
 
@@ -320,6 +326,7 @@ warhammer-catalogue/
   collection.py           mini ownership queries and wargear helpers
   box_sets.py             box set definitions and purchase creation
   army.py                 army builder helpers (points, detachments, enhancements)
+  mfm_store.py            Munitorum Field Manual overlay import and selection
   editions.py             loads the hand-curated edition timeline (Codex Archive)
   arsenal.py              Arsenal wargear feature (Flask blueprint)
   arsenal_store.py        Arsenal sqlite3 data access and sync helpers
@@ -327,8 +334,8 @@ warhammer-catalogue/
   factions_theme.py       faction colours and placeholder SVGs
   images.py               image upload and reference-image handling
   utils.py                shared utility helpers
-  data/                   Wahapedia ruleset CSVs + model catalogue & edition-timeline JSONs
-  scripts/                one-off import, migration, image, and audit helpers
+  data/                   Wahapedia CSVs + MFM overlay + catalogue & edition-timeline JSONs
+  scripts/                fetch, audit, image-import, test, and wiki-override helpers
   static/                 css + js + faction icons
   templates/              Flask page templates
   uploads/                gallery photos (gitignored)

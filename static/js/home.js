@@ -599,7 +599,7 @@ function renderFactionBrowse(fid, facName, primary, accent, units, ownedCount){
       <div class="unit-card fc-mini-tile" style="--cardarmy:${primary};--cardaccent:${accent};--cardglow:${accent}" onclick="location.hash='/unit/${esc(u.id)}'">
         <div class="unit-thumb">
           <img src="/api/units/${esc(u.id)}/image" alt="${esc(u.name)}" loading="lazy">
-          ${u.points?`<span class="pts">${esc(String(u.points))} pts</span>`:''}
+          ${u.points?`<span class="pts${u.mfm?' pts--mfm':''}">${esc(String(u.points))} pts</span>`:''}
         </div>
         <div class="unit-body faction-surface">
           <div class="unit-name">${esc(u.name)}</div>

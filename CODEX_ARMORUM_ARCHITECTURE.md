@@ -12,6 +12,7 @@ The app draws from two independent data source tracks. They are not interchangea
 |---|---|---|---|
 | Wahapedia CSV export | CSV files in `data/` | Yes: re-fetch then re-import | Factions, unit browser, datasheets, weapons, abilities, points, detachments, enhancements, army builder, Arsenal |
 | Model catalogue | JSON files in `data/` | No: must migrate manually | Purchase browser, sculpt-aware tracking |
+| MFM overlay | CSV files in `data/mfm/` | Yes: re-import from the bundled CSVs | Optional current points overlay |
 
 BSData has been fully retired. There is no `bsdata/` repo, no `bsdata_importer.py`, and no runtime Wahapedia-to-BSData alias bridge. Every unit lookup now keys on the native Wahapedia datasheet id.
 
@@ -60,6 +61,22 @@ Datasheets_models_cost.csv
 
 ---
 
+## Track 1b: Munitorum Field Manual overlay
+
+**Source:** `data/mfm/mfm_unit_points.csv` and `data/mfm/mfm_enhancements.csv`.
+
+**Resolver:** `mfm_store.py` maps MFM names to Wahapedia ids and stores the result in derived
+`mfm_*` tables. It never writes to `catalogue_*`; `data_store` applies enabled values only in memory.
+
+Space Marine chapter sources can contain different values for the same generic datasheet. Selecting a
+chapter source is therefore exclusive within `SM`, preventing a global datasheet view from mixing
+conflicting chapter prices.
+
+**Refresh rule:** after a Wahapedia refresh or an MFM CSV update, run
+`python -c "import mfm_store; mfm_store.import_mfm()"` while the app is stopped, then restart it.
+
+---
+
 ## Space Marine chapter rollup
 
 Wahapedia carries one Space Marines faction code, `SM`, holding every chapter (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars, and the codex chapters). To restore per-chapter browsing and favouriting, `data_store._apply_chapter_rollup()` derives a per-chapter faction card at load time. This is purely load-time and data-driven, so it survives every reimport with no manual step.
@@ -72,7 +89,7 @@ Wahapedia carries one Space Marines faction code, `SM`, holding every chapter (B
 - **Icons fall back to the parent.** A chapter card tries its own icon, then the parent Space Marines icon, then the tinted glyph (`app._resolve_faction_icon`). No icon files are invented.
 - **The catalogue view groups chapters under the parent.** `catalogue_review.catalogue_payload()` collapses chapter datasheet factions back to `SM` (via `faction_parent`) so the purchase browser grouping and catalogue search scope are unchanged by the rollup.
 
-A load-time assertion warns loudly (without raising) if any of `CORE_EXPECTED_CHAPTERS` (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars) fails to resolve to a non-empty card, so a Wahapedia keyword restructure surfaces on the next refresh instead of silently re-merging a chapter into Space Marines. The read-only diagnostic `scripts/inspect_chapters.py` re-derives the chapter set from the live CSVs.
+A load-time assertion warns loudly (without raising) if any of `CORE_EXPECTED_CHAPTERS` (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars) fails to resolve to a non-empty card, so a Wahapedia keyword restructure surfaces on the next refresh instead of silently re-merging a chapter into Space Marines.
 
 ---
 
@@ -138,6 +155,7 @@ To pull a newer Wahapedia ruleset:
 
 1. `python scripts/fetch_wahapedia.py` (re-downloads the CSVs into `data/`).
 2. `python wahapedia_importer.py` (drops and repopulates the four `catalogue_*` tables).
+3. `python -c "import mfm_store; mfm_store.import_mfm()"` (re-resolves the optional MFM overlay).
 
 The arsenal weapon catalogue is rebuilt automatically on the next app start (`init_arsenal` calls `sync_datasheets`), preserving user-entered spotting notes and photos.
 
@@ -154,12 +172,9 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 - [ ] `data/model_catalogue_manual.json`
 - [ ] `data/model_catalogue_resolutions.json`
 - [ ] `data/model_catalogue_images.json`
-- [ ] `data/model_catalogue.json`
-- [ ] `data/model_catalogue.schema.json`
-- [ ] `data/model_catalogue_issues.json`
-- [ ] `data/model_catalogue_imported_archive.json`
 - [ ] `data/editions_timeline.json`
-- [ ] `data/arsenal_wiki_overrides_full.csv`
+- [ ] `data/mfm/mfm_unit_points.csv`
+- [ ] `data/mfm/mfm_enhancements.csv`
 - [ ] `collection.db` (user data)
 - [ ] `uploads/` directory (mini photos)
 - [ ] `cache/images/catalogue/` (catalogue images)
@@ -196,6 +211,7 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | `arsenal_weapon` | Wargear entries (Arsenal feature) |
 | `arsenal_weapon_datasheet` | Weapon-to-datasheet links |
 | `arsenal_weapon_photo` | Photos for Arsenal weapons |
+| `mfm_faction_state` | Selected MFM source per underlying faction |
 
 ### Wahapedia import tables (safe to drop and rebuild)
 
@@ -205,6 +221,7 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | `catalogue_units` | Unit definitions from Wahapedia |
 | `catalogue_weapons` | Weapon profiles from Wahapedia |
 | `catalogue_unit_weapons` | Unit/weapon many-to-many links |
+| `mfm_meta`, `mfm_resolved_units`, `mfm_resolved_enhancements`, `mfm_unmatched` | Derived MFM resolver data |
 
 ---
 
@@ -216,6 +233,9 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | `data_store.py` | Loads the Wahapedia catalogue tables, exposes unit/faction data | Code: in git |
 | `wahapedia_importer.py` | Parses the Wahapedia CSVs, populates catalogue_* tables | Code: in git |
 | `scripts/fetch_wahapedia.py` | Downloads the Wahapedia CSV export into `data/` | Code: in git |
+| `mfm_store.py` | Resolves optional MFM points over Wahapedia data | Code: in git |
+| `scripts/find_datasheet_gaps.py` | Writes a review report to `data/datasheet_gaps.{json,csv}` | Code: in git |
+| `scripts/import_wiki_overrides.py` | Applies reviewed Arsenal wiki controls from a CSV | Code: in git |
 | `catalogue_review.py` | Builds purchase browser payload from model_catalogue_manual.json | Code: in git |
 | `editions.py` | Loads the edition timeline for the Codex Archive | Code: in git |
 | `box_sets.py` | Box set logic, purchase creation | Code: in git |
@@ -232,4 +252,4 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 
 ## Migration history
 
-The June 2026 migration replaced BSData (GitHub wh40k-10e .cat/.gst XML) with the Wahapedia CSV export as the sole ruleset source. The migration scripts live in `scripts/` (`capture_baseline.py`, `fetch_wahapedia.py`, `reconcile_ids.py`). The pre-migration database snapshot is `collection.db.pre-wahapedia`. The most visible behavioural change: Space Marine chapters (Blood Angels, Space Wolves, Dark Angels, Deathwatch, and others) are no longer separate factions in the source data; Wahapedia groups them all under `Space Marines` (`SM`). Per-chapter browsing and favouriting were then restored on top of that data by the load-time chapter rollup (see "Space Marine chapter rollup" above), which derives chapter cards from the faction keywords without leaving Wahapedia.
+The June 2026 migration replaced BSData (GitHub wh40k-10e .cat/.gst XML) with the Wahapedia CSV export as the sole ruleset source. The retained fetch helper is `scripts/fetch_wahapedia.py`; the pre-migration database snapshot is `collection.db.pre-wahapedia`. The most visible behavioural change: Space Marine chapters (Blood Angels, Space Wolves, Dark Angels, Deathwatch, and others) are no longer separate factions in the source data; Wahapedia groups them all under `Space Marines` (`SM`). Per-chapter browsing and favouriting were then restored on top of that data by the load-time chapter rollup (see "Space Marine chapter rollup" above), which derives chapter cards from the faction keywords without leaving Wahapedia.

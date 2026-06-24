@@ -90,7 +90,7 @@ export async function showUnit(did){
             ${renderLeaderAttach(d.leads)}
             ${renderOptions(d.options)}
             ${renderTransport(d)}
-            ${renderPoints(d.costs)}
+            ${renderPoints(d.costs, d.points_source, d.mfm_version)}
             ${renderKeywords(d)}
           </div>
           <div class="ds-mode ds-mode-card" hidden>

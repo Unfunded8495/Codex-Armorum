@@ -191,9 +191,14 @@ export function renderOptions(rows){
     ${rows.map(r=>`<li>${ruleText(r.description)}</li>`).join('')}</ul></div>`;
 }
 
-export function renderPoints(costs){
+export function renderPoints(costs, source, version){
   if(!costs||!costs.length) return '';
-  return `<div class="section"><h2>Points</h2><div class="points-row">
+  // When the points come from the MFM overlay, mark the heading with a small
+  // stamp so it is clear these differ from the Wahapedia base data.
+  const stamp = source === 'mfm'
+    ? `<span class="mfm-stamp" title="Munitorum Field Manual points">MFM${version?' '+esc(version):''}</span>`
+    : '';
+  return `<div class="section"><h2>Points${stamp}</h2><div class="points-row">
     ${costs.map(c=>`<div class="points-box"><b>${esc(c.cost)}</b><span>${esc(c.description)}</span></div>`).join('')}
   </div></div>`;
 }

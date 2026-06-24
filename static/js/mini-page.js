@@ -10,6 +10,19 @@ const STAGE_LABELS = {
   washed:'Washed', highlighted:'Highlighted', finished:'Finished', display:'Display',
 };
 
+/* ---- paint-stage buckets (drive ledger counts, diamonds, summaries) ---- */
+const BUCKET_LABEL = { raw:'To build', bench:'Undergoing rites', done:'Blessed' };
+/* unbuilt → raw; finished/display → done; everything in between → bench */
+function mpBucketOf(stage){
+  const s = stage || 'unbuilt';
+  return s === 'unbuilt' ? 'raw' : (s === 'finished' || s === 'display') ? 'done' : 'bench';
+}
+function mpBucketCounts(){
+  const c = { raw:0, bench:0, done:0 };
+  for(const m of mpMinis) c[mpBucketOf(m.stage)]++;
+  return c;
+}
+
 /* ---- page state ---- */
 let mpMinis        = [];
 let mpUnit         = null;
@@ -111,9 +124,6 @@ export async function showMiniPage(did){
 function mpRenderPage(){
   const rep    = mpMinis[0];
   const isCat  = (mpDatasheetId || '').startsWith('cat:');
-  const total  = mpMinis.length;
-  const done   = mpMinis.filter(m=>m.stage==='finished'||m.stage==='display').length;
-  const pct    = total > 0 ? Math.round(done/total*100) : 0;
   const groups = mpGroupMinis(mpMinis);
 
   const accent  = mpUnit?.accent || 'var(--gold)';
@@ -122,32 +132,20 @@ function mpRenderPage(){
   const legend  = mpUnit?.legend || '';
   const faction = mpUnit?.faction_name || rep.faction_name;
 
-  const ownedPanel = `<div class="owned-panel">
-    <div class="owned-readout">
-      <b>${total}</b> <span>mini${total===1?'':'s'} in collection</span>
-    </div>
-    <div class="mp-bar-track" style="margin-top:8px;margin-bottom:6px">
-      <div class="mp-bar-fill" id="mpBarFill" style="width:${pct}%"></div>
-    </div>
-    <div class="owned-readout">
-      <b id="mpDone">${done}</b> <span>painted · <span id="mpPct">${pct}%</span> done</span>
-    </div>
-  </div>`;
-
   view.innerHTML = `
-    <div class="detail-wrap">
+    <div class="detail-wrap mp-page">
       <div class="detail-media">
-        ${mpLeftMediaHtml()}${ownedPanel}
+        ${mpLeftMediaHtml()}${mpReliquaryLedgerHtml()}
       </div>
       <div class="detail-info">
         <h1 class="detail-name" style="color:${readableInk(accent)}">${esc(name)}</h1>
-        <p class="detail-role">${esc(faction)}${role?' · '+esc(role):''}</p>
+        <p class="detail-role"><span class="mp-tick" aria-hidden="true"></span>${esc(faction)}${role?' · '+esc(role):''}</p>
         ${legend?`<p class="legend">${esc(legend)}</p>`:''}
         <div class="mp-mini-list" id="mpMiniList">
           ${groups.map(g=>mpRenderGroup(g)).join('')}
         </div>
-        ${isCat ? '' : `<div style="margin-top:18px">
-          <a class="mp-ds-link" href="/#/unit/${esc(rep.datasheet_id)}">View Full Datasheet →</a>
+        ${isCat ? '' : `<div class="mp-ds-link-row">
+          <a class="mp-ds-link" href="/#/unit/${esc(rep.datasheet_id)}">View Full Datasheet <span class="mp-ds-arrow" aria-hidden="true">→</span></a>
         </div>`}
         ${isCat ? '' : mpRenderWipSection()}
       </div>
@@ -156,6 +154,46 @@ function mpRenderPage(){
   mpWireLeftMedia();
   mpWireDropZones();
   if(!isCat) mpWireWipDropZone();
+}
+
+/* The bolted data-plate strip across the top of a sculpt card: unit role on the left,
+   the owned-model count on the right. Both are unit-wide, so every sculpt slide shows
+   the same plate (it reads as part of the armour frame, not the individual release). */
+function mpDataPlateHtml(){
+  const role  = mpUnit?.role || '';
+  const total = mpMinis.length;
+  return `<div class="mp-dataplate">
+    <span class="mp-dataplate-role">${esc(role || 'Model')}</span>
+    <span class="mp-dataplate-count"><b>${total}</b> Model${total===1?'':'s'}</span>
+  </div>`;
+}
+
+/* Faction emblem watermark, bottom-left of a sculpt stage. Reuses the server's
+   accent-tinted single-colour icon endpoint; omitted when the faction is unknown. */
+function mpEmblemHtml(factionId){
+  const fid = factionId || mpUnit?.faction_id || mpMinis[0]?.faction_id || '';
+  if(!fid) return '';
+  return `<div class="mp-emblem" aria-hidden="true"><img src="/api/factions/${encodeURIComponent(fid)}/icon" alt="" loading="lazy"></div>`;
+}
+
+/* Reliquary Ledger: armour-plate panel summarising the whole pool — total minis, the
+   painted %, and the three paint-stage buckets. Counts are recomputed live on every
+   stage change by mpRefreshProgress() (matching element ids). */
+function mpReliquaryLedgerHtml(){
+  const total = mpMinis.length;
+  const c     = mpBucketCounts();
+  const pct   = total > 0 ? Math.round(c.done / total * 100) : 0;
+  return `<div class="mp-ledger mp-rivets">
+    <div class="mp-ledger-head"><span class="mp-diamond-sm"></span><span>Reliquary Ledger</span></div>
+    <div class="mp-ledger-total"><b id="mpTotal">${total}</b><span>mini${total===1?'':'s'} in collection</span></div>
+    <div class="mp-ledger-pctrow"><span>Company Painted</span><span id="mpPct">${pct}%</span></div>
+    <div class="mp-bar-track"><div class="mp-bar-fill" id="mpBarFill" style="width:${pct}%"></div></div>
+    <div class="mp-ledger-rows">
+      <div class="mp-ledger-row"><span class="mp-diamond" data-b="done"></span><span class="mp-ledger-label">Blessed by the Omnissiah</span><span class="mp-ledger-count" id="mpDone">${c.done}</span></div>
+      <div class="mp-ledger-row"><span class="mp-diamond" data-b="bench"></span><span class="mp-ledger-label">Undergoing Rites</span><span class="mp-ledger-count" id="mpBench">${c.bench}</span></div>
+      <div class="mp-ledger-row"><span class="mp-diamond" data-b="raw"></span><span class="mp-ledger-label">To build</span><span class="mp-ledger-count" id="mpRaw">${c.raw}</span></div>
+    </div>
+  </div>`;
 }
 
 /* Build the left-column media: a swipeable carousel of the owned sculpt cards when the
@@ -175,12 +213,17 @@ function mpLeftMediaHtml(){
     </div>`;
   }
   const rep    = mpMinis[0];
-  const accent = mpUnit?.accent || 'var(--gold)';
   const name   = mpUnit?.name   || rep.datasheet_name;
   const heroImg = (mpUnit?.linked_catalogue_models || []).find(m=>m.image_url)?.image_url
     || `/api/units/${esc(rep.datasheet_id)}/image`;
-  return `<div class="hero-wrap">
-    <img class="hero-img" src="${esc(heroImg)}" alt="${esc(name)}" style="border-color:${accent}">
+  // Reuse the sculpt-card frame so the no-catalogue fallback matches the design.
+  return `<div class="catalogue-card mp-sculpt mp-rivets has-image" id="mpCatalogueCol">
+    <div class="catalogue-image mp-stage">
+      ${mpDataPlateHtml()}
+      <img src="${esc(heroImg)}" alt="${esc(name)}">
+      ${mpEmblemHtml()}
+    </div>
+    <div class="catalogue-card-head"><div><h4>${esc(name)}</h4></div></div>
   </div>`;
 }
 
@@ -194,11 +237,11 @@ function mpWireLeftMedia(){
 function mpRerenderLeftMedia(){
   const media = document.querySelector('.detail-media');
   if(!media) return;
-  const ownedPanel = media.querySelector('.owned-panel');
+  const ledger = media.querySelector('.mp-ledger');
   const next = document.createElement('div');
   next.innerHTML = mpLeftMediaHtml();
-  [...media.children].forEach(ch => { if(ch !== ownedPanel) ch.remove(); });
-  if(next.firstElementChild) media.insertBefore(next.firstElementChild, ownedPanel);
+  [...media.children].forEach(ch => { if(ch !== ledger) ch.remove(); });
+  if(next.firstElementChild) media.insertBefore(next.firstElementChild, ledger);
   mpWireLeftMedia();
 }
 
@@ -249,15 +292,17 @@ function mpCatWireCarousel(){
 }
 
 function mpRefreshProgress(){
-  const total   = mpMinis.length;
-  const done    = mpMinis.filter(m=>m.stage==='finished'||m.stage==='display').length;
-  const pct     = total > 0 ? Math.round(done/total*100) : 0;
-  const pctEl   = document.getElementById('mpPct');
-  if(pctEl) pctEl.textContent = pct+'%';
-  const doneEl  = document.getElementById('mpDone');
-  if(doneEl) doneEl.textContent = done;
-  const bar     = document.getElementById('mpBarFill');
-  if(bar) bar.style.width = pct+'%';
+  const total = mpMinis.length;
+  const c     = mpBucketCounts();
+  const pct   = total > 0 ? Math.round(c.done / total * 100) : 0;
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  set('mpTotal', total);
+  set('mpDone',  c.done);
+  set('mpBench', c.bench);
+  set('mpRaw',   c.raw);
+  set('mpPct',   pct + '%');
+  const bar = document.getElementById('mpBarFill');
+  if(bar) bar.style.width = pct + '%';
 }
 
 function mpGroupMinis(minis){
@@ -380,18 +425,22 @@ function mpRenderGroup(group){
 
   // The all-unbuilt "to build" card is tinted with the army colour, matching the
   // faction box on the left (e.g. red for Skitarii / Adeptus Mechanicus).
-  const army  = mpUnit?.primary || '';
+  // The all-unbuilt "to build" card stays a muted plate (bare plastic); built cards get
+  // the faction-coloured diagonal fade driven by the --faction var. The army colour is
+  // still exposed on unbuilt cards via --cardarmy/--cardaccent for the existing tint.
+  const army  = mpUnit?.primary || mpMinis[0]?.primary || '';
   const glow  = mpUnit?.accent || army;
-  const unbuiltCls   = isUnbuilt ? ' mp-unbuilt-card' : '';
-  const unbuiltStyle = isUnbuilt && army
-    ? ` style="--cardarmy:${esc(army)};--cardaccent:${esc(glow)};--cardglow:${esc(glow)}"`
-    : '';
+  const faction = army || '#22468c';
+  const unbuiltCls = isUnbuilt ? ' mp-unbuilt-card' : ' mp-built-card';
+  const cardStyle = isUnbuilt
+    ? (army ? ` style="--cardarmy:${esc(army)};--cardaccent:${esc(glow)};--cardglow:${esc(glow)}"` : '')
+    : ` style="--faction:${esc(faction)}"`;
 
   const chips = mpRenderGearChips(rep.wargear, isUnbuilt);
 
   const labelText = rep.label || 'Standard';
 
-  const badge = count > 1 ? `<span class="mgc-badge">×${count}</span>` : '';
+  const badge = count > 1 ? `<span class="mgc-badge"><span class="mgc-badge-x">×</span>${count}</span>` : '';
   const deleteButton = count > 1
     ? `<button class="mc-del" onclick="mpDeleteOneFromGroup('${gcid}')" title="Remove one mini">−1</button>`
     : `<button class="mc-del" onclick="mpDeleteMini('${rep.id}')" title="Remove mini">✕</button>`;
@@ -399,63 +448,94 @@ function mpRenderGroup(group){
   const head = `<div class="mc-head">
       ${badge}
       <span class="mgc-label" id="mplabel-${gcid}">${esc(labelText)}</span>
-      <button class="link-btn mgc-label-btn" onclick="mpEditGroupLabel('${gcid}')" title="Rename">✎</button>
+      <button class="link-btn mgc-label-btn" onclick="mpEditGroupLabel('${gcid}')" title="Rename">✎ Rename</button>
       ${deleteButton}
     </div>
     <div class="mc-label-ed" id="mpled-${gcid}" hidden></div>`;
 
-  const gearBlock = `<div class="mc-gear-row">
+  // Loadout row is hidden entirely for all-unbuilt groups (nothing built to equip yet).
+  const gearBlock = isUnbuilt ? '' : `<div class="mc-gear-row">
       <div class="gear-chips" id="mpgear-${gcid}">${chips}</div>
       <button class="link-btn" onclick="mpEditGroupGear('${gcid}')">Edit loadout</button>
     </div>
     <div class="mc-gear-ed" id="mpged-${gcid}" hidden></div>`;
 
   // Photos sit in one column pinned to the left of the card; the body (right) holds
-  // the head, loadout, stage controls and — for squads — the per-mini manager. Only
-  // built minis get a photo column, so the unbuilt "to build" cards stay compact.
+  // the head, loadout and (solo) stage controls. Only built minis get a photo column,
+  // so the unbuilt "to build" cards stay compact.
   const hasPhotos = group.some(m => (m.photos||[]).length);
   const media = (!isUnbuilt || hasPhotos) ? mpMediaColumn(group, gcid) : '';
 
-  let body;
+  let bodyInner;
   if(count === 1){
     const s = rep.stage || 'unbuilt';
     const notes = s !== 'unbuilt'
       ? `<textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
           oninput="mpSaveMiniNotes('${rep.id}',this.value)">${esc(rep.notes||'')}</textarea>`
       : '';
-    body = `<div class="mgc-body">
-      ${head}
-      ${mpStageSelect(rep.id, s, rep.multikit_group)}
+    bodyInner = `${head}
+      ${mpSoloStageHtml(rep.id, s, rep.multikit_group)}
       ${gearBlock}
-      ${notes}
-    </div>`;
+      ${notes}`;
   }else{
-    body = `<div class="mgc-body">
-      ${head}
-      ${gearBlock}
-      <details class="mgc-details">
-        <summary class="mgc-summary">Manage ${count} minis individually</summary>
+    bodyInner = `${head}${gearBlock}`;
+  }
+  const body = `<div class="mgc-body">${bodyInner}</div>`;
+  const toprow = `<div class="mgc-toprow">${media}${body}</div>`;
+
+  // The squad manager lives full-width BELOW the photo+body row, so opening it never
+  // changes the photo height.
+  const details = count > 1
+    ? `<details class="mgc-details">
+        <summary class="mgc-summary">
+          <span class="mgc-summary-label">Manage ${count} minis individually</span>
+          <span class="mgc-summary-tally">${esc(mpGroupSummary(group))}</span>
+        </summary>
         <div class="mgc-minis">
           ${group.map((m,i)=>mpRenderSubCard(m,i+1)).join('')}
         </div>
-      </details>
-    </div>`;
-  }
+      </details>`
+    : '';
 
   const soloCls = count === 1 ? ' is-solo' : '';
-  return `<div class="mini-group-card${soloCls}${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${unbuiltStyle}>
-    ${media}${body}
+  return `<div class="mini-group-card mp-rivets${soloCls}${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${cardStyle}>
+    ${toprow}${details}
   </div>`;
+}
+
+/* Solo stage control: a bucket diamond beside the stage select. */
+function mpSoloStageHtml(mid, stage, multikitGroup){
+  const b = mpBucketOf(stage);
+  return `<div class="mc-stage-row">
+    <span class="mp-diamond" data-b="${b}"></span>
+    ${mpStageSelect(mid, stage, multikitGroup)}
+  </div>`;
+}
+
+/* The per-mini summary shown on the right of a squad's expander bar. */
+function mpGroupSummary(group){
+  const b = group.map(m => mpBucketOf(m.stage));
+  const d = b.filter(x=>x==='done').length;
+  const be = b.filter(x=>x==='bench').length;
+  const r = b.filter(x=>x==='raw').length;
+  const parts = [];
+  if(d)  parts.push(d + ' blessed');
+  if(be) parts.push(be + ' in rites');
+  if(r)  parts.push(r + ' to build');
+  return parts.join(' · ');
 }
 
 function mpRenderSubCard(m, num){
   const mid = m.id;
   const s   = m.stage || 'unbuilt';
+  const b   = mpBucketOf(s);
   const chips = mpRenderGearChips(m.wargear, false);
   return `<div class="mini-sub-card" id="mpsc-${mid}">
     <div class="msc-head">
       <span class="msc-num">#${num}</span>
+      <span class="mp-diamond" data-b="${b}"></span>
       ${mpStageSelect(mid, s, m.multikit_group)}
+      <span class="msc-bucket">${BUCKET_LABEL[b]}</span>
       <button class="mc-del" onclick="mpDeleteMini('${mid}')" title="Remove this mini">✕</button>
     </div>
     ${s !== 'unbuilt' ? `<div class="mc-gear-row msc-gear-row">
@@ -766,8 +846,8 @@ function mpWipUploaderTile(){
 function mpRenderWipSection(){
   const notes  = mpUnit?.wip_notes  || '';
   const photos = mpUnit?.wip_photos || [];
-  return `<details class="mp-wip" id="mpWip"${notes||photos.length?' open':''}>
-    <summary class="mgc-summary mp-wip-summary">Work in Progress Notes</summary>
+  return `<details class="mp-wip mp-rivets" id="mpWip"${notes||photos.length?' open':''}>
+    <summary class="mgc-summary mp-wip-summary"><span class="mp-diamond-sm"></span>Work in Progress Notes</summary>
     <div class="mp-wip-body">
       <textarea class="mc-notes mp-wip-notes" id="mpWipNotes"
         placeholder="General notes — colour recipes, conversion ideas, basing plans…"
@@ -1000,14 +1080,18 @@ function mpCatRenderCard(item){
       </a>`).join('')
     : '<span class="catalogue-unlinked">No current datasheet</span>';
   return `
-    <article class="catalogue-card${item.image?' has-image':''}${cls}"${style} data-cid="${esc(item.id)}">
+    <article class="catalogue-card mp-sculpt mp-rivets${item.image?' has-image':''}${cls}"${style} data-cid="${esc(item.id)}">
       ${mark}
       ${item.image
-        ? `<div class="catalogue-image catalogue-image-clickable" data-lightbox-url="${esc(item.image.url)}" data-lightbox-cap="${esc(item.name)}">
+        ? `<div class="catalogue-image mp-stage catalogue-image-clickable" data-lightbox-url="${esc(item.image.url)}" data-lightbox-cap="${esc(item.name)}">
+             ${mpDataPlateHtml()}
              <img src="${esc(item.image.url)}" alt="${esc(item.name)}" loading="lazy">
+             ${mpEmblemHtml(item.faction_id)}
            </div>`
-        : `<div class="catalogue-image">
+        : `<div class="catalogue-image mp-stage">
+             ${mpDataPlateHtml()}
              <img src="/api/units/${esc(mpDatasheetId)}/image" alt="${esc(item.name)}" loading="lazy">
+             ${mpEmblemHtml(item.faction_id)}
            </div>`}
       <div class="catalogue-card-head">
         <div>

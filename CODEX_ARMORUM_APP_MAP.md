@@ -250,6 +250,7 @@ flowchart LR
 | `collection.py` | Ownership counts, the minis for a datasheet, wargear-choice parsing | `minis` table |
 | `box_sets.py` | Box-set definitions, purchase logging that **creates mini rows**, multikit pools | `purchases`, `minis`, `custom_box_*` |
 | `army.py` | Army points maths, detachment/enhancement validation | `data/Detachments.csv`, `Enhancements.csv` |
+| `mfm_store.py` | Imports and selects a non-destructive MFM points overlay | `data/mfm/*.csv`, `mfm_*` tables |
 | `catalogue_review.py` | Builds the Model Catalogue payload, resolves datasheet links via `data_store.ds_by_id` | `data/model_catalogue_*.json` |
 | `editions.py` | Loads the hand-curated edition timeline for the Codex Archive | `data/editions_timeline.json` |
 | `arsenal.py` / `arsenal_store.py` | The Arsenal (wargear) feature as a self-contained blueprint + its own tables | `arsenal_weapon*` tables |
@@ -273,6 +274,10 @@ All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 - `GET /api/factions/<fid>/detachments` · `GET /api/detachments/<dtid>/enhancements`
 - `GET /api/units/<did>` — the full datasheet payload (stats, weapons, comp, points)
 - `GET /api/units/<did>/image` · `GET /api/units/search`
+
+**MFM points overlay**
+- `GET /api/mfm/status` · `POST /api/mfm/toggle` · `POST /api/mfm/toggle-all`
+- `POST /api/mfm/import` — rebuild resolved values from `data/mfm/*.csv`
 
 **Collection & minis**
 - `GET /api/collection` — minis (optionally `?faction_id=`)
@@ -498,10 +503,11 @@ flowchart LR
     A["git clone"] --> B["pip install -r requirements.txt"]
     B --> C["python scripts/fetch_wahapedia.py<br/>→ download CSVs into data/"]
     C --> D["python wahapedia_importer.py<br/>→ populate catalogue_* tables"]
-    D --> E["python app.py"]
-    E --> F["init_db() creates/migrates tables<br/>+ data_store builds the unit index & chapter rollup"]
-    F --> G["http://127.0.0.1:5050"]
-    G --> H["Seal Vault → POST /api/shutdown"]
+    D --> E["MFM CSVs in data/mfm/<br/>(seeded automatically when empty)"]
+    E --> F["python app.py"]
+    F --> G["init_db() creates/migrates tables<br/>+ data_store builds the unit index & chapter rollup"]
+    G --> H["http://127.0.0.1:5050"]
+    H --> I["Seal Vault → POST /api/shutdown"]
 ```
 
 `init_db()` (in `db.py`) runs on startup and is **idempotent** — it creates missing tables
@@ -521,6 +527,7 @@ ruleset updates.
 | How a purchase becomes minis | `box_sets.py` + `purchases.js` |
 | Paint stages / progress stats | `collection.js`, `mini-page.js`, `/api/minis/:id/stage`, `/api/collection` |
 | Army building & points | `army.py` + `army-*.js` |
+| MFM source data and faction selection | `mfm_store.py` + `data/mfm/` + `/api/mfm/*` |
 | Wargear/weapons (Arsenal) | `arsenal.py` + `arsenal_store.py` + `templates/arsenal/` |
 | Unit stats/points source data | `wahapedia_importer.py` → `catalogue_*` → `data_store.py` |
 | Detachments / enhancements | `data/Detachments.csv`, `data/Enhancements.csv` |

@@ -177,6 +177,7 @@ textarea:focus-visible,
 
 /* ---- layout ---- */
 main{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:32px 30px 100px}
+main:has(> .detail-wrap){max-width:1560px;}
 
 @keyframes viewIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .view-title{
@@ -1961,6 +1962,220 @@ a.brand{text-decoration:none;color:inherit}
 .mp-wip-body{margin-top:10px}
 .mp-wip-notes{min-height:84px}
 
+/* ══════════════════════════════════════════════════════════════════════
+   MINI PAGE — ARMOUR-PLATE REDESIGN
+   All selectors are scoped to .mp-page so the shared read-only datasheet
+   page (unit.js: .mgc-layout / .mgc-photo-rail / .mgc-dot) is untouched.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ---- page grid + sticky left column ---- */
+.mp-page.detail-wrap{grid-template-columns:minmax(0,408px) 1fr;gap:30px}
+@media(max-width:880px){.mp-page.detail-wrap{grid-template-columns:1fr}}
+.mp-page .detail-media{top:88px;display:flex;flex-direction:column;gap:18px}
+
+/* ---- reusable brass corner rivets (4 dots via one pseudo-element) ---- */
+.mp-rivets{position:relative}
+.mp-rivets::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+  --rivet:radial-gradient(circle 2.5px at 45% 40%,#f5dd97,#c89a3f 52%,#6e4d1a 84%,#43300f 97%,transparent 100%);
+  background-image:var(--rivet),var(--rivet),var(--rivet),var(--rivet);
+  background-repeat:no-repeat;background-size:6px 6px;
+  background-position:6px 6px,calc(100% - 6px) 6px,6px calc(100% - 6px),calc(100% - 6px) calc(100% - 6px);
+  filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.7));
+}
+/* the larger panels inset their rivets a touch further (8px) */
+.mp-page .mp-ledger.mp-rivets::after,
+.mp-page .mp-sculpt.mp-rivets::after,
+.mp-page .mp-wip.mp-rivets::after{
+  background-position:8px 8px,calc(100% - 8px) 8px,8px calc(100% - 8px),calc(100% - 8px) calc(100% - 8px);
+}
+
+/* ---- bucket diamonds (ledger rows, solo + squad stage controls) ---- */
+.mp-diamond{width:9px;height:9px;flex:0 0 auto;transform:rotate(45deg)}
+.mp-diamond[data-b="done"]{background:#6fae5a;box-shadow:0 0 7px rgba(111,174,90,.6)}
+.mp-diamond[data-b="bench"]{background:#c8923a;box-shadow:0 0 7px rgba(200,146,58,.6)}
+.mp-diamond[data-b="raw"]{background:#6f6a5e;box-shadow:0 0 7px rgba(111,106,94,.5)}
+.mp-diamond-sm{width:6px;height:6px;flex:0 0 auto;background:var(--gold);transform:rotate(45deg)}
+
+/* ---- sculpt card (wraps the catalogue card / hero fallback) ---- */
+.mp-page .catalogue-card.mp-sculpt{
+  position:relative;overflow:hidden;background:#141318;border:1px solid #2c2a35;
+  padding:0 0 14px;gap:12px;min-height:0;border-radius:0;
+  box-shadow:0 18px 44px rgba(0,0,0,.5),inset 0 0 0 1px rgba(0,0,0,.4),inset 0 0 26px rgba(0,0,0,.32);
+}
+.mp-page .catalogue-card.mp-sculpt:hover{border-color:#2c2a35;box-shadow:0 18px 44px rgba(0,0,0,.5),inset 0 0 0 1px rgba(0,0,0,.4),inset 0 0 26px rgba(0,0,0,.32)}
+.mp-page .mp-sculpt>.catalogue-card-head,
+.mp-page .mp-sculpt>.catalogue-note,
+.mp-page .mp-sculpt>.catalogue-flags,
+.mp-page .mp-sculpt>.catalogue-links,
+.mp-page .mp-sculpt>.catalogue-card-actions,
+.mp-page .mp-sculpt>.catalogue-id{padding-left:16px;padding-right:16px}
+.mp-page .mp-sculpt .catalogue-card-head{align-items:flex-start}
+.mp-page .mp-sculpt h4{font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:.4px;color:#f3ead5}
+.mp-page .mp-sculpt .catalogue-meta{font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:#9c9686;margin-top:5px}
+
+/* the radial "stage" the mini floats on */
+.mp-page .mp-stage{
+  position:relative;display:block;overflow:hidden;height:360px;aspect-ratio:auto;margin:0;
+  /* Reserve the data-plate bar's height up top so the artwork starts below it
+     (the bar is position:absolute, so this padding only offsets the in-flow image). */
+  padding-top:34px;
+  background:radial-gradient(ellipse 135% 100% at 50% 18%,#322d39 0%,#1c1a23 54%,#111017 100%);
+  border-bottom:1px solid #2c2a35;
+}
+.mp-page .mp-stage>img{
+  /* Fill the box edge-to-edge, zooming in to match its aspect ratio; the stage's
+     overflow:hidden clips anything that spills outside. */
+  position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center;display:block;
+  padding:0;border:none;background:transparent;
+}
+.mp-page .mp-stage::before{content:"";position:absolute;left:0;right:0;top:0;height:56px;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(199,154,58,.12),transparent)}
+.mp-page .mp-stage::after{content:"";position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:74%;height:30px;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.6),transparent 72%);filter:blur(3px)}
+
+/* bolted data-plate header */
+.mp-page .mp-dataplate{
+  position:absolute;top:0;left:0;right:0;z-index:3;
+  display:flex;align-items:center;justify-content:space-between;padding:8px 22px;
+  background:linear-gradient(180deg,rgba(7,7,10,.95),rgba(7,7,10,.45));
+  border-bottom:1px solid rgba(199,154,58,.42);
+}
+.mp-page .mp-dataplate-role{font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold)}
+.mp-page .mp-dataplate-count{display:flex;align-items:baseline;gap:5px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-bright)}
+.mp-page .mp-dataplate-count b{font-size:14px;font-weight:600;line-height:1;letter-spacing:0;color:#f5eede}
+
+/* faction emblem watermark */
+.mp-page .mp-emblem{position:absolute;left:18px;bottom:16px;z-index:2;width:40px;height:40px;opacity:.92;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.8))}
+.mp-page .mp-emblem img{width:100%;height:100%;object-fit:contain;display:block;border:none;background:transparent}
+
+/* ---- reliquary ledger ---- */
+.mp-page .mp-ledger{
+  position:relative;overflow:hidden;padding:17px 18px 19px;border:1px solid #2c2a35;
+  background:linear-gradient(180deg,#16151b,#0d0c11);
+  box-shadow:0 14px 32px rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.4),inset 0 0 26px rgba(0,0,0,.32);
+}
+.mp-ledger-head{display:flex;align-items:center;gap:9px;margin-bottom:14px;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#cfc6ad}
+.mp-ledger-total{display:flex;align-items:baseline;gap:8px}
+.mp-ledger-total b{font-family:'Oswald',sans-serif;font-weight:600;font-size:38px;line-height:1;color:#f5eede;text-shadow:0 2px 8px #000}
+.mp-ledger-total span{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#9c9686}
+.mp-ledger-pctrow{display:flex;justify-content:space-between;margin:16px 0 5px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#cfc6ad}
+.mp-ledger-pctrow span:last-child{color:var(--gold-bright)}
+.mp-page .mp-ledger .mp-bar-track{height:7px;background:rgba(10,10,12,.6);border:1px solid rgba(199,154,58,.25);border-radius:0;overflow:hidden}
+.mp-page .mp-ledger .mp-bar-fill{height:100%;border-radius:0;background:linear-gradient(180deg,#e8c873,var(--gold));box-shadow:0 0 12px rgba(199,154,58,.5);transition:width .4s ease}
+.mp-ledger-rows{display:flex;flex-direction:column;gap:1px;margin-top:16px}
+.mp-ledger-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid rgba(44,42,53,.7)}
+.mp-ledger-label{flex:1;font-family:'Oswald',sans-serif;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:#9c9686}
+.mp-ledger-count{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;color:#f3ead5}
+
+/* ---- title block ---- */
+.mp-page .detail-name{font-family:'Cinzel',serif;font-weight:900;font-size:38px;letter-spacing:3px;text-transform:uppercase;line-height:1.04;margin:2px 0 0;text-shadow:0 3px 14px rgba(0,0,0,.9)}
+.mp-page .detail-role{display:flex;align-items:center;gap:10px;margin:11px 0 0;font-family:'Oswald',sans-serif;font-size:12px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:1}
+.mp-page .detail-role .mp-tick{width:30px;height:2px;flex:0 0 auto;background:linear-gradient(90deg,var(--gold),transparent)}
+.mp-page .legend{margin:14px 0 0;padding:0;border-left:none;max-width:600px;font-family:'EB Garamond',serif;font-style:italic;font-size:15.5px;line-height:1.6;color:#cfc6ad}
+
+/* ---- mini-group cards ---- */
+.mp-page .mp-mini-list{margin-top:24px;gap:14px}
+.mp-page .mini-group-card{
+  position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;gap:0;
+  padding:0;margin:0;border-radius:0;
+  box-shadow:0 14px 30px rgba(0,0,0,.42),inset 0 0 0 1px rgba(0,0,0,.4),inset 0 0 26px rgba(0,0,0,.32);
+}
+.mp-page .mini-group-card.mp-built-card{
+  background:linear-gradient(140deg,var(--faction,#22468c) 0%,#16213c 40%,#111119 100%);
+  border:1px solid rgba(74,116,194,.5);
+}
+.mp-page .mini-group-card.mp-unbuilt-card{
+  background:linear-gradient(140deg,#26282f 0%,#181820 55%,#121119 100%);
+  border:1px solid rgba(199,154,58,.32);
+}
+.mp-page .mgc-toprow{display:flex;align-items:stretch}
+
+/* photo column: a 150px rail whose height tracks the card body. The gallery is
+   absolutely positioned so a long photo list never balloons the card — a single
+   photo fills the height, extras stack and scroll. */
+.mp-page .mgc-media{position:relative;flex:0 0 150px;width:150px;min-height:140px;max-height:none;overflow:hidden;padding:14px 0 14px 14px;align-self:stretch}
+.mp-page .mgc-media-gallery{position:absolute;top:14px;left:14px;right:0;bottom:14px;display:flex;flex-direction:column;gap:7px;overflow-y:auto;grid-template-columns:none;scrollbar-width:thin;scrollbar-color:rgba(199,154,58,.25) transparent}
+.mp-page .mgc-media-gallery::-webkit-scrollbar{width:4px}
+.mp-page .mgc-media-gallery::-webkit-scrollbar-thumb{background:rgba(199,154,58,.25)}
+.mp-page .mgc-media-gallery .shot{position:relative;flex:1 0 auto;min-height:120px;width:135px;aspect-ratio:auto;overflow:hidden;border:1px solid #2c2a35;background:radial-gradient(ellipse at 50% 25%,#322d39,#16141c)}
+.mp-page .mgc-media-gallery .shot img{width:100%;height:100%;object-fit:cover}
+/* add-photo affordance: small gold "+" pinned to the photo corner when photos exist */
+.mp-page .mgc-media-gallery .uploader:not(:only-child){
+  position:absolute;right:6px;bottom:6px;z-index:4;width:24px;height:24px;flex:0 0 auto;aspect-ratio:auto;padding:0;
+  border:none;font-size:0;background:linear-gradient(180deg,#f0d588,var(--gold));box-shadow:0 2px 7px rgba(0,0,0,.55);
+}
+.mp-page .mgc-media-gallery .uploader:not(:only-child)::after{content:"+";font-family:'Oswald',sans-serif;font-size:18px;font-weight:300;line-height:1;color:#1a160c}
+.mp-page .mgc-media-gallery .uploader:not(:only-child):hover{background:linear-gradient(180deg,#f7e2a0,#d8a945);color:#1a160c}
+/* no photos yet: a full dashed add tile filling the rail */
+.mp-page .mgc-media-gallery .uploader:only-child{position:relative;width:135px;min-height:120px;height:auto;flex:1 0 auto;aspect-ratio:auto;padding:0}
+
+/* card body */
+.mp-page .mgc-body{flex:1;min-width:0;padding:14px 16px 15px}
+.mp-page .mc-head{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.mp-page .mgc-badge{display:inline-flex;align-items:baseline;gap:1px;padding:4px 11px;border:none;border-radius:0;font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;line-height:1;letter-spacing:.3px;color:#1a160c;background:linear-gradient(180deg,#f0d588,var(--gold));box-shadow:0 2px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+.mp-page .mgc-badge .mgc-badge-x{font-size:11px;font-weight:600;opacity:.7;transform:translateY(-1px)}
+.mp-page .mgc-label{flex:1;min-width:0;font-family:'Cinzel',serif;font-weight:700;font-size:16.5px;letter-spacing:.4px;color:#f3ead5}
+.mp-page .mgc-label-btn{flex:0 0 auto;padding:0;font-family:'Oswald',sans-serif;font-size:10px;font-weight:400;letter-spacing:1px;text-transform:uppercase;color:#9c9686;text-decoration:none;opacity:1}
+.mp-page .mgc-label-btn:hover{color:var(--gold-bright);opacity:1}
+
+/* solo stage control + loadout chips */
+.mp-page .mc-stage-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.mp-page .mc-gear-row{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin:0;padding-top:10px;border-top:1px solid rgba(44,42,53,.6)}
+.mp-page .gear-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+.mp-page .gear-chip{padding:4px 9px;border-radius:0;font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:.5px;color:#cfc6ad;background:rgba(10,10,12,.5);border:1px solid rgba(199,154,58,.3)}
+.mp-page .gear-chip.muted{color:#6f6a5e;background:rgba(10,10,12,.5);border-color:rgba(44,42,53,.9)}
+.mp-page .mc-gear-row .link-btn{flex:0 0 auto;padding:4px 0;font-family:'Oswald',sans-serif;font-size:10px;font-weight:400;letter-spacing:1px;text-transform:uppercase;color:#9c9686;text-decoration:none}
+.mp-page .mc-gear-row .link-btn:hover{color:var(--gold-bright)}
+
+/* stage select */
+.mp-page .stage-sel{
+  margin-bottom:0;min-width:0;border-radius:0;padding:7px 30px 7px 12px;
+  appearance:none;-webkit-appearance:none;
+  background:rgba(10,10,12,.7) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c79a3a'/%3E%3C/svg%3E") no-repeat right 11px center;
+  border:1px solid rgba(199,154,58,.35);color:#e6dcc4;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;
+}
+.mp-page .stage-sel.is-multikit{border-color:rgba(199,154,58,.55);border-style:dashed}
+
+/* squad expander (full width, below the photo+body row) */
+.mp-page .mgc-details{margin:0;border-top:1px solid rgba(44,42,53,.6)}
+.mp-page .mgc-summary{display:flex;align-items:center;gap:11px;padding:13px 16px;border-top:none;font-family:'Oswald',sans-serif;font-size:13.5px;font-weight:400;letter-spacing:1.6px;text-transform:uppercase;color:#cfc6ad}
+.mp-page .mgc-summary::before{content:'▸';color:var(--gold);font-size:11px;line-height:1}
+.mp-page .mgc-details[open] .mgc-summary::before{transform:rotate(90deg)}
+.mp-page .mgc-summary-label{flex:0 0 auto}
+.mp-page .mgc-summary-tally{margin-left:auto;font-size:12px;letter-spacing:1.2px;color:var(--gold)}
+.mp-page .mgc-summary:hover{color:var(--gold-bright)}
+.mp-page .mgc-minis{margin:0;padding:2px 16px 16px;border-top:none;gap:6px}
+
+/* per-mini rows */
+.mp-page .mini-sub-card{padding:9px 12px;border-radius:0;background:rgba(10,10,12,.4);border:1px solid rgba(44,42,53,.7)}
+.mp-page .mini-sub-card .msc-head{display:flex;align-items:center;gap:11px;margin-bottom:0}
+.mp-page .mini-sub-card .mc-gear-row{margin-top:9px}
+.mp-page .mini-sub-card .mc-notes{margin-top:9px;margin-bottom:0}
+.mp-page .msc-num{flex:0 0 auto;width:26px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.5px;color:#6f6a5e}
+.mp-page .msc-bucket{flex:0 0 auto;width:78px;text-align:right;font-family:'Oswald',sans-serif;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:#6f6a5e}
+.mp-page .mini-sub-card .stage-sel{flex:1;width:100%;background-color:rgba(10,10,12,.6);border-color:rgba(199,154,58,.28)}
+
+/* view full datasheet pill */
+.mp-page .mp-ds-link-row{margin-top:20px}
+.mp-page .mp-ds-link{display:inline-flex;align-items:center;gap:9px;padding:11px 18px;background:rgba(10,10,12,.5);border:1px solid rgba(199,154,58,.45);color:#e6dcc4;text-decoration:none;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase}
+.mp-page .mp-ds-link:hover{color:var(--gold-bright);border-color:var(--gold)}
+.mp-page .mp-ds-arrow{color:var(--gold)}
+
+/* work in progress notes panel */
+.mp-page .mp-wip{position:relative;overflow:hidden;margin-top:24px;padding:17px 18px 19px;border:1px solid #2c2a35;border-top:1px solid #2c2a35;background:linear-gradient(180deg,#16151b,#0d0c11);box-shadow:0 14px 32px rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.4),inset 0 0 26px rgba(0,0,0,.32)}
+.mp-page .mp-wip-summary{display:flex;align-items:center;gap:9px;padding:0;border-top:none;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#cfc6ad}
+.mp-page .mp-wip-summary::before{display:none}
+.mp-page .mp-wip-summary:hover{color:var(--gold-bright)}
+.mp-page .mp-wip-body{margin-top:13px}
+.mp-page .mp-wip-notes{width:100%;min-height:70px;padding:10px 12px;resize:vertical;background:rgba(10,10,12,.5);border:1px solid rgba(44,42,53,.9);color:#cfc6ad;font-size:14px;line-height:1.6}
+.mp-page #mpWipGallery{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px;grid-template-columns:none}
+.mp-page #mpWipGallery .shot{flex:0 0 auto;width:84px;height:84px;aspect-ratio:auto}
+.mp-page #mpWipGallery .uploader{flex:0 0 auto;width:84px;height:84px;min-height:0;aspect-ratio:auto;padding:0;text-align:center;font-size:9.5px;letter-spacing:.8px;color:#6f6a5e;border:1px dashed rgba(199,154,58,.35);background:rgba(10,10,12,.35)}
+.mp-page #mpWipGallery .uploader:hover{color:var(--gold);border-color:rgba(199,154,58,.7)}
+
+/* solo (single-mini) card body keeps stage + notes stacked tidily */
+.mp-page .mc-notes{margin-top:11px;margin-bottom:0;border-radius:0;background:rgba(10,10,12,.5);border:1px solid rgba(44,42,53,.9);color:#cfc6ad;font-size:14px;line-height:1.5;padding:9px 11px;min-height:54px}
+
 /* ══ COLLECTION STATS DASHBOARD ═════════════════════════════ */
 .col-page-head{
   display:flex;flex-direction:column;gap:8px;margin-bottom:24px;
@@ -2367,13 +2582,13 @@ a.brand{text-decoration:none;color:inherit}
 }
 
 /* Header */
-.dsc-hdr{position:relative;overflow:hidden;background:#242421;color:#fff;padding:14px 18px 14px;display:flex;align-items:flex-start;gap:16px;min-height:135px;}
-.dsc-hdr-shape{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
-.dsc-hdr-shape path{fill:var(--dsc-primary);}
+.dsc-hdr{position:relative;overflow:hidden;background:linear-gradient(to right,rgba(20,20,18,0) 34%,rgba(18,18,16,.6) 58%,rgba(16,16,14,.9) 82%),url('/static/textures/header-bg.png');background-size:cover;background-position:center;color:#fff;padding:14px 18px 14px;display:flex;align-items:flex-start;gap:16px;min-height:135px;}
+.dsc-hdr-logo{position:absolute;right:250px;top:50%;width:360px;height:360px;transform:translate(50%,-50%) rotate(15deg);background-color:#fff;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;opacity:.22;z-index:0;pointer-events:none;}
+.dsc-hdr-rule{position:absolute;left:0;right:0;top:20px;height:96px;background:linear-gradient(to right,var(--dsc-primary),color-mix(in srgb,var(--dsc-primary) 0%,transparent));z-index:0;pointer-events:none;}
 .dsc-hdr-main{position:relative;z-index:1;flex:0 0 auto;max-width:60%;min-width:0;}
 .dsc-base{font-family:'Oswald',sans-serif;font-weight:400;font-size:15px;letter-spacing:.3px;text-transform:none;opacity:.8;margin-left:6px;}
-.dsc-legend{position:absolute;top:20px;right:20px;z-index:1;max-width:42%;font-family:'EB Garamond',serif;font-style:italic;font-size:13px;line-height:1.4;color:rgba(255,255,255,.92);}
-.dsc-name{font-family:'Mulish','Oswald',sans-serif;font-weight:900;font-size:28px;letter-spacing:.5px;text-transform:uppercase;margin:0 0 12px;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+.dsc-legend{position:absolute;top:68px;right:20px;transform:translateY(-50%);z-index:1;max-width:42%;font-family:'EB Garamond',serif;font-style:italic;font-size:13px;line-height:1.4;color:rgba(255,255,255,.92);}
+.dsc-name{font-family:'Mulish','Oswald',sans-serif;font-weight:900;font-size:28px;letter-spacing:.5px;text-transform:uppercase;margin:11px 0 12px;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.5);}
 .dsc-models{display:flex;flex-direction:column;gap:10px;}
 .dsc-model-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px;opacity:.85;}
 .dsc-statline{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}
@@ -2385,11 +2600,18 @@ a.brand{text-decoration:none;color:inherit}
 .dsc-invuln-val{width:46px;height:50px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;padding-bottom:8px;font-size:20px;font-weight:700;clip-path:polygon(0 0,100% 0,100% 64%,50% 100%,0 64%);}
 
 /* Body */
-.dsc-body{display:grid;grid-template-columns:1.45fr 1fr;}
+.dsc-body{display:grid;grid-template-columns:1.45fr 1fr;padding-top:8px;}
 .dsc-col-left{border-right:1px solid #cfcfcf;}
 
 /* Section header bar: faction colour at 70 percent, darker solid border, inset */
 .dsc-head{display:flex;align-items:center;gap:9px;background:color-mix(in srgb,var(--dsc-primary) 70%,transparent);border:1px solid color-mix(in srgb,var(--dsc-primary) 70%,black);color:#fff;padding:6px 12px;margin:12px 12px 4px;font-size:14px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;}
+.dsc-col-right .dsc-head{margin-left:20px;margin-right:20px;}
+.dsc-col-right .dsc-block{padding-left:20px;padding-right:20px;}
+.dsc-col-right .dsc-coreline{border-bottom:1px dotted color-mix(in srgb,var(--dsc-primary) 50%,#9b9b92);padding-bottom:6px;margin-bottom:6px;}
+.dsc-col-right .dsc-ability{border-bottom:1px dotted color-mix(in srgb,var(--dsc-primary) 50%,#9b9b92);padding-bottom:9px;}
+.dsc-col-right .dsc-ability:last-child{border-bottom:none;}
+.dsc-col-right .dsc-opt li{border-bottom:1px dotted color-mix(in srgb,var(--dsc-primary) 50%,#9b9b92);padding-bottom:6px;}
+.dsc-col-right .dsc-opt li:last-child{border-bottom:none;}
 .dsc-ico{width:18px;height:18px;flex:0 0 18px;background-color:#fff;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;}
 .ico-range{-webkit-mask-image:url('/static/icons/Range.svg');mask-image:url('/static/icons/Range.svg');}
 .ico-melee{-webkit-mask-image:url('/static/icons/Melee.svg');mask-image:url('/static/icons/Melee.svg');}
@@ -2403,7 +2625,7 @@ a.brand{text-decoration:none;color:inherit}
 .dsc-wpn-titlewrap{display:flex;align-items:center;gap:9px;}
 .dsc-wpn th.dsc-wname,.dsc-wpn td.dsc-wname{text-align:left;width:40%;padding-left:12px;}
 .dsc-wpn td{padding:5px 4px;text-align:center;border-bottom:1px solid #e4e3e1;vertical-align:top;}
-.dsc-wrow-alt td{background:rgba(40,40,40,.06);}
+.dsc-wrow-alt td{background:linear-gradient(rgba(130,130,126,.42),rgba(130,130,126,.42)),url('/static/textures/card-texture2.png');background-size:auto,cover;background-position:center;}
 .dsc-w-base{font-weight:600;}
 .dsc-wkw{display:inline;font-size:10px;font-weight:700;color:var(--dsc-primary);letter-spacing:.3px;text-transform:uppercase;margin-left:6px;filter:brightness(.7);}
 .dsc-kwref{color:var(--dsc-primary);font-weight:700;font-style:normal;filter:brightness(.7);}
@@ -2448,7 +2670,7 @@ a.brand{text-decoration:none;color:inherit}
   .dsc-stat-val{width:38px;height:38px;font-size:18px;}
   .dsc-name{font-size:23px;}
   .dsc-hdr{flex-direction:column;padding-bottom:14px;}
-  .dsc-legend{position:static;max-width:none;margin-top:6px;}
+  .dsc-legend{position:static;transform:none;max-width:none;margin-top:6px;}
 }
 
 /* =====================================================================
@@ -2685,3 +2907,71 @@ a.brand{text-decoration:none;color:inherit}
 .fc-unit-stats.is-tri{justify-content:flex-start;gap:13px}
 .fc-unit-stats.is-tri span{display:flex;align-items:center;gap:5px}
 .fc-unit-stats.is-tri b{color:var(--parch);font-weight:600}
+
+/* ====================================================================
+   MFM points overlay: topbar modal, faction switches, and points stamps.
+   Reuses the .am-backdrop / .am-box / .am-head modal pattern.
+   ==================================================================== */
+.mfm-box{width:min(560px,100%)}
+.mfm-body{display:block}
+.mfm-intro{font-size:14px;line-height:1.55;color:var(--parch);margin:0 0 4px}
+.mfm-imported{color:var(--parch-dim)}
+
+.mfm-master-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 12px;margin:12px 0 8px;
+  background:rgba(199,154,58,.06);border:1px solid rgba(199,154,58,.25);
+}
+.mfm-master-text strong{font-family:'Cinzel',serif;color:var(--gold-bright);display:block;font-size:14px}
+.mfm-sub{font-size:12px;color:var(--parch-dim)}
+
+.mfm-faction-list{
+  display:flex;flex-direction:column;
+  max-height:46vh;overflow-y:auto;
+  border-top:1px solid rgba(44,42,53,.6);
+}
+.mfm-row{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 6px;
+  border-bottom:1px solid rgba(44,42,53,.5);
+  cursor:pointer;
+}
+.mfm-row:hover{background:rgba(199,154,58,.06)}
+.mfm-row-name{flex:1;font-family:'Cinzel',serif;font-size:14px;color:var(--parch)}
+.mfm-row-count{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--parch-dim);
+}
+.mfm-empty{color:var(--parch-dim);padding:18px;text-align:center}
+.mfm-foot-note{font-size:12px;color:var(--parch-dim)}
+
+/* compact on/off switch, built on the grimdark gold tokens */
+.mfm-switch{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+.mfm-switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
+.mfm-slider{
+  position:absolute;inset:0;pointer-events:none;
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:22px;
+  transition:background .2s,border-color .2s;
+}
+.mfm-slider::before{
+  content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;
+  background:var(--parch-dim);border-radius:50%;
+  transition:transform .2s,background .2s;
+}
+.mfm-switch input:checked + .mfm-slider{background:rgba(199,154,58,.3);border-color:var(--gold)}
+.mfm-switch input:checked + .mfm-slider::before{transform:translateX(18px);background:var(--gold-bright)}
+.mfm-switch input:focus-visible + .mfm-slider{box-shadow:var(--ring)}
+
+/* MFM stamp beside the datasheet Points heading */
+.mfm-stamp{
+  font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;
+  color:var(--gold-bright);background:rgba(199,154,58,.12);
+  border:1px solid rgba(199,154,58,.5);
+  padding:2px 8px;border-radius:2px;
+}
+
+/* faint accent on faction-browse points when sourced from the MFM overlay */
+.pts--mfm{
+  color:var(--gold-bright);
+  box-shadow:inset 0 0 0 1px rgba(199,154,58,.7);
+}
