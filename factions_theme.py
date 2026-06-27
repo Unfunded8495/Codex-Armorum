@@ -71,6 +71,12 @@ THEME = {
     "Chaos Daemons":    ("#7a1030", "#caa1d6", "star"),
     "Ynnari":           ("#5a2d6e", "#d9cdb0", "blade"),
     "Unaligned Forces": ("#4a4a4a", "#cccccc", "skull"),
+
+    # Placeholder bucket for catalogue models whose faction cannot be derived
+    # from a linked w40k.db datasheet and whose legacy code is one of the
+    # intentionally-unmapped trio (TF/UA/UN). Deliberately distinct from the
+    # grey DEFAULT so a missed assignment is visible, not invisible.
+    "Unresolved":       ("#2f2f3a", "#9aa1b8", "skull"),
 }
 
 DEFAULT = ("#4a4a4a", "#cccccc", "skull")

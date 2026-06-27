@@ -1,4 +1,20 @@
-"""Helpers for reviewing imported model catalogue rows."""
+"""Helpers for reviewing imported model catalogue rows.
+
+Leaf-vs-parent faction seam (read before editing the army_ids / source_faction
+construction): every catalogue record's stored faction_id and every nested
+datasheet_links[].faction_id is a leaf-level w40k.db UUID (Blood Angels, not
+Adeptus Astartes), set by scripts/reresolve_catalogue_faction.py per the
+leaf-wins primary the data store computes. The catalogue scoping layer
+deliberately collapses those leaves to their parent at render time
+(store.faction_parent), so a Blood Angels datasheet groups under the Adeptus
+Astartes army tile even though its stored ids point at the chapter. Two
+pieces hold that contract together and must move in lockstep if either is
+changed: the per-link collapse inside the datasheet loop in
+catalogue_payload, and the source_faction collapse a few lines below it. If
+a future change starts surfacing chapter-level groups in the catalogue, both
+sites need to relax together or the army_ids union and the displayed
+faction_id will disagree.
+"""
 import json
 import os
 import re
@@ -21,33 +37,21 @@ _CACHE = {}
 # ---------------------------------------------------------------------------
 # Faction-label canonicalisation
 #
-# `faction_label` is a denormalised, per-record display string. Legacy
-# spreadsheet imports seeded it from the worksheet tab title (e.g. "Orks"),
-# while newer add/edit paths wrote the data store's canonical faction name
-# (e.g. "Xenos - Orks"). The result was one faction_id carrying two different
-# strings, so a card's meta line and its group header could disagree.
-#
-# These aliases collapse each known drift variant onto the data store's
-# canonical faction name - the single string the rest of the app already uses -
-# so cards, group headers and the army picker all agree with no display-time
-# string munging. We deliberately do NOT touch faction_ids that legitimately
-# carry several sub-faction labels (Space Marine chapters, Aeldari branches,
-# Agents of the Imperium); those are meaningful distinctions finer-grained than
-# faction_id, not drift.
-FACTION_LABEL_ALIASES = {
-    "Orks": "Xenos - Orks",
-    "Adeptus Mechanicus": "Imperium - Adeptus Mechanicus",
-    "Chaos Space Marines": "Chaos - Chaos Space Marines",
-    "Genestealer Cult": "Xenos - Genestealer Cults",
-    "Genestealer Cults": "Xenos - Genestealer Cults",
-    "Emperor's Children": "Chaos - Emperor's Children",
-    "Emperorâ€™s Children": "Chaos - Emperor's Children",  # mojibake repair
-    "Imperium - Adeptus Astartes - Space Marines": "Space Marines",       # rejoin generic SM group
-}
+# After the w40k.db faction re-resolve (scripts/reresolve_catalogue_faction.py),
+# every record's faction_label is the bare w40k.db faction.name (or "Unresolved"
+# for the placeholder bucket). Legacy "Xenos - " / "Imperium - " / "Chaos - "
+# grouping prefixes are no longer stored. The aliases table is intentionally
+# left empty: re-adding prefix variants here would undo the rewrite by
+# re-prefixing bare labels at display time. Grouped display, if wanted, is a
+# render-time concern keyed on the faction's parent in w40k.db, not on a
+# baked-in label string.
+FACTION_LABEL_ALIASES = {}
 
 
 def canonical_faction_label(label):
-    """Map a stored faction_label onto its canonical display form (see above)."""
+    """Trim a stored faction_label. The aliases table is empty post-reresolve;
+    bare labels pass straight through. Kept as a function so the API edit path
+    has a single canonicalisation seam if a future drift needs handling."""
     if not label:
         return label
     stripped = label.strip()
@@ -207,8 +211,25 @@ def catalogue_payload():
                 "role": ds.get("role", ""),
             })
 
-        source_faction = store.faction_parent(record.get("faction_id", ""))
-        army_ids = {source_faction, *linked_factions}
+        # Faction authority is single-source: w40k.db via the linked
+        # datasheets when present, else the stored faction_id. We do NOT
+        # union the stored id with the datasheet-derived ids, because that
+        # was the path that doubled the Ork bucket pre-reresolve when the
+        # stored legacy code and the UUID disagreed. After the reresolve
+        # the stored faction_id is the majority-pick leaf-level UUID (or
+        # the "unresolved" sentinel for link-less rows that the code map
+        # could not place); faction_parent collapses leaf chapter UUIDs
+        # back to the parent so the catalogue scoping stays at top-level
+        # factions (a Blood Angels datasheet groups under Adeptus Astartes
+        # in the army filter), matching the per-link parent-collapse
+        # already applied in the loop above.
+        raw_top = record.get("faction_id", "") or ""
+        if linked_factions:
+            army_ids = set(linked_factions)
+            source_faction = store.faction_parent(raw_top) if raw_top else ""
+        else:
+            source_faction = store.faction_parent(raw_top) if raw_top else ""
+            army_ids = {source_faction} if source_faction else set()
         army_ids.discard("")
         for fid in army_ids:
             factions.setdefault(fid, {"id": fid, "name": fid, "count": 0})
