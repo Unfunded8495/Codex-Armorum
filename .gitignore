@@ -3,11 +3,15 @@ collection.db
 collection.db.backup
 collection.db.bak-*
 collection.db.pre-*
+collection.db.clean-*
 *.db.bak-*
 warhammer.db
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Migration backups of the model catalogue JSON
+data/model_catalogue_manual.json.pre-app40k
 
 # Official 40k app data export (large, refreshed out-of-band)
 data/w40k/w40k.db
