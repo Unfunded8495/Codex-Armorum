@@ -37,13 +37,28 @@ THEME = {
     "Tyranids":             ("#462e64", "#d9cdb0", "claw"),
     "World Eaters":         ("#521618", "#b88a3a", "skull"),
 
-    # "Agents of the Imperium" is the cross-faction keyword form of the Imperial
-    # Agents faction (used on shared Space Marine datasheets and the catalogue
-    # drill-in); share its colours so neither surface falls back to grey.
-    "Agents of the Imperium": ("#055374", "#c79a3a", "skull"),
+    # ── Names that vary between Wahapedia (left-hand) and w40k.db (right-hand)
+    #    keep aliased keys so historical content still resolves. ──────────────
+    "Adeptus Astartes":     ("#516765", "#c79a3a", "aquila"),  # = Space Marines
+    "Heretic Astartes":     ("#1b3038", "#b88a3a", "star"),    # = Chaos Space Marines
+    "Legiones Daemonica":   ("#7a1030", "#caa1d6", "star"),    # = Chaos Daemons
+    "Agents of the Imperium": ("#055374", "#c79a3a", "skull"), # = Imperial Agents
+    # Aeldari subfactions in w40k.db are split out as their own factions.
+    "Asuryani":             ("#19767f", "#eef3f2", "blade"),   # = Aeldari
+    "Harlequins":           ("#5a2d6e", "#d9cdb0", "blade"),
+
+    # ── Heretic Astartes subfactions in w40k.db ────────────────────────────────
+    "Blood Legions":         ("#521618", "#b88a3a", "skull"),
+    "Plague Legions":        ("#566010", "#c8b44a", "triskull"),
+    "Legions of Excess":     ("#814a60", "#e9c6dd", "star"),
+    "Scintillating Legions": ("#1b3038", "#caa23a", "star"),
+
+    # ── Other top-level factions in w40k.db ────────────────────────────────────
+    "Adeptus Titanicus":    ("#9f352b", "#c79a3a", "gear"),
+    "Titanicus Traitoris":  ("#1b3038", "#b88a3a", "gear"),
 
     # ── Space Marine chapters outside GW's faction-colour list ──────────────────
-    # Kept thematic so chapter rollups stay visually distinct from one another.
+    # Kept thematic so chapter cards stay visually distinct from one another.
     "Deathwatch":       ("#0d0d0d", "#9c9c9c", "skull"),
     "Imperial Fists":   ("#c8a432", "#0d0d0d", "aquila"),
     "Iron Hands":       ("#1a1a1a", "#707070", "gear"),
@@ -85,7 +100,7 @@ def theme_for(name):
     norm = _norm(name)
     if norm in _THEME_NORM:
         return _THEME_NORM[norm]
-    # Strip BSData/keyword prefix hierarchy — match on the trailing segment.
+    # Strip BSData/keyword prefix hierarchy - match on the trailing segment.
     if name and " - " in name:
         tail = _norm(name.rsplit(" - ", 1)[-1])
         if tail in _THEME_NORM:

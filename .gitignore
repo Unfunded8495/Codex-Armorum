@@ -9,6 +9,16 @@ warhammer.db
 *.db-wal
 *.db-shm
 
+# Official 40k app data export (large, refreshed out-of-band)
+data/w40k/w40k.db
+
+# Generated migration report
+data/migration_app40k_report.json
+
+# Throwaway copies of collection.db used to test the migration end-to-end
+# (created by setting COLLECTION_DB_PATH=data/_migration_test/collection.db).
+data/_migration_test/
+
 # Python
 __pycache__/
 *.pyc

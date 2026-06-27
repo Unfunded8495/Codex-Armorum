@@ -57,7 +57,7 @@ export function renderWargear(title,rows){
     </tbody></table></div>`;
 }
 
-/* Invulnerable save badge — shown under the stat line like the printed card. */
+/* Invulnerable save badge - shown under the stat line like the printed card. */
 export function renderInvuln(abilities){
   const inv = abilities && abilities.invuln_save;
   if(!inv) return '';
@@ -67,7 +67,7 @@ export function renderInvuln(abilities){
   </div>`;
 }
 
-/* Damaged bracket — the "while this model has N wounds remaining…" penalty,
+/* Damaged bracket - the "while this model has N wounds remaining…" penalty,
    shown under the stat line like the printed card's red banner. */
 export function renderDamaged(d){
   if(!d.damaged_description) return '';
@@ -80,7 +80,7 @@ export function renderDamaged(d){
   </div>`;
 }
 
-/* Transport capacity — its own section; BSData stores it as a full sentence. */
+/* Transport capacity - its own section; BSData stores it as a full sentence. */
 export function renderTransport(d){
   if(!d.transport) return '';
   return `<div class="section transport-section"><h2>Transport</h2>
@@ -128,7 +128,7 @@ export function renderAbilities(abilities){
   </div>`;
 }
 
-/* "Leader" block — the units this model can be attached to. */
+/* "Leader" block - the units this model can be attached to. */
 export function renderLeaderAttach(leads){
   if(!leads || !leads.length) return '';
   const links = leads.map(t => t.id
@@ -191,14 +191,9 @@ export function renderOptions(rows){
     ${rows.map(r=>`<li>${ruleText(r.description)}</li>`).join('')}</ul></div>`;
 }
 
-export function renderPoints(costs, source, version){
+export function renderPoints(costs){
   if(!costs||!costs.length) return '';
-  // When the points come from the MFM overlay, mark the heading with a small
-  // stamp so it is clear these differ from the Wahapedia base data.
-  const stamp = source === 'mfm'
-    ? `<span class="mfm-stamp" title="Munitorum Field Manual points">MFM${version?' '+esc(version):''}</span>`
-    : '';
-  return `<div class="section"><h2>Points${stamp}</h2><div class="points-row">
+  return `<div class="section"><h2>Points</h2><div class="points-row">
     ${costs.map(c=>`<div class="points-box"><b>${esc(c.cost)}</b><span>${esc(c.description)}</span></div>`).join('')}
   </div></div>`;
 }

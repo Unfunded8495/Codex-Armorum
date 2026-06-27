@@ -90,7 +90,7 @@ export async function showUnit(did){
             ${renderLeaderAttach(d.leads)}
             ${renderOptions(d.options)}
             ${renderTransport(d)}
-            ${renderPoints(d.costs, d.points_source, d.mfm_version)}
+            ${renderPoints(d.costs)}
             ${renderKeywords(d)}
           </div>
           <div class="ds-mode ds-mode-card" hidden>
@@ -208,7 +208,7 @@ function renderSquadHint(sugg){
   if(!cr) return;
   let inner = '';
   if(sugg.squads.length===0&&sugg.total>0){
-    inner = `<div class="sh-row sh-warn">⚠ ${sugg.total} mini${sugg.total===1?'':'s'} — not enough for a squad (minimum ${cr.min})</div>`;
+    inner = `<div class="sh-row sh-warn">⚠ ${sugg.total} mini${sugg.total===1?'':'s'} - not enough for a squad (minimum ${cr.min})</div>`;
   }else{
     const squadsText = sugg.squads.map(s=>`${s} mini${s===1?'':'s'}`).join(', ');
     const count = sugg.squads.length;
@@ -268,7 +268,7 @@ function miniGroupCard(group){
         <button class="link-btn" onclick="editGroupGear('${gcid}')">Edit gear</button>
       </div>
       <div class="mc-gear-ed" id="mgcged-${gcid}" hidden></div>
-      <textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
+      <textarea class="mc-notes" placeholder="Notes - paint scheme, kitbash, magnets…"
                 oninput="saveMiniNotesDebounced('${rep.id}',this.value)">${esc(rep.notes||'')}</textarea>`;
 
     if(hasPhotos){
@@ -296,7 +296,7 @@ function miniGroupCard(group){
     const s = m.stage||'unbuilt';
     const isPainted = s==='finished'||s==='display';
     return `<button class="mgc-dot${isPainted?' is-painted':''}" data-mid="${m.id}"
-             title="${esc(STAGE_LABELS[s]||s)} — click to edit"
+             title="${esc(STAGE_LABELS[s]||s)} - click to edit"
              onclick="cycleMiniStage(this,'${m.id}')"></button>`;
   }).join('');
 
@@ -348,7 +348,7 @@ function miniSubCard(m, num){
       ${stageSelect(mid, s)}
       <button class="mc-del" onclick="deleteMini('${mid}')" title="Remove this mini">✕</button>
     </div>
-    <textarea class="mc-notes" placeholder="Notes — paint scheme, kitbash, magnets…"
+    <textarea class="mc-notes" placeholder="Notes - paint scheme, kitbash, magnets…"
               oninput="saveMiniNotesDebounced('${mid}',this.value)">${esc(m.notes||'')}</textarea>
     <div class="mc-gallery" id="mcgal-${mid}">
       ${(m.photos||[]).map(p=>photoTile(p,mid)).join('')}
@@ -388,14 +388,14 @@ export async function cycleMiniStage(btn, mid){
   const PAINT_STAGES = ['unbuilt','base_coated','finished'];
   const title = btn.title || '';
   // Find current stage from dot's title prefix
-  const curLabel = title.split(' —')[0].trim().toLowerCase();
+  const curLabel = title.split(' -')[0].trim().toLowerCase();
   const curStageEntry = Object.entries(STAGE_LABELS).find(([,v])=>v.toLowerCase()===curLabel);
   const curStage = curStageEntry ? curStageEntry[0] : 'unbuilt';
   const curIdx = PAINT_STAGES.indexOf(PAINT_STAGES.find(s=>s===curStage) || PAINT_STAGES[0]);
   const nextStage = PAINT_STAGES[(curIdx + 1) % PAINT_STAGES.length];
   const isPainted = nextStage==='finished'||nextStage==='display';
   btn.classList.toggle('is-painted', isPainted);
-  btn.title = `${STAGE_LABELS[nextStage]||nextStage} — click to edit`;
+  btn.title = `${STAGE_LABELS[nextStage]||nextStage} - click to edit`;
   const row   = btn.closest('.mgc-paint-row');
   const tally = row?.querySelector('.mgc-paint-tally');
   if(tally){
@@ -495,10 +495,10 @@ export function startDuplicate(mid, originalLabel){
   const form = document.getElementById('mcdup-'+mid);
   if(!form) return;
   if(!form.hidden){ form.hidden=true; form.innerHTML=''; return; }
-  const newLabel = originalLabel ? originalLabel+' — Copy' : 'Copy';
+  const newLabel = originalLabel ? originalLabel+' - Copy' : 'Copy';
   form.innerHTML = `
     <div class="maf-inner" style="margin-top:10px">
-      <div class="maf-title">Duplicate — change the label to distinguish it</div>
+      <div class="maf-title">Duplicate - change the label to distinguish it</div>
       <label class="ff-label">New mini label</label>
       <input class="ff-input" id="dupLabel-${mid}" value="${esc(newLabel)}" autocomplete="off">
       <div class="dup-error" id="dupErr-${mid}" hidden></div>
@@ -526,7 +526,7 @@ export async function submitDuplicate(mid, originalLabel){
     err.textContent='Label cannot be empty.'; err.hidden=false; inp.focus(); return;
   }
   if(label === originalLabel){
-    err.textContent='Label must differ from the original — update it before duplicating.';
+    err.textContent='Label must differ from the original - update it before duplicating.';
     err.hidden=false; inp.focus(); return;
   }
   err.hidden=true;

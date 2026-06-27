@@ -12,7 +12,7 @@ export async function openUnitPicker(){
 
   let units = state.unitsCache[state.army.faction_id];
   if(!units){
-    const data = await api(`/api/factions/${state.army.faction_id}/units`);
+    const data = await api(`/api/factions/${state.army.faction_id}/units?for=army-builder`);
     units = data.units || [];
     state.unitsCache[state.army.faction_id] = units;
   }

@@ -9,7 +9,8 @@ import uuid
 from utils import _as_int, _as_bool
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE, "collection.db")
+DB_PATH = os.environ.get(
+    "COLLECTION_DB_PATH", os.path.join(BASE, "collection.db"))
 
 
 def db():
@@ -268,59 +269,7 @@ def init_db():
 
         _migrate_legacy_loadouts(c, legacy_photos_table)
 
-        # Wahapedia catalogue tables (populated by wahapedia_importer.py). The
-        # bsdata_id / unit_bsdata_id column names are a legacy misnomer: they now
-        # hold native Wahapedia ids (datasheet ids and faction codes).
-        c.execute("""CREATE TABLE IF NOT EXISTS catalogue_factions (
-            bsdata_id   TEXT PRIMARY KEY,
-            name        TEXT NOT NULL,
-            cat_file    TEXT NOT NULL,
-            imported_at TEXT NOT NULL
-        )""")
-
-        c.execute("""CREATE TABLE IF NOT EXISTS catalogue_units (
-            bsdata_id       TEXT PRIMARY KEY,
-            faction_id      TEXT NOT NULL REFERENCES catalogue_factions(bsdata_id),
-            name            TEXT NOT NULL,
-            role            TEXT,
-            points          INTEGER,
-            virtual         INTEGER DEFAULT 0,
-            legend          TEXT,
-            link            TEXT,
-            stats_json      TEXT,
-            abilities_json  TEXT,
-            keywords_json   TEXT,
-            composition_json TEXT,
-            wargear_options_json TEXT,
-            loadout          TEXT,
-            leader_targets_json TEXT,
-            points_tiers_json TEXT,
-            imported_at     TEXT NOT NULL
-        )""")
-
-        c.execute("""CREATE TABLE IF NOT EXISTS catalogue_weapons (
-            bsdata_id    TEXT PRIMARY KEY,
-            faction_id   TEXT NOT NULL REFERENCES catalogue_factions(bsdata_id),
-            name         TEXT NOT NULL,
-            weapon_type  TEXT NOT NULL,
-            range        TEXT,
-            attacks      TEXT,
-            skill        TEXT,
-            strength     TEXT,
-            ap           TEXT,
-            damage       TEXT,
-            keywords     TEXT,
-            description  TEXT,
-            imported_at  TEXT NOT NULL
-        )""")
-
-        c.execute("""CREATE TABLE IF NOT EXISTS catalogue_unit_weapons (
-            unit_id    TEXT NOT NULL REFERENCES catalogue_units(bsdata_id),
-            weapon_id  TEXT NOT NULL REFERENCES catalogue_weapons(bsdata_id),
-            PRIMARY KEY (unit_id, weapon_id)
-        )""")
-
-        # Legacy id columns on existing tables (now hold Wahapedia ids)
+        # Legacy id columns on existing tables (now hold w40k.db UUIDs).
         if "unit_bsdata_id" not in _columns(c, "minis"):
             c.execute("ALTER TABLE minis ADD COLUMN unit_bsdata_id TEXT")
 
@@ -353,24 +302,6 @@ def init_db():
         except Exception:
             pass  # data_store may not be ready on first run before catalogue import
 
-        # Keep the empty-database schema compatible with data_store as well as
-        # with the importer, which may add these fields later on existing DBs.
-        for stmt in [
-            "ALTER TABLE catalogue_units ADD COLUMN composition_json TEXT",
-            "ALTER TABLE catalogue_units ADD COLUMN wargear_options_json TEXT",
-            "ALTER TABLE catalogue_units ADD COLUMN loadout TEXT",
-            "ALTER TABLE catalogue_units ADD COLUMN leader_targets_json TEXT",
-            "ALTER TABLE catalogue_units ADD COLUMN points_tiers_json TEXT",
-            "ALTER TABLE catalogue_units ADD COLUMN legend TEXT",
-            "ALTER TABLE catalogue_units ADD COLUMN link TEXT",
-            "ALTER TABLE catalogue_units ADD COLUMN virtual INTEGER DEFAULT 0",
-            "ALTER TABLE catalogue_weapons ADD COLUMN description TEXT",
-        ]:
-            try:
-                c.execute(stmt)
-            except Exception:
-                pass
-
         # Indexes on the collection tables' frequently-filtered foreign-key
         # columns. Without these, per-request lookups full-scan the table and
         # scale linearly with the collection. (The arsenal_* tables already
@@ -386,13 +317,3 @@ def init_db():
             "CREATE INDEX IF NOT EXISTS idx_purchases_box ON purchases(box_set_id)",
         ]:
             c.execute(stmt)
-
-        # MFM points overlay tables (separate from the Wahapedia catalogue;
-        # applied non-destructively at read time by data_store). Imported lazily
-        # to avoid a circular import; reuses this open connection so the schema
-        # is created in the same transaction.
-        try:
-            import mfm_store
-            mfm_store.ensure_tables(c)
-        except Exception:
-            pass

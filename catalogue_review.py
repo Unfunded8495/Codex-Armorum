@@ -9,7 +9,8 @@ import factions_theme as ft
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE, "data")
-MANUAL_PATH = os.path.join(DATA_DIR, "model_catalogue_manual.json")
+MANUAL_PATH = os.environ.get(
+    "MANUAL_JSON_PATH", os.path.join(DATA_DIR, "model_catalogue_manual.json"))
 RESOLUTIONS_PATH = os.path.join(DATA_DIR, "model_catalogue_resolutions.json")
 IMAGES_PATH = os.path.join(DATA_DIR, "model_catalogue_images.json")
 CATALOGUE_IMAGE_DIR = os.path.join(BASE, "cache", "images", "catalogue")
@@ -27,7 +28,7 @@ _CACHE = {}
 # strings, so a card's meta line and its group header could disagree.
 #
 # These aliases collapse each known drift variant onto the data store's
-# canonical faction name — the single string the rest of the app already uses —
+# canonical faction name - the single string the rest of the app already uses -
 # so cards, group headers and the army picker all agree with no display-time
 # string munging. We deliberately do NOT touch faction_ids that legitimately
 # carry several sub-faction labels (Space Marine chapters, Aeldari branches,
@@ -192,11 +193,11 @@ def catalogue_payload():
             ds = datasheets.get(did)
             if not ds:
                 continue
-            # Collapse chapter datasheets back to the parent faction (e.g.
-            # SM::Blood Angels -> SM). The chapter rollup splits Space Marines
-            # only for the browse grid and favourites; the catalogue faction
-            # grouping and search scope deliberately stay at the parent level so
-            # the purchase browser is unchanged by the rollup.
+            # Collapse chapter datasheets back to the parent faction (e.g. a
+            # Blood Angels datasheet groups under Adeptus Astartes). Chapters
+            # are first-class factions for browsing and favourites, but the
+            # catalogue grouping and search scope deliberately stay at the
+            # parent level so the purchase browser is unchanged by the split.
             fac = store.faction_parent(ds.get("faction_id", ""))
             linked_factions.add(fac)
             links.append({
@@ -300,7 +301,7 @@ FACTION_CARD_THEME_ALIASES = {
 
 
 def _faction_card_display_name(label):
-    """Prefix-stripped display name — the same suffix theme_for keys on."""
+    """Prefix-stripped display name - the same suffix theme_for keys on."""
     return label.rsplit(" - ", 1)[-1].strip()
 
 
@@ -461,7 +462,7 @@ def catalogue_faction_datasheet_index():
     """Return {catalogue_model_id: {faction_id: datasheet_id}} for every
     model release whose resolution (or raw links) covers more than one faction.
 
-    Used by the collection API to surface minis in cross-faction views — e.g. a mini
+    Used by the collection API to surface minis in cross-faction views - e.g. a mini
     stored under the CSM Plague Marines datasheet should also appear when browsing Death
     Guard because the model catalogue links that physical kit to both datasheets.
     """

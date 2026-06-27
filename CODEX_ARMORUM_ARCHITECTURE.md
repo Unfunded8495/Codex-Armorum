@@ -1,6 +1,6 @@
 # Codex Armorum: Data Architecture and Migration Reference
 
-Last reviewed: June 2026 (Wahapedia migration). Update this document whenever data sources, tables, or ID mappings change.
+Last reviewed: June 2026 (40k app data swap). Update this document whenever data sources, tables, or ID mappings change.
 
 ---
 
@@ -10,86 +10,79 @@ The app draws from two independent data source tracks. They are not interchangea
 
 | Track | Source | Regenerable? | Powers |
 |---|---|---|---|
-| Wahapedia CSV export | CSV files in `data/` | Yes: re-fetch then re-import | Factions, unit browser, datasheets, weapons, abilities, points, detachments, enhancements, army builder, Arsenal |
+| Official 40k app export | `data/w40k/w40k.db` (SQLite, read-only) | Yes: drop in a newer DB or run the bundled exporter | Factions, unit browser, datasheets, weapons, abilities, points, detachments, enhancements, army builder, Arsenal |
 | Model catalogue | JSON files in `data/` | No: must migrate manually | Purchase browser, sculpt-aware tracking |
-| MFM overlay | CSV files in `data/mfm/` | Yes: re-import from the bundled CSVs | Optional current points overlay |
 
-BSData has been fully retired. There is no `bsdata/` repo, no `bsdata_importer.py`, and no runtime Wahapedia-to-BSData alias bridge. Every unit lookup now keys on the native Wahapedia datasheet id.
+Wahapedia and the Munitorum Field Manual (MFM) overlay are retired. Faction and datasheet ids are UUIDs from `w40k.db`. The `bsdata_id` / `unit_bsdata_id` column names on user data are kept as a legacy misnomer and now hold UUIDs.
 
 ---
 
-## Track 1: Wahapedia CSV export
+## Track 1: Official 40k app export
 
-**Source:** pipe-delimited CSV files under `data/`, downloaded from `https://wahapedia.ru/wh40k10ed/`.
+**Source:** `data/w40k/w40k.db` - a SQLite export of the official Warhammer 40,000 mobile app's rules database. The current snapshot is `data_version: 886`. The file is git-ignored; refresh procedure is in `data/w40k/README.md`.
 
-**Fetcher:** `scripts/fetch_wahapedia.py` downloads the full set (raw bytes, preserving the UTF-8 BOM and pipe delimiter).
+**Loader:** `data_store.py`
+- Opens the DB with `mode=ro&immutable=1` so the file can be swapped under a running app.
+- Path is overridable via the `W40K_DB_PATH` env var.
+- Picks a single primary faction per datasheet via the leaf-wins rule (drop any membership that is the parent of another). `PRIMARY_FACTION_OVERRIDES` covers known exceptions.
+- Chapters of the Adeptus Astartes are first-class factions in `w40k.db`, linked through `faction.parent_faction`.
 
-**Importer:** `wahapedia_importer.py`
-- Drops and repopulates all four `catalogue_*` tables on every run.
-- Safe to run at any time; no user data is touched.
-- Keys every row on native Wahapedia ids.
-
-**Files used by the importer (all in `data/`):**
+**Tables read (all in `w40k.db`):**
 
 ```
-Factions.csv                     Datasheets_keywords.csv
-Datasheets.csv                   Datasheets_abilities.csv
-Datasheets_models.csv            Datasheets_leader.csv
-Datasheets_wargear.csv           Abilities.csv
-Datasheets_options.csv           Detachments.csv
-Datasheets_unit_composition.csv  Enhancements.csv
-Datasheets_models_cost.csv
+faction                  ability
+datasheet                extra_rule
+datasheet_faction        weapon
+model                    weapon_profile
+detachment               enhancement
+detachment_faction       stratagem
+detachment_rule
 ```
 
-`Detachments.csv` and `Enhancements.csv` are read directly by `data_store._load_detachment_data()` (the detachment and enhancement browsers). The remaining Wahapedia files (`Source.csv`, `Stratagems.csv`, `Datasheets_stratagems.csv`, etc.) are downloaded for completeness but are not yet consumed.
-
-**Database tables populated:**
-
-| Table | Content |
-|---|---|
-| `catalogue_factions` | Faction names, keyed by Wahapedia faction code |
-| `catalogue_units` | Units with stats, abilities, keywords, points, composition, options, loadout, leader targets, legend, link, virtual flag |
-| `catalogue_weapons` | Weapon profiles (ranged and melee), including a `description` column |
-| `catalogue_unit_weapons` | Many-to-many link between units and weapons |
+**No persistent rules tables.** `w40k.db` is queried directly on app start; nothing in
+`collection.db` mirrors it. The cleanup script `scripts/cleanup_post_app40k.py` drops the
+retired `catalogue_*` and `mfm_*` tables from existing databases.
 
 **ID formats:**
-- Faction id: Wahapedia faction short code, e.g. `CSM`, `SM`, `TYR`.
-- Datasheet id: 9-digit zero-padded string, e.g. `000002570`.
-- Weapon id: synthetic `datasheet_id:line:line_in_wargear` (Wahapedia weapons are scoped to a datasheet line, not globally unique).
+- Faction id: lowercase hex UUID, e.g. `01623188-9470-4441-96b0-e06eb2572bb5`.
+- Datasheet id: lowercase hex UUID, e.g. `864734c9-d6c7-4486-92de-9b8271a6a1e5`.
+- Weapon profile id: `weapon_profile.id` (UUID); rendered grouped under `weapon.name`.
 
-**Migration rule:** these tables can be dropped entirely and reimported. Re-fetch with `scripts/fetch_wahapedia.py`, then run `python wahapedia_importer.py`.
-
----
-
-## Track 1b: Munitorum Field Manual overlay
-
-**Source:** `data/mfm/mfm_unit_points.csv` and `data/mfm/mfm_enhancements.csv`.
-
-**Resolver:** `mfm_store.py` maps MFM names to Wahapedia ids and stores the result in derived
-`mfm_*` tables. It never writes to `catalogue_*`; `data_store` applies enabled values only in memory.
-
-Space Marine chapter sources can contain different values for the same generic datasheet. Selecting a
-chapter source is therefore exclusive within `SM`, preventing a global datasheet view from mixing
-conflicting chapter prices.
-
-**Refresh rule:** after a Wahapedia refresh or an MFM CSV update, run
-`python -c "import mfm_store; mfm_store.import_mfm()"` while the app is stopped, then restart it.
+**Migration rule:** the rules data is sourced entirely from `data/w40k/w40k.db`. Replace
+that file with a newer snapshot (or re-export via the bundled `scripts/w40k_exporter/`)
+and restart the app.
 
 ---
 
-## Space Marine chapter rollup
+## Space Marine chapters and other faction trees
 
-Wahapedia carries one Space Marines faction code, `SM`, holding every chapter (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars, and the codex chapters). To restore per-chapter browsing and favouriting, `data_store._apply_chapter_rollup()` derives a per-chapter faction card at load time. This is purely load-time and data-driven, so it survives every reimport with no manual step.
+Chapters of the Adeptus Astartes are first-class `faction` rows in `w40k.db`, linked to their
+parent via `faction.parent_faction`. The same shape applies to other multi-chapter / multi-cult
+trees (e.g. Heretic Astartes -> Blood Legions / Plague Legions / ...; Aeldari -> Asuryani /
+Harlequins). No chapter rollup or keyword inference runs at load time.
 
-- **Detection is data-driven.** Chapters are the faction keywords (`is_faction_keyword=true`, stored on each unit dict with the `Faction: ` prefix) that appear on `SM` datasheets, minus `CHAPTER_KEYWORD_EXCLUDE` (`Adeptus Astartes`, `Imperium`, `Agents of the Imperium`) and minus any keyword that equals a real faction name. A new chapter added by Wahapedia appears automatically. `CHAPTER_ALLOWLIST` (empty by default) can curate the set without touching logic.
-- **The importer stays unaware of chapters.** No chapter rows are written to any table. After a reimport, `data_store` rebuilds the chapter cards from whatever keywords the fresh CSVs contain.
-- **Chapter ids are stable.** A chapter faction id is `parent::chapter`, e.g. `SM::Blood Angels`. It is deterministic from the keyword text, so favourites (`favourite_factions`), box tags (`custom_box_sets`) and army factions (`army_lists`) that persist a chapter id keep resolving across reimports. The `::` separator cannot occur in a real Wahapedia faction code. Helpers: `faction_parent(fid)`, `is_chapter_faction(fid)`.
-- **Assignment.** A datasheet carrying exactly one detected chapter keyword is reassigned to that chapter (its `faction_id` becomes the chapter id); generic datasheets stay under `SM`. `units_for_faction(fid)` is strict (the `SM` card shows generic units only, a chapter card shows its own), while `units_in_faction_tree(fid)` returns the parent plus all chapter children (used by box/army matching) and `unit_in_faction(did, fid)` treats a chapter unit as belonging to both its chapter and the parent.
-- **Detachments inherit the parent pool.** Wahapedia codes every chapter detachment under `SM` and gives no field attributing a detachment to a chapter, so a chapter card shows the full Space Marines detachment pool via `detachments_for_faction(fid)` (parent fallback). Enhancements follow their detachment.
-- **Icons fall back to the parent.** A chapter card tries its own icon, then the parent Space Marines icon, then the tinted glyph (`app._resolve_faction_icon`). No icon files are invented.
-- **The catalogue view groups chapters under the parent.** `catalogue_review.catalogue_payload()` collapses chapter datasheet factions back to `SM` (via `faction_parent`) so the purchase browser grouping and catalogue search scope are unchanged by the rollup.
+- **Strict roster.** `units_for_faction(fid)` returns only datasheets whose primary faction
+  equals `fid`. The Adeptus Astartes card shows generics; the Blood Angels card shows
+  Blood-Angels-specific datasheets only.
+- **Wider matching.** `units_in_faction_tree(fid)` returns the parent's units plus all children -
+  used by box/army matching so a "Space Marines" box accepts Blood Angels units.
+- **Army builder.** `selectable_units_for_army(fid)` returns own units plus the parent's
+  generics (one level up), so a Blood Angels army can field Tactical Squad. The army builder
+  unit picker uses this rather than the strict roster.
+- **Membership query.** `unit_in_faction(did, fid)` treats a Blood Angels unit as in both
+  Blood Angels and Adeptus Astartes.
+- **Detachment inheritance.** A chapter card with no detachments of its own shows the parent's
+  full pool via `detachments_for_faction(fid)`. Enhancements follow their detachment.
+- **Icons fall back to the parent.** A chapter card tries its own icon, then the parent's,
+  then a tinted faction glyph (`app._resolve_faction_icon`).
+- **Catalogue grouping.** `catalogue_review.catalogue_payload()` collapses chapter datasheets
+  to the parent faction id so the purchase browser groups Space Marine releases under one
+  faction header, unchanged by the chapter split.
 
-A load-time assertion warns loudly (without raising) if any of `CORE_EXPECTED_CHAPTERS` (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars) fails to resolve to a non-empty card, so a Wahapedia keyword restructure surfaces on the next refresh instead of silently re-merging a chapter into Space Marines.
+The primary-faction picker (`_pick_primary_faction`) drops any membership that is the parent
+of another in the same set ("leaf wins"), tiebreaking alphabetically. `PRIMARY_FACTION_OVERRIDES`
+covers explicit exceptions (currently `Maggot Lords Plague Marines -> Death Guard`, the one
+datasheet in `data_version: 886` with no membership row at all).
 
 ---
 
@@ -109,7 +102,7 @@ A load-time assertion warns loudly (without raising) if any of `CORE_EXPECTED_CH
 
 **How it works:**
 
-`catalogue_review.py` reads `model_catalogue_manual.json` and builds the purchase browser payload. For each catalogue entry it resolves the `datasheet_links` (Wahapedia 9-digit ids) by looking them up directly in `data_store.ds_by_id`. Because the store is now Wahapedia-native, these links resolve without any bridge.
+`catalogue_review.py` reads `model_catalogue_manual.json` and builds the purchase browser payload. For each catalogue entry it resolves the `datasheet_links` (w40k.db UUIDs) by looking them up directly in `data_store.ds_by_id`. The migration script (`scripts/migrate_to_app40k.py`) rewrites these from the legacy Wahapedia 9-digit ids on a one-time pass.
 
 **ID format (catalogue model):** `MD-` prefixed numeric strings, e.g. `MD-50836`.
 
@@ -133,33 +126,43 @@ The hand-curated Warhammer 40,000 edition timeline that powers the **Codex Archi
 
 ## ID system
 
-There is now a single ruleset id system plus the catalogue model id.
+There is a single ruleset id system (w40k.db UUIDs) plus the catalogue model id.
 
 | ID type | Format | Example | Primary column | Also in |
 |---|---|---|---|---|
-| Wahapedia datasheet id | 9-digit zero-padded | `000002570` | `minis.datasheet_id` and `minis.unit_bsdata_id` | `catalogue_units.bsdata_id`, `custom_box_set_contents.datasheet_id`, `arsenal_weapon_datasheet.datasheet_id`, `model_catalogue` `datasheet_links` |
-| Wahapedia faction code | short alpha | `CSM` | `catalogue_factions.bsdata_id` | `favourite_factions.faction_id`, `custom_box_sets.faction_id`, `army_lists.faction_id`, `catalogue_units.faction_id` |
+| w40k.db datasheet UUID | lowercase hex UUID | `864734c9-d6c7-4486-92de-9b8271a6a1e5` | `minis.datasheet_id` and `minis.unit_bsdata_id` | `custom_box_set_contents.datasheet_id`, `arsenal_weapon_datasheet.datasheet_id`, `model_catalogue` `datasheet_links`, `army_units.datasheet_id` |
+| w40k.db faction UUID | lowercase hex UUID | `01623188-9470-4441-96b0-e06eb2572bb5` | (none persistent in `collection.db`) | `favourite_factions.faction_id`, `custom_box_sets.faction_id`, `army_lists.faction_id` |
+| w40k.db detachment UUID | lowercase hex UUID | `c5a51e2c-...` | (none persistent in `collection.db`) | `army_lists.detachment_id` |
 | Catalogue model id | MD-NNNNN | `MD-50836` | `minis.catalogue_model_id` | `custom_box_set_contents.catalogue_model_id` |
 
 ### Legacy column names
 
-The column names `catalogue_units.bsdata_id`, `minis.unit_bsdata_id`, `army_units.unit_bsdata_id`, and `arsenal_weapon.weapon_bsdata_id` are a deliberate legacy misnomer. They now hold Wahapedia ids, not BSData GUIDs. The names were kept to avoid touching about thirty query sites. After the migration, `minis.datasheet_id` and `minis.unit_bsdata_id` hold the same Wahapedia datasheet id for every row.
+`minis.unit_bsdata_id`, `army_units.unit_bsdata_id`, and `arsenal_weapon.weapon_bsdata_id`
+are a deliberate legacy misnomer kept across the w40k.db swap. They now hold w40k.db UUIDs.
+The names were kept to avoid touching about thirty query sites. After migration,
+`minis.datasheet_id` and `minis.unit_bsdata_id` hold the same UUID for every row.
 
-A future cosmetic rename (`catalogue_units.bsdata_id` to `datasheet_id`, `minis.unit_bsdata_id` to `canonical_datasheet_id`) is possible but not required.
+A future cosmetic rename (`minis.unit_bsdata_id` to `canonical_datasheet_id`, etc.) is
+possible but not required.
 
 ---
 
 ## Refresh procedure
 
-To pull a newer Wahapedia ruleset:
+The rules data is sourced from a single file. To pick up a newer snapshot:
 
-1. `python scripts/fetch_wahapedia.py` (re-downloads the CSVs into `data/`).
-2. `python wahapedia_importer.py` (drops and repopulates the four `catalogue_*` tables).
-3. `python -c "import mfm_store; mfm_store.import_mfm()"` (re-resolves the optional MFM overlay).
+1. Drop a newer pre-built `data/w40k/w40k.db` into place, **or** run
+   `python scripts/w40k_exporter/w40k_exporter.py` against a fresh `base.apk` and
+   copy the result over.
+2. Restart the Flask app.
 
-The arsenal weapon catalogue is rebuilt automatically on the next app start (`init_arsenal` calls `sync_datasheets`), preserving user-entered spotting notes and photos.
+`data_store` opens `w40k.db` with `mode=ro&immutable=1`, so the file can safely be
+replaced under a stopped app. The arsenal weapon catalogue is rebuilt automatically on
+the next start (`init_arsenal` calls `sync_datasheets`), preserving user-entered spotting
+notes and photos.
 
-User data in `minis`, `photos`, `purchases`, box sets, armies, arsenal notes/photos, and the model catalogue JSONs is untouched by a refresh.
+User data in `minis`, `photos`, `purchases`, box sets, armies, arsenal notes/photos, and
+the model catalogue JSONs is untouched by a refresh.
 
 ---
 
@@ -173,23 +176,25 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 - [ ] `data/model_catalogue_resolutions.json`
 - [ ] `data/model_catalogue_images.json`
 - [ ] `data/editions_timeline.json`
-- [ ] `data/mfm/mfm_unit_points.csv`
-- [ ] `data/mfm/mfm_enhancements.csv`
 - [ ] `collection.db` (user data)
 - [ ] `uploads/` directory (mini photos)
 - [ ] `cache/images/catalogue/` (catalogue images)
 
-### Regenerable (re-fetch and re-import)
+### Rules data (drop in or re-export)
 
-- [ ] Run `python scripts/fetch_wahapedia.py` to download the Wahapedia CSVs into `data/`.
-- [ ] Run `python wahapedia_importer.py` to populate the `catalogue_*` tables.
-- [ ] Confirm `catalogue_units` count is non-zero (currently ~1712).
-- [ ] Confirm purchase browser loads entries.
+- [ ] Place `data/w40k/w40k.db` (a snapshot the user owns; refresh procedure above).
+- [ ] Confirm the faction grid loads units and the unit detail pages render points.
 
-### Safe to drop and rebuild
+### One-time migration from a Wahapedia-era database
 
-- `catalogue_factions`, `catalogue_units`, `catalogue_weapons`, `catalogue_unit_weapons`: all rebuilt by `wahapedia_importer.py`.
-- `__pycache__/` directories: rebuilt by Python at runtime.
+If `collection.db` was last touched by the Wahapedia-era app (9-digit datasheet ids,
+short-code faction ids), run the migration once before launching the new app:
+
+- [ ] `python scripts/migrate_to_app40k.py --dry-run` and review the JSON report.
+- [ ] `python scripts/migrate_to_app40k.py` to perform the rewrite (creates
+      `collection.db.pre-app40k` and `data/model_catalogue_manual.json.pre-app40k`).
+- [ ] Optionally `python scripts/cleanup_post_app40k.py` to drop the now-unused
+      `catalogue_*` and `mfm_*` tables once dogfooding confirms the new world works.
 
 ---
 
@@ -211,17 +216,19 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | `arsenal_weapon` | Wargear entries (Arsenal feature) |
 | `arsenal_weapon_datasheet` | Weapon-to-datasheet links |
 | `arsenal_weapon_photo` | Photos for Arsenal weapons |
-| `mfm_faction_state` | Selected MFM source per underlying faction |
 
-### Wahapedia import tables (safe to drop and rebuild)
+### Rules data (external)
 
-| Table | Description |
-|---|---|
-| `catalogue_factions` | Faction index from Wahapedia |
-| `catalogue_units` | Unit definitions from Wahapedia |
-| `catalogue_weapons` | Weapon profiles from Wahapedia |
-| `catalogue_unit_weapons` | Unit/weapon many-to-many links |
-| `mfm_meta`, `mfm_resolved_units`, `mfm_resolved_enhancements`, `mfm_unmatched` | Derived MFM resolver data |
+Lives entirely in `data/w40k/w40k.db`. Read by `data_store.py` on app start; never copied
+into `collection.db`. Tables read: `faction`, `datasheet`, `datasheet_faction`, `model`,
+`ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`,
+`detachment_rule`, `enhancement`, `stratagem`.
+
+### Retired (dropped by `scripts/cleanup_post_app40k.py`)
+
+`catalogue_factions`, `catalogue_units`, `catalogue_weapons`, `catalogue_unit_weapons`,
+`mfm_faction_state`, `mfm_meta`, `mfm_resolved_units`, `mfm_resolved_enhancements`,
+`mfm_unmatched`. Held the Wahapedia import and MFM overlay; no longer populated.
 
 ---
 
@@ -230,19 +237,18 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 | File | Role | Regenerable? |
 |---|---|---|
 | `app.py` | Flask routes and API endpoints | Code: in git |
-| `data_store.py` | Loads the Wahapedia catalogue tables, exposes unit/faction data | Code: in git |
-| `wahapedia_importer.py` | Parses the Wahapedia CSVs, populates catalogue_* tables | Code: in git |
-| `scripts/fetch_wahapedia.py` | Downloads the Wahapedia CSV export into `data/` | Code: in git |
-| `mfm_store.py` | Resolves optional MFM points over Wahapedia data | Code: in git |
+| `data_store.py` | Reads `data/w40k/w40k.db`, exposes unit/faction/detachment data | Code: in git |
+| `scripts/w40k_exporter/w40k_exporter.py` | Re-exports `w40k.db` from a fresh official-app APK | Code: in git |
+| `scripts/migrate_to_app40k.py` | One-time migration from Wahapedia ids to w40k.db UUIDs | Code: in git |
+| `scripts/cleanup_post_app40k.py` | Drops retired `catalogue_*` and `mfm_*` tables from `collection.db` | Code: in git |
 | `scripts/find_datasheet_gaps.py` | Writes a review report to `data/datasheet_gaps.{json,csv}` | Code: in git |
 | `scripts/import_wiki_overrides.py` | Applies reviewed Arsenal wiki controls from a CSV | Code: in git |
 | `catalogue_review.py` | Builds purchase browser payload from model_catalogue_manual.json | Code: in git |
 | `editions.py` | Loads the edition timeline for the Codex Archive | Code: in git |
 | `box_sets.py` | Box set logic, purchase creation | Code: in git |
-| `db.py` | Schema init and legacy migrations | Code: in git |
-| `collection.db` | SQLite database containing all user data and catalogue tables | User data: back up |
-| `data/Datasheets*.csv`, `data/Factions.csv`, `data/Abilities.csv` | Wahapedia ruleset export | Re-fetchable |
-| `data/Detachments.csv`, `data/Enhancements.csv` | Detachment and enhancement definitions | Re-fetchable |
+| `db.py` | User-data schema init and migrations | Code: in git |
+| `collection.db` | SQLite database containing all user data | User data: back up |
+| `data/w40k/w40k.db` | Official 40k app rules export (UUID ids) | Refresh out-of-band |
 | `data/model_catalogue_manual.json` | Physical model range catalogue | No |
 | `data/model_catalogue_resolutions.json` | Manual review decisions for catalogue entries | No |
 | `data/model_catalogue_images.json` | Catalogue entry image references | No |
@@ -252,4 +258,15 @@ Run this whenever deploying to a new environment, rebuilding Docker, or branchin
 
 ## Migration history
 
-The June 2026 migration replaced BSData (GitHub wh40k-10e .cat/.gst XML) with the Wahapedia CSV export as the sole ruleset source. The retained fetch helper is `scripts/fetch_wahapedia.py`; the pre-migration database snapshot is `collection.db.pre-wahapedia`. The most visible behavioural change: Space Marine chapters (Blood Angels, Space Wolves, Dark Angels, Deathwatch, and others) are no longer separate factions in the source data; Wahapedia groups them all under `Space Marines` (`SM`). Per-chapter browsing and favouriting were then restored on top of that data by the load-time chapter rollup (see "Space Marine chapter rollup" above), which derives chapter cards from the faction keywords without leaving Wahapedia.
+- **June 2026 (Wahapedia -> w40k.db).** Rules data moved from the Wahapedia CSV import
+  (`catalogue_*` tables) and the Munitorum Field Manual overlay (`mfm_*` tables) to a
+  read-only SQLite export of the official Warhammer 40,000 mobile app
+  (`data/w40k/w40k.db`, `data_version: 886`). Faction and datasheet ids switched from
+  Wahapedia short codes and 9-digit ids to lowercase hex UUIDs; chapters of the Adeptus
+  Astartes became first-class factions (no chapter rollup at load time). User data was
+  rewritten in place by `scripts/migrate_to_app40k.py` against the
+  `collection.db.pre-app40k` backup. Wahapedia CSVs were archived under
+  `archive/data/wahapedia-2026-06/`.
+- **April 2026 (BSData -> Wahapedia).** Replaced the BSData `wh40k-10e` XML import with
+  the Wahapedia CSV export as the sole ruleset source. Pre-migration snapshot kept as
+  `collection.db.pre-wahapedia`.

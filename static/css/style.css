@@ -574,7 +574,7 @@ main:has(> .detail-wrap){max-width:1560px;}
 }
 .unit-tab-panel[hidden]{display:none}
 
-/* Stat boxes — GW-style with distinct label header */
+/* Stat boxes - GW-style with distinct label header */
 .statline{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .stat-box{
   display:flex;flex-direction:column;min-width:56px;
@@ -649,7 +649,7 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
 .points-box b{color:var(--gold-bright);font-size:22px;display:block;line-height:1.1}
 .points-box span{font-size:11px;letter-spacing:.75px;color:var(--parch-dim);text-transform:uppercase}
 
-/* Invulnerable save badge — printed-card style, sits under the stat line */
+/* Invulnerable save badge - printed-card style, sits under the stat line */
 .invuln-badge{
   display:inline-flex;align-items:stretch;margin:2px 0 18px;
   border:1px solid rgba(199,154,58,.5);background:var(--panel);overflow:hidden;
@@ -666,7 +666,7 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
   padding:0 15px;display:flex;align-items:center;
 }
 
-/* Damaged bracket — red banner under the stat line, per the printed card */
+/* Damaged bracket - red banner under the stat line, per the printed card */
 .damaged-bracket{
   margin:2px 0 18px;border-left:3px solid var(--blood,#8a2b2b);
   background:rgba(138,43,43,.08);padding:9px 14px;
@@ -679,7 +679,7 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
 .damaged-text{font-family:'EB Garamond',serif;font-size:15px;line-height:1.55;color:var(--parch)}
 .damaged-text p{margin:0}
 
-/* Transport capacity — own section; BSData stores it as a full sentence */
+/* Transport capacity - own section; BSData stores it as a full sentence */
 .transport-text{font-family:'EB Garamond',serif;font-size:15px;line-height:1.6;color:var(--parch)}
 .transport-text p{margin:0 0 6px}
 .transport-text p:last-child{margin-bottom:0}
@@ -708,7 +708,7 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
 .ability-bullets li::marker{color:var(--gold)}
 .kw-ref{font-variant:small-caps;letter-spacing:.4px;color:var(--gold-bright)}
 
-/* Special ability blocks (e.g. Warmaster) — framed like a sub-panel */
+/* Special ability blocks (e.g. Warmaster) - framed like a sub-panel */
 .ability-group{
   margin-top:16px;border:1px solid var(--edge);background:rgba(0,0,0,.18);
 }
@@ -1421,7 +1421,7 @@ a.brand{text-decoration:none;color:inherit}
 .sh-info{color:var(--parch-dim);font-style:italic}
 
 /* ══════════════════════════════════════════════════
-   ARMOURY LEDGER — redesigned purchases page
+   ARMOURY LEDGER - redesigned purchases page
 ══════════════════════════════════════════════════ */
 
 /* ── Page header & stats ── */
@@ -1542,7 +1542,7 @@ a.brand{text-decoration:none;color:inherit}
 .al-qty-badge{background:rgba(199,154,58,.09);border:1px solid rgba(199,154,58,.3);color:var(--gold-bright);padding:1px 8px;font-size:11px}
 .al-pnotes{font-style:italic;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:13px;color:var(--parch-dim)}
 
-/* Delete button — hidden by default, revealed by edit mode */
+/* Delete button - hidden by default, revealed by edit mode */
 .al-del-btn{
   background:none;border:1px solid rgba(124,16,24,.35);color:rgba(178,31,40,.45);
   font-size:14px;width:30px;height:30px;cursor:pointer;flex-shrink:0;
@@ -1719,7 +1719,7 @@ a.brand{text-decoration:none;color:inherit}
 .al-ccard-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
 .al-ccard:hover .al-ccard-img{transform:scale(1.04)}
 
-/* ── Purchase tiles (grid) — box-art forward, click to open detail ── */
+/* ── Purchase tiles (grid) - box-art forward, click to open detail ── */
 .al-ptile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
 .al-ptile{
   position:relative;border:1px solid var(--edge);overflow:hidden;cursor:pointer;
@@ -1963,7 +1963,7 @@ a.brand{text-decoration:none;color:inherit}
 .mp-wip-notes{min-height:84px}
 
 /* ══════════════════════════════════════════════════════════════════════
-   MINI PAGE — ARMOUR-PLATE REDESIGN
+   MINI PAGE - ARMOUR-PLATE REDESIGN
    All selectors are scoped to .mp-page so the shared read-only datasheet
    page (unit.js: .mgc-layout / .mgc-photo-rail / .mgc-dot) is untouched.
    ══════════════════════════════════════════════════════════════════════ */
@@ -2090,7 +2090,7 @@ a.brand{text-decoration:none;color:inherit}
 .mp-page .mgc-toprow{display:flex;align-items:stretch}
 
 /* photo column: a 150px rail whose height tracks the card body. The gallery is
-   absolutely positioned so a long photo list never balloons the card — a single
+   absolutely positioned so a long photo list never balloons the card - a single
    photo fills the height, extras stack and scroll. */
 .mp-page .mgc-media{position:relative;flex:0 0 150px;width:150px;min-height:140px;max-height:none;overflow:hidden;padding:14px 0 14px 14px;align-self:stretch}
 .mp-page .mgc-media-gallery{position:absolute;top:14px;left:14px;right:0;bottom:14px;display:flex;flex-direction:column;gap:7px;overflow-y:auto;grid-template-columns:none;scrollbar-width:thin;scrollbar-color:rgba(199,154,58,.25) transparent}
@@ -2542,7 +2542,7 @@ a.brand{text-decoration:none;color:inherit}
   font-family:'Oswald',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;
   color:var(--blood-bright);border:1px solid rgba(178,31,40,.45);border-radius:3px;padding:2px 7px;white-space:nowrap;
 }
-/* model editor overlay — image section (reuses .cfe-backdrop / .am-* from the catalogue editor) */
+/* model editor overlay - image section (reuses .cfe-backdrop / .am-* from the catalogue editor) */
 .he-img-section{margin-top:16px;border-top:1px solid rgba(44,42,53,.75);padding-top:14px}
 .he-img-section .ref-search{font-size:11px;padding:6px 10px;margin:6px 0 2px}
 .he-img-row{display:flex;gap:14px;align-items:flex-start;margin-top:10px}
@@ -2674,7 +2674,7 @@ a.brand{text-decoration:none;color:inherit}
 }
 
 /* =====================================================================
-   CODEX ARMORUM — redesign additions
+   CODEX ARMORUM - redesign additions
    Append this block to static/css/style.css (after the existing rules).
    Everything below reuses the existing :root tokens and the per-card
    --cardarmy / --cardaccent / --cardglow variables, so nothing else
@@ -2723,7 +2723,7 @@ a.brand{text-decoration:none;color:inherit}
   height:100%;background:var(--metal-gold);box-shadow:0 0 14px rgba(199,154,58,.5);
 }
 
-/* ---- "Your Armies" — banner photo cards ------------------------------ */
+/* ---- "Your Armies" - banner photo cards ------------------------------ */
 .faction-grid.army-banner-grid{
   grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px;
 }
@@ -2908,70 +2908,3 @@ a.brand{text-decoration:none;color:inherit}
 .fc-unit-stats.is-tri span{display:flex;align-items:center;gap:5px}
 .fc-unit-stats.is-tri b{color:var(--parch);font-weight:600}
 
-/* ====================================================================
-   MFM points overlay: topbar modal, faction switches, and points stamps.
-   Reuses the .am-backdrop / .am-box / .am-head modal pattern.
-   ==================================================================== */
-.mfm-box{width:min(560px,100%)}
-.mfm-body{display:block}
-.mfm-intro{font-size:14px;line-height:1.55;color:var(--parch);margin:0 0 4px}
-.mfm-imported{color:var(--parch-dim)}
-
-.mfm-master-row{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:10px 12px;margin:12px 0 8px;
-  background:rgba(199,154,58,.06);border:1px solid rgba(199,154,58,.25);
-}
-.mfm-master-text strong{font-family:'Cinzel',serif;color:var(--gold-bright);display:block;font-size:14px}
-.mfm-sub{font-size:12px;color:var(--parch-dim)}
-
-.mfm-faction-list{
-  display:flex;flex-direction:column;
-  max-height:46vh;overflow-y:auto;
-  border-top:1px solid rgba(44,42,53,.6);
-}
-.mfm-row{
-  display:flex;align-items:center;gap:12px;
-  padding:9px 6px;
-  border-bottom:1px solid rgba(44,42,53,.5);
-  cursor:pointer;
-}
-.mfm-row:hover{background:rgba(199,154,58,.06)}
-.mfm-row-name{flex:1;font-family:'Cinzel',serif;font-size:14px;color:var(--parch)}
-.mfm-row-count{
-  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;
-  text-transform:uppercase;color:var(--parch-dim);
-}
-.mfm-empty{color:var(--parch-dim);padding:18px;text-align:center}
-.mfm-foot-note{font-size:12px;color:var(--parch-dim)}
-
-/* compact on/off switch, built on the grimdark gold tokens */
-.mfm-switch{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
-.mfm-switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
-.mfm-slider{
-  position:absolute;inset:0;pointer-events:none;
-  background:var(--panel-2);border:1px solid var(--edge);border-radius:22px;
-  transition:background .2s,border-color .2s;
-}
-.mfm-slider::before{
-  content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;
-  background:var(--parch-dim);border-radius:50%;
-  transition:transform .2s,background .2s;
-}
-.mfm-switch input:checked + .mfm-slider{background:rgba(199,154,58,.3);border-color:var(--gold)}
-.mfm-switch input:checked + .mfm-slider::before{transform:translateX(18px);background:var(--gold-bright)}
-.mfm-switch input:focus-visible + .mfm-slider{box-shadow:var(--ring)}
-
-/* MFM stamp beside the datasheet Points heading */
-.mfm-stamp{
-  font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;
-  color:var(--gold-bright);background:rgba(199,154,58,.12);
-  border:1px solid rgba(199,154,58,.5);
-  padding:2px 8px;border-radius:2px;
-}
-
-/* faint accent on faction-browse points when sourced from the MFM overlay */
-.pts--mfm{
-  color:var(--gold-bright);
-  box-shadow:inset 0 0 0 1px rgba(199,154,58,.7);
-}

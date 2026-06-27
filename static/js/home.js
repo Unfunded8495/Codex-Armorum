@@ -1,13 +1,13 @@
 /* =====================================================================
-   static/js/home.js  —  CODEX ARMORUM redesign drop-in
+   static/js/home.js  -  CODEX ARMORUM redesign drop-in
    ---------------------------------------------------------------------
    Same exports, same data sources, same routes as the original. What
    changed is purely presentation:
-     • showHome()  — adds an aggregate masthead + collection meter, and
+     • showHome()  - adds an aggregate masthead + collection meter, and
                      renders favourites as photo "banner" cards.
-     • showFaction() — adds a hero banner, a role filter bar, and the
+     • showFaction() - adds a hero banner, a role filter bar, and the
                      dark display-niche unit tiles.
-     • buildUnitTiles() — now also returns `role`, emits the niche thumb,
+     • buildUnitTiles() - now also returns `role`, emits the niche thumb,
                      and requests the cut-out image (?cut=1) with a clean
                      fallback chain when no cutout exists yet.
    Requires the style.additions.css block and (optionally) the app.py
@@ -25,19 +25,20 @@ export function clearFactionCache(){ factionCache = null; }
 
 const isCompleteStage = stage => stage === 'finished' || stage === 'display';
 
-/* Short flavour line per faction id; falls back to the group/display name.
-   Purely cosmetic — extend or trim freely. */
+/* Short flavour line per faction name; falls back to the group/display name.
+   Purely cosmetic - extend or trim freely. Keyed on faction.name from
+   w40k.db so chapter cards (e.g. Blood Angels) can have their own line too. */
 const FACTION_TAGLINE = {
-  SM:  'The Adeptus Astartes stand vigil over a dying Imperium.',
-  AM:  'Countless masses of the Astra Militarum hold the line.',
-  NEC: 'The Necrons wake from sixty million years of slumber.',
-  TYR: 'The great devourer hungers, and the stars grow dark.',
-  AC:  'The Talons of the Emperor answer to no mortal authority.',
-  AE:  'The Aeldari walk the knife-edge between glory and ruin.',
+  'Adeptus Astartes': 'The Adeptus Astartes stand vigil over a dying Imperium.',
+  'Astra Militarum':  'Countless masses of the Astra Militarum hold the line.',
+  'Necrons':          'The Necrons wake from sixty million years of slumber.',
+  'Tyranids':         'The great devourer hungers, and the stars grow dark.',
+  'Adeptus Custodes': 'The Talons of the Emperor answer to no mortal authority.',
+  'Aeldari':          'The Aeldari walk the knife-edge between glory and ruin.',
 };
 
 /* ====================================================================
-   HOME — "My Armies"
+   HOME - "My Armies"
    ==================================================================== */
 export async function showHome(){
   setActiveNav('armies');
@@ -179,7 +180,7 @@ function armyBannerCard(f, i){
 }
 
 /* ====================================================================
-   Unassigned minis (safety net) — unchanged behaviour
+   Unassigned minis (safety net) - unchanged behaviour
    ==================================================================== */
 function unassignedSection(groups){
   if(!groups || !groups.length) return '';
@@ -188,7 +189,7 @@ function unassignedSection(groups){
     <section class="unassigned-armies">
       <div class="fave-head">
         <div><h3>⚠ Unassigned Minis</h3>
-          <p>Purchased minis with no datasheet — they don't show under any army. Assign each to a unit to file it.</p>
+          <p>Purchased minis with no datasheet - they don't show under any army. Assign each to a unit to file it.</p>
         </div>
         <span>${total}</span>
       </div>
@@ -285,7 +286,7 @@ async function uaAssign(idx, datasheetId, datasheetName, resultsEl){
   }
 }
 
-/* ---- "All Armies" tile (non-favourites) — original treatment kept ---- */
+/* ---- "All Armies" tile (non-favourites) - original treatment kept ---- */
 function factionCard(f, i, extraClass=''){
   const fav=!!f.favourite;
   const bought=f.bought_minis||0;
@@ -434,7 +435,7 @@ function factionHero(fac, fid, facName, primary, accent, total, painted){
   const pct = total>0 ? Math.round(painted/total*100) : 0;
   const emblem = fac?.icon_url ? `<div class="fh-emblem"><img src="${esc(fac.icon_url)}" alt="" loading="lazy"></div>` : '';
   const kicker = fac?.group ? esc(fac.group) : 'Faction';
-  const tagline = FACTION_TAGLINE[fid] || `Your ${esc(facName)} collection — mustered, painted, and catalogued.`;
+  const tagline = FACTION_TAGLINE[facName] || `Your ${esc(facName)} collection - mustered, painted, and catalogued.`;
   const hasBanner = !!fac?.banner_url;
   const meterHtml = total>0
     ? `<div class="fh-meter">
@@ -467,7 +468,7 @@ function factionHero(fac, fid, facName, primary, accent, total, painted){
     </section>`;
 }
 
-/* role filter — pure DOM show/hide, no re-fetch */
+/* role filter - pure DOM show/hide, no re-fetch */
 function wireUnitFilter(){
   const tabs = [...document.querySelectorAll('.uf-tab')];
   const cards = [...document.querySelectorAll('.unit-grid .unit-card')];
@@ -482,7 +483,7 @@ function wireUnitFilter(){
 }
 
 /* ====================================================================
-   Shared unit-tile builder — now returns role + niche thumb + cutout img
+   Shared unit-tile builder - now returns role + niche thumb + cutout img
    ==================================================================== */
 export function buildUnitTiles({ fid, minis, units, primary, accent, facMark }){
   const unitStats = new Map((units || []).map(u => [u.id, u]));
@@ -553,7 +554,7 @@ export function buildUnitTiles({ fid, minis, units, primary, accent, facMark }){
     }));
     const sharedNote = sharedPool > 0 ? `
           <div class="fc-shared-note" title="${esc(siblingNames.size
-              ? `${sharedPool} of these come from one multi-build kit you can build as ${[...siblingNames].join(' / ')} instead — those models count once across all of these options.`
+              ? `${sharedPool} of these come from one multi-build kit you can build as ${[...siblingNames].join(' / ')} instead - those models count once across all of these options.`
               : `${sharedPool} of these come from a multi-build kit and can be built as only one option.`)}">
             <span class="fc-shared-ico" aria-hidden="true">⚒</span>${sharedPool} shared multi-build kit
           </div>` : '';
@@ -599,7 +600,7 @@ function renderFactionBrowse(fid, facName, primary, accent, units, ownedCount){
       <div class="unit-card fc-mini-tile" style="--cardarmy:${primary};--cardaccent:${accent};--cardglow:${accent}" onclick="location.hash='/unit/${esc(u.id)}'">
         <div class="unit-thumb">
           <img src="/api/units/${esc(u.id)}/image" alt="${esc(u.name)}" loading="lazy">
-          ${u.points?`<span class="pts${u.mfm?' pts--mfm':''}">${esc(String(u.points))} pts</span>`:''}
+          ${u.points?`<span class="pts">${esc(String(u.points))} pts</span>`:''}
         </div>
         <div class="unit-body faction-surface">
           <div class="unit-name">${esc(u.name)}</div>

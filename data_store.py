@@ -1,85 +1,71 @@
-"""Loads unit and faction data from the Wahapedia-sourced SQLite catalogue tables.
+"""Loads unit and faction data from the official 40k app SQLite export.
 
-Sourced from catalogue_factions, catalogue_units, catalogue_weapons, and
-catalogue_unit_weapons (populated by wahapedia_importer.py from the Wahapedia
-CSV export). The column names bsdata_id / unit_bsdata_id are kept as a legacy
-misnomer: they now hold native Wahapedia ids (9-digit datasheet ids and faction
-short codes such as "CSM").
+Authoritative source is `data/w40k/w40k.db` (override with `W40K_DB_PATH`), the
+exported rules database from the Warhammer 40,000 mobile app. Opened read-only
+and immutable so the file can be refreshed under a running app without journal
+mismatch.
 
-The external interface (every public attribute and method) is unchanged so all
-consuming modules continue to work; only the data source and the id values
-differ from the previous BSData version.
+The external interface (every public attribute and method) matches the previous
+Wahapedia-backed loader so consumers in `app.py`, `army.py`, `collection.py`,
+`box_sets.py`, `arsenal_store.py` and the SPA keep working unchanged. Faction
+and datasheet ids switch to UUID strings; the column names `bsdata_id` and
+`unit_bsdata_id` in user data are kept as a legacy misnomer and now hold those
+UUIDs.
 
-Chapter rollup (Space Marines):
-    Wahapedia carries one Space Marines faction code, "SM", holding every chapter
-    (Blood Angels, Dark Angels, Space Wolves, Deathwatch, Black Templars, and the
-    codex chapters). This module derives a per-chapter "faction" card at load
-    time from the faction keywords present on SM datasheets, so each chapter is
-    its own browsable, favouritable card whose datasheets are the chapter-specific
-    ones, while generic Space Marine datasheets stay under Space Marines.
-
-    The rollup is purely load-time and data-driven. The importer stays unaware of
-    chapters and writes no chapter rows: after any CSV reimport this module
-    rebuilds the chapter cards from whatever keywords the fresh data carries.
-    Chapter faction ids are deterministic and stable (parent code, "::", chapter
-    keyword, e.g. "SM::Blood Angels") so favourites, box tags and army faction
-    references that persist in collection.db keep resolving across reimports.
+Faction membership is many-to-many in the new schema: chapters of the Adeptus
+Astartes are their own `faction` rows linked to their generic datasheets through
+`datasheet_faction`. Each datasheet is reduced to a single primary faction via
+the leaf-wins picker (`_pick_primary_faction`), with `PRIMARY_FACTION_OVERRIDES`
+covering the handful of explicit exceptions. The legacy "::"-separated chapter
+ids and the load-time chapter rollup are gone - chapters are first-class.
 """
 import json
 import logging
 import os
 import re
 import sqlite3
+import unicodedata
 from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "collection.db")
+# Path to the official 40k app data export. Overridable for dev/CI.
+W40K_DB_PATH = os.environ.get(
+    "W40K_DB_PATH",
+    os.path.join(os.path.dirname(__file__), "data", "w40k", "w40k.db"),
+)
 
-# Battlefield-role display order used when listing a faction's units.
+# Battlefield-role display order used when listing a faction's units. Drawn
+# from the `keywords` JSON on each datasheet (first match wins).
 ROLE_ORDER = [
     "Epic Hero", "Character", "Battleline", "Infantry", "Mounted",
     "Beast", "Monster", "Vehicle", "Swarm", "Transport",
     "Fortification", "Other", "Unaligned",
 ]
 
-# ---------------------------------------------------------------------------
-# Chapter rollup configuration
-# ---------------------------------------------------------------------------
-# Faction codes that get the chapter rollup. Only Space Marines for now. The
-# mechanism is parameterised by parent code so it is extensible, but the Chaos
-# legions and Aeldari subfactions already have their own Wahapedia codes and need
-# no rollup.
-PARENT_FACTIONS = {"SM"}
-
-# Universal faction keywords that are never a chapter. At runtime this is also
-# unioned with every real faction name (so cross-faction tags that equal a
-# faction name are dropped too). "Agents of the Imperium" is listed explicitly
-# because the real faction is named "Imperial Agents", so the faction-name rule
-# alone would not catch this cross-faction tag (it appears on Kill Team Cassius).
-CHAPTER_KEYWORD_EXCLUDE = {"Adeptus Astartes", "Imperium", "Agents of the Imperium"}
-
-# Optional curated set of chapter keywords to surface. Empty means surface every
-# detected chapter (fully data-driven). The owner can trim this later without
-# touching logic.
-CHAPTER_ALLOWLIST = set()
-
-# Used only by the load-time assertion: if any of these does not resolve to a
-# non-empty chapter card after the rollup, a single prominent warning is logged
-# (the Wahapedia keyword structure may have changed). The app still starts.
-CORE_EXPECTED_CHAPTERS = {"Blood Angels", "Dark Angels", "Space Wolves",
-                          "Deathwatch", "Black Templars"}
-
-# data_store stores faction keywords on each unit dict with this prefix (set by
-# wahapedia_importer.build_keywords from is_faction_keyword=true rows).
+# Prefix used on each unit dict's `_keywords` for faction keywords (so the
+# unit-detail page can split keywords into general / faction buckets). Mirrors
+# the prefix the old Wahapedia importer wrote.
 FACTION_KW_PREFIX = "Faction: "
 
-# The separator in a synthetic chapter faction id. Cannot occur in a real
-# Wahapedia faction code, so there is no collision risk.
-CHAPTER_SEP = "::"
+
+def _nfkd(s):
+    """NFKD-normalise, strip combining marks, and casefold a string for tolerant
+    name lookup. Used for the `leads_units` / `can_be_led_by` name resolution;
+    covers the `Ûthar the Destined` mismatch in w40k.db data_version 886
+    (NFKD decomposes Û to U + combining circumflex; stripping marks lets it
+    match a plain `Uthar`)."""
+    if not s:
+        return ""
+    decomposed = unicodedata.normalize("NFKD", s)
+    no_marks = "".join(c for c in decomposed if not unicodedata.combining(c))
+    return no_marks.casefold().strip()
 
 
 def strip_html(text):
+    """Inherited from the previous loader - kept for consumers that still pass
+    HTML through. The official app data is plain text, so this is mostly a
+    no-op now."""
     if not text:
         return ""
     text = re.sub(r"<br\s*/?>", " ", text)
@@ -90,18 +76,37 @@ def strip_html(text):
     text = re.sub(r"\s+", " ", text)
     text = re.sub(r"\s+([,.;:!?])", r"\1", text)
     text = re.sub(r"([:;,.!?])(?=\S)", r"\1 ", text)
-    text = re.sub(r"(^|[^A-Za-z-])(\d+)\s*-\s*(\d+)\b",
-                  lambda m: m.group(1) + m.group(2) + "–" + m.group(3), text)
     return text.strip()
+
+
+# Faction-name -> faction-id overrides for datasheets with no membership in
+# datasheet_faction, or where the leaf-wins picker disagrees with intent. Filled
+# at load time after the faction table is read (we need the UUID).
+_PRIMARY_FACTION_OVERRIDE_RULES = [
+    # In data_version 886 this datasheet has zero faction memberships but its
+    # keywords place it in Death Guard. No "Unaligned" faction row to fall back
+    # on, so an explicit override is the only way to land it in the right place.
+    ("Maggot Lords Plague Marines", "Death Guard"),
+]
 
 
 class DataStore:
     def __init__(self):
         self.factions = []
         self.faction_by_id = {}
+        # Map UUID -> parent UUID (None for top-level factions). Read from
+        # faction.parent_faction.
+        self._faction_parent = {}
+        # Map parent UUID -> list of child UUIDs (children of a faction in the
+        # tree, e.g. Adeptus Astartes -> [Blood Angels, Dark Angels, ...]).
+        self._faction_children = {}
+
         self.datasheets = []
         self.ds_by_id = {}
         self.ds_by_faction = {}
+        # Full membership set per datasheet (UUIDs) for parent-aware queries.
+        self._ds_factions = {}
+
         self.cost = {}
         self.composition = {}
         self.wargear_options = {}
@@ -111,146 +116,238 @@ class DataStore:
         self.detachments_by_faction = {}
         self.detachment_by_id = {}
         self.enhancements_by_detachment = {}
+        # Stratagems are loaded for completeness but no consumer reads them in
+        # this round (universal stratagems are not in this export anyway).
+        self.stratagems_by_detachment = {}
         self.leaders_for = {}
         self.led_by = {}
         self.leads = {}
-        # Chapter rollup bookkeeping (populated by _apply_chapter_rollup).
+
+        # Retained for back-compat with anything that may still test for it.
+        # Chapter rollup is gone - chapters are real factions now.
         self.chapter_faction_ids = set()
         self.chapters_by_parent = {}
-        # MFM overlay version tag, set by _apply_mfm_overrides ("" when off or
-        # not imported). Surfaced on the unit detail payload for the points stamp.
-        self.mfm_version = ""
+
         self._load()
 
-    def _load(self):
-        conn = sqlite3.connect(DB_PATH)
+    # ---- loading -------------------------------------------------------
+
+    def _connect(self):
+        if not os.path.exists(W40K_DB_PATH):
+            raise RuntimeError(
+                f"Official 40k app data export not found at {W40K_DB_PATH}. "
+                "See data/w40k/README.md for the refresh procedure."
+            )
+        uri = f"file:{W40K_DB_PATH}?mode=ro&immutable=1"
+        conn = sqlite3.connect(uri, uri=True)
         conn.row_factory = sqlite3.Row
+        return conn
 
-        all_fac_rows = conn.execute(
-            "SELECT bsdata_id, name FROM catalogue_factions ORDER BY name"
+    def _load(self):
+        conn = self._connect()
+        try:
+            self._load_factions(conn)
+            self._load_datasheets(conn)
+            self._load_detachment_data(conn)
+        finally:
+            conn.close()
+
+    def _load_factions(self, conn):
+        rows = conn.execute(
+            "SELECT id, name, parent_faction FROM faction ORDER BY name"
         ).fetchall()
+        for r in rows:
+            fid = r["id"]
+            self._faction_parent[fid] = r["parent_faction"]
+            faction_dict = {"id": fid, "name": r["name"], "unit_count": 0}
+            self.factions.append(faction_dict)
+            self.faction_by_id[fid] = faction_dict
+            self.ds_by_faction[fid] = []
+        # Build child index. parent_faction holds the parent NAME in this export
+        # - translate to the parent UUID.
+        name_to_id = {f["name"]: f["id"] for f in self.factions}
+        for fid, parent_name in self._faction_parent.items():
+            parent_id = name_to_id.get(parent_name) if parent_name else None
+            self._faction_parent[fid] = parent_id
+            if parent_id:
+                self._faction_children.setdefault(parent_id, []).append(fid)
+                self.chapters_by_parent.setdefault(parent_id, []).append(fid)
+                self.chapter_faction_ids.add(fid)
 
-        all_unit_rows = conn.execute(
-            "SELECT bsdata_id, faction_id, name, role, points, virtual,"
-            "       legend, link, loadout,"
-            "       stats_json, abilities_json, keywords_json, points_tiers_json,"
-            "       composition_json, wargear_options_json, leader_targets_json"
-            " FROM catalogue_units"
-        ).fetchall()
-
-        all_weapon_rows = conn.execute("""
-            SELECT cuw.unit_id,
-                   cw.name        w_name,
-                   cw.weapon_type,
-                   cw.range,
-                   cw.attacks,
-                   cw.skill,
-                   cw.strength,
-                   cw.ap,
-                   cw.damage,
-                   cw.keywords    w_keywords,
-                   cw.description w_description
-            FROM catalogue_unit_weapons cuw
-            JOIN catalogue_weapons cw ON cw.bsdata_id = cuw.weapon_id
+    def _load_datasheets(self, conn):
+        # ---- per-table queries -------------------------------------------------
+        ds_rows = conn.execute("""
+            SELECT id, name, lore, is_legends, is_free_from_entitlements,
+                   keywords, points, default_points, unit_composition_text,
+                   wargear_loadout, leads_units, can_be_led_by, damage_brackets
+            FROM datasheet
         """).fetchall()
 
-        conn.close()
+        # datasheet -> [faction_id, ...]
+        ds_factions = {}
+        for r in conn.execute(
+                "SELECT datasheet_id, faction_id FROM datasheet_faction").fetchall():
+            ds_factions.setdefault(r["datasheet_id"], []).append(r["faction_id"])
+        self._ds_factions = ds_factions
 
-        # --- index weapons by unit_id ---
-        weapons_by_unit = {}
-        for w in all_weapon_rows:
-            weapons_by_unit.setdefault(w["unit_id"], []).append(w)
+        # datasheet -> [model row, ...]
+        models_by_ds = {}
+        for r in conn.execute("""SELECT datasheet_id, name, statline_hidden,
+                                        m, t, sv, inv, w, ld, oc, keywords
+                                 FROM model""").fetchall():
+            models_by_ds.setdefault(r["datasheet_id"], []).append(dict(r))
 
-        # --- build unit dicts keyed by Wahapedia datasheet id ---
-        raw_units = {}
-        for u in all_unit_rows:
-            did = u["bsdata_id"]
-            kws = json.loads(u["keywords_json"]) if u["keywords_json"] else []
-            stats = json.loads(u["stats_json"]) if u["stats_json"] else {}
-            abilities = json.loads(u["abilities_json"]) if u["abilities_json"] else {}
-            points_tiers = (json.loads(u["points_tiers_json"])
-                            if u["points_tiers_json"] else None)
-            leader_targets = (json.loads(u["leader_targets_json"])
-                              if u["leader_targets_json"] else [])
+        # datasheet -> abilities by type ({core, faction, datasheet}).
+        abilities_by_ds = {}
+        for r in conn.execute("""SELECT datasheet_id, name, type, rules
+                                 FROM ability""").fetchall():
+            abilities_by_ds.setdefault(r["datasheet_id"], []).append(dict(r))
 
-            ranged = []
-            melee = []
-            for w in weapons_by_unit.get(did, []):
-                entry = {
-                    "name":     w["w_name"],
-                    "range":    w["range"] or "",
-                    "A":        w["attacks"] or "",
-                    "BS_WS":    w["skill"] or "",
-                    "S":        w["strength"] or "",
-                    "AP":       w["ap"] or "",
-                    "D":        w["damage"] or "",
-                    "keywords": w["w_keywords"] or "",
-                    "description": w["w_description"] or "",
-                }
-                if w["weapon_type"] == "melee":
-                    melee.append(entry)
-                else:
-                    ranged.append(entry)
+        # datasheet -> extra_rule rows (Leader, Transport, Support, ...). The
+        # transport rule is identified by name LIKE 'Transport%' (no type col).
+        extras_by_ds = {}
+        for r in conn.execute("""SELECT datasheet_id, name, rules
+                                 FROM extra_rule""").fetchall():
+            extras_by_ds.setdefault(r["datasheet_id"], []).append(dict(r))
+
+        # datasheet -> weapon profiles. Multi-profile weapons (e.g. Plasma
+        # pistol standard/supercharge) carry separate profile rows.
+        profiles_by_ds = {}
+        for r in conn.execute("""
+            SELECT w.datasheet_id, w.name w_name, w.wargear_type, w.rule_text,
+                   p.name p_name, p.type, p.range, p.attacks, p.bs, p.ws,
+                   p.strength, p.ap, p.damage, p.abilities
+            FROM weapon w
+            JOIN weapon_profile p ON p.weapon_id = w.id
+        """).fetchall():
+            profiles_by_ds.setdefault(r["datasheet_id"], []).append(dict(r))
+
+        # ---- primary-faction picker setup -------------------------------------
+        override_by_name = {}
+        for ds_name, target_faction in _PRIMARY_FACTION_OVERRIDE_RULES:
+            target_id = next((f["id"] for f in self.factions
+                              if f["name"] == target_faction), None)
+            if target_id:
+                override_by_name[ds_name] = target_id
+            else:
+                logger.warning(
+                    "PRIMARY_FACTION_OVERRIDES: target faction %r not in "
+                    "w40k.db; override for %r ignored", target_faction, ds_name)
+
+        # ---- build unit dicts ---------------------------------------------------
+        ds_name_to_uuids_in_tree = {}  # (root_uuid, nfkd_name) -> [uuid]
+        # Filled below; used for leader-name resolution.
+        for ds in ds_rows:
+            did = ds["id"]
+            name = ds["name"]
+            memberships = ds_factions.get(did, [])
+
+            # Pick a primary faction. Override > leaf-wins > first membership >
+            # None.
+            primary_fid = override_by_name.get(name)
+            if not primary_fid:
+                primary_fid = self._pick_primary_faction(memberships)
+            if not primary_fid:
+                logger.warning(
+                    "Datasheet %r (%s) has no faction membership and no "
+                    "override; skipping.", name, did)
+                continue
+
+            try:
+                ds_keywords = json.loads(ds["keywords"] or "[]")
+            except (TypeError, ValueError):
+                ds_keywords = []
+            role = next((k for k in ROLE_ORDER if k in ds_keywords), "Other")
+
+            try:
+                pts_tiers_raw = json.loads(ds["points"] or "[]")
+            except (TypeError, ValueError):
+                pts_tiers_raw = []
+            points_tiers = self._reshape_points_tiers(pts_tiers_raw)
+
+            try:
+                damage_brackets_raw = json.loads(ds["damage_brackets"] or "[]")
+            except (TypeError, ValueError):
+                damage_brackets_raw = []
+
+            stats = self._build_stats(models_by_ds.get(did, []))
+            transport_text = self._extract_transport(extras_by_ds.get(did, []))
+            extra_rules = [
+                {"name": r["name"], "rules": r["rules"] or ""}
+                for r in extras_by_ds.get(did, [])
+            ]
+            damaged = self._build_damaged(damage_brackets_raw)
+            invuln = self._extract_invuln(models_by_ds.get(did, []))
+            ability_groups = self._group_abilities(abilities_by_ds.get(did, []))
+            ability_groups["invuln_save"] = invuln
+            ability_groups["transport"] = transport_text
+            ability_groups["damaged"] = damaged
+            ability_groups.setdefault("special", [])
+
+            ranged, melee = self._build_weapons(profiles_by_ds.get(did, []))
+
+            faction_keywords = [
+                FACTION_KW_PREFIX + self.faction_by_id.get(fid, {}).get("name", "")
+                for fid in memberships
+                if self.faction_by_id.get(fid)
+            ]
+            combined_keywords = list(ds_keywords) + faction_keywords
+
+            composition = self._parse_composition(ds["unit_composition_text"], name)
+            loadout_sentence = self._extract_loadout_sentence(
+                ds["unit_composition_text"])
+
+            try:
+                wargear_loadout = json.loads(ds["wargear_loadout"] or "{}")
+            except (TypeError, ValueError):
+                wargear_loadout = {}
+
+            try:
+                leads_units = json.loads(ds["leads_units"] or "[]")
+            except (TypeError, ValueError):
+                leads_units = []
+            try:
+                led_by_units = json.loads(ds["can_be_led_by"] or "[]")
+            except (TypeError, ValueError):
+                led_by_units = []
 
             unit_dict = {
                 "id":            did,
                 "bsdata_id":     did,
-                "name":          u["name"],
-                "faction_id":    u["faction_id"],
-                "role":          u["role"] or "Other",
-                "points":        u["points"],
-                "_points_tiers": points_tiers,
-                "virtual_bool":  bool(u["virtual"]),
-                "legend":        u["legend"] or "",
-                "link":          u["link"] or "",
-                "_keywords":     kws,
+                "name":          name,
+                "faction_id":    primary_fid,
+                "role":          role,
+                "points":        ds["default_points"],
+                "_points_tiers": points_tiers if len(points_tiers) > 1 else None,
+                "virtual_bool":  False,
+                "is_legends_bool": bool(ds["is_legends"]),
+                "legend":        ds["lore"] or "",
+                "link":          "",
+                "_keywords":     combined_keywords,
                 "_stats":        stats,
-                "_abilities":    abilities,
+                "_abilities":    ability_groups,
+                "_extra_rules":  extra_rules,
                 "_ranged":       ranged,
                 "_melee":        melee,
-                "_composition":  (json.loads(u["composition_json"])
-                                  if u["composition_json"] else None),
-                "_options":      (json.loads(u["wargear_options_json"])
-                                  if u["wargear_options_json"] else None),
-                "_loadout":      u["loadout"],
-                "_leader_targets": leader_targets,
+                "_composition":  composition,
+                "_options":      wargear_loadout,
+                "_loadout":      loadout_sentence,
+                "_leads_names":  leads_units,
+                "_led_by_names": led_by_units,
             }
-            raw_units[did] = unit_dict
+            self.ds_by_id[did] = unit_dict
+            self.datasheets.append(unit_dict)
 
-        # --- process factions: a unit belongs to a faction when its faction_id
-        #     equals the faction code (Wahapedia carries this directly) ---
-        units_by_faction = {}
-        for u in raw_units.values():
-            units_by_faction.setdefault(u["faction_id"], []).append(u)
+            self.ds_by_faction.setdefault(primary_fid, []).append(unit_dict)
+            for fid in memberships:
+                self._ds_factions.setdefault(did, [])
 
-        for row in all_fac_rows:
-            fid = row["bsdata_id"]
-            name = row["name"]
-            faction_units = units_by_faction.get(fid, [])
-            if not faction_units:
-                continue
-            faction_dict = {
-                "id":         fid,
-                "name":       name,
-                "unit_count": len(faction_units),
-            }
-            self.factions.append(faction_dict)
-            self.faction_by_id[fid] = faction_dict
-            for u in faction_units:
-                self.ds_by_faction.setdefault(fid, []).append(u)
-                self.ds_by_id[u["id"]] = u
+        # Recompute unit_count from primary-faction assignments.
+        for f in self.factions:
+            f["unit_count"] = len(self.ds_by_faction.get(f["id"], []))
 
-        self.datasheets = list(self.ds_by_id.values())
-
-        # Derive the Space Marine chapter cards from the faction keywords now that
-        # the base factions and units are built. Real faction names feed the
-        # exclude rule, so capture them before any synthetic chapter is added.
-        real_faction_names = {row["name"] for row in all_fac_rows}
-        self._apply_chapter_rollup(real_faction_names)
-
-        # cost: {did: [{"cost": points, "description": label}]}: used by the
-        # datasheet Points section and the army builder. Multi-size units carry
-        # per-size tiers; everything else is a single base price.
+        # Build the cost / keywords / composition / wargear side indices that
+        # the rest of the app reads.
         for u in self.datasheets:
             tiers = u.get("_points_tiers")
             if tiers:
@@ -258,18 +355,20 @@ class DataStore:
             elif u.get("points") is not None:
                 self.cost[u["id"]] = [{"cost": u["points"]}]
 
-        # keywords: {did: list of kw strings} (kept for API compat)
-        for u in self.datasheets:
             kws = u.get("_keywords", [])
             if kws:
                 self.keywords[u["id"]] = kws
-
-        # composition / wargear_options / loadout / wargear
-        for u in self.datasheets:
             if u.get("_composition"):
                 self.composition[u["id"]] = u["_composition"]
-            if u.get("_options"):
-                self.wargear_options[u["id"]] = u["_options"]
+            options = u.get("_options") or {}
+            rules_text = options.get("rules_text") if isinstance(options, dict) else None
+            if rules_text:
+                # Surface rules_text as a list of {description: ...} entries so
+                # the existing renderOptions UI (which iterates an array of
+                # objects with a description-shaped field) works without change.
+                self.wargear_options[u["id"]] = [
+                    {"description": line} for line in rules_text if line
+                ]
             if u.get("_loadout"):
                 self.loadout[u["id"]] = u["_loadout"]
             gear = [{"name": w["name"], "type": "melee"} for w in u["_melee"]]
@@ -277,263 +376,437 @@ class DataStore:
             if gear:
                 self.wargear[u["id"]] = gear
 
-        # leaders: leader_targets are attached datasheet ids (Wahapedia native).
+        # ---- leader / led-by resolution ---------------------------------------
+        self._resolve_leaders()
+
+    # ---- helpers ------------------------------------------------------------
+
+    def _pick_primary_faction(self, memberships):
+        """Leaf-wins picker. Drop any faction that is the parent of another in
+        the set. Tiebreak by alphabetical name for determinism. Returns None for
+        an empty set."""
+        if not memberships:
+            return None
+        if len(memberships) == 1:
+            return memberships[0]
+        parents = {self._faction_parent.get(fid) for fid in memberships}
+        leaves = [fid for fid in memberships if fid not in parents]
+        if not leaves:
+            leaves = list(memberships)
+        if len(leaves) == 1:
+            return leaves[0]
+        leaves.sort(key=lambda fid: self.faction_by_id.get(fid, {}).get("name", ""))
+        return leaves[0]
+
+    @staticmethod
+    def _reshape_points_tiers(raw):
+        """Convert the points JSON array to the [{cost, description}] shape
+        consumers expect. Description is "{lo}-{hi} models" when a range, or
+        "{n} models" when fixed. Per-tier `models` is a list summed across all
+        model lines so multi-line compositions price correctly."""
+        out = []
+        for tier in raw:
+            cost = tier.get("points")
+            models = tier.get("models") or []
+            try:
+                lo = sum(int(m.get("min") or 0) for m in models)
+                hi = sum(int(m.get("max") or 0) for m in models)
+            except (TypeError, ValueError):
+                lo = hi = 0
+            if hi <= 0:
+                desc = ""
+            elif lo and lo != hi:
+                desc = f"{lo}-{hi} models"
+            else:
+                desc = f"{hi} model{'s' if hi != 1 else ''}"
+            out.append({"cost": cost, "description": desc})
+        return out
+
+    @staticmethod
+    def _build_stats(model_rows):
+        """Return a single dict for single-model units, a list of dicts for
+        multi-line units. Mirrors the shape the old Wahapedia importer wrote so
+        the SPA's renderDatasheetModels() works unchanged."""
+        out = []
+        for m in model_rows:
+            if m.get("statline_hidden"):
+                continue
+            d = {"name": m["name"]}
+            for k_src, k_dst in (("m", "M"), ("t", "T"), ("sv", "SV"),
+                                 ("w", "W"), ("ld", "LD"), ("oc", "OC")):
+                v = m.get(k_src)
+                if v is not None:
+                    d[k_dst] = v
+            # `inv` sentinel for "no invulnerable save" is NULL in this export.
+            inv = m.get("inv")
+            if inv:
+                d["INV"] = inv
+            out.append(d)
+        if len(out) == 1:
+            return out[0]
+        return out
+
+    @staticmethod
+    def _extract_invuln(model_rows):
+        invs = {m.get("inv") for m in model_rows if m.get("inv")}
+        if not invs:
+            return ""
+        if len(invs) == 1:
+            return next(iter(invs))
+        # Mixed invuln saves across models - show the strongest (lowest +).
+        def _to_int(v):
+            try:
+                return int(str(v).rstrip("+"))
+            except (TypeError, ValueError):
+                return 99
+        return min(invs, key=_to_int)
+
+    @staticmethod
+    def _extract_transport(extra_rows):
+        for r in extra_rows:
+            if (r.get("name") or "").lower().startswith("transport"):
+                return strip_html(r.get("rules") or "")
+        return ""
+
+    @staticmethod
+    def _build_damaged(damage_brackets):
+        if not damage_brackets:
+            return {}
+        first = damage_brackets[0] or {}
+        name = first.get("name") or ""
+        # The wounds threshold is embedded in the name string only
+        # ("DAMAGED: 1-4 WOUNDS REMAINING"); the SPA's renderDamaged formats it
+        # from `damaged_w` and `damaged_description`. Surface the raw name as
+        # the threshold so the existing label keeps reading correctly.
+        m = re.search(r"(\d+(?:\s*-\s*\d+)?)\s*WOUND", name)
+        threshold = m.group(1).replace(" ", "") if m else ""
+        return {"name": name, "threshold": threshold,
+                "description": first.get("rules") or ""}
+
+    @staticmethod
+    def _group_abilities(ability_rows):
+        groups = {"core": [], "faction": [], "datasheet": []}
+        for r in ability_rows:
+            atype = (r.get("type") or "").lower()
+            entry = {"name": r["name"], "description": r.get("rules") or ""}
+            if atype in groups:
+                groups[atype].append(entry)
+            else:
+                groups["datasheet"].append(entry)
+        return groups
+
+    @staticmethod
+    def _build_weapons(profile_rows):
+        """Group weapon profiles back under their parent weapon so multi-profile
+        weapons render with a single name and sub-profile labels (e.g. Plasma
+        pistol -> [standard, supercharge]). Falls back to the profile.name when
+        the parent weapon has a single profile and the names match."""
+        # Bucket profiles by (weapon_name, type). Two passes so a Plasma pistol
+        # with two ranged profiles renders together, while a single-profile
+        # weapon renders flat.
+        grouped = {}
+        order = []
+        for p in profile_rows:
+            key = (p["w_name"], p["type"])
+            if key not in grouped:
+                grouped[key] = []
+                order.append(key)
+            grouped[key].append(p)
+
+        ranged = []
+        melee = []
+        for key in order:
+            profiles = grouped[key]
+            w_name, ptype = key
+            bucket = melee if ptype == "melee" else ranged
+            for p in profiles:
+                try:
+                    p_keywords = json.loads(p.get("abilities") or "[]")
+                except (TypeError, ValueError):
+                    p_keywords = []
+                p_name = p.get("p_name") or ""
+                # When a weapon has multiple profiles, prefix each with the
+                # weapon name so the renderer disambiguates.
+                if len(profiles) > 1 and p_name and p_name.lower() != w_name.lower():
+                    display = f"{w_name} - {p_name}"
+                else:
+                    display = w_name
+                bucket.append({
+                    "name":     display,
+                    "range":    p.get("range") or "",
+                    "A":        p.get("attacks") or "",
+                    "BS_WS":    (p.get("bs") or p.get("ws") or ""),
+                    "S":        p.get("strength") or "",
+                    "AP":       p.get("ap") or "",
+                    "D":        p.get("damage") or "",
+                    "keywords": ", ".join(p_keywords),
+                    "description": p.get("rule_text") or "",
+                })
+        return ranged, melee
+
+    @staticmethod
+    def _parse_composition(text, ds_name):
+        """Parse `unit_composition_text` into [{name, min, max}, ...].
+
+        The body is laid out with U+25A0 bullets followed by markdown-bold
+        lines like "**1 Commissar**" or "**3-5 Bladeguard Veterans**". 131 of
+        1142 rows have no leading bullet; fall back to a single raw entry so
+        the UI always renders something."""
+        if not text:
+            return []
+        # Split on the U+25A0 bullet; first segment is empty if the body starts
+        # with one.
+        segments = [seg.strip() for seg in text.split("■") if seg.strip()]
+        out = []
+        for seg in segments:
+            # The line "**This model is equipped with: ..." (or the "Every
+            # model" / unbolded variants) follows the composition declaration;
+            # drop everything from there onward, then strip markdown bold. The
+            # composition declaration itself is always a single line, so keep
+            # only the first line of the segment - otherwise trailing prose
+            # ("\n\nEvery model is ...") leaks into the regex and the count
+            # never matches for multi-line compositions like Tactical Squad.
+            head = re.split(r"equipped with", seg, maxsplit=1,
+                            flags=re.IGNORECASE)[0]
+            head = head.splitlines()[0] if head else ""
+            head = re.sub(r"\*\*(.*?)\*\*", r"\1", head)
+            head = head.strip().strip("–-").strip()
+            m = re.match(r"^\s*(\d+)(?:\s*[-–]\s*(\d+))?\s+(.+?)\s*$", head)
+            if not m:
+                continue
+            lo = int(m.group(1))
+            hi = int(m.group(2)) if m.group(2) else lo
+            name = m.group(3)
+            # Drop trailing "– EPIC HERO" style epithets.
+            name = re.split(r"\s+[–-]\s+", name, maxsplit=1)[0].strip()
+            out.append({"name": name, "min": lo, "max": hi})
+        if not out:
+            # Last-ditch fallback: surface the raw description as a single
+            # composition entry. The SPA renders the name verbatim.
+            return [{"name": ds_name, "min": 1, "max": 1}]
+        return out
+
+    @staticmethod
+    def _extract_loadout_sentence(text):
+        """Pull the "...equipped with: ..." sentence out of unit_composition_text
+        and strip markdown. Tolerates both `**...equipped with:**` and
+        `**...equipped with**:` shapes."""
+        if not text:
+            return ""
+        # Greedy prefix-eater swallows the colon, asterisks and whitespace that
+        # follow "equipped with" so the captured tail starts at real content.
+        m = re.search(r"equipped with[:\s\*]*(.+?)(?:\n|$)", text,
+                      flags=re.IGNORECASE | re.DOTALL)
+        if not m:
+            return ""
+        sentence = m.group(1).strip()
+        sentence = re.sub(r"\*\*(.*?)\*\*", r"\1", sentence)
+        sentence = sentence.strip().rstrip(".").strip()
+        return sentence
+
+    def _resolve_leaders(self):
+        """Resolve `leads_units` and `can_be_led_by` name lists to UUIDs using
+        NFKD-normalised, case-insensitive name lookup. Tries the leader's
+        faction tree first (primary, parent, parent's other children, own
+        children); if that misses, falls back to a global by-name index so
+        cross-tree links such as Ynnari characters leading Asuryani units
+        resolve. Names that still don't resolve are kept in their string form
+        so the unit-detail UI can render them as plain (non-linked) text."""
+        # Pre-index ds-by-name within faction trees so each resolver call is
+        # O(1) instead of O(N).
+        by_tree = {}
+        by_name = {}
+        for u in self.datasheets:
+            n = _nfkd(u["name"])
+            by_name.setdefault(n, []).append(u["id"])
+            for tree_root in self._faction_tree_roots(u["faction_id"]):
+                by_tree.setdefault(tree_root, {}).setdefault(
+                    n, []).append(u["id"])
+
         leaders_for_name = {}
         led_by_id = {}
         leads_id = {}
+        unresolved = []
+
         for u in self.datasheets:
-            targets = u.get("_leader_targets") or []
             leader_id = u["id"]
             leader_name = u["name"]
-            for target_id in targets:
-                target = self.ds_by_id.get(target_id)
-                if not target:
-                    continue
-                leaders_for_name.setdefault(target["name"], []).append(leader_name)
-                led_by_id.setdefault(target_id, []).append(leader_id)
-                leads_id.setdefault(leader_id, []).append(
-                    {"id": target_id, "name": target["name"]})
+            tree_root = self._tree_root(u["faction_id"])
+            tree_index = by_tree.get(tree_root, {})
+
+            resolved_leads = []
+            for raw_name in u.get("_leads_names") or []:
+                n = _nfkd(raw_name)
+                matches = tree_index.get(n) or by_name.get(n, [])
+                if matches:
+                    for target_id in matches:
+                        target = self.ds_by_id.get(target_id)
+                        if not target:
+                            continue
+                        resolved_leads.append(
+                            {"id": target_id, "name": target["name"]})
+                        leaders_for_name.setdefault(
+                            target["name"], []).append(leader_name)
+                        led_by_id.setdefault(target_id, []).append(leader_id)
+                else:
+                    resolved_leads.append({"id": None, "name": raw_name})
+                    unresolved.append(("leads_units", leader_name, raw_name))
+            if resolved_leads:
+                leads_id[leader_id] = resolved_leads
+
+            for raw_name in u.get("_led_by_names") or []:
+                n = _nfkd(raw_name)
+                if not (tree_index.get(n) or by_name.get(n)):
+                    unresolved.append(("can_be_led_by", leader_name, raw_name))
+
         self.leaders_for = leaders_for_name
         self.led_by = led_by_id
         self.leads = leads_id
 
-        self._load_detachment_data()
+        if unresolved:
+            logger.warning(
+                "Leader resolver: %d unresolved name(s); first 10: %s",
+                len(unresolved), unresolved[:10])
 
-        # Apply the MFM points overlay last, after self.cost and the detachment
-        # enhancements are fully populated, so it overrides the final values.
-        self._apply_mfm_overrides()
-
-    # ---- MFM points overlay --------------------------------------------
-
-    def _apply_mfm_overrides(self):
-        """Overlay MFM points for any faction toggled on, over the Wahapedia
-        base data. Non-destructive: only the in-memory unit dicts, self.cost,
-        and enhancement cost values are touched, never the catalogue tables.
-        Defensive on first boot, when the mfm_* tables may not exist yet."""
-        try:
-            from mfm_store import (
-                enabled_overrides, meta_version,
-            )
-        except Exception:
-            return
-        try:
-            self.mfm_version = meta_version() or ""
-        except Exception:
-            self.mfm_version = ""
-        unit_ov, enh_ov, active_sources = enabled_overrides()
-        for u in self.datasheets:
-            did = u["id"]
-            parent = self.faction_parent(u.get("faction_id"))
-            slug = active_sources.get(parent)
-            override = unit_ov.get((did, slug))
-            if not override:
-                continue
-            base, tiers = override
-            u["points"] = base
-            u["_points_tiers"] = tiers
-            u["mfm"] = True
-            self.cost[did] = (tiers if tiers
-                              else ([{"cost": base}] if base is not None else []))
-        for detachment_id, enhs in self.enhancements_by_detachment.items():
-            detachment = self.detachment_by_id.get(detachment_id, {})
-            slug = active_sources.get(detachment.get("faction_id"))
-            for e in enhs:
-                override = enh_ov.get((e.get("id"), slug))
-                if override is not None:
-                    e["cost"] = override
-                    e["mfm"] = True
-
-    # ---- chapter rollup ------------------------------------------------
-
-    @staticmethod
-    def faction_parent(fid):
-        """Return the parent code of a faction id. For a chapter id such as
-        "SM::Blood Angels" this is "SM"; for a plain code it is the code itself."""
-        if fid and CHAPTER_SEP in fid:
-            return fid.split(CHAPTER_SEP, 1)[0]
+    def _tree_root(self, fid):
+        """Walk up parent_faction until the top. Used to scope leader-name
+        resolution to a faction tree."""
+        seen = set()
+        cur = fid
+        while cur and cur not in seen:
+            seen.add(cur)
+            parent = self._faction_parent.get(cur)
+            if not parent:
+                return cur
+            cur = parent
         return fid
 
-    @staticmethod
-    def is_chapter_faction(fid):
-        """True when fid is a synthetic chapter faction id (contains "::")."""
-        return bool(fid) and CHAPTER_SEP in fid
+    def _faction_tree_roots(self, fid):
+        """Tree roots a unit's leader resolver searches: its own faction, its
+        parent if any, and the parent's children. So a Blood Angels unit can
+        lead a generic Adeptus Astartes unit (and vice versa)."""
+        roots = {fid}
+        parent = self._faction_parent.get(fid)
+        if parent:
+            roots.add(parent)
+            roots.update(self._faction_children.get(parent, []))
+        # Also pull in own children (so a parent's resolver reaches chapter
+        # datasheets). Cheap - most factions have no children.
+        roots.update(self._faction_children.get(fid, []))
+        return roots
 
-    @staticmethod
-    def _unit_faction_keywords(unit):
-        """The bare faction keywords on a unit dict (the "Faction: " prefix that
-        data_store stores them with, stripped back off)."""
-        return [k[len(FACTION_KW_PREFIX):] for k in unit.get("_keywords", [])
-                if k.startswith(FACTION_KW_PREFIX)]
+    # ---- detachments ---------------------------------------------------
 
-    def _apply_chapter_rollup(self, real_faction_names):
-        """Split each PARENT_FACTIONS code into per-chapter faction cards.
+    def _load_detachment_data(self, conn):
+        """Populate detachments_by_faction, detachment_by_id,
+        enhancements_by_detachment, stratagems_by_detachment from w40k.db."""
+        det_factions = {}
+        for r in conn.execute(
+                "SELECT detachment_id, faction_id FROM detachment_faction").fetchall():
+            det_factions.setdefault(r["detachment_id"], []).append(r["faction_id"])
 
-        Chapters are detected from the faction keywords on the parent's
-        datasheets, minus the universal/configured excludes and any keyword that
-        equals a real faction name. Each detected chapter becomes a synthetic
-        faction whose datasheets are the ones carrying exactly that one chapter
-        keyword; generic datasheets stay under the parent.
-        """
-        exclude_names = set(CHAPTER_KEYWORD_EXCLUDE) | set(real_faction_names)
+        det_rules = {}
+        for r in conn.execute("""SELECT detachment_id, name, body_text
+                                 FROM detachment_rule""").fetchall():
+            det_rules.setdefault(r["detachment_id"], []).append(
+                {"name": r["name"], "description": r["body_text"] or ""})
 
-        for parent in sorted(PARENT_FACTIONS):
-            if parent not in self.faction_by_id:
-                continue
-            parent_units = list(self.ds_by_faction.get(parent, []))
+        for r in conn.execute("""SELECT id, name, is_combat_patrol,
+                                        detachment_points_cost, restrictions,
+                                        unlocks_datasheets, excludes_datasheets
+                                 FROM detachment""").fetchall():
+            did = r["id"]
+            memberships = det_factions.get(did, [])
+            primary_fid = self._pick_primary_faction(memberships) or ""
+            try:
+                restrictions = json.loads(r["restrictions"] or "[]")
+            except (TypeError, ValueError):
+                restrictions = []
+            try:
+                unlocks = json.loads(r["unlocks_datasheets"] or "[]")
+            except (TypeError, ValueError):
+                unlocks = []
+            try:
+                excludes = json.loads(r["excludes_datasheets"] or "[]")
+            except (TypeError, ValueError):
+                excludes = []
+            det = {
+                "id":            did,
+                "name":          r["name"],
+                "faction_id":    primary_fid,
+                "points_cost":   r["detachment_points_cost"] or 0,
+                "restrictions":  restrictions,
+                "rules":         det_rules.get(did, []),
+                "unlocks_datasheets": unlocks,
+                "excludes_datasheets": excludes,
+                "is_combat_patrol":  bool(r["is_combat_patrol"]),
+            }
+            self.detachment_by_id[did] = det
+            for fid in memberships:
+                self.detachments_by_faction.setdefault(fid, []).append(det)
 
-            # Detect the chapter keyword set across the parent's datasheets.
-            detected = set()
-            for u in parent_units:
-                for kw in self._unit_faction_keywords(u):
-                    if kw and kw not in exclude_names:
-                        detected.add(kw)
-            if CHAPTER_ALLOWLIST:
-                detected &= set(CHAPTER_ALLOWLIST)
+        for r in conn.execute("""SELECT id, detachment_id, name, points, type,
+                                        rules_text, eligibility_text
+                                 FROM enhancement""").fetchall():
+            self.enhancements_by_detachment.setdefault(
+                r["detachment_id"], []).append({
+                    "id":            r["id"],
+                    "name":          r["name"],
+                    "cost":          r["points"] or 0,
+                    "detachment_id": r["detachment_id"],
+                    "description":   r["rules_text"] or "",
+                    "type":          r["type"] or "",
+                    "eligibility":   r["eligibility_text"] or "",
+                })
 
-            # Create a synthetic faction card per detected chapter.
-            chapter_ids = {}
-            for chapter in sorted(detected):
-                cid = f"{parent}{CHAPTER_SEP}{chapter}"
-                chapter_ids[chapter] = cid
-                faction_dict = {"id": cid, "name": chapter, "unit_count": 0}
-                self.factions.append(faction_dict)
-                self.faction_by_id[cid] = faction_dict
-                self.ds_by_faction.setdefault(cid, [])
-                self.chapter_faction_ids.add(cid)
-                self.chapters_by_parent.setdefault(parent, []).append(cid)
+        for r in conn.execute("""SELECT id, detachment_id, name, cp_cost,
+                                        category, phases, when_text,
+                                        target_text, effect_text
+                                 FROM stratagem""").fetchall():
+            self.stratagems_by_detachment.setdefault(
+                r["detachment_id"], []).append(dict(r))
 
-            # Reassign each parent datasheet that carries exactly one detected
-            # chapter keyword to that chapter; leave generic ones under the parent.
-            remaining = []
-            for u in parent_units:
-                chs = sorted(kw for kw in self._unit_faction_keywords(u)
-                             if kw in detected)
-                if not chs:
-                    remaining.append(u)
-                    continue
-                if len(chs) > 1:
-                    logger.warning(
-                        "Chapter rollup: datasheet %s (%s) carries multiple "
-                        "chapter keywords %s; assigning to %r for determinism.",
-                        u["id"], u.get("name", ""), chs, chs[0])
-                cid = chapter_ids[chs[0]]
-                u["faction_id"] = cid
-                self.ds_by_faction[cid].append(u)
-            self.ds_by_faction[parent] = remaining
+    # ---- queries -------------------------------------------------------
 
-            # Recompute unit counts so the faction grid reflects the split.
-            self.faction_by_id[parent]["unit_count"] = len(remaining)
-            for chapter, cid in chapter_ids.items():
-                self.faction_by_id[cid]["unit_count"] = len(self.ds_by_faction[cid])
+    def faction_parent(self, fid):
+        """Parent faction id, or the input id when there is no parent."""
+        parent = self._faction_parent.get(fid)
+        return parent if parent else fid
 
-        self._assert_core_chapters()
-
-    def _assert_core_chapters(self):
-        """Warn loudly if any core expected chapter did not resolve to a
-        non-empty card. Does not raise: the app must still start."""
-        missing = []
-        for parent in sorted(PARENT_FACTIONS):
-            for chapter in sorted(CORE_EXPECTED_CHAPTERS):
-                cid = f"{parent}{CHAPTER_SEP}{chapter}"
-                if not self.ds_by_faction.get(cid):
-                    missing.append(cid)
-        if missing:
-            logger.warning(
-                "\n" + "=" * 70 +
-                "\nCHAPTER ROLLUP: expected chapter card(s) missing or empty: %s"
-                "\nThe Wahapedia faction keyword structure may have changed; "
-                "chapters may have silently re-merged into Space Marines."
-                "\n" + "=" * 70, ", ".join(missing))
-
-    def _chapter_children(self, fid):
-        """Chapter faction ids whose parent is fid (empty for a chapter id)."""
-        return list(self.chapters_by_parent.get(fid, []))
+    def is_chapter_faction(self, fid):
+        """True when fid has a parent_faction (i.e. lives one level down from a
+        top-level faction)."""
+        return bool(fid) and bool(self._faction_parent.get(fid))
 
     def detachments_for_faction(self, fid):
         """Detachments for a faction id, falling back to the parent's pool. A
-        chapter card has no detachments of its own because Wahapedia does not
-        attribute detachments to chapters, so it inherits the full parent pool."""
-        return (self.detachments_by_faction.get(fid)
-                or self.detachments_by_faction.get(self.faction_parent(fid), []))
-
-    def _load_detachment_data(self):
-        """Populate detachments_by_faction, detachment_by_id,
-        enhancements_by_detachment from the Wahapedia CSVs. Faction ids are now
-        native Wahapedia codes, matching Detachments.csv directly.
-        """
-        import csv as _csv
-
-        data_dir = os.path.join(os.path.dirname(__file__), "data")
-
-        det_path = os.path.join(data_dir, "Detachments.csv")
-        if not os.path.exists(det_path):
-            return
-        try:
-            with open(det_path, encoding="utf-8-sig", newline="") as fh:
-                reader = _csv.DictReader(fh, delimiter="|")
-                for row in reader:
-                    dtid = (row.get("id") or "").strip()
-                    fid  = (row.get("faction_id") or "").strip()
-                    name = (row.get("name") or "").strip()
-                    if not dtid or not name or not fid:
-                        continue
-                    det = {
-                        "id":         dtid,
-                        "name":       name,
-                        "faction_id": fid,
-                        "legend":     (row.get("legend") or "").strip(),
-                    }
-                    self.detachments_by_faction.setdefault(fid, []).append(det)
-                    self.detachment_by_id[dtid] = det
-        except Exception:
-            pass
-
-        enh_path = os.path.join(data_dir, "Enhancements.csv")
-        if not os.path.exists(enh_path):
-            return
-        try:
-            with open(enh_path, encoding="utf-8-sig", newline="") as fh:
-                reader = _csv.DictReader(fh, delimiter="|")
-                for row in reader:
-                    eid  = (row.get("id") or "").strip()
-                    dtid = (row.get("detachment_id") or "").strip()
-                    name = (row.get("name") or "").strip()
-                    if not eid or not dtid or not name:
-                        continue
-                    try:
-                        cost = int((row.get("cost") or "0").strip())
-                    except ValueError:
-                        cost = 0
-                    enh = {
-                        "id":            eid,
-                        "name":          name,
-                        "cost":          cost,
-                        "detachment_id": dtid,
-                        "description":   strip_html((row.get("description") or "").strip()),
-                    }
-                    self.enhancements_by_detachment.setdefault(dtid, []).append(enh)
-        except Exception:
-            pass
-
-    # ---- queries -------------------------------------------------------
+        chapter card with no detachments of its own inherits the full parent
+        pool - codex-divergent chapters get a slightly wider list than strict
+        canon, accepted simplification."""
+        own = self.detachments_by_faction.get(fid)
+        if own:
+            return own
+        parent = self._faction_parent.get(fid)
+        if parent:
+            return self.detachments_by_faction.get(parent, [])
+        return []
 
     def faction_list(self):
         out = []
         for f in self.factions:
-            sheets = [d for d in self.ds_by_faction.get(f["id"], [])
-                      if not d["virtual_bool"]]
+            sheets = self.ds_by_faction.get(f["id"], [])
             if not sheets:
                 continue
-            out.append({"id": f["id"], "name": f["name"], "unit_count": len(sheets)})
+            out.append({"id": f["id"], "name": f["name"],
+                        "unit_count": len(sheets)})
         out.sort(key=lambda x: x["name"])
         return out
 
     def units_for_faction(self, fid):
-        """Strict membership: only units whose canonical faction_id equals fid.
-        The Space Marines card shows generic units only; a chapter card shows its
-        own units only. This is the un-merged view used by the browse grid."""
-        sheets = [d for d in self.ds_by_faction.get(fid, [])
-                  if not d["virtual_bool"]]
+        """Strict membership: units whose primary faction equals fid. A chapter
+        card shows chapter-specifics only; the parent card shows generics only.
+        Used for the faction-grid display."""
+        sheets = self.ds_by_faction.get(fid, [])
         units = []
         for d in sheets:
             units.append({
@@ -541,33 +814,61 @@ class DataStore:
                 "name":   d["name"],
                 "role":   d.get("role") or "Other",
                 "points": self._cheapest_points(d["id"]),
-                "mfm":    bool(d.get("mfm")),
             })
         units.sort(key=lambda u: (_role_rank(u["role"]), u["name"]))
         return units
 
     def units_in_faction_tree(self, fid):
-        """Units for fid plus, when fid is a parent, all units of its chapter
-        children. Used by faction-scoped matching and validation, not the browse
-        grid (e.g. a Space Marines box should match Blood Angels units)."""
+        """Units whose primary faction equals fid, plus units whose primary
+        faction is a child of fid. Used by box/army matching: a Space-Marines-
+        tagged box accepts Blood Angels units too."""
         units = self.units_for_faction(fid)
-        children = self._chapter_children(fid)
-        if not children:
-            return units
+        children = self._faction_children.get(fid, [])
         for cid in children:
             units += self.units_for_faction(cid)
         units.sort(key=lambda u: (_role_rank(u["role"]), u["name"]))
         return units
 
+    def selectable_units_for_army(self, fid):
+        """Units a chapter army can field: its own units plus its parent's
+        generics (one level up). Falls through to `units_for_faction` for a
+        top-level faction. Without this, a Blood Angels army would not be
+        offered Tactical Squad or any generic Space Marine unit - a regression
+        against the old chapter-rollup behaviour."""
+        units = self.units_for_faction(fid)
+        parent = self._faction_parent.get(fid)
+        if parent:
+            units += self.units_for_faction(parent)
+        # Dedupe by id while preserving sort.
+        seen = set()
+        deduped = []
+        for u in units:
+            if u["id"] in seen:
+                continue
+            seen.add(u["id"])
+            deduped.append(u)
+        deduped.sort(key=lambda u: (_role_rank(u["role"]), u["name"]))
+        return deduped
+
     def unit_in_faction(self, did, fid):
-        """True when the unit's canonical faction equals fid, or when fid is the
-        parent of the unit's chapter faction. So a Blood Angels unit counts as in
-        both "SM" and "SM::Blood Angels"."""
+        """True when the unit is a member of fid, or fid is the parent of the
+        unit's primary faction. Driven by datasheet_faction membership so a
+        Blood Angels unit returns True for both Blood Angels and Adeptus
+        Astartes."""
+        memberships = self._ds_factions.get(did, [])
+        if fid in memberships:
+            return True
+        for m in memberships:
+            if self._faction_parent.get(m) == fid:
+                return True
+        # Cover the primary-faction-only case (e.g. when the override removed
+        # the datasheet from datasheet_faction entirely).
         d = self.ds_by_id.get(did)
-        if not d:
-            return False
-        ufid = d.get("faction_id")
-        return ufid == fid or self.faction_parent(ufid) == fid
+        if d:
+            primary = d.get("faction_id")
+            if primary == fid or self._faction_parent.get(primary) == fid:
+                return True
+        return False
 
     def _cheapest_points(self, did):
         costs = [_int(c.get("cost")) for c in self.cost.get(did, [])
@@ -579,11 +880,8 @@ class DataStore:
         if not d:
             return None
         kws = d.get("_keywords", [])
-        faction_kw_prefix = FACTION_KW_PREFIX
-        fkw = [k for k in kws if k.startswith(faction_kw_prefix)]
-        kw = [k for k in kws if not k.startswith(faction_kw_prefix)]
-        # Single-model datasheets carry a stats dict; synthesise the "1 <name>"
-        # composition line if Wahapedia gave no composition rows.
+        fkw = [k for k in kws if k.startswith(FACTION_KW_PREFIX)]
+        kw = [k for k in kws if not k.startswith(FACTION_KW_PREFIX)]
         composition = self.composition.get(d["id"], [])
         if not composition and isinstance(d.get("_stats"), dict) and d["_stats"]:
             composition = [{"name": d["name"], "min": 1, "max": 1}]
@@ -614,8 +912,6 @@ class DataStore:
             "melee":               d.get("_melee", []),
             "keywords":            kw,
             "faction_keywords":    fkw,
-            "points_source":       "mfm" if d.get("mfm") else "wahapedia",
-            "mfm_version":         self.mfm_version,
         }
 
 

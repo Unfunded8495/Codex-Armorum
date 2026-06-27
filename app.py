@@ -1,4 +1,4 @@
-"""Warhammer 40,000 collection cataloguer — Flask backend.
+"""Warhammer 40,000 collection cataloguer - Flask backend.
 
 Run:  python app.py    then open http://127.0.0.1:5050
 
@@ -104,19 +104,9 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "codex-armorum-local")
 
-init_db()                 # creates the collection schema and the MFM tables
+init_db()                 # creates the collection schema
 init_arsenal(app)
-import mfm_store
-mfm_store.auto_import_if_empty()  # seed the MFM resolved data on first boot
-get_store.cache_clear()
-store = get_store()       # built after seeding so any enabled overlay applies
-
-
-def _reload_store():
-    """Rebuild the cached DataStore so an MFM toggle change takes effect. The
-    route closures read `store` as a module global, so reassign it in globals."""
-    get_store.cache_clear()
-    globals()["store"] = get_store()
+store = get_store()
 
 
 # ---------------------------------------------------------------- icon helpers
@@ -140,7 +130,7 @@ def _faction_icon_url(fid, name):
 def _resolve_faction_icon(fid, name):
     """Faction icon URL, parent-aware for chapter cards.
 
-    A chapter card (e.g. SM::Blood Angels) first tries its own chapter name
+    A chapter card (e.g. Blood Angels) first tries its own chapter name
     through the icon resolver, then falls back to the parent Space Marines icon.
     Returns None when neither resolves (the client then renders the tinted
     faction glyph). No icon files are invented or renamed."""
@@ -398,7 +388,14 @@ def api_faction_units(fid):
     owned  = owned_totals()
     info   = bought_info()
     ul_map = compute_unlogged_map(info, owned)
-    units  = store.units_for_faction(fid)
+    # The army-builder unit picker passes ?for=army-builder so a chapter army
+    # is offered its own units AND its parent's generics (so a Blood Angels
+    # army can take Tactical Squad). Default behaviour is strict per-faction
+    # membership, used by the faction grid and other browse surfaces.
+    if request.args.get("for") == "army-builder":
+        units = store.selectable_units_for_army(fid)
+    else:
+        units = store.units_for_faction(fid)
     for u in units:
         u["owned"]    = owned.get(u["id"], 0)
         u["bought"]   = info["totals"].get(u["id"], 0)
@@ -440,49 +437,6 @@ def api_detachment_enhancements(dtid):
         "cost": _int(e.get("cost", 0)),
         "description": e.get("description", ""),
     } for e in enhs])
-
-
-# ---------------------------------------------------------------- MFM points overlay
-@app.route("/api/mfm/status")
-def api_mfm_status():
-    return jsonify(mfm_store.status())
-
-
-@app.route("/api/mfm/toggle", methods=["POST"])
-def api_mfm_toggle():
-    data = request.get_json(silent=True) or {}
-    code = (data.get("faction_id") or "").strip()
-    if not isinstance(data.get("enabled"), bool):
-        return jsonify({"ok": False, "error": "enabled must be a boolean."}), 400
-    enabled = data["enabled"]
-    valid = {f["code"] for f in mfm_store.status()["factions"]}
-    if code not in valid:
-        abort(404)
-    mfm_store.set_faction(code, enabled)
-    _reload_store()
-    return jsonify(mfm_store.status())
-
-
-@app.route("/api/mfm/toggle-all", methods=["POST"])
-def api_mfm_toggle_all():
-    data = request.get_json(silent=True) or {}
-    if not isinstance(data.get("enabled"), bool):
-        return jsonify({"ok": False, "error": "enabled must be a boolean."}), 400
-    mfm_store.set_all(data["enabled"])
-    _reload_store()
-    return jsonify(mfm_store.status())
-
-
-@app.route("/api/mfm/import", methods=["POST"])
-def api_mfm_import():
-    # Re-run the resolver from data/mfm/ (for refreshing when a new MFM extract
-    # is dropped in). Preserves the user's per-faction toggles.
-    try:
-        mfm_store.import_mfm()
-    except (OSError, ValueError) as exc:
-        return jsonify({"ok": False, "error": f"Could not import MFM data: {exc}"}), 400
-    _reload_store()
-    return jsonify(mfm_store.status())
 
 
 # ---------------------------------------------------------------- unit api
@@ -589,7 +543,7 @@ def _create_minis(datasheet_id, catalogue_model_id, label, wargear, count, multi
 def _minis_from_box(box, quantity):
     """Create unbuilt mini rows for every physical mini in a box purchase.
 
-    Multikit groups share a physical pool — only the first content item for
+    Multikit groups share a physical pool - only the first content item for
     each group is used to create rows (avoid double-counting the pool).
     Multikit minis carry the group key so the user can choose which unit to
     build when they advance past 'unbuilt'.
@@ -714,7 +668,7 @@ def api_delete_mini(mid):
             _trim_army_overage(c, unit_bid, id_variants, ph, built_only=True)
             action = "reset"
         else:
-            # Already unbuilt — remove from the collection entirely.
+            # Already unbuilt - remove from the collection entirely.
             c.execute("DELETE FROM minis WHERE id=?", (mid,))
             _trim_army_overage(c, unit_bid, id_variants, ph, built_only=False)
             action = "deleted"
@@ -1451,10 +1405,11 @@ def api_search_model_catalogue():
     if len(q) < 2:
         return jsonify([])
 
-    # Parent-aware scope: the chapter rollup collapses catalogue items back to the
-    # parent (a Dark Angels model keeps faction_id/army_ids "SM"), so a chapter
-    # scope (e.g. SM::Dark Angels) must also match its parent's catalogue items —
-    # otherwise a chapter-scoped box editor search finds nothing.
+    # Parent-aware scope: catalogue items are grouped under the parent faction
+    # (a Dark Angels box keeps faction_id/army_ids at the Adeptus Astartes id),
+    # so a chapter scope (e.g. Dark Angels) must also match its parent's
+    # catalogue items - otherwise a chapter-scoped box editor search finds
+    # nothing.
     scopes = {fid, store.faction_parent(fid)} if fid else set()
 
     results = []
@@ -1904,7 +1859,7 @@ def api_unassigned_minis():
     for r in rows:
         did = r["unit_bsdata_id"]
         if did and store.ds_by_id.get(did):
-            continue  # properly assigned — skip
+            continue  # properly assigned - skip
         cid   = r["catalogue_model_id"] if "catalogue_model_id" in r.keys() else None
         label = r["label"] or ""
         key   = f"{cid or ''}\x01{label}"

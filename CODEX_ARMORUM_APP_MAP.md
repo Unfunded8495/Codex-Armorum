@@ -1,6 +1,6 @@
 # Codex Armorum: How the App Works (Visual Breakdown)
 
-A walkthrough of the running application — what the pieces are, how they talk to each
+A walkthrough of the running application - what the pieces are, how they talk to each
 other, and what links to what. This is the *behavioural* companion to
 [`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md), which covers the *data
 sources, ID systems, and migration rules*. Read this one to understand the request flow;
@@ -15,7 +15,7 @@ read that one to understand where the data lives.
 
 Codex Armorum is a **single-user, locally-run Flask web app** for cataloguing a
 Warhammer 40,000 miniature collection. There is **no build step** and **no frontend
-framework** — just vanilla ES modules talking to a Flask REST API, backed by one SQLite
+framework** - just vanilla ES modules talking to a Flask REST API, backed by one SQLite
 file (`collection.db`) plus a handful of CSV/JSON reference files in `data/`.
 
 | Layer | Technology | Entry point |
@@ -24,11 +24,11 @@ file (`collection.db`) plus a handful of CSV/JSON reference files in `data/`.
 | Frontend (tools) | Server-rendered Jinja pages + page-specific JS | `army_builder.html`, `collection.html`, `catalogue_review.html`, `arsenal/*` |
 | Backend | Flask (`app.py`) + one blueprint (`arsenal.py`) | `python app.py` → `http://127.0.0.1:5050` |
 | Data access | Python modules wrapping SQLite + reference files | `data_store.py`, `collection.py`, `box_sets.py`, … |
-| Storage | SQLite (`collection.db`) + `data/` Wahapedia CSV + catalogue/edition JSON | `db.py` (schema), `wahapedia_importer.py` (loader) |
+| Storage | SQLite (`collection.db` user data) + `data/w40k/w40k.db` (rules, read-only) + `data/*.json` (model catalogue + editions) | `db.py` (user-data schema), `data_store.py` (rules loader) |
 
 ---
 
-## 2. Big picture — the layered architecture
+## 2. Big picture - the layered architecture
 
 ```mermaid
 flowchart TB
@@ -37,14 +37,14 @@ flowchart TB
         TOOLS["Tool pages<br/>(server-rendered Jinja)<br/>Army Builder · Paint Progress<br/>Model Catalogue · Arsenal"]
     end
 
-    subgraph Flask["⚙️ Flask backend — app.py"]
+    subgraph Flask["⚙️ Flask backend - app.py"]
         PAGES["Page routes<br/>/  /army-builder<br/>/collection  /catalogue-review"]
         API["REST API<br/>/api/*"]
         BP["Arsenal blueprint<br/>/arsenal/*"]
     end
 
     subgraph Logic["🧠 Python logic modules"]
-        DS["data_store.py<br/>faction/unit/weapon index<br/>+ Space Marine chapter rollup"]
+        DS["data_store.py<br/>faction/unit/weapon/detachment index<br/>(chapters as first-class factions)"]
         COL["collection.py<br/>ownership + wargear"]
         BOX["box_sets.py<br/>purchases → minis"]
         ARMY["army.py<br/>points · detachments"]
@@ -55,8 +55,9 @@ flowchart TB
     end
 
     subgraph Store["💾 Storage"]
-        DB[("collection.db<br/>SQLite")]
-        REF["data/*.csv · data/*.json<br/>(Wahapedia + catalogue + editions)"]
+        DB[("collection.db<br/>user data, SQLite")]
+        W40K[("data/w40k/w40k.db<br/>rules, SQLite, read-only")]
+        REF["data/*.json<br/>(model catalogue + editions)"]
         FILES["uploads/ · cache/images/"]
     end
 
@@ -68,19 +69,18 @@ flowchart TB
 
     API --> DS & COL & BOX & ARMY & CAT & EDS & IMG
     BP --> ARS
-    DS --> DB & REF
+    DS -->|read-only, immutable| W40K
     COL & BOX & ARMY --> DB
     CAT & EDS --> REF
     ARS --> DB
     IMG --> FILES
-    REF -.->|wahapedia_importer.py<br/>one-off import| DB
 ```
 
 **Reading it:** the browser only ever talks to Flask over HTTP. Flask routes delegate to
-the logic modules, which read/write SQLite and the reference files. The Wahapedia CSVs are
-*not* read at request time for unit data — they are imported once into `catalogue_*` tables
-by `wahapedia_importer.py` (dashed line). (`data_store` does read `Detachments.csv` and
-`Enhancements.csv` directly at request time for the detachment/enhancement browsers.)
+the logic modules. Rules data lives in `data/w40k/w40k.db` and is opened read-only by
+`data_store.py` on app start; nothing in `collection.db` mirrors it. User data
+(`collection.db`) and the hand-curated catalogue / editions JSON are read at request time
+by the logic modules.
 
 ---
 
@@ -91,7 +91,7 @@ The app has **two distinct frontend styles** that share the same top bar
 
 ```mermaid
 flowchart LR
-    subgraph A["SPA shell — index.html"]
+    subgraph A["SPA shell - index.html"]
         direction TB
         a1["My Armies (home)"]
         a2["Faction roster"]
@@ -137,14 +137,14 @@ The top bar links bridge the two worlds (note hash vs. path):
 ```mermaid
 flowchart TD
     H["location.hash"] --> R{{"router() in app.js"}}
-    R -->|"#/ (default)"| HOME["showHome()<br/>home.js — faction grid"]
-    R -->|"#/faction/:fid"| FAC["showFaction()<br/>home.js — owned-mini roster"]
+    R -->|"#/ (default)"| HOME["showHome()<br/>home.js - faction grid"]
+    R -->|"#/faction/:fid"| FAC["showFaction()<br/>home.js - owned-mini roster"]
     R -->|"#/faction/:fid/browse"| BROWSE["showFaction(browseAll)<br/>all datasheets in faction"]
-    R -->|"#/unit/:did"| UNIT["showUnit()<br/>unit.js — full datasheet"]
-    R -->|"#/mini/:did"| MINI["showMiniPage()<br/>mini-page.js — manage minis"]
+    R -->|"#/unit/:did"| UNIT["showUnit()<br/>unit.js - full datasheet"]
+    R -->|"#/mini/:did"| MINI["showMiniPage()<br/>mini-page.js - manage minis"]
     R -->|"#/purchases"| PUR["showPurchases()<br/>purchases.js"]
-    R -->|"#/history"| HIST["showHistory()<br/>history.js — edition timeline"]
-    R -->|"#/history/:fid"| HISTF["showHistoryFaction()<br/>history.js — faction models"]
+    R -->|"#/history"| HIST["showHistory()<br/>history.js - edition timeline"]
+    R -->|"#/history/:fid"| HISTF["showHistoryFaction()<br/>history.js - faction models"]
 
     HOME -->|click faction tile| FAC
     FAC -->|click unit tile| MINI
@@ -212,13 +212,13 @@ flowchart TD
 
 Key roles:
 
-- **`utils.js`** — `esc()`, `api()` (the `fetch` wrapper every call uses), `withTimeout()`,
+- **`utils.js`** - `esc()`, `api()` (the `fetch` wrapper every call uses), `withTimeout()`,
   contrast-safe colour helper `readableInk()`.
-- **`header.js`** — breadcrumb + the live "ledger" (Bought / Unbuilt / Finished counts),
+- **`header.js`** - breadcrumb + the live "ledger" (Bought / Unbuilt / Finished counts),
   refreshed via `/api/collection/summary`.
-- **`datasheet.js` + `ruletext.js`** — render Wahapedia stat blocks, weapons, abilities, and
+- **`datasheet.js` + `ruletext.js`** - render w40k.db stat blocks, weapons, abilities, and
   wrap weapon keywords with glossary tooltips from `weapon_keywords.json`.
-- **`arsenal-hover.js`** — hover popovers on the unit page that pull weapon cards from the
+- **`arsenal-hover.js`** - hover popovers on the unit page that pull weapon cards from the
   Arsenal blueprint.
 
 ---
@@ -229,7 +229,7 @@ Key roles:
 flowchart LR
     apppy["app.py<br/>routes + API + glue"]
 
-    apppy --> data_store["data_store.py<br/>• loads catalogue_* tables (native Wahapedia ids)<br/>• Space Marine chapter rollup<br/>• units_for_faction / unit_by_id"]
+    apppy --> data_store["data_store.py<br/>• reads w40k.db (read-only, immutable)<br/>• leaf-wins primary-faction picker<br/>• units_for_faction / selectable_units_for_army"]
     apppy --> collection["collection.py<br/>• owned_totals()<br/>• minis_for() / wargear choices<br/>• favourite_factions()"]
     apppy --> box_sets["box_sets.py<br/>• box_sets / purchase_payload<br/>• logging a purchase → minis<br/>• custom box CRUD"]
     apppy --> army["army.py<br/>• points_for / enhancement cost<br/>• detachment validation"]
@@ -240,22 +240,22 @@ flowchart LR
     apppy --> arsenal["arsenal.py (blueprint)<br/>→ arsenal_store.py"]
 
     db["db.py<br/>schema init + migrations"] -.provides db() + init_db.-> apppy
-    wahapedia["wahapedia_importer.py<br/>CSV → catalogue_* tables"] -.one-off CLI.-> data_store
+    w40k["data/w40k/w40k.db<br/>(refresh out-of-band)"] -.read-only.-> data_store
 ```
 
 | Module | Responsibility | Talks to |
 |---|---|---|
 | `app.py` | All page routes + the `/api/*` surface; wires everything together | every logic module |
-| `data_store.py` | In-memory index of factions/units/weapons from `catalogue_*` (keyed on native Wahapedia ids in `ds_by_id`); derives the **Space Marine chapter rollup** at load time | `collection.db`, `data/Detachments.csv`, `Enhancements.csv` |
+| `data_store.py` | In-memory index of factions/units/weapons/detachments/enhancements read directly from `data/w40k/w40k.db` (UUID ids in `ds_by_id`); leaf-wins primary-faction picker; resolves leader / led-by names | `data/w40k/w40k.db` |
 | `collection.py` | Ownership counts, the minis for a datasheet, wargear-choice parsing | `minis` table |
 | `box_sets.py` | Box-set definitions, purchase logging that **creates mini rows**, multikit pools | `purchases`, `minis`, `custom_box_*` |
-| `army.py` | Army points maths, detachment/enhancement validation | `data/Detachments.csv`, `Enhancements.csv` |
-| `mfm_store.py` | Imports and selects a non-destructive MFM points overlay | `data/mfm/*.csv`, `mfm_*` tables |
+| `army.py` | Army points maths, detachment/enhancement validation | `data_store` (detachments + enhancements) |
 | `catalogue_review.py` | Builds the Model Catalogue payload, resolves datasheet links via `data_store.ds_by_id` | `data/model_catalogue_*.json` |
 | `editions.py` | Loads the hand-curated edition timeline for the Codex Archive | `data/editions_timeline.json` |
 | `arsenal.py` / `arsenal_store.py` | The Arsenal (wargear) feature as a self-contained blueprint + its own tables | `arsenal_weapon*` tables |
-| `db.py` | Creates/migrates all tables, exposes `db()` connection context | `collection.db` |
-| `wahapedia_importer.py` | Parses the Wahapedia CSV export into `catalogue_*` (run manually) | `data/*.csv` → DB |
+| `db.py` | Creates/migrates user-data tables, exposes `db()` connection context | `collection.db` |
+| `scripts/w40k_exporter/w40k_exporter.py` | Optional: re-exports `w40k.db` from a fresh official-app APK | `base.apk` → `w40k.db` |
+| `scripts/migrate_to_app40k.py` | One-shot rewrite of legacy Wahapedia ids in user data to w40k.db UUIDs | `collection.db`, `data/model_catalogue_manual.json` |
 | `images.py`, `factions_theme.py`, `utils.py` | Image upload/refs, faction theming, small shared helpers | `cache/`, `uploads/` |
 
 ---
@@ -267,25 +267,21 @@ All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 **Pages (HTML):** `GET /` · `GET /army-builder` · `GET /catalogue-review` · `GET /collection`
 
 **Factions & units**
-- `GET /api/factions` — faction grid with owned/bought/unlogged badges
-- `GET /api/factions/<fid>/icon` — tinted faction SVG
+- `GET /api/factions` - faction grid with owned/bought/unlogged badges
+- `GET /api/factions/<fid>/icon` - tinted faction SVG
 - `POST|DELETE /api/factions/<fid>/favourite`
-- `GET /api/factions/<fid>/units` — faction roster with collection status
+- `GET /api/factions/<fid>/units` - faction roster with collection status
 - `GET /api/factions/<fid>/detachments` · `GET /api/detachments/<dtid>/enhancements`
-- `GET /api/units/<did>` — the full datasheet payload (stats, weapons, comp, points)
+- `GET /api/units/<did>` - the full datasheet payload (stats, weapons, comp, points)
 - `GET /api/units/<did>/image` · `GET /api/units/search`
 
-**MFM points overlay**
-- `GET /api/mfm/status` · `POST /api/mfm/toggle` · `POST /api/mfm/toggle-all`
-- `POST /api/mfm/import` — rebuild resolved values from `data/mfm/*.csv`
-
 **Collection & minis**
-- `GET /api/collection` — minis (optionally `?faction_id=`)
-- `GET /api/collection/summary` — the top-bar ledger counts
-- `GET /api/unassigned-minis` · `POST /api/minis/assign-datasheet` — the unassigned-minis safety net
+- `GET /api/collection` - minis (optionally `?faction_id=`)
+- `GET /api/collection/summary` - the top-bar ledger counts
+- `GET /api/unassigned-minis` · `POST /api/minis/assign-datasheet` - the unassigned-minis safety net
 - `POST|DELETE /api/minis/<mid>` · `POST /api/minis/<mid>/duplicate`
 - `POST /api/minis/<mid>/photos` · `PATCH /api/minis/<mid>/stage` · `GET /api/minis/<mid>/multikit-options`
-- `POST /api/units/<did>/wip-notes` · `POST /api/units/<did>/wip-photos` · `DELETE /api/wip-photos/<pid>` — unit-level WIP notes & gallery
+- `POST /api/units/<did>/wip-notes` · `POST /api/units/<did>/wip-photos` · `DELETE /api/wip-photos/<pid>` - unit-level WIP notes & gallery
 - `DELETE /api/photos/<pid>` · `POST /api/photos/<pid>/caption` · `GET /uploads/<fname>`
 
 **Purchases & box sets**
@@ -299,12 +295,12 @@ All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 
 **Model catalogue**
 - `GET|POST /api/model-catalogue` · `GET|PATCH|DELETE /api/model-catalogue/<id>`
-- `GET /api/model-catalogue/faction-cards` — faction tiles for the Codex Archive browser
+- `GET /api/model-catalogue/faction-cards` - faction tiles for the Codex Archive browser
 - `POST /api/model-catalogue/<id>/duplicate` · image endpoints · `GET /api/model-catalogue/search`
 - `POST /api/catalogue-review/<id>/resolution`
 
 **Codex Archive**
-- `GET /api/editions` — the Warhammer 40,000 edition timeline (powers `/#/history`)
+- `GET /api/editions` - the Warhammer 40,000 edition timeline (powers `/#/history`)
 
 **Arsenal blueprint (`/arsenal/*`, mostly HTML/forms)**
 - `GET /arsenal/loadouts` · `GET /arsenal/loadouts/<datasheet_id>`
@@ -323,62 +319,57 @@ in [`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md).
 ```mermaid
 flowchart TB
     subgraph Sources["Two independent data tracks"]
-        WP["① Wahapedia CSVs<br/>(regenerable: re-fetch + re-import)<br/>factions · units · weapons · points<br/>detachments · enhancements"]
-        MC["② Model catalogue + editions JSON<br/>(hand-curated, keep forever)<br/>physical releases + images<br/>+ edition timeline"]
+        W40K["1. data/w40k/w40k.db<br/>(SQLite export of the official 40k app)<br/>factions (chapters as real factions) -<br/>units - weapons - points - detachments -<br/>enhancements - leader links"]
+        MC["2. Model catalogue + editions JSON<br/>(hand-curated, keep forever)<br/>physical releases + images<br/>+ edition timeline"]
     end
 
-    WP -->|wahapedia_importer.py| CAT["catalogue_* tables"]
-    CAT --> DSS["data_store.ds_by_id<br/>(native Wahapedia index)"]
-    MC -->|datasheet_links| DSS
+    W40K -->|read-only, immutable| DSS["data_store.ds_by_id<br/>(UUID index)"]
+    MC -->|datasheet_links (UUIDs)| DSS
 
-    DSS --> UI["Unit pages · purchase browser ·<br/>army builder · arsenal links · Codex Archive"]
+    DSS --> UI["Unit pages - purchase browser -<br/>army builder - arsenal links - Codex Archive"]
 ```
 
-BSData has been fully retired: there is no `bsdata/` repo, no `bsdata_importer.py`, and no
-runtime Wahapedia→BSData alias bridge. Every unit lookup keys on the native Wahapedia
-datasheet id.
+BSData and Wahapedia are both fully retired: no `bsdata/` repo, no Wahapedia importer, no
+runtime alias bridge. Every unit lookup keys on the w40k.db UUID via `ds_by_id`.
 
 The **two ruleset ID systems** (plus the catalogue model id) that everything keys on:
 
 | ID type | Example | Lives on |
 |---|---|---|
-| Wahapedia datasheet ID (9-digit) | `000002686` | `minis.datasheet_id` *and* `minis.unit_bsdata_id` |
-| Wahapedia faction code | `CSM`, `SM` | `catalogue_units.faction_id`, `favourite_factions`, army/box tags |
-| Catalogue model ID (`MD-`) | `MD-50836` | `minis.catalogue_model_id` |
+| w40k.db datasheet UUID | `864734c9-d6c7-4486-92de-9b8271a6a1e5` | `minis.datasheet_id` and `minis.unit_bsdata_id` |
+| w40k.db faction UUID | `01623188-9470-4441-96b0-e06eb2572bb5` | `favourite_factions.faction_id`, `custom_box_sets.faction_id`, `army_lists.faction_id` |
+| Catalogue model id (`MD-`) | `MD-50836` | `minis.catalogue_model_id`, `custom_box_set_contents.catalogue_model_id` |
 
-> **Legacy column names.** `catalogue_units.bsdata_id`, `minis.unit_bsdata_id`,
-> `army_units.unit_bsdata_id`, and `arsenal_weapon.weapon_bsdata_id` are a deliberate legacy
-> misnomer — they now hold Wahapedia ids, not BSData GUIDs. The names were kept to avoid
-> touching ~30 query sites; `minis.datasheet_id` and `minis.unit_bsdata_id` hold the same
-> Wahapedia id for every row. Space Marine chapters are restored on top of Wahapedia's single
-> `SM` faction by `data_store._apply_chapter_rollup()` at load time (chapter ids look like
-> `SM::Blood Angels`). See [`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md)
-> for the full reference.
+> **Legacy column names.** `minis.unit_bsdata_id`, `army_units.unit_bsdata_id`, and
+> `arsenal_weapon.weapon_bsdata_id` are a deliberate legacy misnomer kept across the
+> w40k.db swap to avoid touching ~30 query sites - they now hold w40k.db UUIDs.
+> `minis.datasheet_id` and `minis.unit_bsdata_id` hold the same UUID for every row.
+> Space Marine chapters are first-class factions in `w40k.db` (Adeptus Astartes parent
+> via `faction.parent_faction`), so there is no chapter-rollup step at load time. See
+> [`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md) for the full reference.
 
 ---
 
 ## 9. Database schema (entity map)
 
-`db.py` creates two families of tables in `collection.db`: **user data** (never drop) and
-**Wahapedia import** (safe to rebuild). The Arsenal owns a third group via `arsenal_store.py`.
+`db.py` creates a single family of tables in `collection.db`: **user data** (never drop). The
+Arsenal owns a second group via `arsenal_store.py`. Rules data lives entirely in `data/w40k/w40k.db`
+and is never copied into `collection.db`.
 
 ```mermaid
 erDiagram
     minis ||--o{ photos : "has"
-    minis }o--|| catalogue_units : "unit_bsdata_id"
     minis }o--o| custom_box_set_contents : "created from box"
     purchases }o--|| custom_box_sets : "box_set_id"
     custom_box_sets ||--o{ custom_box_set_contents : "contains"
     army_lists ||--o{ army_units : "contains"
-    catalogue_factions ||--o{ catalogue_units : "faction_id"
-    catalogue_units }o--o{ catalogue_weapons : "catalogue_unit_weapons"
     arsenal_weapon ||--o{ arsenal_weapon_photo : "has"
     arsenal_weapon ||--o{ arsenal_weapon_datasheet : "linked to datasheets"
 
     minis {
         text id PK
-        text datasheet_id "Wahapedia ID"
-        text unit_bsdata_id "Wahapedia ID (legacy name)"
+        text datasheet_id "w40k.db UUID"
+        text unit_bsdata_id "w40k.db UUID (legacy column name)"
         text catalogue_model_id "MD- id"
         text stage "paint stage"
         text wargear
@@ -391,22 +382,17 @@ erDiagram
     }
     army_lists {
         text id PK
-        text faction_id
-        text detachment_id
+        text faction_id "w40k.db UUID"
+        text detachment_id "w40k.db UUID"
         int points_limit
-    }
-    catalogue_units {
-        text bsdata_id PK
-        text faction_id FK
-        int points
     }
 ```
 
 | Group | Tables | Lifecycle |
 |---|---|---|
-| **User data** | `minis`, `photos`, `unit_wip`, `unit_wip_photos`, `favourite_factions`, `purchases`, `custom_box_sets`, `custom_box_set_contents`, `army_lists`, `army_units` | Back up — never drop |
+| **User data** | `minis`, `photos`, `unit_wip`, `unit_wip_photos`, `favourite_factions`, `purchases`, `custom_box_sets`, `custom_box_set_contents`, `army_lists`, `army_units` | Back up - never drop |
 | **Arsenal** | `arsenal_weapon`, `arsenal_weapon_photo`, `arsenal_weapon_datasheet` | User data |
-| **Wahapedia import** | `catalogue_factions`, `catalogue_units`, `catalogue_weapons`, `catalogue_unit_weapons` | Drop & rebuild via importer |
+| **Rules data (external)** | `data/w40k/w40k.db` (`faction`, `datasheet`, `model`, `weapon`, `weapon_profile`, `detachment`, `enhancement`, ...) | Refresh out-of-band; opened read-only |
 
 ---
 
@@ -475,7 +461,7 @@ sequenceDiagram
     Note over U: /collection page reads the same<br/>data for the stats dashboard
 ```
 
-### 10d. Arsenal — weapons linked to datasheets
+### 10d. Arsenal - weapons linked to datasheets
 
 ```mermaid
 sequenceDiagram
@@ -501,19 +487,16 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     A["git clone"] --> B["pip install -r requirements.txt"]
-    B --> C["python scripts/fetch_wahapedia.py<br/>→ download CSVs into data/"]
-    C --> D["python wahapedia_importer.py<br/>→ populate catalogue_* tables"]
-    D --> E["MFM CSVs in data/mfm/<br/>(seeded automatically when empty)"]
-    E --> F["python app.py"]
-    F --> G["init_db() creates/migrates tables<br/>+ data_store builds the unit index & chapter rollup"]
-    G --> H["http://127.0.0.1:5050"]
-    H --> I["Seal Vault → POST /api/shutdown"]
+    B --> C["place data/w40k/w40k.db<br/>(or run scripts/w40k_exporter/w40k_exporter.py)"]
+    C --> D["python app.py"]
+    D --> E["init_db() creates/migrates user-data tables<br/>+ data_store reads w40k.db read-only"]
+    E --> F["http://127.0.0.1:5050"]
+    F --> G["Seal Vault - POST /api/shutdown"]
 ```
 
-`init_db()` (in `db.py`) runs on startup and is **idempotent** — it creates missing tables
-and applies in-place `ALTER TABLE` migrations, so an existing `collection.db` upgrades
-cleanly. The Wahapedia import is the only step you re-run by hand, and only to pick up
-ruleset updates.
+`init_db()` (in `db.py`) runs on startup and is **idempotent** - it creates missing user-data
+tables and applies in-place `ALTER TABLE` migrations, so an existing `collection.db` upgrades
+cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` and restart.
 
 ---
 
@@ -527,13 +510,12 @@ ruleset updates.
 | How a purchase becomes minis | `box_sets.py` + `purchases.js` |
 | Paint stages / progress stats | `collection.js`, `mini-page.js`, `/api/minis/:id/stage`, `/api/collection` |
 | Army building & points | `army.py` + `army-*.js` |
-| MFM source data and faction selection | `mfm_store.py` + `data/mfm/` + `/api/mfm/*` |
 | Wargear/weapons (Arsenal) | `arsenal.py` + `arsenal_store.py` + `templates/arsenal/` |
-| Unit stats/points source data | `wahapedia_importer.py` → `catalogue_*` → `data_store.py` |
-| Detachments / enhancements | `data/Detachments.csv`, `data/Enhancements.csv` |
+| Unit stats/points source data | `data/w40k/w40k.db` -> `data_store.py` |
+| Detachments / enhancements | `data/w40k/w40k.db` (`detachment`, `enhancement`) -> `data_store.py` |
 | Physical model releases / images | `catalogue_review.py` + `data/model_catalogue_*.json` |
 | The edition timeline (Codex Archive) | `editions.py` + `data/editions_timeline.json` + `history.js` |
-| Space Marine chapter rollup | `data_store._apply_chapter_rollup()` |
+| Faction tree / chapter membership | `data_store.faction_parent()` / `is_chapter_faction()` (chapters are real factions in w40k.db) |
 | DB schema / a new column | `db.py` (add CREATE + a guarded `ALTER TABLE`) |
 
 ---
