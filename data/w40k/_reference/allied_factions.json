@@ -1,93 +1,8 @@
 [
   {
-    "host_factions": [
-      "Adeptus Astartes",
-      "Black Templars",
-      "Agents of the Imperium",
-      "Salamanders",
-      "Deathwatch",
-      "Adeptus Mechanicus",
-      "Adeptus Custodes",
-      "Iron Hands",
-      "Blood Angels",
-      "Raven Guard",
-      "Grey Knights",
-      "Astra Militarum",
-      "White Scars",
-      "Adepta Sororitas",
-      "Ultramarines",
-      "Space Wolves",
-      "Imperial Fists",
-      "Dark Angels",
+    "ally_factions": [
       "Adeptus Titanicus"
     ],
-    "ally_factions": [
-      "Imperial Knights"
-    ],
-    "can_take_enhancements": false,
-    "is_sibling_faction": false,
-    "replaces_roster_keyword": false,
-    "mutually_exclusive_keyword_limit": true,
-    "datasheets": [
-      "Knight Valiant",
-      "Armiger Helverin",
-      "Knight Warden",
-      "Knight Paladin",
-      "Questoris Knight Magaera",
-      "Knight Defender",
-      "Armiger Warglaive",
-      "Knight Gallant",
-      "Armiger Moirax",
-      "Canis Rex",
-      "Acastus Knight Porphyrion",
-      "Cerastus Knight Lancer",
-      "Cerastus Knight Castigator",
-      "Knight Errant",
-      "Knight Preceptor",
-      "Cerastus Knight Acheron",
-      "Knight Crusader",
-      "Acastus Knight Asterius",
-      "Cerastus Knight Atrapos",
-      "Questoris Knight Styrix",
-      "Knight Castellan",
-      "Knight Destrier"
-    ],
-    "keyword_limits": [
-      {
-        "keyword": "Armiger",
-        "limit": 3,
-        "battle_size": "Strike Force"
-      },
-      {
-        "keyword": "Titanic",
-        "limit": 1,
-        "battle_size": "Incursion"
-      },
-      {
-        "keyword": "Titanic",
-        "limit": 1,
-        "battle_size": "Strike Force"
-      },
-      {
-        "keyword": "Armiger",
-        "limit": 3,
-        "battle_size": "Incursion"
-      },
-      {
-        "keyword": "Titanic",
-        "limit": 1,
-        "battle_size": "Onslaught"
-      },
-      {
-        "keyword": "Armiger",
-        "limit": 3,
-        "battle_size": "Onslaught"
-      }
-    ],
-    "points_limits": [],
-    "required_detachments": []
-  },
-  {
     "host_factions": [
       "Adeptus Astartes",
       "Black Templars",
@@ -108,9 +23,6 @@
       "Space Wolves",
       "Imperial Fists",
       "Dark Angels"
-    ],
-    "ally_factions": [
-      "Adeptus Titanicus"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -188,6 +100,9 @@
     "required_detachments": []
   },
   {
+    "ally_factions": [
+      "Agents of the Imperium"
+    ],
     "host_factions": [
       "Adeptus Astartes",
       "Black Templars",
@@ -207,9 +122,6 @@
       "Imperial Fists",
       "Dark Angels",
       "Adeptus Titanicus"
-    ],
-    "ally_factions": [
-      "Agents of the Imperium"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -297,11 +209,99 @@
     "required_detachments": []
   },
   {
-    "host_factions": [
-      "Asuryani"
+    "ally_factions": [
+      "Imperial Knights"
     ],
+    "host_factions": [
+      "Adeptus Astartes",
+      "Black Templars",
+      "Agents of the Imperium",
+      "Salamanders",
+      "Deathwatch",
+      "Adeptus Mechanicus",
+      "Adeptus Custodes",
+      "Iron Hands",
+      "Blood Angels",
+      "Raven Guard",
+      "Grey Knights",
+      "Astra Militarum",
+      "White Scars",
+      "Adepta Sororitas",
+      "Ultramarines",
+      "Space Wolves",
+      "Imperial Fists",
+      "Dark Angels",
+      "Adeptus Titanicus"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": true,
+    "datasheets": [
+      "Knight Valiant",
+      "Armiger Helverin",
+      "Knight Warden",
+      "Knight Paladin",
+      "Questoris Knight Magaera",
+      "Knight Defender",
+      "Armiger Warglaive",
+      "Knight Gallant",
+      "Armiger Moirax",
+      "Canis Rex",
+      "Acastus Knight Porphyrion",
+      "Cerastus Knight Lancer",
+      "Cerastus Knight Castigator",
+      "Knight Errant",
+      "Knight Preceptor",
+      "Cerastus Knight Acheron",
+      "Knight Crusader",
+      "Acastus Knight Asterius",
+      "Cerastus Knight Atrapos",
+      "Questoris Knight Styrix",
+      "Knight Castellan",
+      "Knight Destrier"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Armiger",
+        "limit": 3,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Armiger",
+        "limit": 3,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Armiger",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
     "ally_factions": [
       "Harlequins"
+    ],
+    "host_factions": [
+      "Asuryani"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": true,
@@ -322,11 +322,11 @@
     "required_detachments": []
   },
   {
-    "host_factions": [
-      "Asuryani"
-    ],
     "ally_factions": [
       "Ynnari"
+    ],
+    "host_factions": [
+      "Asuryani"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": true,
@@ -352,11 +352,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Chaos Knights"
-    ],
     "ally_factions": [
       "Heretic Astartes"
+    ],
+    "host_factions": [
+      "Chaos Knights"
     ],
     "can_take_enhancements": true,
     "is_sibling_faction": false,
@@ -391,12 +391,12 @@
     ]
   },
   {
+    "ally_factions": [
+      "Legiones Daemonica"
+    ],
     "host_factions": [
       "Chaos Knights",
       "Heretic Astartes"
-    ],
-    "ally_factions": [
-      "Legiones Daemonica"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -475,11 +475,85 @@
     "required_detachments": []
   },
   {
-    "host_factions": [
-      "Death Guard"
+    "ally_factions": [
+      "Chaos Knights"
     ],
+    "host_factions": [
+      "Death Guard",
+      "Thousand Sons",
+      "Legiones Daemonica",
+      "Titanicus Traitoris",
+      "World Eaters",
+      "Emperor’s Children",
+      "Heretic Astartes"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": true,
+    "datasheets": [
+      "Knight Desecrator",
+      "War Dog Executioner",
+      "Chaos Acastus Knight Porphyrion",
+      "War Dog Karnivore",
+      "Chaos Questoris Knight Styrix",
+      "Chaos Questoris Knight Magaera",
+      "Chaos Cerastus Knight Atrapos",
+      "Chaos Cerastus Knight Castigator",
+      "Knight Despoiler",
+      "War Dog Brigand",
+      "Knight Ruinator",
+      "War Dog Stalker",
+      "Knight Abominant",
+      "Chaos Cerastus Knight Acheron",
+      "Chaos Cerastus Knight Lancer",
+      "Knight Rampager",
+      "Chaos Acastus Knight Asterius",
+      "War Dog Moirax",
+      "War Dog Huntsman",
+      "Knight Tyrant"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "War Dog",
+        "limit": 3,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "War Dog",
+        "limit": 3,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "War Dog",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
     "ally_factions": [
       "Plague Legions"
+    ],
+    "host_factions": [
+      "Death Guard"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": true,
@@ -513,6 +587,9 @@
     ]
   },
   {
+    "ally_factions": [
+      "Titanicus Traitoris"
+    ],
     "host_factions": [
       "Death Guard",
       "Thousand Sons",
@@ -521,9 +598,6 @@
       "World Eaters",
       "Emperor’s Children",
       "Heretic Astartes"
-    ],
-    "ally_factions": [
-      "Titanicus Traitoris"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -601,85 +675,11 @@
     "required_detachments": []
   },
   {
-    "host_factions": [
-      "Death Guard",
-      "Thousand Sons",
-      "Legiones Daemonica",
-      "Titanicus Traitoris",
-      "World Eaters",
-      "Emperor’s Children",
-      "Heretic Astartes"
-    ],
-    "ally_factions": [
-      "Chaos Knights"
-    ],
-    "can_take_enhancements": false,
-    "is_sibling_faction": false,
-    "replaces_roster_keyword": false,
-    "mutually_exclusive_keyword_limit": true,
-    "datasheets": [
-      "Knight Desecrator",
-      "War Dog Executioner",
-      "Chaos Acastus Knight Porphyrion",
-      "War Dog Karnivore",
-      "Chaos Questoris Knight Styrix",
-      "Chaos Questoris Knight Magaera",
-      "Chaos Cerastus Knight Atrapos",
-      "Chaos Cerastus Knight Castigator",
-      "Knight Despoiler",
-      "War Dog Brigand",
-      "Knight Ruinator",
-      "War Dog Stalker",
-      "Knight Abominant",
-      "Chaos Cerastus Knight Acheron",
-      "Chaos Cerastus Knight Lancer",
-      "Knight Rampager",
-      "Chaos Acastus Knight Asterius",
-      "War Dog Moirax",
-      "War Dog Huntsman",
-      "Knight Tyrant"
-    ],
-    "keyword_limits": [
-      {
-        "keyword": "Titanic",
-        "limit": 1,
-        "battle_size": "Incursion"
-      },
-      {
-        "keyword": "War Dog",
-        "limit": 3,
-        "battle_size": "Incursion"
-      },
-      {
-        "keyword": "Titanic",
-        "limit": 1,
-        "battle_size": "Strike Force"
-      },
-      {
-        "keyword": "War Dog",
-        "limit": 3,
-        "battle_size": "Strike Force"
-      },
-      {
-        "keyword": "Titanic",
-        "limit": 1,
-        "battle_size": "Onslaught"
-      },
-      {
-        "keyword": "War Dog",
-        "limit": 3,
-        "battle_size": "Onslaught"
-      }
-    ],
-    "points_limits": [],
-    "required_detachments": []
-  },
-  {
-    "host_factions": [
-      "Deathwatch"
-    ],
     "ally_factions": [
       "Agents of the Imperium"
+    ],
+    "host_factions": [
+      "Deathwatch"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -762,12 +762,12 @@
     "required_detachments": []
   },
   {
-    "host_factions": [
-      "Drukhari"
-    ],
     "ally_factions": [
       "Asuryani",
       "Harlequins"
+    ],
+    "host_factions": [
+      "Drukhari"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -813,11 +813,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Drukhari"
-    ],
     "ally_factions": [
       "Harlequins"
+    ],
+    "host_factions": [
+      "Drukhari"
     ],
     "can_take_enhancements": true,
     "is_sibling_faction": false,
@@ -853,11 +853,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Emperor’s Children"
-    ],
     "ally_factions": [
       "Legions of Excess"
+    ],
+    "host_factions": [
+      "Emperor’s Children"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": true,
@@ -890,11 +890,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Genestealer Cults"
-    ],
     "ally_factions": [
       "Astra Militarum"
+    ],
+    "host_factions": [
+      "Genestealer Cults"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -972,11 +972,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Genestealer Cults"
-    ],
     "ally_factions": [
       "Tyranids"
+    ],
+    "host_factions": [
+      "Genestealer Cults"
     ],
     "can_take_enhancements": true,
     "is_sibling_faction": false,
@@ -1018,14 +1018,14 @@
     ]
   },
   {
-    "host_factions": [
-      "Heretic Astartes"
-    ],
     "ally_factions": [
       "Emperor’s Children",
       "Death Guard",
       "Thousand Sons",
       "World Eaters"
+    ],
+    "host_factions": [
+      "Heretic Astartes"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": false,
@@ -1072,11 +1072,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Imperial Knights"
-    ],
     "ally_factions": [
       "Adeptus Mechanicus"
+    ],
+    "host_factions": [
+      "Imperial Knights"
     ],
     "can_take_enhancements": true,
     "is_sibling_faction": false,
@@ -1109,11 +1109,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Legiones Daemonica"
-    ],
     "ally_factions": [
       "Heretic Astartes"
+    ],
+    "host_factions": [
+      "Legiones Daemonica"
     ],
     "can_take_enhancements": true,
     "is_sibling_faction": false,
@@ -1162,11 +1162,11 @@
     ]
   },
   {
-    "host_factions": [
-      "Thousand Sons"
-    ],
     "ally_factions": [
       "Scintillating Legions"
+    ],
+    "host_factions": [
+      "Thousand Sons"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": true,
@@ -1200,11 +1200,11 @@
     ]
   },
   {
-    "host_factions": [
-      "World Eaters"
-    ],
     "ally_factions": [
       "Blood Legions"
+    ],
+    "host_factions": [
+      "World Eaters"
     ],
     "can_take_enhancements": false,
     "is_sibling_faction": true,

@@ -146,7 +146,20 @@ def build_index(parsed):
     ds_fac = defaultdict(list)
     for r in sorted(data["datasheet_faction_keyword"], key=lambda r: r.get("displayOrder") or 0):
         ds_fac[r["datasheetId"]].append(r["factionKeywordId"])
+    # Remove explicit faction exclusions. A datasheet can carry a faction keyword
+    # yet be barred from that faction's roster (for example Sir Hekhtur carries
+    # the Imperial Knights keyword but is excluded from Imperial Knights). Source
+    # table: faction_keyword_excluded_datasheet. Applying it here fixes both the
+    # JSON faction folders and the SQLite datasheet_faction junction in one place.
+    excluded = set()
+    for r in data.get("faction_keyword_excluded_datasheet", []):
+        if r.get("datasheetId") and r.get("factionKeywordId"):
+            excluded.add((r["datasheetId"], r["factionKeywordId"]))
+    if excluded:
+        for dsid in list(ds_fac.keys()):
+            ds_fac[dsid] = [f for f in ds_fac[dsid] if (dsid, f) not in excluded]
     idx["ds_faction_ids"] = ds_fac
+    idx["excluded_ds_faction"] = excluded
 
     # datasheet sub structures
     idx["minis_by_ds"] = group_sorted("miniature", "datasheetId")
@@ -628,9 +641,19 @@ def resolve_faction_meta(fid, idx):
     pubs = [{"name": en(p), "is_core_rules": bool(p.get("isCoreRules")),
              "is_legends": bool(p.get("isLegends")), "errata_date": p.get("errataDate")}
             for p in idx["pub_by_fac"].get(fid, [])]
+    # Display labels. The base Warhammer 40,000 app shows commonName when it is
+    # present and falls back to name otherwise. name and parent_faction stay as
+    # the canonical keys (parent linking is keyed on name), so the display swap
+    # is precomputed here and never mutates those keys.
+    fac_name = en(fac)
+    fac_display = en(fac, "commonName") or fac_name
+    parent_name = en(parent) if parent else None
+    parent_display = (en(parent, "commonName") or en(parent)) if parent else None
     return {
-        "id": fid, "name": en(fac), "common_name": en(fac, "commonName"),
-        "parent_faction": en(parent) if parent else None,
+        "id": fid, "name": fac_name, "common_name": en(fac, "commonName"),
+        "display_name": fac_display,
+        "parent_faction": parent_name,
+        "parent_display_name": parent_display,
         "excluded_from_army_builder": bool(fac.get("excludedFromArmyBuilder")),
         "lore": en(fac, "lore"),
         "army_rules": army_rules,
@@ -642,6 +665,67 @@ def resolve_faction_meta(fid, idx):
 # ===========================================================================
 # Reference (cross faction) resolution
 # ===========================================================================
+
+def resolve_allied_factions(data, idx):
+    """Resolve the allied faction system into a name resolved, queryable shape.
+
+    Each allied faction lets one or more host factions bring a slice of another
+    faction's units (for example Drukhari allying Harlequins, or several Chaos
+    factions allying Legiones Daemonica). The source spreads this across many
+    tables keyed on allied faction id; this pulls them together.
+    """
+    bs_name = {b["id"]: en(b) for b in data.get("battle_size", [])}
+    det_name = {d["id"]: en(d) for d in data.get("detachment", [])}
+
+    host = defaultdict(list)
+    for r in data.get("faction_keyword_allied_faction", []):
+        host[r["alliedFactionId"]].append(r["factionKeywordId"])
+    parent = defaultdict(list)
+    for r in data.get("allied_faction_parent_faction_keyword", []):
+        parent[r["alliedFactionId"]].append(r["factionKeywordId"])
+    af_ds = defaultdict(list)
+    for r in data.get("allied_faction_datasheet", []):
+        af_ds[r["alliedFactionId"]].append(r["datasheetId"])
+    plim = defaultdict(list)
+    for r in data.get("allied_faction_points_limit", []):
+        plim[r["alliedFactionId"]].append({"battle_size": bs_name.get(r.get("battleSizeId")),
+                                            "points": r.get("pointsLimit")})
+    reqdet = defaultdict(list)
+    for r in data.get("allied_faction_required_detachment", []):
+        nm = det_name.get(r.get("detachmentId"))
+        if nm:
+            reqdet[r["alliedFactionId"]].append(nm)
+    kwlim = defaultdict(list)
+    for r in data.get("allied_faction_keyword", []):
+        kwlim[r["alliedFactionId"]].append({
+            "keyword": en(idx["keyword_by_id"].get(r.get("keywordId"))),
+            "limit": r.get("limitCount"),
+            "battle_size": bs_name.get(r.get("battleSizeId"))})
+
+    out = []
+    for af in data.get("allied_faction", []):
+        aid = af["id"]
+        host_ids = host.get(aid, [])
+        ds_ids = af_ds.get(aid, [])
+        out.append({
+            "id": aid,
+            "ally_factions": [en(idx["faction_by_id"].get(f)) for f in parent.get(aid, [])],
+            "host_factions": [en(idx["faction_by_id"].get(f)) for f in host_ids],
+            "host_faction_ids": host_ids,
+            "can_take_enhancements": bool(af.get("canTakeEnhancements")),
+            "is_sibling_faction": bool(af.get("isSiblingFaction")),
+            "replaces_roster_keyword": bool(af.get("replacesRosterFactionKeyword")),
+            "mutually_exclusive_keyword_limit": bool(af.get("isMutuallyExclusiveKeywordLimit")),
+            "datasheets": [en(idx["datasheet_by_id"].get(d)) for d in ds_ids],
+            "datasheet_ids": ds_ids,
+            "keyword_limits": kwlim.get(aid, []),
+            "points_limits": plim.get(aid, []),
+            "required_detachments": reqdet.get(aid, []),
+        })
+    out.sort(key=lambda a: ((a["host_factions"][0] if a["host_factions"] else "").lower(),
+                            (a["ally_factions"][0] if a["ally_factions"] else "").lower()))
+    return out
+
 
 def resolve_reference(data, idx):
     keywords = [{"name": en(k)} for k in data["keyword"] if en(k)]
@@ -744,7 +828,8 @@ def resolve_reference(data, idx):
     return {"keywords": keywords, "wargear_abilities": wargear_abilities,
             "publications": publications, "battle_sizes": battle_sizes,
             "behaviour_types": behaviour_types, "core_rules": core_rules,
-            "missions": missions, "faqs": faqs}
+            "missions": missions, "faqs": faqs,
+            "allied_factions": resolve_allied_factions(data, idx)}
 
 
 # ===========================================================================
@@ -1014,11 +1099,18 @@ def export(apk_path, out_dir, write_json=True, csv_on=True, sqlite_on=False, log
 
 
 def write_reference(ref_dir, ref, write_json, csv_on, manifest):
+    # Public copy of allies without the internal id helper fields used for joins.
+    allies_public = []
+    for a in ref.get("allied_factions", []):
+        allies_public.append({k: v for k, v in a.items()
+                              if k not in ("id", "host_faction_ids", "datasheet_ids")})
     if write_json:
         for name in ["keywords", "wargear_abilities", "publications", "battle_sizes",
                      "behaviour_types", "core_rules", "missions", "faqs"]:
             with open(os.path.join(ref_dir, name + ".json"), "w", encoding="utf-8") as f:
                 json.dump(ref[name], f, ensure_ascii=False, indent=2)
+        with open(os.path.join(ref_dir, "allied_factions.json"), "w", encoding="utf-8") as f:
+            json.dump(allies_public, f, ensure_ascii=False, indent=2)
     if csv_on:
         write_csv(os.path.join(ref_dir, "keywords.csv"), ["keyword"],
                   [{"keyword": k["name"]} for k in ref["keywords"]])
@@ -1065,6 +1157,23 @@ def write_reference(ref_dir, ref, write_json, csv_on, manifest):
                   [{"errata_header": f["errata_header"] or "", "errata_text": cell(f["errata_text"]),
                     "question": cell(f["question"]), "answer": cell(f["answer"]),
                     "applies_to": "; ".join(f["applies_to"])} for f in ref["faqs"]])
+        arows = []
+        for a in ref.get("allied_factions", []):
+            pts = ", ".join("%s %s" % (p["battle_size"], p["points"]) for p in a["points_limits"])
+            kwl = ", ".join("%s x%s %s" % (k["keyword"], k["limit"], k["battle_size"])
+                            for k in a["keyword_limits"])
+            arows.append({
+                "host_factions": "; ".join(x for x in a["host_factions"] if x),
+                "ally_factions": "; ".join(x for x in a["ally_factions"] if x),
+                "datasheets": "; ".join(x for x in a["datasheets"] if x),
+                "keyword_limits": kwl, "points_limits": pts,
+                "required_detachments": "; ".join(a["required_detachments"]),
+                "can_take_enhancements": a["can_take_enhancements"],
+                "is_sibling_faction": a["is_sibling_faction"]})
+        write_csv(os.path.join(ref_dir, "allied_factions.csv"),
+                  ["host_factions", "ally_factions", "datasheets", "keyword_limits",
+                   "points_limits", "required_detachments", "can_take_enhancements",
+                   "is_sibling_faction"], arows)
     manifest["reference"] = {
         "keywords": len(ref["keywords"]), "wargear_abilities": len(ref["wargear_abilities"]),
         "publications": len(ref["publications"]), "battle_sizes": len(ref["battle_sizes"]),
@@ -1073,6 +1182,7 @@ def write_reference(ref_dir, ref, write_json, csv_on, manifest):
         "primary_missions": len(ref["missions"]["primary_missions"]),
         "secondary_missions": len(ref["missions"]["secondary_missions"]),
         "faqs": len(ref["faqs"]),
+        "allied_factions": len(ref.get("allied_factions", [])),
     }
 
 
@@ -1162,7 +1272,13 @@ def write_readme(out_dir, manifest, ref):
     A("")
     A("If built, `w40k.db` holds the same resolved data in a relational schema designed for querying from a Python app (sqlite3 is in the standard library, so no driver is needed). Unlike the JSON folders, each datasheet and detachment is stored once; faction membership is handled by the `datasheet_faction` and `detachment_faction` junction tables, so sub faction units are not duplicated.")
     A("")
-    A("Main tables: `faction`, `army_rule`, `publication`, `datasheet`, `datasheet_faction`, `model`, `ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`, `detachment_rule`, `enhancement`, `stratagem`, plus reference tables `keyword`, `wargear_ability`, `battle_size`, `behaviour_type`, `mission_primary`, `mission_secondary`, `faq`. Deeply nested or list shaped fields (points compositions, the wargear loadout enforcement, enhancement eligibility, damage brackets, weapon ability lists, keyword lists) are stored as JSON text columns, so a top level value is queryable in SQL while the full structure is one `json.loads` away in Python.")
+    A("Main tables: `faction`, `army_rule`, `publication`, `datasheet`, `datasheet_faction`, `allied_faction`, `allied_faction_host`, `allied_faction_datasheet`, `model`, `ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`, `detachment_rule`, `enhancement`, `stratagem`, plus reference tables `keyword`, `wargear_ability`, `battle_size`, `behaviour_type`, `mission_primary`, `mission_secondary`, `faq`. Deeply nested or list shaped fields (points compositions, the wargear loadout enforcement, enhancement eligibility, damage brackets, weapon ability lists, keyword lists) are stored as JSON text columns, so a top level value is queryable in SQL while the full structure is one `json.loads` away in Python.")
+    A("")
+    A("Faction membership in `datasheet_faction` respects explicit exclusions: a unit that carries a faction keyword but is barred from that faction (source `faction_keyword_excluded_datasheet`, for example Sir Hekhtur under Imperial Knights) is not listed under it.")
+    A("")
+    A("The allied faction system is captured in three tables. `allied_faction` is one row per allowance (a host faction bringing a slice of another faction), with `ally_factions` and `host_factions` as JSON name lists, the boolean flags (`can_take_enhancements`, `is_sibling_faction`, `replaces_roster_keyword`, `mutually_exclusive_keyword_limit`), and JSON columns for `datasheets`, `keyword_limits`, `points_limits` and `required_detachments`. `allied_faction_host` and `allied_faction_datasheet` are junctions keyed on faction id and datasheet id, so an app can answer 'what can faction X ally, and which units does it bring' with a join rather than parsing JSON.")
+    A("")
+    A("The `faction` table carries both canonical and display labels. `name` is the official faction keyword (for example `Adeptus Astartes`) and is the key that `parent_faction` points at, so neither should be overwritten. `display_name` is the label to show in a UI: it is `common_name` when the app provides one (so `Adeptus Astartes` displays as `Space Marines`) and falls back to `name` otherwise. `parent_display_name` is the same precomputed swap for the parent, so a chapter such as `Blood Angels` keeps its own name, links to its parent by `parent_faction = 'Adeptus Astartes'`, and can be shown nested under `Space Marines` without an extra lookup.")
     A("")
     A("### Rules reader tables")
     A("")
@@ -1200,7 +1316,8 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT);
 
 CREATE TABLE faction (
-    id TEXT PRIMARY KEY, name TEXT, common_name TEXT, parent_faction TEXT,
+    id TEXT PRIMARY KEY, name TEXT, common_name TEXT, display_name TEXT,
+    parent_faction TEXT, parent_display_name TEXT,
     excluded_from_army_builder INTEGER, lore TEXT, allegiance_abilities TEXT
 );
 
@@ -1230,6 +1347,28 @@ CREATE TABLE datasheet_faction (
     PRIMARY KEY (datasheet_id, faction_id),
     FOREIGN KEY (datasheet_id) REFERENCES datasheet(id),
     FOREIGN KEY (faction_id) REFERENCES faction(id)
+);
+
+CREATE TABLE allied_faction (
+    id TEXT PRIMARY KEY, ally_factions TEXT, host_factions TEXT,
+    can_take_enhancements INTEGER, is_sibling_faction INTEGER,
+    replaces_roster_keyword INTEGER, mutually_exclusive_keyword_limit INTEGER,
+    datasheets TEXT, keyword_limits TEXT, points_limits TEXT,
+    required_detachments TEXT
+);
+
+CREATE TABLE allied_faction_host (
+    allied_faction_id TEXT, host_faction_id TEXT, host_faction TEXT,
+    PRIMARY KEY (allied_faction_id, host_faction_id),
+    FOREIGN KEY (allied_faction_id) REFERENCES allied_faction(id),
+    FOREIGN KEY (host_faction_id) REFERENCES faction(id)
+);
+
+CREATE TABLE allied_faction_datasheet (
+    allied_faction_id TEXT, datasheet_id TEXT, datasheet TEXT,
+    PRIMARY KEY (allied_faction_id, datasheet_id),
+    FOREIGN KEY (allied_faction_id) REFERENCES allied_faction(id),
+    FOREIGN KEY (datasheet_id) REFERENCES datasheet(id)
 );
 
 CREATE TABLE model (
@@ -1350,6 +1489,8 @@ CREATE TABLE faq (
 INDEX_SQL = """
 CREATE INDEX idx_ds_name ON datasheet(name);
 CREATE INDEX idx_dsfac_faction ON datasheet_faction(faction_id);
+CREATE INDEX idx_afhost_host ON allied_faction_host(host_faction_id);
+CREATE INDEX idx_afds_ds ON allied_faction_datasheet(datasheet_id);
 CREATE INDEX idx_model_ds ON model(datasheet_id);
 CREATE INDEX idx_ability_ds ON ability(datasheet_id);
 CREATE INDEX idx_weapon_ds ON weapon(datasheet_id);
@@ -1389,8 +1530,9 @@ def build_sqlite(data, idx, ref, db_path, log=print):
     for fid in idx["faction_by_id"]:
         meta = resolve_faction_meta(fid, idx)
         cur.execute(
-            "INSERT INTO faction VALUES (?,?,?,?,?,?,?)",
-            (fid, meta["name"], meta.get("common_name"), meta.get("parent_faction"),
+            "INSERT INTO faction VALUES (?,?,?,?,?,?,?,?,?)",
+            (fid, meta["name"], meta.get("common_name"), meta.get("display_name"),
+             meta.get("parent_faction"), meta.get("parent_display_name"),
              _b(meta.get("excluded_from_army_builder")), meta.get("lore"),
              json.dumps(meta.get("allegiance_abilities", []), ensure_ascii=False)))
         for ar in meta["army_rules"]:
@@ -1485,6 +1627,23 @@ def build_sqlite(data, idx, ref, db_path, log=print):
 
     # reference tables
     cur.executemany("INSERT OR IGNORE INTO keyword VALUES (?)", [(k["name"],) for k in ref["keywords"]])
+    for a in ref.get("allied_factions", []):
+        cur.execute("INSERT INTO allied_faction VALUES (?,?,?,?,?,?,?,?,?,?,?)", (
+            a["id"],
+            json.dumps([x for x in a["ally_factions"] if x], ensure_ascii=False),
+            json.dumps([x for x in a["host_factions"] if x], ensure_ascii=False),
+            _b(a["can_take_enhancements"]), _b(a["is_sibling_faction"]),
+            _b(a["replaces_roster_keyword"]), _b(a["mutually_exclusive_keyword_limit"]),
+            json.dumps([x for x in a["datasheets"] if x], ensure_ascii=False),
+            json.dumps(a["keyword_limits"], ensure_ascii=False),
+            json.dumps(a["points_limits"], ensure_ascii=False),
+            json.dumps(a["required_detachments"], ensure_ascii=False)))
+        for hid, hname in zip(a["host_faction_ids"], a["host_factions"]):
+            cur.execute("INSERT OR IGNORE INTO allied_faction_host VALUES (?,?,?)",
+                        (a["id"], hid, hname))
+        for did, dname in zip(a["datasheet_ids"], a["datasheets"]):
+            cur.execute("INSERT OR IGNORE INTO allied_faction_datasheet VALUES (?,?,?)",
+                        (a["id"], did, dname))
     cur.executemany("INSERT INTO wargear_ability VALUES (?,?,?)",
                     [(a["name"], a["rules"], a["lore"]) for a in ref["wargear_abilities"]])
     cur.executemany("INSERT INTO battle_size VALUES (?,?,?,?,?)",
