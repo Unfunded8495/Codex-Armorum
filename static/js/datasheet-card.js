@@ -44,7 +44,7 @@ function statBadges(model, invuln){
   ];
   let badges = order.map(([l,v]) =>
     `<div class="dsc-stat"><span class="dsc-stat-lbl">${l}</span>` +
-    `<span class="dsc-stat-val">${esc(v||'-')}</span></div>`).join('');
+    `<span class="dsc-stat-val"><span class="dsc-stat-in">${esc(v||'-')}</span></span></div>`).join('');
   if(invuln){
     badges += `<div class="dsc-invuln"><span class="dsc-invuln-lbl">Invulnerable Save</span>` +
       `<span class="dsc-invuln-val">${esc(invuln)}+</span></div>`;
@@ -184,10 +184,12 @@ export function renderDatasheetCard(d){
         </div>
         ${legendBlock(d)}
       </div>
-      <div class="dsc-body">
-        <div class="dsc-col dsc-col-left">${left}</div>
-        <div class="dsc-col dsc-col-right">${right}</div>
-      </div>
+      <div class="dsc-lower"><div class="dsc-lower-inner">
+        <div class="dsc-body">
+          <div class="dsc-col dsc-col-left">${left}</div>
+          <div class="dsc-col dsc-col-right">${right}</div>
+        </div>
+      </div></div>
       ${keywordsFooter(d)}
     </div>`;
 }
