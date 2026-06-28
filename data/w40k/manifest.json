@@ -1,0 +1,244 @@
+{
+  "data_version": 886,
+  "source_apk": "base.apk",
+  "factions": {
+    "Adepta Sororitas": {
+      "datasheets": 37,
+      "detachments": 9,
+      "files": []
+    },
+    "Adeptus Astartes": {
+      "datasheets": 204,
+      "detachments": 16,
+      "files": []
+    },
+    "Adeptus Custodes": {
+      "datasheets": 35,
+      "detachments": 10,
+      "files": []
+    },
+    "Adeptus Mechanicus": {
+      "datasheets": 38,
+      "detachments": 11,
+      "files": []
+    },
+    "Adeptus Titanicus": {
+      "datasheets": 4,
+      "detachments": 0,
+      "files": []
+    },
+    "Aeldari": {
+      "datasheets": 0,
+      "detachments": 5,
+      "files": []
+    },
+    "Agents of the Imperium": {
+      "datasheets": 34,
+      "detachments": 6,
+      "files": []
+    },
+    "Astra Militarum": {
+      "datasheets": 76,
+      "detachments": 12,
+      "files": []
+    },
+    "Asuryani": {
+      "datasheets": 58,
+      "detachments": 15,
+      "files": []
+    },
+    "Black Templars": {
+      "datasheets": 22,
+      "detachments": 20,
+      "files": []
+    },
+    "Blood Angels": {
+      "datasheets": 19,
+      "detachments": 24,
+      "files": []
+    },
+    "Blood Legions": {
+      "datasheets": 5,
+      "detachments": 0,
+      "files": []
+    },
+    "Chaos Knights": {
+      "datasheets": 20,
+      "detachments": 8,
+      "files": []
+    },
+    "Dark Angels": {
+      "datasheets": 20,
+      "detachments": 24,
+      "files": []
+    },
+    "Death Guard": {
+      "datasheets": 34,
+      "detachments": 10,
+      "files": []
+    },
+    "Deathwatch": {
+      "datasheets": 10,
+      "detachments": 16,
+      "files": []
+    },
+    "Drukhari": {
+      "datasheets": 28,
+      "detachments": 10,
+      "files": []
+    },
+    "Emperor’s Children": {
+      "datasheets": 22,
+      "detachments": 11,
+      "files": []
+    },
+    "Genestealer Cults": {
+      "datasheets": 29,
+      "detachments": 10,
+      "files": []
+    },
+    "Grey Knights": {
+      "datasheets": 30,
+      "detachments": 10,
+      "files": []
+    },
+    "Harlequins": {
+      "datasheets": 8,
+      "detachments": 0,
+      "files": []
+    },
+    "Heretic Astartes": {
+      "datasheets": 58,
+      "detachments": 18,
+      "files": []
+    },
+    "Imperial Fists": {
+      "datasheets": 3,
+      "detachments": 16,
+      "files": []
+    },
+    "Imperial Knights": {
+      "datasheets": 23,
+      "detachments": 8,
+      "files": []
+    },
+    "Iron Hands": {
+      "datasheets": 2,
+      "detachments": 16,
+      "files": []
+    },
+    "Leagues of Votann": {
+      "datasheets": 26,
+      "detachments": 11,
+      "files": []
+    },
+    "Legiones Daemonica": {
+      "datasheets": 53,
+      "detachments": 9,
+      "files": []
+    },
+    "Legions of Excess": {
+      "datasheets": 5,
+      "detachments": 0,
+      "files": []
+    },
+    "Necrons": {
+      "datasheets": 57,
+      "detachments": 13,
+      "files": []
+    },
+    "Orks": {
+      "datasheets": 64,
+      "detachments": 13,
+      "files": []
+    },
+    "Plague Legions": {
+      "datasheets": 6,
+      "detachments": 0,
+      "files": []
+    },
+    "Raven Guard": {
+      "datasheets": 2,
+      "detachments": 16,
+      "files": []
+    },
+    "Salamanders": {
+      "datasheets": 2,
+      "detachments": 16,
+      "files": []
+    },
+    "Scintillating Legions": {
+      "datasheets": 6,
+      "detachments": 0,
+      "files": []
+    },
+    "Space Wolves": {
+      "datasheets": 25,
+      "detachments": 23,
+      "files": []
+    },
+    "Thousand Sons": {
+      "datasheets": 32,
+      "detachments": 10,
+      "files": []
+    },
+    "Titanicus Traitoris": {
+      "datasheets": 4,
+      "detachments": 0,
+      "files": []
+    },
+    "Tyranids": {
+      "datasheets": 58,
+      "detachments": 11,
+      "files": []
+    },
+    "T’au Empire": {
+      "datasheets": 47,
+      "detachments": 8,
+      "files": []
+    },
+    "Ultramarines": {
+      "datasheets": 8,
+      "detachments": 17,
+      "files": []
+    },
+    "Unaligned": {
+      "datasheets": 1,
+      "detachments": 0,
+      "files": []
+    },
+    "White Scars": {
+      "datasheets": 2,
+      "detachments": 16,
+      "files": []
+    },
+    "World Eaters": {
+      "datasheets": 29,
+      "detachments": 9,
+      "files": []
+    },
+    "Ynnari": {
+      "datasheets": 11,
+      "detachments": 0,
+      "files": []
+    }
+  },
+  "reference": {
+    "keywords": 1239,
+    "wargear_abilities": 121,
+    "publications": 69,
+    "battle_sizes": 3,
+    "behaviour_types": 19,
+    "core_rules_sections": 33,
+    "primary_missions": 49,
+    "secondary_missions": 18,
+    "faqs": 728
+  },
+  "totals": {
+    "datasheets": 1257,
+    "detachments": 457,
+    "enhancements": 1583,
+    "stratagems": 2285,
+    "detachment_rules": 473
+  }
+}
