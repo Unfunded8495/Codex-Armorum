@@ -497,14 +497,15 @@
           "_legacy_id": "000000396"
         },
         {
-          "datasheet_id": "000000085",
+          "datasheet_id": "",
           "datasheet_name": "Rhino Primaris",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Rhino Primaris",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000000085"
         },
         {
           "datasheet_id": "2af79aee-3a97-4283-911b-8558d6cb44e5",
@@ -2876,14 +2877,15 @@
           "_legacy_id": "000000724"
         },
         {
-          "datasheet_id": "000003937",
+          "datasheet_id": "",
           "datasheet_name": "Provisionally Prepared",
           "faction_id": "unresolved",
           "matched_from": "statline",
           "matched_name": "Ratlings",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000003937"
         }
       ],
       "source": {
@@ -3112,14 +3114,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000714",
+          "datasheet_id": "",
           "datasheet_name": "Sergeant Harker",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Sergeant Harker",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000714"
         }
       ],
       "source": {
@@ -3961,24 +3964,26 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000003922",
+          "datasheet_id": "",
           "datasheet_name": "Hell's Last",
           "faction_id": "unresolved",
           "matched_from": "statline",
           "matched_name": "MINKA LESK",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000003922"
         },
         {
-          "datasheet_id": "000003947",
+          "datasheet_id": "",
           "datasheet_name": "Hell's Last",
           "faction_id": "unresolved",
           "matched_from": "statline",
           "matched_name": "MINKA LESK",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003947"
         }
       ],
       "source": {
@@ -4052,14 +4057,15 @@
           "_legacy_id": "000000724"
         },
         {
-          "datasheet_id": "000003937",
+          "datasheet_id": "",
           "datasheet_name": "Provisionally Prepared",
           "faction_id": "unresolved",
           "matched_from": "statline",
           "matched_name": "Ratlings",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000003937"
         }
       ],
       "source": {
@@ -4147,14 +4153,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000746",
+          "datasheet_id": "",
           "datasheet_name": "Heavy Quad Launcher Team",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Heavy Quad Launcher Team",
           "confidence": 0.889,
           "match_method": "token",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000746"
         }
       ],
       "source": {
@@ -4639,14 +4646,15 @@
           "_legacy_id": "000000166"
         },
         {
-          "datasheet_id": "000003835",
+          "datasheet_id": "",
           "datasheet_name": "Death Company Dreadnought with Magna-grapple",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Death Company Dreadnought",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000003835"
         }
       ],
       "source": {
@@ -4668,14 +4676,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000167",
+          "datasheet_id": "",
           "datasheet_name": "Furioso Dreadnought",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Furioso Dreadnought",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000167"
         }
       ],
       "source": {
@@ -4697,14 +4706,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000154",
+          "datasheet_id": "",
           "datasheet_name": "Librarian Dreadnought",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Librarian Dreadnought",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000154"
         }
       ],
       "source": {
@@ -4791,14 +4801,15 @@
           "_legacy_id": "000000158"
         },
         {
-          "datasheet_id": "000002738",
+          "datasheet_id": "",
           "datasheet_name": "Sanguinary Priest With Jump Pack",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Sanguinary Priest",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002738"
         }
       ],
       "source": {
@@ -5047,14 +5058,15 @@
           "_legacy_id": "000000158"
         },
         {
-          "datasheet_id": "000002738",
+          "datasheet_id": "",
           "datasheet_name": "Sanguinary Priest With Jump Pack",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Sanguinary Priest",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002738"
         }
       ],
       "source": {
@@ -5169,14 +5181,15 @@
           "_legacy_id": "000001114"
         },
         {
-          "datasheet_id": "000004106",
+          "datasheet_id": "",
           "datasheet_name": "Bloodletters",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Bloodletters",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004106"
         }
       ],
       "source": {
@@ -5209,14 +5222,15 @@
           "_legacy_id": "000001142"
         },
         {
-          "datasheet_id": "000004095",
+          "datasheet_id": "",
           "datasheet_name": "Daemonettes",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Daemonettes",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004095"
         }
       ],
       "source": {
@@ -5297,14 +5311,15 @@
           "_legacy_id": "000001145"
         },
         {
-          "datasheet_id": "000004098",
+          "datasheet_id": "",
           "datasheet_name": "Seekers",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Seekers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004098"
         }
       ],
       "source": {
@@ -5326,14 +5341,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000001147",
+          "datasheet_id": "",
           "datasheet_name": "Exalted Seeker Chariot",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Exalted Seeker Chariot",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001147"
         }
       ],
       "source": {
@@ -5366,14 +5382,15 @@
           "_legacy_id": "000001125"
         },
         {
-          "datasheet_id": "000004125",
+          "datasheet_id": "",
           "datasheet_name": "Flamers",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Flamers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004125"
         }
       ],
       "source": {
@@ -5406,14 +5423,15 @@
           "_legacy_id": "000001132"
         },
         {
-          "datasheet_id": "000004113",
+          "datasheet_id": "",
           "datasheet_name": "Plaguebearers",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Plaguebearers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004113"
         }
       ],
       "source": {
@@ -5446,14 +5464,15 @@
           "_legacy_id": "000001127"
         },
         {
-          "datasheet_id": "000004126",
+          "datasheet_id": "",
           "datasheet_name": "Screamers",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Screamers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004126"
         }
       ],
       "source": {
@@ -5475,14 +5494,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000001146",
+          "datasheet_id": "",
           "datasheet_name": "Seeker Chariot",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Seeker Chariot",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001146"
         }
       ],
       "source": {
@@ -5611,14 +5631,15 @@
           "_legacy_id": "000001135"
         },
         {
-          "datasheet_id": "000004114",
+          "datasheet_id": "",
           "datasheet_name": "Plague Drones",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Plague Drones",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004114"
         }
       ],
       "source": {
@@ -5711,14 +5732,15 @@
           "_legacy_id": "000002582"
         },
         {
-          "datasheet_id": "000004105",
+          "datasheet_id": "",
           "datasheet_name": "Bloodthirster",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Bloodthirster",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004105"
         }
       ],
       "source": {
@@ -5751,14 +5773,15 @@
           "_legacy_id": "000001105"
         },
         {
-          "datasheet_id": "000004104",
+          "datasheet_id": "",
           "datasheet_name": "Skarbrand",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Skarbrand",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004104"
         }
       ],
       "source": {
@@ -5809,14 +5832,15 @@
           "_legacy_id": "000001117"
         },
         {
-          "datasheet_id": "000004123",
+          "datasheet_id": "",
           "datasheet_name": "Kairos Fateweaver",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Kairos Fateweaver",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004123"
         }
       ],
       "source": {
@@ -5849,14 +5873,15 @@
           "_legacy_id": "000001120"
         },
         {
-          "datasheet_id": "000004124",
+          "datasheet_id": "",
           "datasheet_name": "Lord of Change",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Lord of Change",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004124"
         }
       ],
       "source": {
@@ -5949,14 +5974,15 @@
           "_legacy_id": "000001134"
         },
         {
-          "datasheet_id": "000004115",
+          "datasheet_id": "",
           "datasheet_name": "Beasts of Nurgle",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Beasts of Nurgle",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004115"
         }
       ],
       "source": {
@@ -5989,14 +6015,15 @@
           "_legacy_id": "000001130"
         },
         {
-          "datasheet_id": "000004112",
+          "datasheet_id": "",
           "datasheet_name": "Great Unclean One",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Great Unclean One",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004112"
         }
       ],
       "source": {
@@ -6029,14 +6056,15 @@
           "_legacy_id": "000001465"
         },
         {
-          "datasheet_id": "000004111",
+          "datasheet_id": "",
           "datasheet_name": "Rotigus",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Rotigus",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004111"
         }
       ],
       "source": {
@@ -6129,14 +6157,15 @@
           "_legacy_id": "000001143"
         },
         {
-          "datasheet_id": "000004096",
+          "datasheet_id": "",
           "datasheet_name": "Fiends",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Fiends",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004096"
         }
       ],
       "source": {
@@ -6169,14 +6198,15 @@
           "_legacy_id": "000001112"
         },
         {
-          "datasheet_id": "000004108",
+          "datasheet_id": "",
           "datasheet_name": "Flesh Hounds",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Flesh Hounds",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004108"
         }
       ],
       "source": {
@@ -6335,14 +6365,15 @@
           "_legacy_id": "000001137"
         },
         {
-          "datasheet_id": "000004097",
+          "datasheet_id": "",
           "datasheet_name": "Keeper of Secrets",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Keeper of Secrets",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004097"
         }
       ],
       "source": {
@@ -6375,14 +6406,15 @@
           "_legacy_id": "000001648"
         },
         {
-          "datasheet_id": "000004094",
+          "datasheet_id": "",
           "datasheet_name": "Shalaxi Helbane",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Shalaxi Helbane",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004094"
         }
       ],
       "source": {
@@ -6846,14 +6878,15 @@
           "_legacy_id": "000004066"
         },
         {
-          "datasheet_id": "000001045",
+          "datasheet_id": "",
           "datasheet_name": "Death Guard Possessed",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Possessed",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000001045"
         }
       ],
       "source": {
@@ -6960,14 +6993,15 @@
           "_legacy_id": "000000939"
         },
         {
-          "datasheet_id": "000004072",
+          "datasheet_id": "",
           "datasheet_name": "Sorcerer In Terminator Armour",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Sorcerer In Terminator Armour",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004072"
         },
         {
           "datasheet_id": "2f7ff89c-5b62-4a81-9b9d-9cb680871acb",
@@ -7029,14 +7063,15 @@
           "_legacy_id": "000001114"
         },
         {
-          "datasheet_id": "000004106",
+          "datasheet_id": "",
           "datasheet_name": "Bloodletters",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Bloodletters",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004106"
         }
       ],
       "source": {
@@ -7069,14 +7104,15 @@
           "_legacy_id": "000001132"
         },
         {
-          "datasheet_id": "000004113",
+          "datasheet_id": "",
           "datasheet_name": "Plaguebearers",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Plaguebearers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004113"
         }
       ],
       "source": {
@@ -7109,14 +7145,15 @@
           "_legacy_id": "000000946"
         },
         {
-          "datasheet_id": "000003713",
+          "datasheet_id": "",
           "datasheet_name": "Cultist Mob with Firearms",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Chaos Cultists",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000003713"
         },
         {
           "datasheet_id": "bf8b6130-d968-4660-9228-a4086983349d",
@@ -7130,14 +7167,15 @@
           "_legacy_id": "000003849"
         },
         {
-          "datasheet_id": "000003850",
+          "datasheet_id": "",
           "datasheet_name": "Cultist Mob with Firearms",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Chaos Cultists",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003850"
         },
         {
           "datasheet_id": "bf8b6130-d968-4660-9228-a4086983349d",
@@ -7151,14 +7189,15 @@
           "_legacy_id": "000004050"
         },
         {
-          "datasheet_id": "000004051",
+          "datasheet_id": "",
           "datasheet_name": "Cultist Mob with Firearms",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Chaos Cultists",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004051"
         }
       ],
       "source": {
@@ -9602,24 +9641,26 @@
           "_legacy_id": "000004196"
         },
         {
-          "datasheet_id": "000000633",
+          "datasheet_id": "",
           "datasheet_name": "Corsair Skyreaver Band",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Corsair Skyreavers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000633"
         },
         {
-          "datasheet_id": "000000632",
+          "datasheet_id": "",
           "datasheet_name": "Corsair Reaver Band",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Corsair Reavers",
           "confidence": 0.903,
           "match_method": "fuzzy",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000632"
         },
         {
           "datasheet_id": "abbfd108-e443-4168-acbd-034c8ba605c7",
@@ -9633,14 +9674,15 @@
           "_legacy_id": "000004199"
         },
         {
-          "datasheet_id": "000004172",
+          "datasheet_id": "",
           "datasheet_name": "Corsair Skyreaver Band",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Corsair Skyreavers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004172"
         }
       ],
       "source": {
@@ -9744,14 +9786,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000605",
+          "datasheet_id": "",
           "datasheet_name": "Vypers",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Vypers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000605"
         }
       ],
       "source": {
@@ -9845,14 +9888,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000002302",
+          "datasheet_id": "",
           "datasheet_name": "Deathwing Command Squad",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Deathwing Command Squad",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002302"
         }
       ],
       "source": {
@@ -10407,14 +10451,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000001045",
+          "datasheet_id": "",
           "datasheet_name": "Death Guard Possessed",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Possessed",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001045"
         },
         {
           "datasheet_id": "6360d229-e164-4799-9186-eb92e24ec9a1",
@@ -10532,14 +10577,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000004113",
+          "datasheet_id": "",
           "datasheet_name": "Plaguebearers",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Plaguebearers",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000004113"
         },
         {
           "datasheet_id": "fca72699-9adc-4144-baf5-055aeee0475f",
@@ -10583,14 +10629,15 @@
           "_legacy_id": "000000946"
         },
         {
-          "datasheet_id": "000003713",
+          "datasheet_id": "",
           "datasheet_name": "Cultist Mob with Firearms",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Chaos Cultists",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003713"
         },
         {
           "datasheet_id": "bf8b6130-d968-4660-9228-a4086983349d",
@@ -10604,14 +10651,15 @@
           "_legacy_id": "000003849"
         },
         {
-          "datasheet_id": "000003850",
+          "datasheet_id": "",
           "datasheet_name": "Cultist Mob with Firearms",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Chaos Cultists",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003850"
         },
         {
           "datasheet_id": "bf8b6130-d968-4660-9228-a4086983349d",
@@ -11314,24 +11362,26 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000003875",
+          "datasheet_id": "",
           "datasheet_name": "Kill Team Cassius",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Kill Team Cassius",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000003875"
         },
         {
-          "datasheet_id": "000003821",
+          "datasheet_id": "",
           "datasheet_name": "Kill Team Cassius",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Kill Team Cassius",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003821"
         }
       ],
       "source": {
@@ -13045,14 +13095,15 @@
           "_legacy_id": "000000400"
         },
         {
-          "datasheet_id": "000000120",
+          "datasheet_id": "",
           "datasheet_name": "Venerable Dreadnought (Legendary)",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Venerable Dreadnought (Legendary)",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000000120"
         },
         {
           "datasheet_id": "f0cad002-36f8-4d07-82ba-0d49e4ae2104",
@@ -15476,14 +15527,15 @@
           "_legacy_id": "000002115"
         },
         {
-          "datasheet_id": "000000558",
+          "datasheet_id": "",
           "datasheet_name": "Canoptek Tomb Stalker",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Canoptek Tomb Stalker",
           "confidence": 0.878,
           "match_method": "fuzzy",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000558"
         }
       ],
       "source": {
@@ -17357,14 +17409,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000003709",
+          "datasheet_id": "",
           "datasheet_name": "Ufthak Blackhawk",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Ufthak Blackhawk",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000003709"
         }
       ],
       "source": {
@@ -17416,14 +17469,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000001993",
+          "datasheet_id": "",
           "datasheet_name": "Da Red Gobbo",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Da Red Gobbo",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001993"
         }
       ],
       "source": {
@@ -17823,14 +17877,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000137",
+          "datasheet_id": "",
           "datasheet_name": "Scout Bike Squad",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Scout Bikers",
           "confidence": 0.952,
           "match_method": "fuzzy",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000137"
         }
       ],
       "source": {
@@ -17852,14 +17907,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000002706",
+          "datasheet_id": "",
           "datasheet_name": "Ironclad Dreadnought",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Ironclad Dreadnought",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002706"
         }
       ],
       "source": {
@@ -17881,14 +17937,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000132",
+          "datasheet_id": "",
           "datasheet_name": "Land Speeder Storm",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Land Speeder Storm",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000132"
         }
       ],
       "source": {
@@ -17910,14 +17967,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000120",
+          "datasheet_id": "",
           "datasheet_name": "Venerable Dreadnought (Legendary)",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Venerable Dreadnought (Legendary)",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000120"
         },
         {
           "datasheet_id": "f0cad002-36f8-4d07-82ba-0d49e4ae2104",
@@ -18103,14 +18161,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000146",
+          "datasheet_id": "",
           "datasheet_name": "Hunter",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Hunter",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000146"
         }
       ],
       "source": {
@@ -18244,14 +18303,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000002258",
+          "datasheet_id": "",
           "datasheet_name": "Stalker",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Stalker",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002258"
         }
       ],
       "source": {
@@ -18295,14 +18355,15 @@
           "_legacy_id": "000004137"
         },
         {
-          "datasheet_id": "000001154",
+          "datasheet_id": "",
           "datasheet_name": "Vanguard Veteran Squad",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Vanguard Veteran Squad",
           "confidence": 0.87,
           "match_method": "fuzzy",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001154"
         }
       ],
       "source": {
@@ -18354,14 +18415,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000001154",
+          "datasheet_id": "",
           "datasheet_name": "Vanguard Veteran Squad",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Vanguard Veteran Squad",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001154"
         },
         {
           "datasheet_id": "00b5af06-1b59-463a-80c9-1e064372fca0",
@@ -18405,14 +18467,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000061",
+          "datasheet_id": "",
           "datasheet_name": "Assault Squad",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Assault Squad",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000061"
         }
       ],
       "source": {
@@ -18566,14 +18629,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000002103",
+          "datasheet_id": "",
           "datasheet_name": "Command Squad",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Command Squad",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002103"
         }
       ],
       "source": {
@@ -18809,14 +18873,15 @@
           "_legacy_id": "000002775"
         },
         {
-          "datasheet_id": "000000095",
+          "datasheet_id": "",
           "datasheet_name": "Ultramarines Honour Guard",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Ancient",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000095"
         },
         {
           "datasheet_id": "fe69f0c0-d8c6-465d-8a88-6d453b5c5af5",
@@ -19098,14 +19163,15 @@
           "_legacy_id": "000002773"
         },
         {
-          "datasheet_id": "000002103",
+          "datasheet_id": "",
           "datasheet_name": "Command Squad",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Apothecary",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002103"
         }
       ],
       "source": {
@@ -19992,14 +20058,15 @@
           "_legacy_id": "000000094"
         },
         {
-          "datasheet_id": "000002702",
+          "datasheet_id": "",
           "datasheet_name": "Captain on Bike",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Captain on Bike",
           "confidence": 0.903,
           "match_method": "fuzzy",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002702"
         },
         {
           "datasheet_id": "aee9c464-e423-4637-91c1-9bb2f3d20f55",
@@ -20617,14 +20684,15 @@
           "_legacy_id": "000004137"
         },
         {
-          "datasheet_id": "000001154",
+          "datasheet_id": "",
           "datasheet_name": "Vanguard Veteran Squad",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Vanguard Veteran Squad",
           "confidence": 0.87,
           "match_method": "fuzzy",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001154"
         }
       ],
       "source": {
@@ -21294,14 +21362,15 @@
           "_legacy_id": "000002775"
         },
         {
-          "datasheet_id": "000000095",
+          "datasheet_id": "",
           "datasheet_name": "Ultramarines Honour Guard",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Ancient",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000095"
         },
         {
           "datasheet_id": "fe69f0c0-d8c6-465d-8a88-6d453b5c5af5",
@@ -21547,14 +21616,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000001154",
+          "datasheet_id": "",
           "datasheet_name": "Vanguard Veteran Squad",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Vanguard Veterans",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001154"
         }
       ],
       "source": {
@@ -21636,14 +21706,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000315",
+          "datasheet_id": "",
           "datasheet_name": "Wolf Guard",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Wolf Guard",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000315"
         }
       ],
       "source": {
@@ -21773,14 +21844,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000325",
+          "datasheet_id": "",
           "datasheet_name": "Stormfang Gunship",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Stormfang Gunship",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000325"
         }
       ],
       "source": {
@@ -21802,14 +21874,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000321",
+          "datasheet_id": "",
           "datasheet_name": "Stormwolf",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Stormwolf",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000321"
         }
       ],
       "source": {
@@ -21861,14 +21934,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000283",
+          "datasheet_id": "",
           "datasheet_name": "Logan Grimnar On Stormrider",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Logan Grimnar On Stormrider",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000283"
         }
       ],
       "source": {
@@ -22123,14 +22197,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000002806",
+          "datasheet_id": "",
           "datasheet_name": "Hounds Of Morkai",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Hounds Of Morkai",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002806"
         }
       ],
       "source": {
@@ -22769,14 +22844,15 @@
           "_legacy_id": "000002799"
         },
         {
-          "datasheet_id": "000004154",
+          "datasheet_id": "",
           "datasheet_name": "Crusader Squad (Legendary)",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Crusader Squad (Legendary)",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000004154"
         }
       ],
       "source": {
@@ -22900,14 +22976,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000448",
+          "datasheet_id": "",
           "datasheet_name": "Tx42 Piranha",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Tx42 Piranha",
           "confidence": 0.957,
           "match_method": "fuzzy",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000448"
         }
       ],
       "source": {
@@ -23277,14 +23354,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000403",
+          "datasheet_id": "",
           "datasheet_name": "Tactical Drones",
           "faction_id": "unresolved",
           "matched_from": "datasheet",
           "matched_name": "Tactical Drones",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000403"
         }
       ],
       "source": {
@@ -26079,14 +26157,15 @@
           "_legacy_id": "000001142"
         },
         {
-          "datasheet_id": "000004095",
+          "datasheet_id": "",
           "datasheet_name": "Daemonettes",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Daemonettes",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004095"
         }
       ],
       "source": {
@@ -26121,14 +26200,15 @@
           "_legacy_id": "000000938"
         },
         {
-          "datasheet_id": "000004068",
+          "datasheet_id": "",
           "datasheet_name": "Sorcerer",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Sorcerer",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004068"
         },
         {
           "datasheet_id": "adc61f9c-f4d7-45f0-bd90-7bce5068edc8",
@@ -26174,24 +26254,26 @@
       ],
       "datasheet_links": [
         {
-          "datasheet_id": "000000746",
+          "datasheet_id": "",
           "datasheet_name": "Heavy Quad Launcher Team",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Heavy Quad Launcher Team",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000746"
         },
         {
-          "datasheet_id": "000004010",
+          "datasheet_id": "",
           "datasheet_name": "Heavy Quad Launcher Team",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Heavy Quad Launcher Team",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000004010"
         }
       ],
       "source": {
@@ -26379,14 +26461,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000000955",
+          "datasheet_id": "",
           "datasheet_name": "Mutilators (Legendary)",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Mutilators",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000000955"
         }
       ],
       "source": {
@@ -26566,54 +26649,59 @@
       ],
       "datasheet_links": [
         {
-          "datasheet_id": "000001666",
+          "datasheet_id": "",
           "datasheet_name": "Falchion",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Falchion",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000001666"
         },
         {
-          "datasheet_id": "000003690",
+          "datasheet_id": "",
           "datasheet_name": "Falchion",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Falchion",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003690"
         },
         {
-          "datasheet_id": "000003688",
+          "datasheet_id": "",
           "datasheet_name": "Falchion",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Falchion",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003688"
         },
         {
-          "datasheet_id": "000003687",
+          "datasheet_id": "",
           "datasheet_name": "Falchion",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Falchion",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003687"
         },
         {
-          "datasheet_id": "000003689",
+          "datasheet_id": "",
           "datasheet_name": "Falchion",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Falchion",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003689"
         }
       ],
       "source": {
@@ -26637,54 +26725,59 @@
       ],
       "datasheet_links": [
         {
-          "datasheet_id": "000002252",
+          "datasheet_id": "",
           "datasheet_name": "Spartan",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Spartan Prometheus Assault Tank",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000002252"
         },
         {
-          "datasheet_id": "000003622",
+          "datasheet_id": "",
           "datasheet_name": "Spartan",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Spartan Prometheus Assault Tank",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003622"
         },
         {
-          "datasheet_id": "000003620",
+          "datasheet_id": "",
           "datasheet_name": "Spartan",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Spartan Prometheus Assault Tank",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003620"
         },
         {
-          "datasheet_id": "000003619",
+          "datasheet_id": "",
           "datasheet_name": "Spartan",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Spartan Prometheus Assault Tank",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003619"
         },
         {
-          "datasheet_id": "000003621",
+          "datasheet_id": "",
           "datasheet_name": "Spartan",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Spartan Prometheus Assault Tank",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000003621"
         }
       ],
       "source": {
@@ -27298,14 +27391,15 @@
       "flags": [],
       "datasheet_links": [
         {
-          "datasheet_id": "000004204",
+          "datasheet_id": "",
           "datasheet_name": "Ferren Areios",
           "faction_id": "unresolved",
           "matched_from": "manual",
           "matched_name": "Ferren Areios",
           "confidence": 1.0,
           "match_method": "manual",
-          "cross_faction": false
+          "cross_faction": false,
+          "_legacy_id": "000004204"
         }
       ],
       "source": {
@@ -28195,14 +28289,15 @@
           "_legacy_id": "000004066"
         },
         {
-          "datasheet_id": "000001045",
+          "datasheet_id": "",
           "datasheet_name": "Death Guard Possessed",
           "faction_id": "unresolved",
           "matched_from": "composition",
           "matched_name": "Possessed",
           "confidence": 1.0,
           "match_method": "exact",
-          "cross_faction": true
+          "cross_faction": true,
+          "_legacy_id": "000001045"
         }
       ],
       "source": {
