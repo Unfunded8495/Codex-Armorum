@@ -235,6 +235,21 @@ def init_db():
             sort_order INTEGER DEFAULT 0,
             multikit_group TEXT DEFAULT NULL)""")
 
+        # Quarantine for dangling rules references: a row whose stored id no
+        # longer resolves and cannot be nulled in place (PK / NOT NULL columns)
+        # is moved here in full rather than deleted, so the user's painting
+        # state / notes survive and the orphan stays visibly "needs review".
+        # Populated both backward (scripts/remediate_dangling_refs.py cleaning
+        # today's residue) and forward (the next migration's unresolved ids).
+        c.execute("""CREATE TABLE IF NOT EXISTS quarantined_refs(
+            id TEXT PRIMARY KEY,
+            source_location TEXT NOT NULL,
+            dead_id TEXT NOT NULL,
+            recovered_name TEXT DEFAULT '',
+            row_json TEXT NOT NULL,
+            reason TEXT DEFAULT '',
+            quarantined_at REAL NOT NULL)""")
+
         # Migration: add multikit_group to existing tables
         if _table_exists(c, "custom_box_set_contents") and \
                 "multikit_group" not in _columns(c, "custom_box_set_contents"):

@@ -19,6 +19,14 @@ data/w40k/w40k.db
 # Generated migration report
 data/migration_app40k_report.json
 
+# Catalogue integrity tooling: generated reports + pre-remediation backups.
+# The committed gate reference is data/datasheet_gaps_baseline.json.
+data/remediation_report.json
+data/datasheet_gaps.json
+data/datasheet_gaps.csv
+data/model_catalogue_manual.json.pre-remediate
+data/model_catalogue_resolutions.json.pre-remediate
+
 # Throwaway copies of collection.db used to test the migration end-to-end
 # (created by setting COLLECTION_DB_PATH=data/_migration_test/collection.db).
 data/_migration_test/

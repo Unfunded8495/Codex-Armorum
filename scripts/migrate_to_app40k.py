@@ -35,7 +35,9 @@ import re
 import shutil
 import sqlite3
 import sys
+import time
 import unicodedata
+import uuid
 from collections import defaultdict
 from difflib import SequenceMatcher
 
@@ -502,7 +504,12 @@ def main():
     def _translate_did(old):
         if not old or _is_cat(old) or _is_uuid(old):
             return old
-        return datasheet_id_map.get(old, old)
+        # Forward hardening: an id we cannot translate is NOT kept. The old
+        # keep-old fallback (`.get(old, old)`) is exactly what left dead ids
+        # silently in the data; return None so the caller quarantines or blanks
+        # it. scripts/remediate_dangling_refs.py applies the same policy
+        # backward, and find_datasheet_gaps.py --verify gates on the residue.
+        return datasheet_id_map.get(old)
 
     def _translate_fac(old):
         return faction_id_map.get(old, old)
@@ -539,6 +546,34 @@ def main():
             (rowid,)).fetchone()
         return {c: row[c] for c in col_names} if row else None
 
+    # Forward-hardening quarantine: the same table the backward remediation
+    # uses. An unresolved id is moved aside (nullable column -> NULL; NOT NULL /
+    # PK column -> whole row to quarantined_refs, then deleted) rather than kept,
+    # so the verifier's check (A) stays at zero after a migration too.
+    coll.execute("""CREATE TABLE IF NOT EXISTS quarantined_refs(
+        id TEXT PRIMARY KEY, source_location TEXT NOT NULL, dead_id TEXT NOT NULL,
+        recovered_name TEXT DEFAULT '', row_json TEXT NOT NULL, reason TEXT DEFAULT '',
+        quarantined_at REAL NOT NULL)""")
+    import catalogue_id_locations as _R
+    _nullable_col = {(loc.table, loc.column): loc.nullable
+                     for loc in _R.sqlite_locations()}
+    unresolved_quarantine = {"count": 0}
+
+    def _quarantine_unresolved(tbl, col, rowid, old):
+        if _nullable_col.get((tbl, col), True):
+            coll.execute(f"UPDATE {tbl} SET {col}=NULL WHERE rowid=?", (rowid,))
+        else:
+            payload = _row_to_dict(tbl, rowid)
+            coll.execute(
+                "INSERT INTO quarantined_refs(id, source_location, dead_id, "
+                "recovered_name, row_json, reason, quarantined_at) "
+                "VALUES(?,?,?,?,?,?,?)",
+                (uuid.uuid4().hex, f"{tbl}.{col}", old, "",
+                 json.dumps(payload, ensure_ascii=False),
+                 "unresolved on migration", time.time()))
+            coll.execute(f"DELETE FROM {tbl} WHERE rowid=?", (rowid,))
+        unresolved_quarantine["count"] += 1
+
     # ---- rewrite each table ----
     coll.execute("BEGIN")
     try:
@@ -559,6 +594,9 @@ def main():
                 for r in rows:
                     new = _translate_did(r[col])
                     if new == r[col]:
+                        continue
+                    if new is None:
+                        _quarantine_unresolved(tbl, col, r["rowid"], r[col])
                         continue
                     try:
                         coll.execute(
@@ -633,7 +671,7 @@ def main():
                 new = _translate_did(old)
                 if new != old:
                     link["_legacy_id"] = old
-                    link["datasheet_id"] = new
+                    link["datasheet_id"] = new or ""  # unresolved -> blank, not kept
                     modified = True
         if modified:
             with open(MANUAL_JSON, "w", encoding="utf-8") as fh:
@@ -660,6 +698,7 @@ def main():
                     orphans[f"{tbl}.{col}"] += 1
 
     plan["orphans"] = dict(orphans)
+    plan["unresolved_quarantined"] = unresolved_quarantine["count"]
     plan["collision_collapses"] = collision_collapses
     plan["collision_collapses_dropped"] = collision_collapses_dropped
     with open(REPORT_PATH, "w", encoding="utf-8") as fh:

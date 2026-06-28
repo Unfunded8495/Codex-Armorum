@@ -20,6 +20,7 @@ import os
 import re
 import time
 
+import catalogue_links as cl
 import factions_theme as ft
 
 
@@ -181,15 +182,9 @@ def catalogue_payload():
         cid = record.get("id")
         resolution = resolutions.get(cid, {})
         action = resolution.get("action", "")
-        if action in {"exclude", "mark_accessory", "mark_box_product"}:
+        if cl.is_render_excluded(resolution):
             continue
-
-        if action in {"link_datasheet", "link_multiple_datasheets"}:
-            link_ids = resolution.get("datasheet_ids", [])
-        elif action == "no_current_datasheet":
-            link_ids = []
-        else:
-            link_ids = [l["datasheet_id"] for l in record.get("datasheet_links", []) if l.get("datasheet_id")]
+        link_ids = cl.effective_link_ids(record, resolution)
 
         links = []
         linked_factions = set()
@@ -474,16 +469,9 @@ def _catalogue_models_by_datasheet():
         if not cid or cid in seen:
             continue
         resolution = resolutions.get(cid, {})
-        action = resolution.get("action", "")
-        if action in {"exclude", "mark_accessory", "mark_box_product"}:
+        if cl.is_render_excluded(resolution):
             continue
-        if action in {"link_datasheet", "link_multiple_datasheets"}:
-            link_ids = resolution.get("datasheet_ids", [])
-        elif action == "no_current_datasheet":
-            link_ids = []
-        else:
-            link_ids = [lnk["datasheet_id"] for lnk in r.get("datasheet_links", [])
-                        if lnk.get("datasheet_id")]
+        link_ids = cl.effective_link_ids(r, resolution)
         seen.add(cid)
         img_path = catalogue_image_path(cid)
         entry = {
@@ -531,14 +519,11 @@ def catalogue_faction_datasheet_index():
         if not cid:
             continue
         resolution = resolutions.get(cid, {})
-        action = resolution.get("action", "")
-        if action in {"exclude", "mark_accessory", "mark_box_product", "no_current_datasheet"}:
+        if cl.is_render_excluded(resolution):
             continue
-        if action in {"link_datasheet", "link_multiple_datasheets"}:
-            link_ids = resolution.get("datasheet_ids", [])
-        else:
-            link_ids = [lnk["datasheet_id"] for lnk in r.get("datasheet_links", [])
-                        if lnk.get("datasheet_id")]
+        # no_current_datasheet yields [] here, so fac_map stays empty and the
+        # record contributes no entry - same outcome as the old explicit skip.
+        link_ids = cl.effective_link_ids(r, resolution)
 
         fac_map = {}
         for did in link_ids:

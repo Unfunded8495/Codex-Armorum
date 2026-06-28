@@ -798,11 +798,14 @@ def api_upload_mini_photos(mid):
             with open(path, "wb") as fh:
                 fh.write(blob)
             written_paths.append(path)
-            db_rows.append((pid, mid, did, fname, "", time.time()))
+            db_rows.append((pid, mid, fname, "", time.time()))
             saved.append({"id": pid, "url": f"/uploads/{fname}", "caption": ""})
         with db() as c:
-            c.executemany("""INSERT INTO photos(id, mini_id, datasheet_id, filename, caption, uploaded_at)
-                             VALUES(?,?,?,?,?,?)""", db_rows)
+            # datasheet_id is intentionally not written: the column is retired
+            # (write-only, every read is by mini_id). The DROP COLUMN lives in
+            # scripts/remediate_dangling_refs.py.
+            c.executemany("""INSERT INTO photos(id, mini_id, filename, caption, uploaded_at)
+                             VALUES(?,?,?,?,?)""", db_rows)
     except Exception:
         for path in written_paths:
             try:
