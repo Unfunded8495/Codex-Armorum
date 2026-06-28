@@ -86,7 +86,7 @@ export async function showMiniPage(did){
   const rep = mpMinis[0];
   setBreadcrumb([
     {label:'My Armies', href:'#/'},
-    {label:rep.faction_name, href:`#/faction/${rep.faction_id}`},
+    {label:rep.faction_display_name || rep.faction_name, href:`#/faction/${rep.faction_id}`},
     {label:rep.datasheet_name},
   ]);
 
@@ -130,7 +130,8 @@ function mpRenderPage(){
   const name    = mpUnit?.name   || rep.datasheet_name;
   const role    = mpUnit?.role   || '';
   const legend  = mpUnit?.legend || '';
-  const faction = mpUnit?.faction_name || rep.faction_name;
+  const faction = mpUnit?.faction_display_name || mpUnit?.faction_name
+                || rep.faction_display_name || rep.faction_name;
 
   view.innerHTML = `
     <div class="detail-wrap mp-page">
@@ -1040,7 +1041,7 @@ function mpShowMultikitModal(options, onPick){
         ${options.map(o=>`
           <button class="mmk-opt" data-did="${esc(o.datasheet_id)}">
             <span class="mmk-opt-name">${esc(o.name)}</span>
-            <span class="mmk-opt-faction">${esc(o.faction_name)}</span>
+            <span class="mmk-opt-faction">${esc(o.faction_display_name || o.faction_name)}</span>
           </button>`).join('')}
       </div>
       <button class="btn-ghost mmk-cancel">Cancel</button>
@@ -1066,7 +1067,7 @@ function mpCatRenderCard(item){
     style = ` style="--cardarmy:${faction.primary};--cardaccent:${faction.accent};--cardglow:${faction.accent}"`;
     mark = faction.icon_url
       ? `<div class="faction-bg-mark catalogue-card-mark" aria-hidden="true"><img src="${esc(faction.icon_url)}" alt="" loading="lazy"></div>`
-      : `<div class="faction-bg-mark catalogue-card-mark" aria-hidden="true"><span class="faction-bg-letter">${esc((faction.name||'?')[0])}</span></div>`;
+      : `<div class="faction-bg-mark catalogue-card-mark" aria-hidden="true"><span class="faction-bg-letter">${esc(((faction.display_name||faction.name)||'?')[0])}</span></div>`;
   }
   const date = item.release_date || item.release_year || 'date unknown';
   const links = item.datasheet_links || [];
@@ -1096,7 +1097,7 @@ function mpCatRenderCard(item){
       <div class="catalogue-card-head">
         <div>
           <h4><span class="catalogue-name-text">${esc(item.name)}</span></h4>
-          <p class="catalogue-meta">${esc(item.faction_label)} · ${esc(date)} · ${esc(item.material||'material unknown')}${item.status==='discontinued'?' · <em>Discontinued</em>':''}</p>
+          <p class="catalogue-meta">${esc(item.faction_label_display || item.faction_label)} · ${esc(date)} · ${esc(item.material||'material unknown')}${item.status==='discontinued'?' · <em>Discontinued</em>':''}</p>
         </div>
         <span class="catalogue-year">${esc(item.release_year||'')}</span>
       </div>

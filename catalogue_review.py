@@ -236,10 +236,17 @@ def catalogue_payload():
             factions[fid]["count"] += 1
 
         fo = resolution.get("field_overrides", {})
+        faction_label = canonical_faction_label(record.get("faction_label", ""))
+        # Display label: swap to the faction's common_name when one exists so
+        # the seven renamed factions read by their familiar name (Adeptus
+        # Astartes -> Space Marines etc.). The canonical faction_label above
+        # stays untouched - it remains the catalogue's grouping/join key.
+        faction_label_display = _faction_card_display_name(faction_label) if faction_label else ""
         items.append({
             "id": cid,
             "name": fo.get("name") or resolution.get("name_override") or record.get("name", ""),
-            "faction_label": canonical_faction_label(record.get("faction_label", "")),
+            "faction_label": faction_label,
+            "faction_label_display": faction_label_display or faction_label,
             "faction_id": source_faction,
             "army_ids": sorted(army_ids),
             "release_date": fo.get("release_date", record.get("release_date", "")),
@@ -257,9 +264,14 @@ def catalogue_payload():
         })
 
     for fid, faction in factions.items():
-        name = store.faction_by_id.get(fid, {}).get("name", faction["name"])
+        fac_row = store.faction_by_id.get(fid, {})
+        name = fac_row.get("name", faction["name"])
+        # Theming and the icon resolver stay keyed on the canonical name;
+        # display_name is the user-facing label (common_name when set).
         primary, accent, _ = ft.theme_for(name)
         faction["name"] = name
+        faction["display_name"] = fac_row.get("display_name") or name
+        faction["parent_display_name"] = fac_row.get("parent_display_name") or ""
         faction["primary"] = primary
         faction["accent"] = accent
         faction["icon_url"] = _faction_icon_url(fid, name)
@@ -322,8 +334,19 @@ FACTION_CARD_THEME_ALIASES = {
 
 
 def _faction_card_display_name(label):
-    """Prefix-stripped display name - the same suffix theme_for keys on."""
-    return label.rsplit(" - ", 1)[-1].strip()
+    """User-facing tile name for a canonical faction_label.
+
+    Strips any legacy alignment prefix ("Imperium - ..."), then applies the
+    w40k.db common_name swap (Adeptus Astartes -> Space Marines, Heretic
+    Astartes -> Chaos Space Marines, etc.) so the seven renamed factions read
+    by their familiar name. Theme lookups keep using the canonical name a few
+    lines below so the colour treatment is unchanged."""
+    stripped = label.rsplit(" - ", 1)[-1].strip()
+    from data_store import get_store
+    fac = next((f for f in get_store().factions if f["name"] == stripped), None)
+    if fac and fac.get("display_name"):
+        return fac["display_name"]
+    return stripped
 
 
 def _faction_card_image_url(display_name, label):
@@ -369,7 +392,12 @@ def faction_cards():
     cards = []
     for label, g in groups.items():
         display = _faction_card_display_name(label)
-        theme_key = FACTION_CARD_THEME_ALIASES.get(display, display)
+        # Theming stays keyed on the canonical label so the colour scheme is
+        # unchanged for the seven factions whose display name now reads as
+        # their common name (Adeptus Astartes -> Space Marines, Adeptus
+        # Titanicus -> Titan Legions, etc.).
+        canonical_key = label.rsplit(" - ", 1)[-1].strip()
+        theme_key = FACTION_CARD_THEME_ALIASES.get(canonical_key, canonical_key)
         primary, accent, glyph = ft.theme_for(theme_key)
         years = g["years"]
         cards.append({

@@ -1205,7 +1205,7 @@ function _renderCatalogueResult(u){
         data-add-label="${esc(u.display_label||u.catalogue_label||u.name)}"
         data-add-faction="${esc(u.faction_id||'')}">
         <span>${esc(u.display_label||u.name)}</span>
-        <small>${esc([u.faction_label, 'model only — no datasheet'].filter(Boolean).join(' · '))}</small>
+        <small>${esc([(u.faction_label_display || u.faction_label), 'model only — no datasheet'].filter(Boolean).join(' · '))}</small>
       </button>`;
   }
   if(links.length <= 1){
@@ -1223,7 +1223,7 @@ function _renderCatalogueResult(u){
     <div class="box-unit-group">
       <div class="box-unit-group-head">
         <span>${esc(u.display_label||u.name)}</span>
-        <small>${esc(u.faction_label||'')} · ${links.length} versions — pick one</small>
+        <small>${esc(u.faction_label_display || u.faction_label || '')} · ${links.length} versions — pick one</small>
       </div>
       ${links.map(l=>`
         <button type="button" class="box-unit-sub-result"
@@ -1237,7 +1237,8 @@ function _renderCatalogueResult(u){
 
 function _catalogueResultMeta(item){
   const bits = [];
-  if(item.faction_label) bits.push(item.faction_label);
+  const facLabel = item.faction_label_display || item.faction_label;
+  if(facLabel) bits.push(facLabel);
   const links = item.datasheet_links || [];
   bits.push(links.length === 1 ? links[0].datasheet_name : `${links.length} linked units`);
   return bits.filter(Boolean).join(' · ');

@@ -43,7 +43,7 @@ export async function showUnit(did){
   LRE_OPEN        = null;
   setBreadcrumb([
     {label:'My Armies', href:'#/'},
-    {label:d.faction_name, href:`#/faction/${d.faction_id}`},
+    {label:d.faction_display_name || d.faction_name, href:`#/faction/${d.faction_id}`},
     {label:d.name},
   ]);
 

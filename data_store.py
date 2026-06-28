@@ -153,13 +153,27 @@ class DataStore:
             conn.close()
 
     def _load_factions(self, conn):
+        # `name` is the canonical faction keyword (identity / linking / theming).
+        # `common_name` is the app's user-facing label when one exists (e.g.
+        # "Space Marines" for "Adeptus Astartes"). `display_name` is
+        # common_name when set, else name - always populated, safe to use as a
+        # blanket display label.
         rows = conn.execute(
-            "SELECT id, name, parent_faction FROM faction ORDER BY name"
+            "SELECT id, name, common_name, parent_faction FROM faction "
+            "ORDER BY name"
         ).fetchall()
         for r in rows:
             fid = r["id"]
             self._faction_parent[fid] = r["parent_faction"]
-            faction_dict = {"id": fid, "name": r["name"], "unit_count": 0}
+            common = r["common_name"] or None
+            faction_dict = {
+                "id": fid,
+                "name": r["name"],
+                "common_name": common,
+                "display_name": common or r["name"],
+                "parent_display_name": None,
+                "unit_count": 0,
+            }
             self.factions.append(faction_dict)
             self.faction_by_id[fid] = faction_dict
             self.ds_by_faction[fid] = []
@@ -173,6 +187,9 @@ class DataStore:
                 self._faction_children.setdefault(parent_id, []).append(fid)
                 self.chapters_by_parent.setdefault(parent_id, []).append(fid)
                 self.chapter_faction_ids.add(fid)
+                self.faction_by_id[fid]["parent_display_name"] = (
+                    self.faction_by_id[parent_id].get("display_name") or ""
+                )
 
     def _load_datasheets(self, conn):
         # ---- per-table queries -------------------------------------------------
@@ -797,8 +814,13 @@ class DataStore:
             sheets = self.ds_by_faction.get(f["id"], [])
             if not sheets:
                 continue
-            out.append({"id": f["id"], "name": f["name"],
-                        "unit_count": len(sheets)})
+            out.append({
+                "id": f["id"],
+                "name": f["name"],
+                "display_name": f.get("display_name") or f["name"],
+                "parent_display_name": f.get("parent_display_name") or "",
+                "unit_count": len(sheets),
+            })
         out.sort(key=lambda x: x["name"])
         return out
 
@@ -887,11 +909,14 @@ class DataStore:
             composition = [{"name": d["name"], "min": 1, "max": 1}]
         abilities = d.get("_abilities") or {}
         damaged = abilities.get("damaged") or {}
+        fac = self.faction_by_id.get(d["faction_id"], {})
         return {
             "id":                  d["id"],
             "name":                d["name"],
             "faction_id":          d["faction_id"],
-            "faction_name":        self.faction_by_id.get(d["faction_id"], {}).get("name", ""),
+            "faction_name":        fac.get("name", ""),
+            "faction_display_name": fac.get("display_name") or fac.get("name", ""),
+            "faction_parent_display_name": fac.get("parent_display_name") or "",
             "role":                d.get("role") or "Other",
             "legend":              d.get("legend") or "",
             "loadout":             self.loadout.get(d["id"], ""),

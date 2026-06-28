@@ -35,7 +35,7 @@ async function load(){
 function renderControls(){
   const armyOptions = [
     `<option value="All">All armies (${state.summary.model_count || 0})</option>`,
-    ...state.factions.map(f => `<option value="${esc(f.id)}">${esc(f.name)} (${f.count})</option>`),
+    ...state.factions.map(f => `<option value="${esc(f.id)}">${esc(f.display_name || f.name)} (${f.count})</option>`),
   ];
   document.getElementById('catalogueArmy').innerHTML = armyOptions.join('');
   document.getElementById('catalogueArmy').value = state.army;
@@ -56,6 +56,7 @@ function filteredItems(){
     const hay = [
       item.name,
       item.faction_label,
+      item.faction_label_display,
       item.release_date,
       item.material,
       item.note,
@@ -193,17 +194,28 @@ function focusCatalogueTarget(){
 }
 
 function grouped(items){
+  // Group rows by canonical faction_label so collapsed/expanded state stays
+  // stable, but render the heading with the display label (common_name when
+  // the faction has one).
   const groups = new Map();
   for(const item of items){
     const key = state.army === 'All' ? item.faction_label : armyName(state.army);
-    if(!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(item);
+    const heading = state.army === 'All'
+      ? (item.faction_label_display || item.faction_label)
+      : armyDisplayName(state.army);
+    if(!groups.has(key)) groups.set(key, { heading, rows: [] });
+    groups.get(key).rows.push(item);
   }
-  return [...groups.entries()].map(([name, rows]) => ({ name, rows }));
+  return [...groups.entries()].map(([_, g]) => ({ name: g.heading, rows: g.rows }));
 }
 
 function armyName(fid){
   return state.factions.find(f => f.id === fid)?.name || fid;
+}
+
+function armyDisplayName(fid){
+  const f = state.factions.find(f => f.id === fid);
+  return f?.display_name || f?.name || fid;
 }
 
 function factionForItem(item){
@@ -214,9 +226,10 @@ function factionForItem(item){
 function cardSurfaceForItem(item){
   const faction = factionForItem(item);
   if(!faction) return { cls:'', style:'', mark:'' };
+  const markLetterSource = faction.display_name || faction.name || item.faction_label_display || item.faction_label || '?';
   const mark = faction.icon_url
     ? `<div class="faction-bg-mark catalogue-card-mark" aria-hidden="true"><img src="${esc(faction.icon_url)}" alt="" loading="lazy"></div>`
-    : `<div class="faction-bg-mark catalogue-card-mark" aria-hidden="true"><span class="faction-bg-letter">${esc((faction.name || item.faction_label || '?')[0])}</span></div>`;
+    : `<div class="faction-bg-mark catalogue-card-mark" aria-hidden="true"><span class="faction-bg-letter">${esc(markLetterSource[0])}</span></div>`;
   return {
     cls: ' faction-surface catalogue-faction-card',
     style: ` style="--cardarmy:${faction.primary};--cardaccent:${faction.accent};--cardglow:${faction.accent}"`,
@@ -242,7 +255,7 @@ function renderItem(item){
       <div class="catalogue-card-head">
         <div>
           <h4><span class="catalogue-name-text">${esc(item.name)}</span></h4>
-          <p class="catalogue-meta">${esc(item.faction_label)} · ${esc(date)} · ${esc(item.material || 'material unknown')}${item.status === 'discontinued' ? ' · <em>Discontinued</em>' : ''}</p>
+          <p class="catalogue-meta">${esc(item.faction_label_display || item.faction_label)} · ${esc(date)} · ${esc(item.material || 'material unknown')}${item.status === 'discontinued' ? ' · <em>Discontinued</em>' : ''}</p>
         </div>
         <span class="catalogue-year">${esc(item.release_year || '')}</span>
       </div>
@@ -295,7 +308,7 @@ function openLinkEditor(cid, defaultFid){
   const factionOptions = [
     `<option value="">All factions</option>`,
     ...state.factions.map(f =>
-      `<option value="${esc(f.id)}" ${f.id === ed.factionId ? 'selected' : ''}>${esc(f.name)}</option>`
+      `<option value="${esc(f.id)}" ${f.id === ed.factionId ? 'selected' : ''}>${esc(f.display_name || f.name)}</option>`
     ),
   ].join('');
 
@@ -362,7 +375,7 @@ function renderCfeLinkSection(item, defaultFid){
   const factionOptions = [
     `<option value="">All factions</option>`,
     ...state.factions.map(f =>
-      `<option value="${esc(f.id)}" ${f.id === ed.factionId ? 'selected' : ''}>${esc(f.name)}</option>`
+      `<option value="${esc(f.id)}" ${f.id === ed.factionId ? 'selected' : ''}>${esc(f.display_name || f.name)}</option>`
     ),
   ].join('');
 
@@ -592,7 +605,7 @@ function openFieldEditor(cid, opts = {}){
   const armyOpts = [
     `<option value="">— None —</option>`,
     ...state.factions.map(f =>
-      `<option value="${esc(f.id)}"${f.id === (item.faction_id||'') ? ' selected' : ''}>${esc(f.name)}</option>`
+      `<option value="${esc(f.id)}" data-canonical="${esc(f.name)}"${f.id === (item.faction_id||'') ? ' selected' : ''}>${esc(f.display_name || f.name)}</option>`
     ),
   ].join('');
 
@@ -873,11 +886,14 @@ const addModal = {
 };
 
 function openAddModal(){
-  // Populate faction select from current state
+  // Populate faction select from current state. Show the user-facing
+  // display_name in the option text, but stash the canonical name on a data
+  // attribute - the saved faction_label MUST stay canonical (it's the
+  // catalogue's grouping/join key against model_catalogue_manual.json).
   addModal.fLabel.innerHTML = [
     '<option value="">— None —</option>',
     ...state.factions.map(f =>
-      `<option value="${esc(f.id)}">${esc(f.name)}</option>`
+      `<option value="${esc(f.id)}" data-canonical="${esc(f.name)}">${esc(f.display_name || f.name)}</option>`
     ),
   ].join('');
 
@@ -927,7 +943,9 @@ async function saveNewModel(){
   }
 
   const selectedOpt = addModal.fLabel.options[addModal.fLabel.selectedIndex];
-  const factionLabel = (selectedOpt && addModal.fLabel.value) ? selectedOpt.textContent : '';
+  const factionLabel = (selectedOpt && addModal.fLabel.value)
+    ? (selectedOpt.dataset.canonical || selectedOpt.textContent)
+    : '';
 
   addModal.saveBtn.disabled = true;
   addModal.saveBtn.textContent = 'Saving…';

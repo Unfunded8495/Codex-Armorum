@@ -68,10 +68,12 @@ _ALIGNMENT_WORDS = {"Imperium", "Chaos", "Xenos", "Unaligned"}
 def _faction_display_name(full_name):
     """Strip BSData alignment prefix; return (display_name, group).
 
-    "Xenos - Aeldari"                             → ("Aeldari", "")
-    "Imperium - Adeptus Astartes - Space Marines" → ("Space Marines", "Adeptus Astartes")
-    "Chaos - Emperor's Children"                  → ("Emperor's Children", "")
-    "Aeldari - Ynnari"                            → ("Ynnari", "Aeldari")
+    Legacy compatibility shim from the BSData era when faction names arrived as
+    "Imperium - Adeptus Astartes - Space Marines". The current w40k.db source
+    stores a bare canonical name on each row and surfaces the common name
+    (Space Marines, Chaos Daemons, ...) on the faction dict itself; prefer
+    `_faction_display_pair(fid)` for new code so the swap reads straight from
+    the database.
     """
     parts = [p.strip() for p in full_name.split(" - ")]
     if len(parts) <= 1:
@@ -80,6 +82,21 @@ def _faction_display_name(full_name):
     parent = parts[-2]
     group = "" if parent in _ALIGNMENT_WORDS else parent
     return display, group
+
+
+def _faction_display_pair(fid):
+    """Return (display_name, group) for a faction id from the data store.
+
+    `display_name` is the faction's common_name when set (so Adeptus Astartes
+    reads as Space Marines), else the canonical name. `group` is the parent
+    faction's display name for chapter rows (Blood Angels shows under Space
+    Marines), and empty otherwise. Falls back to the canonical name when the
+    faction id is unknown."""
+    fac = store.faction_by_id.get(fid)
+    if not fac:
+        return "", ""
+    return (fac.get("display_name") or fac.get("name") or ""), (
+        fac.get("parent_display_name") or "")
 
 
 def _box_ref_path(box_id):
@@ -128,17 +145,28 @@ def _faction_icon_url(fid, name):
 
 
 def _resolve_faction_icon(fid, name):
-    """Faction icon URL, parent-aware for chapter cards.
+    """Faction icon URL, common-name and parent aware.
 
-    A chapter card (e.g. Blood Angels) first tries its own chapter name
-    through the icon resolver, then falls back to the parent Space Marines icon.
-    Returns None when neither resolves (the client then renders the tinted
-    faction glyph). No icon files are invented or renamed."""
+    Order: 1) canonical name (the historical match), 2) the faction's
+    common_name when set (so Adeptus Astartes finds Space Marines.svg), 3) the
+    parent's icon for chapter cards (Blood Angels falls back to Space Marines).
+    Returns None when none resolves (the client then renders the tinted faction
+    glyph). No icon files are invented or renamed."""
     raw = _faction_icon_url(fid, name)
+    if not raw:
+        fac = store.faction_by_id.get(fid, {})
+        common = fac.get("common_name") or ""
+        if common and common != name:
+            raw = _faction_icon_url(fid, common)
     if not raw and store.is_chapter_faction(fid):
         parent = store.faction_parent(fid)
-        parent_name = store.faction_by_id.get(parent, {}).get("name", parent)
+        parent_fac = store.faction_by_id.get(parent, {})
+        parent_name = parent_fac.get("name", parent)
         raw = _faction_icon_url(parent, parent_name)
+        if not raw:
+            parent_common = parent_fac.get("common_name") or ""
+            if parent_common and parent_common != parent_name:
+                raw = _faction_icon_url(parent, parent_common)
     return raw
 
 
@@ -277,6 +305,8 @@ def _factions_payload(info=None, owned=None):
             ul_by_faction[fid]            = ul_by_faction.get(fid, 0) + ul_map.get(did, 0)
 
     for f in factions:
+        # Theming is keyed on the canonical name so the seven renamed factions
+        # (Adeptus Astartes -> Space Marines, etc.) still hit their colours.
         primary, accent, _ = ft.theme_for(f["name"])
         f["primary"] = primary
         f["accent"]  = accent
@@ -292,9 +322,13 @@ def _factions_payload(info=None, owned=None):
             f["icon_url"] = f"/api/factions/{quote(f['id'])}/icon"
         else:
             f["icon_url"] = raw_icon
-        dn, group = _faction_display_name(f["name"])
+        dn, group = _faction_display_pair(f["id"])
+        if not dn:
+            dn = f["name"]
         f["display_name"] = dn
         f["group"] = group
+        # Banner lookup tries the display name first (so the renamed factions
+        # find space_marines.jpg etc.) then falls back to the canonical name.
         f["banner_url"] = _faction_card_image_url(dn, f["name"])
         f["initial"] = dn[:1].upper() or "?"
         f["favourite"] = f["id"] in favourites
@@ -407,9 +441,16 @@ def api_faction_units(fid):
             for gkey in info["did_groups"].get(u["id"], [])
         ]
     primary, accent, _ = ft.theme_for(faction["name"])
-    dn, _ = _faction_display_name(faction["name"])
+    dn, group = _faction_display_pair(fid)
     return jsonify({
-        "faction": {"id": fid, "name": faction["name"], "display_name": dn, "primary": primary, "accent": accent},
+        "faction": {
+            "id": fid,
+            "name": faction["name"],
+            "display_name": dn or faction["name"],
+            "parent_display_name": group,
+            "primary": primary,
+            "accent": accent,
+        },
         "units": units,
     })
 
@@ -991,6 +1032,9 @@ def api_list_armies():
                 _enhancement_cost(u["enhancement_id"], r["detachment_id"] or "")
                 for u in units)
             fac = store.faction_by_id.get(r["faction_id"], {})
+            # theme_for keeps reading the canonical name so the colours follow
+            # the seven renamed factions; faction_display_name is the user-facing
+            # label (common_name or canonical).
             primary, accent, _ = ft.theme_for(fac.get("name", ""))
             dt = store.detachment_by_id.get(r["detachment_id"] or "", {})
             out.append({
@@ -998,6 +1042,8 @@ def api_list_armies():
                 "name": r["name"],
                 "faction_id": r["faction_id"],
                 "faction_name": fac.get("name", r["faction_id"]),
+                "faction_display_name": fac.get("display_name") or fac.get("name", r["faction_id"]),
+                "faction_parent_display_name": fac.get("parent_display_name") or "",
                 "icon_url": _faction_icon_url(r["faction_id"], fac.get("name", "")),
                 "detachment_id": r["detachment_id"] or "",
                 "detachment_name": dt.get("name", ""),
@@ -1050,6 +1096,8 @@ def api_get_army(aid):
         "name": row["name"],
         "faction_id": row["faction_id"],
         "faction_name": fac.get("name", row["faction_id"]),
+        "faction_display_name": fac.get("display_name") or fac.get("name", row["faction_id"]),
+        "faction_parent_display_name": fac.get("parent_display_name") or "",
         "icon_url": _faction_icon_url(row["faction_id"], fac.get("name", "")),
         "detachment_id": row["detachment_id"] or "",
         "detachment_name": dt.get("name", ""),
@@ -1423,6 +1471,7 @@ def api_search_model_catalogue():
         searchable = " ".join([
             item.get("name", ""),
             item.get("faction_label", ""),
+            item.get("faction_label_display", ""),
             item.get("release_date", ""),
             item.get("note", ""),
             " ".join(l.get("datasheet_name", "") for l in links),
@@ -1446,6 +1495,7 @@ def api_search_model_catalogue():
             "display_label": _catalogue_display_label(item),
             "catalogue_label": _catalogue_display_label(item),
             "faction_label": item.get("faction_label", ""),
+            "faction_label_display": item.get("faction_label_display", "") or item.get("faction_label", ""),
             "faction_id": item.get("faction_id", ""),
             "army_ids": item.get("army_ids", []),
             "release_date": item.get("release_date", ""),
@@ -1663,6 +1713,7 @@ def _multikit_options_for_group(gkey):
             "name": item.get("name") or ds.get("name", did),
             "faction_id": fid,
             "faction_name": faction.get("name", fid),
+            "faction_display_name": faction.get("display_name") or faction.get("name", fid),
             "catalogue_model_id": item.get("catalogue_model_id"),
             "catalogue_label": item.get("catalogue_label", ""),
         })
@@ -1688,7 +1739,11 @@ def _catalogue_only_collection_entry(r, did, faction_id, datasheet_id, stage_fil
     label = r["label"] or ""
     if search and search not in name.lower() and search not in label.lower():
         return None
-    faction_name = store.faction_by_id.get(fid, {}).get("name", ref.get("faction_label") or fid)
+    faction_row = store.faction_by_id.get(fid, {})
+    faction_name = faction_row.get("name", ref.get("faction_label") or fid)
+    faction_display_name = (
+        faction_row.get("display_name") or faction_name
+    )
     try:
         wg = json.loads(r["wargear"] or "[]")
     except (ValueError, TypeError):
@@ -1699,6 +1754,7 @@ def _catalogue_only_collection_entry(r, did, faction_id, datasheet_id, stage_fil
         "datasheet_name": name,
         "faction_id": fid,
         "faction_name": faction_name,
+        "faction_display_name": faction_display_name,
         "label": label,
         "wargear": wg if isinstance(wg, list) else [],
         "notes": r["notes"] or "",
@@ -1811,7 +1867,9 @@ def api_collection():
             continue
 
         ds_name = display_ds.get("name", option_by_did.get(display_did, {}).get("name", ""))
-        faction_name = store.faction_by_id.get(display_fid, {}).get("name", display_fid)
+        display_fac_row = store.faction_by_id.get(display_fid, {})
+        faction_name = display_fac_row.get("name", display_fid)
+        faction_display_name = display_fac_row.get("display_name") or faction_name
         label = display_label
 
         option_names = " ".join(o["name"] for o in multikit_options).lower()
@@ -1829,6 +1887,7 @@ def api_collection():
             "datasheet_name": ds_name,
             "faction_id": display_fid,
             "faction_name": faction_name,
+            "faction_display_name": faction_display_name,
             "label": label,
             "wargear": wg if isinstance(wg, list) else [],
             "notes": r["notes"] or "",

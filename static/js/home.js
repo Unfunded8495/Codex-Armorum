@@ -509,6 +509,7 @@ export function buildUnitTiles({ fid, minis, units, primary, accent, facMark }){
         datasheet_name: opt.name,
         faction_id: opt.faction_id,
         faction_name: opt.faction_name,
+        faction_display_name: opt.faction_display_name || opt.faction_name,
         is_potential_build: true,
       }, true);
     }

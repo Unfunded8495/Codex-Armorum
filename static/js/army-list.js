@@ -31,12 +31,13 @@ function armyTile(a){
   const pct = a.points_limit>0 ? Math.min(100, Math.round(a.total_points/a.points_limit*100)) : 0;
   const markHtml = a.icon_url
     ? `<img src="${esc(a.icon_url)}" alt="" loading="lazy">`
-    : `<span class="faction-bg-letter">${esc(a.faction_name?.[0]||'?')}</span>`;
+    : `<span class="faction-bg-letter">${esc((a.faction_display_name || a.faction_name)?.[0]||'?')}</span>`;
+  const facLabel = a.faction_display_name || a.faction_name;
   return `<div class="army-tile faction-surface" style="--cardarmy:${a.primary};--cardaccent:${a.accent};--cardglow:${a.accent};--at-accent:${a.accent}" onclick="location.hash='/army/${a.id}'">
     <div class="faction-bg-mark army-tile-mark" aria-hidden="true">${markHtml}</div>
     <button class="army-tile-del" onclick="event.stopPropagation();deleteArmy('${a.id}',this)" title="Delete army">✕</button>
     <div class="army-tile-name">${esc(a.name)}</div>
-    <div class="army-tile-meta">${esc(a.faction_name)}${a.detachment_name?' · '+esc(a.detachment_name):''}</div>
+    <div class="army-tile-meta">${esc(facLabel)}${a.detachment_name?' · '+esc(a.detachment_name):''}</div>
     <div class="army-tile-pts">
       <b>${a.total_points}</b> / ${a.points_limit} pts · ${a.unit_count} unit${a.unit_count===1?'':'s'}
     </div>

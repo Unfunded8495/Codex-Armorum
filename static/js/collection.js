@@ -69,7 +69,7 @@ function renderStats(minis, factions){
   // Faction breakdown
   const byFaction = new Map();
   for(const m of minis){
-    if(!byFaction.has(m.faction_id)) byFaction.set(m.faction_id, {name:m.faction_name, total:0, done:0});
+    if(!byFaction.has(m.faction_id)) byFaction.set(m.faction_id, {name:m.faction_display_name || m.faction_name, total:0, done:0});
     const f = byFaction.get(m.faction_id);
     f.total++;
     if(m.stage==='finished'||m.stage==='display') f.done++;
