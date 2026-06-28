@@ -39,6 +39,19 @@ detachment_faction       stratagem
 detachment_rule
 ```
 
+**Faction membership respects exclusions.** `data_store.py` derives membership solely
+from `datasheet_faction` (no keyword inference, no cached mirror, no Wahapedia remnant).
+The exporter applies the source `faction_keyword_excluded_datasheet` table at the
+membership step, so a unit that carries a faction keyword but is barred from that faction
+is simply absent from `datasheet_faction`, and the faction grid inherits the correction
+with no Codex change. Example: Sir Hekhtur is no longer listed under Imperial Knights. A
+datasheet left with no membership at all (currently Sir Hekhtur and Maggot Lords Plague
+Marines) is skipped at load unless a `PRIMARY_FACTION_OVERRIDES` rule reassigns it.
+
+**Allied factions are exported but not read.** A re-export also ships the allied-faction
+tables and reference files; nothing in Codex queries them yet. See "Allied factions
+(exported, not yet consumed)" below.
+
 **No persistent rules tables.** `w40k.db` is queried directly on app start; nothing in
 `collection.db` mirrors it. The cleanup script `scripts/cleanup_post_app40k.py` drops the
 retired `catalogue_*` and `mfm_*` tables from existing databases.
@@ -51,6 +64,38 @@ retired `catalogue_*` and `mfm_*` tables from existing databases.
 **Migration rule:** the rules data is sourced entirely from `data/w40k/w40k.db`. Replace
 that file with a newer snapshot (or re-export via the bundled `scripts/w40k_exporter/`)
 and restart the app.
+
+---
+
+## Allied factions (exported, not yet consumed)
+
+A re-export of `w40k.db` (still `data_version: 886`, exporter run with `--sqlite` or
+`--only-sqlite`) now carries the allied-faction allowances. Codex does not read any of
+this yet: it is available surface, currently unused.
+
+**Tables (in `w40k.db`):**
+
+| Table | Rows | Key | Answers |
+|---|---|---|---|
+| `allied_faction` | 21 | `id` | one row per allowance; `ally_factions` / `host_factions` JSON name lists, the boolean flags (`can_take_enhancements`, `is_sibling_faction`, `replaces_roster_keyword`, `mutually_exclusive_keyword_limit`), and JSON `datasheets` / `keyword_limits` / `points_limits` / `required_detachments` |
+| `allied_faction_host` | 87 | `host_faction_id` to `faction.id` | "what can faction X ally" |
+| `allied_faction_datasheet` | 320 | `datasheet_id` to `datasheet.id` | "which units does that ally bring" |
+
+Indexes `idx_afhost_host` and `idx_afds_ds`. Reference files:
+`_reference/allied_factions.json` (clean, no internal ids) and
+`_reference/allied_factions.csv` (flattened).
+
+**Smallest change to surface it (if wanted):** an "Allies" panel on the faction page.
+One query joins `allied_faction_host` to the faction the page is showing to get the
+allowed allies; a second joins `allied_faction_datasheet` (through `allied_faction`) to
+list the units each ally contributes, resolving datasheet ids against
+`data_store.ds_by_id`. This is a read-only addition to `data_store.py` plus a route and
+template; no schema or user-data change.
+
+**Detecting the re-export.** The allied tables are absent from older `w40k.db` snapshots,
+and `data_version` did not bump (still 886), so their presence is the signal that the
+file came from the updated exporter. Verify with
+`SELECT name FROM sqlite_master WHERE name='allied_faction'`.
 
 ---
 
@@ -224,6 +269,11 @@ into `collection.db`. Tables read: `faction`, `datasheet`, `datasheet_faction`, 
 `ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`,
 `detachment_rule`, `enhancement`, `stratagem`.
 
+The file also contains tables Codex does not read, including the allied-faction trio
+(`allied_faction`, `allied_faction_host`, `allied_faction_datasheet`) and the
+rules-reader / FTS tables (`rule_section`, `rule_block`, `rule_reference`, `faq`,
+`datasheet_fts`, ...). These are available for future features.
+
 ### Retired (dropped by `scripts/cleanup_post_app40k.py`)
 
 `catalogue_factions`, `catalogue_units`, `catalogue_weapons`, `catalogue_unit_weapons`,
@@ -258,6 +308,13 @@ into `collection.db`. Tables read: `faction`, `datasheet`, `datasheet_faction`, 
 
 ## Migration history
 
+- **June 2026 (w40k.db re-export: exclusions and allies).** Re-ran the bundled exporter
+  against `base.apk` (still `data_version: 886`). Two schema changes: `datasheet_faction`
+  now respects the source `faction_keyword_excluded_datasheet` table (bad memberships such
+  as Sir Hekhtur under Imperial Knights are gone; the 1142 datasheet total is unchanged),
+  and three allied-faction tables plus `_reference/allied_factions.{json,csv}` were added.
+  `data_store.py` inherits the membership correction automatically; the allied tables are
+  present but unread.
 - **June 2026 (Wahapedia -> w40k.db).** Rules data moved from the Wahapedia CSV import
   (`catalogue_*` tables) and the Munitorum Field Manual overlay (`mfm_*` tables) to a
   read-only SQLite export of the official Warhammer 40,000 mobile app

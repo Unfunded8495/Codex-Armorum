@@ -1,0 +1,1239 @@
+[
+  {
+    "host_factions": [
+      "Adeptus Astartes",
+      "Black Templars",
+      "Agents of the Imperium",
+      "Salamanders",
+      "Deathwatch",
+      "Adeptus Mechanicus",
+      "Adeptus Custodes",
+      "Iron Hands",
+      "Blood Angels",
+      "Raven Guard",
+      "Grey Knights",
+      "Astra Militarum",
+      "White Scars",
+      "Adepta Sororitas",
+      "Ultramarines",
+      "Space Wolves",
+      "Imperial Fists",
+      "Dark Angels",
+      "Adeptus Titanicus"
+    ],
+    "ally_factions": [
+      "Imperial Knights"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": true,
+    "datasheets": [
+      "Knight Valiant",
+      "Armiger Helverin",
+      "Knight Warden",
+      "Knight Paladin",
+      "Questoris Knight Magaera",
+      "Knight Defender",
+      "Armiger Warglaive",
+      "Knight Gallant",
+      "Armiger Moirax",
+      "Canis Rex",
+      "Acastus Knight Porphyrion",
+      "Cerastus Knight Lancer",
+      "Cerastus Knight Castigator",
+      "Knight Errant",
+      "Knight Preceptor",
+      "Cerastus Knight Acheron",
+      "Knight Crusader",
+      "Acastus Knight Asterius",
+      "Cerastus Knight Atrapos",
+      "Questoris Knight Styrix",
+      "Knight Castellan",
+      "Knight Destrier"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Armiger",
+        "limit": 3,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Armiger",
+        "limit": 3,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Armiger",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Adeptus Astartes",
+      "Black Templars",
+      "Agents of the Imperium",
+      "Salamanders",
+      "Deathwatch",
+      "Imperial Knights",
+      "Adeptus Mechanicus",
+      "Adeptus Custodes",
+      "Iron Hands",
+      "Blood Angels",
+      "Raven Guard",
+      "Grey Knights",
+      "Astra Militarum",
+      "White Scars",
+      "Adepta Sororitas",
+      "Ultramarines",
+      "Space Wolves",
+      "Imperial Fists",
+      "Dark Angels"
+    ],
+    "ally_factions": [
+      "Adeptus Titanicus"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": true,
+    "datasheets": [
+      "Warhound Titan",
+      "Warlord Titan",
+      "Reaver Titan",
+      "Warbringer Nemesis Titan"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Reaver Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Warbringer Nemesis Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Warhound Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Warlord Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Warlord Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Warhound Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Warhound Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Warbringer Nemesis Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Reaver Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Warlord Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Warbringer Nemesis Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Reaver Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Adeptus Astartes",
+      "Black Templars",
+      "Salamanders",
+      "Imperial Knights",
+      "Adeptus Mechanicus",
+      "Adeptus Custodes",
+      "Iron Hands",
+      "Blood Angels",
+      "Raven Guard",
+      "Grey Knights",
+      "Astra Militarum",
+      "White Scars",
+      "Adepta Sororitas",
+      "Ultramarines",
+      "Space Wolves",
+      "Imperial Fists",
+      "Dark Angels",
+      "Adeptus Titanicus"
+    ],
+    "ally_factions": [
+      "Agents of the Imperium"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Watch Master",
+      "Inquisitor Draxus",
+      "Callidus Assassin",
+      "Sanctifiers",
+      "Eversor Assassin",
+      "Sisters of Battle Immolator",
+      "Voidsmen-at-Arms",
+      "Corvus Blackstar",
+      "Imperial Rhino",
+      "Inquisitorial Chimera",
+      "Grey Knights Terminator Squad",
+      "Vindicare Assassin",
+      "Rogue Trader Entourage",
+      "Subductor Squad",
+      "Vigilant Squad",
+      "Sisters of Battle Squad",
+      "Aquila Kill Team",
+      "Inquisitor Greyfax",
+      "Watch Captain Artemis",
+      "Navigator",
+      "Inquisitorial Agents",
+      "Imperial Navy Breachers",
+      "Culexus Assassin",
+      "Inquisitor Coteaz",
+      "Exaction Squad",
+      "Deathwatch Kill Team",
+      "Inquisitor",
+      "Ministorum Priest",
+      "Inquisitor Kroyle"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Character",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Character",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Retinue",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Retinue",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Requisitioned",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Requisitioned",
+        "limit": 2,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Character",
+        "limit": 2,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Retinue",
+        "limit": 2,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Requisitioned",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Asuryani"
+    ],
+    "ally_factions": [
+      "Harlequins"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": true,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Troupe Master",
+      "Skyweavers",
+      "Death Jester",
+      "Shadowseer",
+      "Solitaire",
+      "Starweaver",
+      "Voidweaver",
+      "Troupe"
+    ],
+    "keyword_limits": [],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Asuryani"
+    ],
+    "ally_factions": [
+      "Ynnari"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": true,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Ynnari Venom",
+      "Ynnari Reavers",
+      "Ynnari Kabalite Warriors",
+      "The Yncarne",
+      "The Visarch",
+      "Ynnari Succubus",
+      "Ynnari Archon",
+      "Ynnari Incubi",
+      "Ynnari Raider",
+      "Ynnari Wyches",
+      "Yvraine"
+    ],
+    "keyword_limits": [],
+    "points_limits": [],
+    "required_detachments": [
+      "Devoted of Ynnead"
+    ]
+  },
+  {
+    "host_factions": [
+      "Chaos Knights"
+    ],
+    "ally_factions": [
+      "Heretic Astartes"
+    ],
+    "can_take_enhancements": true,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Accursed Cultists",
+      "Cultist Firebrand",
+      "Cultist Mob",
+      "Dark Commune",
+      "Fellgor Beastmen",
+      "Traitor Enforcer",
+      "Traitor Guardsmen Squad"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Strike Force",
+        "points": 500
+      },
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 500
+      }
+    ],
+    "required_detachments": [
+      "Iconoclast Fiefdom"
+    ]
+  },
+  {
+    "host_factions": [
+      "Chaos Knights",
+      "Heretic Astartes"
+    ],
+    "ally_factions": [
+      "Legiones Daemonica"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Kairos Fateweaver",
+      "Epidemius",
+      "Seekers",
+      "Skarbrand",
+      "Beasts of Nurgle",
+      "Flesh Hounds",
+      "Great Unclean One",
+      "Syll’Esske",
+      "The Masque of Slaanesh",
+      "Shalaxi Helbane",
+      "Feculent Gnarlmaw",
+      "Bloodcrushers",
+      "Karanak",
+      "Bloodmaster",
+      "Fateskimmer",
+      "Pink Horrors",
+      "Skull Cannon",
+      "Keeper of Secrets",
+      "Nurglings",
+      "Changecaster",
+      "Rendmaster on Blood Throne",
+      "Burning Chariot",
+      "Blue Horrors",
+      "Hellflayers",
+      "Screamers",
+      "Tormentbringer",
+      "Daemon Prince of Chaos",
+      "The Changeling",
+      "Spoilpox Scrivener",
+      "Skulltaker",
+      "Fluxmaster",
+      "Tranceweaver",
+      "Fiends",
+      "Soul Grinder",
+      "Flamers",
+      "Horticulous Slimux",
+      "The Blue Scribes",
+      "Rotigus",
+      "Sloppity Bilepiper",
+      "Infernal Enrapturess",
+      "Bloodletters",
+      "Be’lakor",
+      "Exalted Flamer",
+      "Skullmaster",
+      "Contorted Epitome",
+      "Plague Drones",
+      "Lord of Change",
+      "Daemonettes",
+      "Poxbringer",
+      "Daemon Prince of Chaos with Wings",
+      "Plaguebearers",
+      "Skull Altar",
+      "Bloodthirster"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 250
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 500
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 750
+      }
+    ],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Death Guard"
+    ],
+    "ally_factions": [
+      "Plague Legions"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": true,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Plague Drones",
+      "Plaguebearers",
+      "Nurglings",
+      "Beasts of Nurgle",
+      "Rotigus",
+      "Great Unclean One"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Tallyband Summoners"
+    ]
+  },
+  {
+    "host_factions": [
+      "Death Guard",
+      "Thousand Sons",
+      "Chaos Knights",
+      "Legiones Daemonica",
+      "World Eaters",
+      "Emperor’s Children",
+      "Heretic Astartes"
+    ],
+    "ally_factions": [
+      "Titanicus Traitoris"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": true,
+    "datasheets": [
+      "Chaos Warbringer Nemesis Titan",
+      "Chaos Warhound Titan",
+      "Chaos Reaver Titan",
+      "Chaos Warlord Titan"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Warhound Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Warbringer Nemesis Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Warlord Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Warhound Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Reaver Titan",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Reaver Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Warbringer Nemesis Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Reaver Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Warlord Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Warbringer Nemesis Titan",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Warlord Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Warhound Titan",
+        "limit": 1,
+        "battle_size": "Incursion"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Death Guard",
+      "Thousand Sons",
+      "Legiones Daemonica",
+      "Titanicus Traitoris",
+      "World Eaters",
+      "Emperor’s Children",
+      "Heretic Astartes"
+    ],
+    "ally_factions": [
+      "Chaos Knights"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": true,
+    "datasheets": [
+      "Knight Desecrator",
+      "War Dog Executioner",
+      "Chaos Acastus Knight Porphyrion",
+      "War Dog Karnivore",
+      "Chaos Questoris Knight Styrix",
+      "Chaos Questoris Knight Magaera",
+      "Chaos Cerastus Knight Atrapos",
+      "Chaos Cerastus Knight Castigator",
+      "Knight Despoiler",
+      "War Dog Brigand",
+      "Knight Ruinator",
+      "War Dog Stalker",
+      "Knight Abominant",
+      "Chaos Cerastus Knight Acheron",
+      "Chaos Cerastus Knight Lancer",
+      "Knight Rampager",
+      "Chaos Acastus Knight Asterius",
+      "War Dog Moirax",
+      "War Dog Huntsman",
+      "Knight Tyrant"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "War Dog",
+        "limit": 3,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "War Dog",
+        "limit": 3,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Titanic",
+        "limit": 1,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "War Dog",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Deathwatch"
+    ],
+    "ally_factions": [
+      "Agents of the Imperium"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Inquisitor Draxus",
+      "Callidus Assassin",
+      "Sanctifiers",
+      "Eversor Assassin",
+      "Sisters of Battle Immolator",
+      "Voidsmen-at-Arms",
+      "Imperial Rhino",
+      "Inquisitorial Chimera",
+      "Grey Knights Terminator Squad",
+      "Vindicare Assassin",
+      "Rogue Trader Entourage",
+      "Subductor Squad",
+      "Vigilant Squad",
+      "Sisters of Battle Squad",
+      "Inquisitor Greyfax",
+      "Navigator",
+      "Inquisitorial Agents",
+      "Imperial Navy Breachers",
+      "Culexus Assassin",
+      "Inquisitor Coteaz",
+      "Exaction Squad",
+      "Inquisitor",
+      "Ministorum Priest",
+      "Inquisitor Kroyle"
+    ],
+    "keyword_limits": [
+      {
+        "keyword": "Requisitioned",
+        "limit": 2,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Retinue",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Retinue",
+        "limit": 2,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Requisitioned",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Character",
+        "limit": 1,
+        "battle_size": "Incursion"
+      },
+      {
+        "keyword": "Retinue",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Character",
+        "limit": 3,
+        "battle_size": "Onslaught"
+      },
+      {
+        "keyword": "Character",
+        "limit": 2,
+        "battle_size": "Strike Force"
+      },
+      {
+        "keyword": "Requisitioned",
+        "limit": 1,
+        "battle_size": "Strike Force"
+      }
+    ],
+    "points_limits": [],
+    "required_detachments": []
+  },
+  {
+    "host_factions": [
+      "Drukhari"
+    ],
+    "ally_factions": [
+      "Asuryani",
+      "Harlequins"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Kharseth",
+      "Troupe Master",
+      "Skyweavers",
+      "Corsair Voidreavers",
+      "Death Jester",
+      "Shadowseer",
+      "Prince Yriel",
+      "Starfangs",
+      "Solitaire",
+      "Starweaver",
+      "Voidweaver",
+      "Corsair Skyreavers",
+      "Troupe",
+      "Corsair Voidscarred"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 250
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 500
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 750
+      }
+    ],
+    "required_detachments": [
+      "Spectacle of Spite",
+      "Kabalite Cartel",
+      "Skysplinter Assault",
+      "Realspace Raiders",
+      "Covenite Coterie"
+    ]
+  },
+  {
+    "host_factions": [
+      "Drukhari"
+    ],
+    "ally_factions": [
+      "Harlequins"
+    ],
+    "can_take_enhancements": true,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Troupe Master",
+      "Skyweavers",
+      "Death Jester",
+      "Shadowseer",
+      "Solitaire",
+      "Starweaver",
+      "Voidweaver",
+      "Troupe"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Reaper’s Wager"
+    ]
+  },
+  {
+    "host_factions": [
+      "Emperor’s Children"
+    ],
+    "ally_factions": [
+      "Legions of Excess"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": true,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Shalaxi Helbane",
+      "Keeper of Secrets",
+      "Daemonettes",
+      "Seekers",
+      "Fiends"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Carnival of Excess"
+    ]
+  },
+  {
+    "host_factions": [
+      "Genestealer Cults"
+    ],
+    "ally_factions": [
+      "Astra Militarum"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Leman Russ Battle Tank",
+      "Hydra",
+      "Stormlord",
+      "Leman Russ Eradicator",
+      "Kasrkin",
+      "Leman Russ Executioner",
+      "Basilisk",
+      "Deathstrike",
+      "Rogal Dorn Battle Tank",
+      "Hellhammer",
+      "Baneblade",
+      "Krieg Combat Engineers",
+      "Shadowsword",
+      "Cadian Castellan",
+      "Banesword",
+      "Taurox",
+      "Wyvern",
+      "Attilan Rough Riders",
+      "Scout Sentinels",
+      "Catachan Jungle Fighters",
+      "Leman Russ Demolisher",
+      "Artillery Team",
+      "Banehammer",
+      "Death Korps of Krieg",
+      "Doomhammer",
+      "Stormsword",
+      "Catachan Command Squad",
+      "Armoured Sentinels",
+      "Krieg Heavy Weapons Squad",
+      "Death Riders",
+      "Leman Russ Exterminator",
+      "Manticore",
+      "Chimera",
+      "Cadian Heavy Weapons Squad",
+      "Cadian Shock Troops",
+      "Leman Russ Vanquisher",
+      "Cadian Command Squad",
+      "Hellhound",
+      "Leman Russ Commander",
+      "Aegis Defence Line",
+      "Krieg Command Squad",
+      "Leman Russ Punisher",
+      "Field Ordnance Battery",
+      "Primaris Psyker",
+      "Catachan Heavy Weapons Squad",
+      "Rogal Dorn Commander",
+      "Cyclops Demolition Vehicle",
+      "Hippogriff AFV",
+      "Centaur RSV",
+      "Cadian Recon Squad"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Brood Brothers Auxilia"
+    ]
+  },
+  {
+    "host_factions": [
+      "Genestealer Cults"
+    ],
+    "ally_factions": [
+      "Tyranids"
+    ],
+    "can_take_enhancements": true,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Neurolictor",
+      "Tyrannocyte",
+      "Winged Tyranid Prime",
+      "Von Ryan’s Leapers",
+      "Hyperadapted Raveners",
+      "Lictor",
+      "Raveners",
+      "Trygon",
+      "Mawloc",
+      "Deathleaper",
+      "Gargoyles",
+      "Parasite of Mortrex",
+      "Winged Hive Tyrant",
+      "The Red Terror"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Final Day"
+    ]
+  },
+  {
+    "host_factions": [
+      "Heretic Astartes"
+    ],
+    "ally_factions": [
+      "Emperor’s Children",
+      "Death Guard",
+      "Thousand Sons",
+      "World Eaters"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": true,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Khorne Berzerkers",
+      "Noise Marines",
+      "Plague Marines",
+      "Rubric Marines"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 250
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 500
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 750
+      }
+    ],
+    "required_detachments": [
+      "Huron’s Marauders",
+      "Renegade Raiders",
+      "Fellhammer Siege-host",
+      "Deceptors",
+      "Soulforged Warpack",
+      "Dread Talons",
+      "Chaos Cult",
+      "Veterans of the Long War",
+      "Nightmare Hunt",
+      "Pactbound Zealots",
+      "Creations of Bile",
+      "Warpstrike Champions",
+      "Cult of the Arkifane",
+      "Cabal of Chaos",
+      "Devotees of Destruction",
+      "Murdertalon Raiders"
+    ]
+  },
+  {
+    "host_factions": [
+      "Imperial Knights"
+    ],
+    "ally_factions": [
+      "Adeptus Mechanicus"
+    ],
+    "can_take_enhancements": true,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Skitarii Marshal",
+      "Skitarii Rangers",
+      "Skitarii Vanguard",
+      "Tech-Priest Dominus",
+      "Tech-Priest Manipulus"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Strike Force",
+        "points": 500
+      },
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 500
+      }
+    ],
+    "required_detachments": [
+      "Questor Forgepact"
+    ]
+  },
+  {
+    "host_factions": [
+      "Legiones Daemonica"
+    ],
+    "ally_factions": [
+      "Heretic Astartes"
+    ],
+    "can_take_enhancements": true,
+    "is_sibling_faction": false,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Legionaries",
+      "Raptors",
+      "Cultist Firebrand",
+      "Traitor Guardsmen Squad",
+      "Sorcerer",
+      "Sorcerer in Terminator Armour",
+      "Fellgor Beastmen",
+      "Accursed Cultists",
+      "Chaos Lord in Terminator Armour",
+      "Traitor Enforcer",
+      "Possessed",
+      "Chosen",
+      "Chaos Lord",
+      "Master of Possession",
+      "Cultist Mob",
+      "Havocs",
+      "Dark Apostle",
+      "Warp Talons",
+      "Chaos Terminator Squad",
+      "Dark Commune",
+      "Chaos Lord with Jump Pack"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Shadow Legion"
+    ]
+  },
+  {
+    "host_factions": [
+      "Thousand Sons"
+    ],
+    "ally_factions": [
+      "Scintillating Legions"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": true,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Blue Horrors",
+      "Kairos Fateweaver",
+      "Pink Horrors",
+      "Screamers",
+      "Lord of Change",
+      "Flamers"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Changehost of Deceit"
+    ]
+  },
+  {
+    "host_factions": [
+      "World Eaters"
+    ],
+    "ally_factions": [
+      "Blood Legions"
+    ],
+    "can_take_enhancements": false,
+    "is_sibling_faction": true,
+    "replaces_roster_keyword": false,
+    "mutually_exclusive_keyword_limit": false,
+    "datasheets": [
+      "Bloodcrushers",
+      "Skarbrand",
+      "Flesh Hounds",
+      "Bloodletters",
+      "Bloodthirster"
+    ],
+    "keyword_limits": [],
+    "points_limits": [
+      {
+        "battle_size": "Incursion",
+        "points": 500
+      },
+      {
+        "battle_size": "Strike Force",
+        "points": 1000
+      },
+      {
+        "battle_size": "Onslaught",
+        "points": 1500
+      }
+    ],
+    "required_detachments": [
+      "Khorne Daemonkin"
+    ]
+  }
+]

@@ -38,6 +38,7 @@ Every dataset is written as both JSON (full nested fidelity) and CSV (flattened,
       core_rules.(json|csv)          the bundled core rulebook text
       missions.(json|csv)            primary and secondary missions, deployments, layouts
       faqs.(json|csv)                official FAQ and errata
+      allied_factions.(json|csv)     which factions may ally, the units they bring, and the limits
 ```
 
 ## What each datasheet record contains
@@ -72,7 +73,11 @@ Stratagems include CP cost, category (battle tactic, strategic ploy, epic deed, 
 
 If built, `w40k.db` holds the same resolved data in a relational schema designed for querying from a Python app (sqlite3 is in the standard library, so no driver is needed). Unlike the JSON folders, each datasheet and detachment is stored once; faction membership is handled by the `datasheet_faction` and `detachment_faction` junction tables, so sub faction units are not duplicated.
 
-Main tables: `faction`, `army_rule`, `publication`, `datasheet`, `datasheet_faction`, `model`, `ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`, `detachment_rule`, `enhancement`, `stratagem`, plus reference tables `keyword`, `wargear_ability`, `battle_size`, `behaviour_type`, `mission_primary`, `mission_secondary`, `faq`. Deeply nested or list shaped fields (points compositions, the wargear loadout enforcement, enhancement eligibility, damage brackets, weapon ability lists, keyword lists) are stored as JSON text columns, so a top level value is queryable in SQL while the full structure is one `json.loads` away in Python.
+Main tables: `faction`, `army_rule`, `publication`, `datasheet`, `datasheet_faction`, `allied_faction`, `allied_faction_host`, `allied_faction_datasheet`, `model`, `ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`, `detachment_rule`, `enhancement`, `stratagem`, plus reference tables `keyword`, `wargear_ability`, `battle_size`, `behaviour_type`, `mission_primary`, `mission_secondary`, `faq`. Deeply nested or list shaped fields (points compositions, the wargear loadout enforcement, enhancement eligibility, damage brackets, weapon ability lists, keyword lists) are stored as JSON text columns, so a top level value is queryable in SQL while the full structure is one `json.loads` away in Python.
+
+Faction membership in `datasheet_faction` respects explicit exclusions: a unit that carries a faction keyword but is barred from that faction (source `faction_keyword_excluded_datasheet`, for example Sir Hekhtur under Imperial Knights) is not listed under it.
+
+The allied faction system is captured in three tables. `allied_faction` is one row per allowance (a host faction bringing a slice of another faction), with `ally_factions` and `host_factions` as JSON name lists, the boolean flags (`can_take_enhancements`, `is_sibling_faction`, `replaces_roster_keyword`, `mutually_exclusive_keyword_limit`), and JSON columns for `datasheets`, `keyword_limits`, `points_limits` and `required_detachments`. `allied_faction_host` and `allied_faction_datasheet` are junctions keyed on faction id and datasheet id, so an app can answer 'what can faction X ally, and which units does it bring' with a join rather than parsing JSON.
 
 The `faction` table carries both canonical and display labels. `name` is the official faction keyword (for example `Adeptus Astartes`) and is the key that `parent_faction` points at, so neither should be overwritten. `display_name` is the label to show in a UI: it is `common_name` when the app provides one (so `Adeptus Astartes` displays as `Space Marines`) and falls back to `name` otherwise. `parent_display_name` is the same precomputed swap for the parent, so a chapter such as `Blood Angels` keeps its own name, links to its parent by `parent_faction = 'Adeptus Astartes'`, and can be shown nested under `Space Marines` without an extra lookup.
 
