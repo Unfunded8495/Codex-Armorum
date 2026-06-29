@@ -192,6 +192,7 @@ def init_db():
             faction_id TEXT NOT NULL,
             detachment_id TEXT DEFAULT '',
             points_limit INTEGER DEFAULT 2000,
+            battle_size TEXT DEFAULT '',
             notes TEXT DEFAULT '',
             created_at REAL NOT NULL)""")
 
@@ -202,6 +203,10 @@ def init_db():
             squad_size INTEGER NOT NULL DEFAULT 1,
             assigned_count INTEGER DEFAULT 0,
             enhancement_id TEXT DEFAULT '',
+            loadout TEXT DEFAULT '',
+            wargear_points INTEGER DEFAULT 0,
+            is_warlord INTEGER DEFAULT 0,
+            attached_to TEXT DEFAULT '',
             notes TEXT DEFAULT '',
             sort_order INTEGER DEFAULT 0)""")
 
@@ -290,6 +295,33 @@ def init_db():
 
         if "unit_bsdata_id" not in _columns(c, "army_units"):
             c.execute("ALTER TABLE army_units ADD COLUMN unit_bsdata_id TEXT")
+
+        # Migration: army lists gain a battle_size (Incursion / Strike Force /
+        # Onslaught / Custom). Backfill existing rows by inferring from the
+        # stored points_limit so their derived caps stay consistent. Idempotent:
+        # only rows with an empty battle_size are touched, so rows written by the
+        # API (which always set it) are left alone.
+        if _table_exists(c, "army_lists") and "battle_size" not in _columns(c, "army_lists"):
+            c.execute("ALTER TABLE army_lists ADD COLUMN battle_size TEXT DEFAULT ''")
+        if _table_exists(c, "army_lists"):
+            _bs_by_points = {1000: "Incursion", 2000: "Strike Force", 3000: "Onslaught"}
+            for r in c.execute(
+                    "SELECT id, points_limit FROM army_lists "
+                    "WHERE battle_size IS NULL OR battle_size=''").fetchall():
+                c.execute("UPDATE army_lists SET battle_size=? WHERE id=?",
+                          (_bs_by_points.get(r["points_limit"], "Custom"), r["id"]))
+
+        # Migration: army units gain a wargear `loadout` (JSON selection) and a
+        # denormalized `wargear_points` delta (so the list total can add it
+        # without importing the wargear engine into the list query).
+        if _table_exists(c, "army_units") and "loadout" not in _columns(c, "army_units"):
+            c.execute("ALTER TABLE army_units ADD COLUMN loadout TEXT DEFAULT ''")
+        if _table_exists(c, "army_units") and "wargear_points" not in _columns(c, "army_units"):
+            c.execute("ALTER TABLE army_units ADD COLUMN wargear_points INTEGER DEFAULT 0")
+        if _table_exists(c, "army_units") and "is_warlord" not in _columns(c, "army_units"):
+            c.execute("ALTER TABLE army_units ADD COLUMN is_warlord INTEGER DEFAULT 0")
+        if _table_exists(c, "army_units") and "attached_to" not in _columns(c, "army_units"):
+            c.execute("ALTER TABLE army_units ADD COLUMN attached_to TEXT DEFAULT ''")
 
         # Arsenal owns these tables and initialises them after this general
         # schema pass.  On a brand-new database they do not exist yet.

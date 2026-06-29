@@ -1,5 +1,5 @@
 import { esc, api, intOr } from './utils.js';
-import { state } from './army-state.js';
+import { state, ensureBattleSizes, detLimitFor, detOptions } from './army-state.js';
 import { setBreadcrumb } from './header.js';
 
 const view       = document.getElementById('view');
@@ -51,6 +51,7 @@ export async function showArmy(aid){
 function renderSidebar(army){
   const pct  = army.points_limit>0 ? Math.min(100,Math.round(army.total_points/army.points_limit*100)) : 0;
   const over = army.total_points>army.points_limit && army.points_limit>0;
+  const isCustom = (army.battle_size||'Custom') === 'Custom';
   return `
     <div class="ab-card">
       <p class="ab-card-title">Army Name</p>
@@ -70,38 +71,89 @@ function renderSidebar(army){
       </div>
     </div>
     <div class="ab-card">
-      <p class="ab-card-title">Detachment</p>
+      <p class="ab-card-title">Battle Size &amp; Detachment</p>
       <div class="ab-meta-row">
+        <div class="ab-meta-item">
+          <label>Battle Size</label>
+          <select id="abBattleSize" onchange="onAbBattleSize()"></select>
+        </div>
+        <div class="ab-meta-item" id="abPtsField" ${isCustom?'':'hidden'}>
+          <label>Points Limit</label>
+          <input type="number" id="abPtsLimit" value="${army.points_limit}" min="0" step="100" onchange="saveArmyMeta()">
+        </div>
         <div class="ab-meta-item">
           <label>Detachment</label>
           <select id="abDetachment" onchange="saveArmyMeta()">
             <option value="">— none —</option>
           </select>
         </div>
-        <div class="ab-meta-item">
-          <label>Points Limit</label>
-          <input type="number" id="abPtsLimit" value="${army.points_limit}" min="0" step="100"
-                 onchange="saveArmyMeta()">
-        </div>
       </div>
     </div>
+    ${renderDetachmentRuleCard(army)}
     <div class="ab-card ab-validation" id="validationCard">
       <p class="ab-card-title">Validation</p>
       <div id="validationBody">${renderValidation(army)}</div>
     </div>`;
 }
 
+function renderDetachmentRuleCard(army){
+  const rules    = army.detachment_rules    || [];
+  const unlocks  = army.detachment_unlocks  || [];
+  const excludes = army.detachment_excludes || [];
+  if(!rules.length && !unlocks.length && !excludes.length) return '';
+  const ruleHtml = rules.map(r=>`
+    <div class="ab-detrule">
+      ${r.name?`<div class="ab-detrule-name">${esc(r.name)}</div>`:''}
+      <div class="ab-detrule-body">${esc(r.description||'')}</div>
+    </div>`).join('');
+  const list = (label, arr)=> arr.length
+    ? `<div class="ab-detlist"><span class="ab-detlist-label">${label}:</span> ${arr.map(esc).join(', ')}</div>`
+    : '';
+  const metaHtml = (unlocks.length||excludes.length)
+    ? `<div class="ab-detrule-meta">${list('Unlocks',unlocks)}${list('Excludes',excludes)}</div>` : '';
+  return `
+    <div class="ab-card ab-detrule-card">
+      <button class="ab-detrule-toggle" type="button" onclick="toggleDetRule()" aria-expanded="false">
+        <span class="ab-card-title" style="margin:0">Detachment Rule${rules.length>1?'s':''}</span>
+        <span class="ab-detrule-chevron" id="abDetChevron">▸</span>
+      </button>
+      <div class="ab-detrule-content" id="abDetRuleContent" hidden>
+        ${ruleHtml}${metaHtml}
+      </div>
+    </div>`;
+}
+
+export function toggleDetRule(){
+  const content = document.getElementById('abDetRuleContent');
+  const chev    = document.getElementById('abDetChevron');
+  if(!content) return;
+  content.hidden = !content.hidden;
+  if(chev) chev.textContent = content.hidden ? '▸' : '▾';
+  document.querySelector('.ab-detrule-toggle')?.setAttribute('aria-expanded', String(!content.hidden));
+}
+
 async function wireSidebarInputs(army){
+  let battleSizes;
   let dts = state.detachCache[army.faction_id];
-  if(!dts){
-    dts = await api(`/api/factions/${encodeURIComponent(army.faction_id)}/detachments`);
-    state.detachCache[army.faction_id] = dts;
+  try{
+    [dts, battleSizes] = await Promise.all([
+      dts ? Promise.resolve(dts) : api(`/api/factions/${encodeURIComponent(army.faction_id)}/detachments`),
+      ensureBattleSizes(),
+    ]);
+  }catch(e){ dts = dts || []; battleSizes = state.battleSizes || []; }
+  state.detachCache[army.faction_id] = dts;
+
+  const bsSel = document.getElementById('abBattleSize');
+  if(bsSel){
+    const cur = army.battle_size || 'Custom';
+    bsSel.innerHTML = battleSizes.map(b=>
+        `<option value="${esc(b.name)}" ${b.name===cur?'selected':''}>${esc(b.name)} · ${b.points_limit} pts</option>`).join('')
+      + `<option value="Custom" ${cur==='Custom'?'selected':''}>Custom</option>`;
   }
   const sel = document.getElementById('abDetachment');
-  if(sel){
-    sel.innerHTML = `<option value="">— none —</option>`+
-      dts.map(d=>`<option value="${esc(d.id)}" ${d.id===army.detachment_id?'selected':''}>${esc(d.name)}</option>`).join('');
-  }
+  if(sel) sel.innerHTML = `<option value="">— none —</option>`+
+    detOptions(dts, army.detachment_id, detLimitFor(army.battle_size));
+
   const nameInput = document.getElementById('abName');
   let nameTimer;
   if(nameInput) nameInput.addEventListener('input', ()=>{
@@ -112,52 +164,79 @@ async function wireSidebarInputs(army){
 
 export async function saveArmyMeta(){
   if(!state.army) return;
-  const name              = (document.getElementById('abName')?.value||'').trim() || state.army.name;
-  const dtid              = document.getElementById('abDetachment')?.value || '';
-  const pts               = intOr(document.getElementById('abPtsLimit')?.value, state.army.points_limit);
-  const detachmentChanged = dtid !== state.army.detachment_id;
-  await api(`/api/armies/${state.army.id}`, {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({name, detachment_id:dtid, points_limit:pts})});
-  state.army.name           = name;
-  state.army.detachment_id  = dtid;
-  state.army.points_limit   = pts;
-  if(detachmentChanged){
-    state.army.units = state.army.units.map(u=>({...u, enhancement_id:'', enhancement_name:'', enhancement_cost:0}));
-    const roster = document.getElementById('rosterBody');
-    if(roster) roster.innerHTML = renderRoster(state.army.units, state.army.accent);
-    refreshPointsTotal();
-  }
+  const name = (document.getElementById('abName')?.value||'').trim() || state.army.name;
+  const dtid = document.getElementById('abDetachment')?.value || '';
+  const bs   = document.getElementById('abBattleSize')?.value || state.army.battle_size || 'Custom';
+  const pts  = intOr(document.getElementById('abPtsLimit')?.value, state.army.points_limit);
+  let res;
+  try{
+    res = await api(`/api/armies/${state.army.id}`, {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name, detachment_id:dtid, battle_size:bs, points_limit:pts})});
+  }catch(e){ return; }
+  if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
+
+  // The server is authoritative: it derives the points limit from the battle
+  // size and may auto-clear an over-cost detachment on a downgrade.
+  const detachmentChanged = (res.detachment_id||'') !== (state.army.detachment_id||'');
+  state.army.name                    = name;
+  state.army.battle_size             = res.battle_size;
+  state.army.points_limit            = res.points_limit;
+  state.army.detachment_id           = res.detachment_id || '';
+  state.army.enhancement_limit       = res.enhancement_limit;
+  state.army.duplicate_unit_limit    = res.duplicate_unit_limit;
+  state.army.detachment_points_limit = res.detachment_points_limit;
+  state.army.total_points            = res.total_points;
+  state.army.validation              = res.validation;
   breadcrumb.querySelector('.cur').textContent = name;
-  document.getElementById('ptsLimit').textContent = pts;
+
+  if(detachmentChanged){
+    // Detachment changed (possibly auto-cleared) — refetch so the rule card,
+    // detachment select and stripped enhancements all stay consistent.
+    showArmy(state.army.id);
+    return;
+  }
+  const limEl = document.getElementById('ptsLimit');
+  if(limEl) limEl.textContent = state.army.points_limit;
   updatePointsBar();
   refreshValidation();
 }
 
+// Sidebar battle-size change: reveal the points input only for Custom, re-filter
+// detachments against the new cost limit (clearing one that no longer fits),
+// then persist via saveArmyMeta.
+export function onAbBattleSize(){
+  const bs = document.getElementById('abBattleSize')?.value || 'Custom';
+  const ptsField = document.getElementById('abPtsField');
+  if(ptsField) ptsField.hidden = bs !== 'Custom';
+  const sel = document.getElementById('abDetachment');
+  const dts = state.detachCache[state.army?.faction_id] || [];
+  if(sel){
+    const limit = detLimitFor(bs);
+    const cur = sel.value;
+    const stillValid = dts.some(d=>d.id===cur && (limit==null || (d.points_cost||0)<=limit));
+    sel.innerHTML = `<option value="">— none —</option>`+ detOptions(dts, stillValid?cur:'', limit);
+  }
+  saveArmyMeta();
+}
+
 /* ---- validation --------------------------------------------------------- */
 
+const VAL_META = {
+  ok:   {cls:'ab-val-ok',   icon:'✓'},
+  warn: {cls:'ab-val-warn', icon:'⚠'},
+  err:  {cls:'ab-val-err',  icon:'✗'},
+  info: {cls:'ab-val-info', icon:''},
+};
+
+// Render the server-computed validation rows ({level, code, message}). The
+// renderer keys off `level` only, so later phases add new codes without changes.
 export function renderValidation(army){
-  const rows = [];
-  const over = army.points_limit>0 && army.total_points>army.points_limit;
-  if(over) rows.push(`<div class="ab-val-row ab-val-err">✗ ${army.total_points-army.points_limit} pts over limit</div>`);
-  else if(army.points_limit>0) rows.push(`<div class="ab-val-row ab-val-ok">✓ Within points limit</div>`);
-
-  const shortUnits = army.units.filter(u=>u.assigned_count<u.squad_size&&u.owned_count>0);
-  shortUnits.forEach(u=>{
-    const short = u.squad_size-u.assigned_count;
-    rows.push(`<div class="ab-val-row ab-val-warn">⚠ ${esc(u.name)}: assign ${short} more model${short===1?'':'s'}</div>`);
-  });
-
-  const overAssigned = army.units.filter(u=>u.assigned_count>u.squad_size);
-  overAssigned.forEach(u=>{
-    rows.push(`<div class="ab-val-row ab-val-err">✗ ${esc(u.name)}: ${u.assigned_count-u.squad_size} too many assigned</div>`);
-  });
-
-  const wishlistUnits = army.units.filter(u=>u.owned_count===0);
-  if(wishlistUnits.length>0)
-    rows.push(`<div class="ab-val-row ab-val-info">${wishlistUnits.length} unit${wishlistUnits.length===1?'':'s'} not yet owned (wishlist)</div>`);
-
-  if(!rows.length) rows.push(`<div class="ab-val-row ab-val-ok">✓ No issues found</div>`);
-  return rows.join('');
+  const rows = army.validation || [];
+  if(!rows.length) return `<div class="ab-val-row ab-val-ok">✓ No issues found</div>`;
+  return rows.map(r=>{
+    const m = VAL_META[r.level] || VAL_META.info;
+    return `<div class="ab-val-row ${m.cls}">${m.icon?m.icon+' ':''}${esc(r.message)}</div>`;
+  }).join('');
 }
 
 export function refreshValidation(){
@@ -188,6 +267,17 @@ export function updatePointsBar(){
   if(overEl) overEl.textContent = over ? `⚠ ${total-limit} pts over limit` : '';
 }
 
+// Apply the {total_points, validation} a mutation endpoint returns, then repaint
+// the points bar and validation card from that authoritative server state.
+export function applyServerState(res){
+  if(!state.army || !res) return;
+  if(res.total_points !== undefined && res.total_points !== null)
+    state.army.total_points = res.total_points;
+  if(res.validation) state.army.validation = res.validation;
+  updatePointsBar();
+  refreshValidation();
+}
+
 /* ---- roster rendering --------------------------------------------------- */
 
 export function renderRoster(units, accent){
@@ -197,14 +287,27 @@ export function renderRoster(units, accent){
       <h3>No units yet</h3>
       <p>Click "Add Unit" to start building your roster.</p>
     </div>`;
+  // Attached leaders render nested under their bodyguard, not as standalone rows.
+  const leaderFor = {};
+  units.forEach(u=>{ if(u.attached_to) leaderFor[u.attached_to] = u; });
+  const standalone = units.filter(u=>!u.attached_to);
   const groups = {};
-  units.forEach(u=>{ const role=u.role||'Other'; (groups[role]=groups[role]||[]).push(u); });
+  standalone.forEach(u=>{ const role=u.role||'Other'; (groups[role]=groups[role]||[]).push(u); });
   const ordered = ROLE_ORDER.filter(r=>groups[r]).concat(Object.keys(groups).filter(r=>!ROLE_ORDER.includes(r)));
   return ordered.map(role=>`
     <div class="role-section">
       <div class="role-section-head">${esc(role)}</div>
-      ${groups[role].map(u=>armyUnitRow(u,accent)).join('')}
+      ${groups[role].map(u=>armyUnitRow(u,accent)
+        + (leaderFor[u.id]?`<div class="au-nested">${armyUnitRow(leaderFor[u.id],accent)}</div>`:'')).join('')}
     </div>`).join('');
+}
+
+function compLine(comp){
+  if(!comp || !comp.length) return '';
+  // Smallest count first → the single leader/character reads before the troops,
+  // and the order stays stable across brackets (tiers list models inconsistently).
+  return [...comp].sort((a,b)=>a.count-b.count)
+    .map(c=>`${c.count}× ${esc(c.model)}`).join(' · ');
 }
 
 export function armyUnitRow(u, accent){
@@ -229,8 +332,9 @@ export function armyUnitRow(u, accent){
 
   return `<div class="au-row faction-surface" id="au-${auid}" style="--cardarmy:${state.army?.primary||'var(--panel)'};--cardaccent:${accent||'var(--gold)'};--cardglow:${accent||'var(--gold)'};--au-accent:${accent||'var(--gold)'}">
     <div>
-      <div class="au-name">${esc(u.name)}</div>
+      <div class="au-name">${esc(u.name)}${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}</div>
       <div class="au-role">${esc(u.role)}</div>
+      <div class="au-comp" id="au-comp-${auid}">${compLine(u.composition)}</div>
       <div class="au-controls">
         <div class="au-size-wrap">
           <label>Squad</label>
@@ -250,8 +354,13 @@ export function armyUnitRow(u, accent){
     </div>
     <div class="au-actions">
       <button class="au-del" onclick="removeArmyUnit('${auid}')">Remove</button>
-      <button class="au-enh-btn" onclick="toggleEnhEditor('${auid}')">Enhancement</button>
+      ${u.is_character?`<button class="au-enh-btn au-warlord-btn ${u.is_warlord?'is-on':''}" onclick="toggleWarlord('${auid}')">${u.is_warlord?'★ Warlord':'☆ Warlord'}</button>`:''}
+      ${u.wargear_schema&&u.wargear_schema.length?`<button class="au-enh-btn" onclick="toggleWargear('${auid}')">Wargear</button>`:''}
+      ${u.can_have_enhancement?`<button class="au-enh-btn" onclick="toggleEnhEditor('${auid}')">Enhancement</button>`:''}
+      ${u.attached_to?`<button class="au-enh-btn" onclick="detachLeader('${auid}')">Detach</button>`
+        :(u.attach_targets&&u.attach_targets.length?`<select class="au-attach" onchange="attachLeader('${auid}',this.value)"><option value="">Attach to…</option>${u.attach_targets.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('')}</select>`:'')}
     </div>
+    <div class="au-wargear-editor" id="au-wg-ed-${auid}" hidden></div>
     <div class="au-enh-editor" id="au-enh-ed-${auid}" hidden></div>
   </div>`;
 }
@@ -264,8 +373,7 @@ export async function updateSquadSize(auid, val){
     body: JSON.stringify({squad_size:size})});
   if(!res.ok) return;
   mergeUnit(auid, res.unit);
-  refreshPointsTotal();
-  refreshValidation();
+  applyServerState(res);
 }
 
 export async function updateAssigned(auid, val){
@@ -274,7 +382,7 @@ export async function updateAssigned(auid, val){
     body: JSON.stringify({assigned_count:count})});
   if(!res.ok) return;
   mergeUnit(auid, res.unit);
-  refreshValidation();
+  applyServerState(res);
 }
 
 /* ---- enhancement editor ------------------------------------------------- */
@@ -283,34 +391,35 @@ export async function toggleEnhEditor(auid){
   const ed = document.getElementById(`au-enh-ed-${auid}`);
   if(!ed.hidden){ed.hidden=true;ed.innerHTML='';return;}
   if(!state.army) return;
-  let enhs = state.enhCache[state.army.detachment_id];
-  if(state.army.detachment_id&&!enhs){
-    enhs = await api(`/api/detachments/${state.army.detachment_id}/enhancements`);
-    state.enhCache[state.army.detachment_id] = enhs;
-  }
   const unit = state.army.units.find(u=>u.id===auid) || {};
+  // Per-unit eligible list (eligibility + uniqueness, current pick always included).
+  let enhs = [];
+  if(state.army.detachment_id){
+    try{ enhs = await api(`/api/army-units/${auid}/enhancements`); }catch(e){ enhs = []; }
+  }
   if(!enhs||!enhs.length){
     ed.innerHTML = `<p style="font-family:'EB Garamond',serif;font-size:14px;color:var(--parch-dim);margin:0">
-      ${state.army.detachment_id?'No enhancements available for this detachment.':'Select a detachment first.'}</p>`;
+      ${state.army.detachment_id?'No eligible enhancements for this unit.':'Select a detachment first.'}</p>`;
     ed.hidden = false;
     return;
   }
   ed.innerHTML = `
     <select onchange="saveEnhancement('${auid}',this.value)" style="margin-bottom:8px">
       <option value="">— No enhancement —</option>
-      ${enhs.map(e=>`<option value="${esc(e.id)}" ${e.id===unit.enhancement_id?'selected':''}>
+      ${enhs.map(e=>`<option value="${esc(e.id)}" ${String(e.id)===String(unit.enhancement_id)?'selected':''}>
         ${esc(e.name)} (+${e.cost} pts)</option>`).join('')}
     </select>`;
   ed.hidden = false;
 }
 
 export async function saveEnhancement(auid, enhId){
-  const res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({enhancement_id:enhId})});
-  if(!res.ok) return;
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({enhancement_id:enhId})}); }
+  catch(e){ return; }
+  if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
   mergeUnit(auid, res.unit);
-  refreshPointsTotal();
-  refreshValidation();
+  applyServerState(res);
   const row = document.getElementById(`au-${auid}`);
   if(row){
     let enhDiv = row.querySelector('.au-enh');
@@ -325,10 +434,237 @@ export async function saveEnhancement(auid, enhId){
   }
 }
 
+/* ---- warlord ------------------------------------------------------------ */
+
+// Toggle Warlord on a Character. The server keeps a single Warlord per army and
+// reports `cleared_warlord_auid` so we can drop the previous ★ without a re-fetch.
+export async function toggleWarlord(auid){
+  const u = state.army?.units.find(x=>x.id===auid);
+  if(!u) return;
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({is_warlord: !u.is_warlord})}); }
+  catch(e){ return; }
+  if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
+  if(res.cleared_warlord_auid){
+    const prev = state.army.units.find(x=>x.id===res.cleared_warlord_auid);
+    if(prev) prev.is_warlord = false;
+    setWarlordVisual(res.cleared_warlord_auid, false);
+  }
+  u.is_warlord = !!res.unit.is_warlord;
+  setWarlordVisual(auid, u.is_warlord);
+  applyServerState(res);
+}
+
+function setWarlordVisual(auid, on){
+  const row = document.getElementById(`au-${auid}`);
+  if(!row) return;
+  const nameEl = row.querySelector('.au-name');
+  const badge = nameEl && nameEl.querySelector('.au-warlord');
+  if(on && nameEl && !badge) nameEl.insertAdjacentHTML('beforeend', ' <span class="au-warlord" title="Warlord">★</span>');
+  else if(!on && badge) badge.remove();
+  const btn = row.querySelector('.au-warlord-btn');
+  if(btn){ btn.classList.toggle('is-on', on); btn.textContent = on ? '★ Warlord' : '☆ Warlord'; }
+}
+
+/* ---- leader attachment -------------------------------------------------- */
+
+// Attach / detach changes nesting and every other leader's eligible targets, so we
+// re-fetch + re-render the whole army rather than patch individual rows.
+export async function attachLeader(auid, bodyguardAuid){
+  if(!bodyguardAuid) return;
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({attached_to: bodyguardAuid})}); }
+  catch(e){ return; }
+  if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
+  showArmy(state.army.id);
+}
+
+export async function detachLeader(auid){
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({attached_to: ''})}); }
+  catch(e){ return; }
+  if(!res || !res.ok) return;
+  showArmy(state.army.id);
+}
+
+/* ---- wargear editor ----------------------------------------------------- */
+
+function limitedCap(limits, size){
+  const app = (limits||[]).filter(l=>(l.per_models||0) <= size);
+  if(!app.length) return 0;
+  return app.reduce((b,l)=>((l.per_models||0) >= (b.per_models||0) ? l : b)).max_choices || 0;
+}
+
+// ---- weapon arrays (replace_any) -----------------------------------------
+// A sub-pool is one miniature's set of weapon mounts. slot_count = the sum of the
+// current counts over its options (the server keeps pool+alternatives balanced to
+// the number of mounts). Small pools render as per-slot <select>s (the user picks
+// each mount); large pools render alternative steppers + a derived-pool readout.
+function renderArraySub(uid, g, sub, sel){
+  const opts   = sub.options || [];
+  const counts = {}; opts.forEach(o=>counts[o.key] = sel[o.key]||0);
+  const slots  = opts.reduce((s,o)=>s+counts[o.key], 0);
+  const keysAttr  = esc(JSON.stringify(opts.map(o=>o.key)));
+  const miniLabel = (g.minis||[]).length>1 ? `<div class="wg-array-mini">${esc(sub.miniature)}</div>` : '';
+  let body;
+  if(slots<=6){
+    // lay the counts across slots in a stable option order, then a <select> each
+    const layout = [];
+    opts.forEach(o=>{ for(let i=0;i<counts[o.key];i++) layout.push(o.key); });
+    const optTags = sk => opts.map(o=>
+      `<option value="${esc(o.key)}" ${o.key===sk?'selected':''}>${esc(o.item)}${o.points?` (+${o.points})`:''}</option>`).join('');
+    const selects = layout.map(sk=>
+      `<select class="wg-slot" data-keys='${keysAttr}' onchange="setWargearSlot('${uid}',this)">${optTags(sk)}</select>`).join('');
+    body = `<div class="wg-slots">${selects||'<span class="wg-cap">no mounts</span>'}</div>`;
+  }else{
+    const alts  = opts.filter(o=>!o.is_pool);
+    const pools = opts.filter(o=>o.is_pool);
+    const steppers = alts.map(o=>
+      `<div class="wg-stepper"><span>${esc(o.item)}${o.points?` <em>+${o.points}</em>`:''}</span>`+
+      `<input type="number" class="wg-arr-step" min="0" max="${slots}" value="${counts[o.key]}" `+
+      `data-key="${esc(o.key)}" data-keys='${keysAttr}' onchange="setWargearSlot('${uid}',this)"></div>`).join('');
+    const poolTxt = pools.map(o=>`${counts[o.key]} ${esc(o.item)}`).join(' · ');
+    body = `<div class="wg-cap">${slots} mounts — ${poolTxt||'—'}</div>${steppers}`;
+  }
+  return `<div class="wg-array-sub">${miniLabel}${body}</div>`;
+}
+
+// Multi-item arrays: each model of the type picks a whole loadout (bundle). One
+// <select> of bundle labels per model, bound to its @b|spec|mini|model key.
+function renderModelsSub(u, g, sub){
+  const sel  = u.loadout || {};
+  const comp = {}; (u.composition||[]).forEach(c=>comp[c.model]=c.count);
+  const n = comp[sub.miniature] || 0;
+  const multi = (g.minis||[]).length>1;
+  // No per-bundle points: the cost is a delta from the loadout it replaces, so an
+  // absolute figure would mislead. The points bar reflects the true total.
+  const optTags = cur => sub.bundles.map(b=>
+    `<option value="${b.idx}" ${b.idx===cur?'selected':''}>${esc(b.label)}</option>`).join('');
+  let rows = '';
+  for(let i=0;i<n;i++){
+    const bk = '@b|'+g.spec_idx+'|'+sub.miniature+'|'+i;
+    const cur = parseInt(sel[bk],10)||0;
+    rows += `<div class="wg-model-row"><span class="wg-model-lbl">${esc(sub.miniature)} ${i+1}</span>`+
+      `<select class="wg-slot" data-key="${esc(bk)}" data-mode="models" onchange="setWargearSlot('${u.id}',this)">${optTags(cur)}</select></div>`;
+  }
+  return rows ? `<div class="wg-array-sub">${multi?`<div class="wg-array-mini">${esc(sub.miniature)}</div>`:''}${rows}</div>` : '';
+}
+
+function renderArrayGroup(u, g, sel){
+  const head = `<div class="wg-group-head">${esc(g.instruction)}</div>`;
+  const subs = g.mode==='models'
+    ? (g.minis||[]).map(sub=>renderModelsSub(u, g, sub)).join('')
+    : (g.minis||[]).map(sub=>renderArraySub(u.id, g, sub, sel)).join('');
+  return `<div class="wg-group wg-array">${head}${subs}</div>`;
+}
+
+function renderWargearEditor(u){
+  const sel = u.loadout || {};
+  const size = u.squad_size;
+  const comp = {}; (u.composition||[]).forEach(c=>comp[c.model]=c.count);
+  const groups = (u.wargear_schema||[]).map(g=>{
+    const head = `<div class="wg-group-head">${esc(g.instruction)}</div>`;
+    if(g.type==='default'){
+      const list = g.items.filter(i=>(sel[i.key]||0)>0)
+        .map(i=>`${(sel[i.key]||0)>1?(sel[i.key]+'× '):''}${esc(i.item)}`).join(', ');
+      return list ? `<div class="wg-group wg-default"><span class="wg-default-lbl">Default</span> ${list}</div>` : '';
+    }
+    if(g.type==='array'){
+      return renderArrayGroup(u, g, sel);
+    }
+    if(g.type==='replace_one' || g.type==='all_model'){
+      const nm = ('wg'+u.id+g.items[0].key).replace(/[^a-zA-Z0-9]/g,'');
+      const gk = esc(JSON.stringify(g.items.map(i=>i.key)));
+      const chosen = g.items.find(i=>(sel[i.key]||0)>0);
+      let html = `<label class="wg-radio"><input type="radio" name="${nm}" data-keys="${gk}" data-key="" ${!chosen?'checked':''} onchange="setWargearRadio('${u.id}',this)"><span>Default</span></label>`;
+      g.items.forEach(i=>{
+        const val = g.type==='all_model' ? (comp[i.miniature]||size) : 1;
+        html += `<label class="wg-radio"><input type="radio" name="${nm}" data-keys="${gk}" data-key="${esc(i.key)}" data-val="${val}" ${chosen&&chosen.key===i.key?'checked':''} onchange="setWargearRadio('${u.id}',this)"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span></label>`;
+      });
+      return `<div class="wg-group">${head}${html}</div>`;
+    }
+    if(g.type==='limited_per_n'){
+      const cap = limitedCap(g.limits, size);
+      const its = g.items.map(i=>`<div class="wg-stepper"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${cap}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`).join('');
+      return `<div class="wg-group">${head}<div class="wg-cap">up to ${cap} at ${size} models</div>${its}</div>`;
+    }
+    const its = g.items.map(i=>{
+      if(i.input_type==='checkbox'){
+        return `<label class="wg-check"><input type="checkbox" data-key="${esc(i.key)}" ${(sel[i.key]||0)>0?'checked':''} onchange="setWargearStep('${u.id}',this)"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span></label>`;
+      }
+      const mc = comp[i.miniature] || size;
+      return `<div class="wg-stepper"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${mc}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`;
+    }).join('');
+    return its ? `<div class="wg-group">${head}${its}</div>` : '';
+  }).join('');
+  return `<div class="wg-summary">${esc(u.loadout_summary||'')}</div>${groups}`;
+}
+
+export function toggleWargear(auid){
+  const ed = document.getElementById(`au-wg-ed-${auid}`);
+  if(!ed) return;
+  if(!ed.hidden){ ed.hidden=true; ed.innerHTML=''; return; }
+  const u = state.army.units.find(x=>x.id===auid);
+  if(!u) return;
+  ed.innerHTML = renderWargearEditor(u);
+  ed.hidden = false;
+}
+
+async function postLoadout(auid, patch){
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({loadout:patch})}); }
+  catch(e){ return; }
+  if(!res || !res.ok) return;
+  mergeUnit(auid, res.unit);
+  applyServerState(res);
+  const u = state.army.units.find(x=>x.id===auid);
+  const ed = document.getElementById(`au-wg-ed-${auid}`);
+  if(ed && !ed.hidden && u) ed.innerHTML = renderWargearEditor(u);
+}
+
+export function setWargearStep(auid, input){
+  const v = input.type === 'checkbox' ? (input.checked ? 1 : 0) : (parseInt(input.value, 10) || 0);
+  postLoadout(auid, {[input.dataset.key]: v});
+}
+
+export function setWargearRadio(auid, input){
+  const keys = JSON.parse(input.dataset.keys || '[]');
+  const patch = {};
+  keys.forEach(k=>patch[k]=0);
+  if(input.dataset.key) patch[input.dataset.key] = parseInt(input.dataset.val||'1', 10);
+  postLoadout(auid, patch);
+}
+
+// Weapon-array change. For a <select> grid we re-tally every slot in the sub-pool
+// and post absolute counts; for an alternative stepper we post just the changed
+// alternatives and let the server re-derive the pool weapon(s).
+export function setWargearSlot(auid, el){
+  // Multi-item model picker: each select owns one model's bundle index.
+  if(el.tagName === 'SELECT' && el.dataset.mode === 'models'){
+    postLoadout(auid, {[el.dataset.key]: parseInt(el.value,10)||0});
+    return;
+  }
+  const sub = el.closest('.wg-array-sub');
+  if(!sub) return;
+  const patch = {};
+  if(el.tagName === 'SELECT'){
+    JSON.parse(el.dataset.keys || '[]').forEach(k=>patch[k]=0);
+    sub.querySelectorAll('select.wg-slot').forEach(s=>{ patch[s.value] = (patch[s.value]||0) + 1; });
+  }else{
+    sub.querySelectorAll('input.wg-arr-step').forEach(inp=>{ patch[inp.dataset.key] = parseInt(inp.value,10)||0; });
+  }
+  postLoadout(auid, patch);
+}
+
 /* ---- remove army unit --------------------------------------------------- */
 
 export async function removeArmyUnit(auid){
-  await fetch(`/api/army-units/${auid}`, {method:'DELETE'});
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'DELETE'}); }
+  catch(e){ return; }
   state.army.units = state.army.units.filter(u=>u.id!==auid);
   document.getElementById(`au-${auid}`)?.remove();
   document.querySelectorAll('.role-section').forEach(sec=>{
@@ -337,8 +673,7 @@ export async function removeArmyUnit(auid){
   const body = document.getElementById('rosterBody');
   if(body&&!body.querySelector('.au-row'))
     body.innerHTML = `<div class="ab-empty"><span class="ab-empty-icon">✠</span><h3>No units yet</h3><p>Click "Add Unit" to start building your roster.</p></div>`;
-  refreshPointsTotal();
-  refreshValidation();
+  applyServerState(res);
 }
 
 /* ---- merge unit state --------------------------------------------------- */
@@ -378,4 +713,6 @@ export function mergeUnit(auid, updated){
     else sizeInput.removeAttribute('max');
     sizeInput.value = squad;
   }
+  const compEl = document.getElementById(`au-comp-${auid}`);
+  if(compEl) compEl.innerHTML = compLine(u.composition);
 }

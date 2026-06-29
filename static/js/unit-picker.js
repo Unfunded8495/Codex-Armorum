@@ -1,6 +1,6 @@
 import { esc, api } from './utils.js';
 import { state } from './army-state.js';
-import { ROLE_ORDER, armyUnitRow, refreshPointsTotal, refreshValidation } from './army-detail.js';
+import { ROLE_ORDER, armyUnitRow, applyServerState } from './army-detail.js';
 
 export async function openUnitPicker(){
   if(!state.army) return;
@@ -23,19 +23,23 @@ export async function openUnitPicker(){
 export function renderPicker(units){
   const body = document.getElementById('pickerBody');
   if(!units||!units.length){body.innerHTML=`<p style="padding:20px;color:var(--parch-dim);font-style:italic">No units found.</p>`;return;}
-  const groups = {};
-  units.forEach(u=>{(groups[u.role]=groups[u.role]||[]).push(u);});
-  const ordered = ROLE_ORDER.filter(r=>groups[r]).concat(Object.keys(groups).filter(r=>!ROLE_ORDER.includes(r)));
-  body.innerHTML = ordered.map(role=>`
-    <div class="modal-role-head">${esc(role)}</div>
-    ${groups[role].map(u=>`
+  const row = u=>`
       <div class="modal-unit-row" onclick="addUnitToArmy('${u.id}')">
         <img class="modal-unit-thumb" src="/api/units/${u.id}/image" alt="${esc(u.name)}" loading="lazy">
-        <span class="modal-unit-name">${esc(u.name)}</span>
+        <span class="modal-unit-name">${esc(u.name)}${u.is_ally?` <span class="modal-ally-tag">${esc(u.ally_faction)}</span>`:''}</span>
         <span class="modal-unit-owned">${u.owned>0?`${u.owned} owned`:''}</span>
         ${u.points?`<span class="modal-unit-pts">${u.points}+ pts</span>`:''}
-      </div>`).join('')}
-  `).join('');
+      </div>`;
+  // Native units by role, then allied units grouped by ally faction.
+  const groups = {};
+  units.filter(u=>!u.is_ally).forEach(u=>{(groups[u.role]=groups[u.role]||[]).push(u);});
+  const ordered = ROLE_ORDER.filter(r=>groups[r]).concat(Object.keys(groups).filter(r=>!ROLE_ORDER.includes(r)));
+  let html = ordered.map(role=>`<div class="modal-role-head">${esc(role)}</div>${groups[role].map(row).join('')}`).join('');
+  const allyGroups = {};
+  units.filter(u=>u.is_ally).forEach(u=>{(allyGroups[u.ally_faction]=allyGroups[u.ally_faction]||[]).push(u);});
+  html += Object.keys(allyGroups).sort().map(f=>
+    `<div class="modal-role-head modal-ally-head">Allies · ${esc(f)}</div>${allyGroups[f].map(row).join('')}`).join('');
+  body.innerHTML = html;
 }
 
 export function filterPicker(q){
@@ -79,6 +83,5 @@ export async function addUnitToArmy(did){
     if(!inserted) body.appendChild(roleSection);
   }
   roleSection.insertAdjacentHTML('beforeend', armyUnitRow(unit, state.army.accent));
-  refreshPointsTotal();
-  refreshValidation();
+  applyServerState(res);
 }

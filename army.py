@@ -1,64 +1,109 @@
 """Army builder helpers: points calculation, enhancements, unit row assembly."""
-import re
-
 from data_store import get_store
-from collection import _parse_comp_range
 from utils import _int, _as_int
 
 
+def _tier_span(tier):
+    """(lo, hi) total model count for a composition tier (summed across model
+    lines)."""
+    models = tier.get("models") or []
+    return (sum(_int(m.get("min")) for m in models),
+            sum(_int(m.get("max")) for m in models))
+
+
+def _squad_bounds(did):
+    """{min, max, default} model counts for a unit, from its composition tiers.
+    Default mirrors the official app: the first ``is_default`` tier's max size.
+    A unit with no tiers (rare) locks to a single model."""
+    tiers = get_store().composition_tiers.get(did) or []
+    spans = [(lo, hi) for lo, hi in (_tier_span(t) for t in tiers) if hi > 0]
+    if not spans:
+        return {"min": 1, "max": 1, "default": 1}
+    lo = max(1, min(s[0] for s in spans))
+    hi = max(s[1] for s in spans)
+    default = None
+    for t in tiers:
+        if t.get("is_default"):
+            d_hi = _tier_span(t)[1]
+            if d_hi > 0:
+                default = d_hi
+                break
+    if default is None:
+        default = lo
+    return {"min": lo, "max": hi, "default": max(lo, min(default, hi))}
+
+
+def _tier_for_size(tiers, size):
+    """The tier that prices ``size``: the first ``is_default`` covering tier,
+    else the first covering tier in stored order. Reproduces the exporter's
+    ``default_points`` resolution and disambiguates points-history duplicates."""
+    covering = [t for t in tiers if _tier_span(t)[0] <= size <= _tier_span(t)[1]]
+    if not covering:
+        return None
+    return next((t for t in covering if t.get("is_default")), covering[0])
+
+
 def _points_for(did, squad_size):
-    """Find the points tier for the requested squad size.
-
-    Warhammer points are paid by bracket. If a roster somehow asks for an
-    in-between size, charge the next bracket up instead of under-pricing it.
-    """
+    """Points for a unit at ``squad_size`` from the covering composition tier
+    (flat per bracket). Falls back to ``default_points`` then 0 for the rare
+    unit with no tiers."""
     store = get_store()
-    costs = store.cost.get(did, [])
-    if not costs:
-        return 0
-    parsed = []
-    for c in costs:
-        desc = (c.get("description") or "").lower()
-        m = re.search(r"(\d+)\s*model", desc)
-        if m:
-            parsed.append((int(m.group(1)), _int(c.get("cost"))))
-    if not parsed:
-        return _int(costs[0].get("cost")) if costs else 0
-    parsed.sort(key=lambda x: x[0])
-    for count, pts in parsed:
-        if count == squad_size:
-            return pts
-    valid = [(cnt, pts) for cnt, pts in parsed if cnt >= squad_size]
-    return valid[0][1] if valid else parsed[-1][1]
+    tiers = store.composition_tiers.get(did) or []
+    if not tiers:
+        return _int(store.ds_by_id.get(did, {}).get("default_points"))
+    bounds = _squad_bounds(did)
+    size = max(bounds["min"], min(_as_int(squad_size, bounds["default"]), bounds["max"]))
+    tier = _tier_for_size(tiers, size)
+    if tier is None:
+        spans = sorted(((_tier_span(t), t) for t in tiers), key=lambda x: x[0][0])
+        tier = spans[0][1] if size < spans[0][0][0] else spans[-1][1]
+    return _int(tier.get("points"))
 
 
-def _squad_range_for(did):
-    comp_range = _parse_comp_range(get_store().composition.get(did, []))
-    if not comp_range:
-        return {"min": 1, "max": None}
-    return {"min": max(1, comp_range.get("min") or 1), "max": comp_range.get("max") or None}
+def _composition_breakdown(did, squad_size):
+    """``[{model, count}]`` at ``squad_size``: fixed models at their min, the
+    single variable model absorbs the remainder. Tiers with >1 variable model
+    (rare, all non-default) show each at its min, since the split is ambiguous."""
+    tiers = get_store().composition_tiers.get(did) or []
+    if not tiers:
+        return []
+    bounds = _squad_bounds(did)
+    size = max(bounds["min"], min(_as_int(squad_size, bounds["default"]), bounds["max"]))
+    tier = _tier_for_size(tiers, size) or tiers[0]
+    models = tier.get("models") or []
+    single_var = sum(1 for m in models if _int(m.get("max")) > _int(m.get("min"))) == 1
+    remainder = max(0, size - sum(_int(m.get("min")) for m in models)) if single_var else 0
+    out = []
+    for m in models:
+        lo, hi = _int(m.get("min")), _int(m.get("max"))
+        count = min(hi, lo + remainder) if (single_var and hi > lo) else lo
+        out.append({"model": m.get("model") or "", "count": count})
+    return out
 
 
-def _normalise_squad_size(did, value, default=1):
-    bounds = _squad_range_for(did)
-    size = _as_int(value, default, minimum=bounds["min"])
-    if bounds["max"]:
-        size = min(size, bounds["max"])
-    return size
+def _normalise_squad_size(did, value, default=None):
+    bounds = _squad_bounds(did)
+    if default is None:
+        default = bounds["default"]
+    return min(_as_int(value, default, minimum=bounds["min"]), bounds["max"])
 
 
 def _enhancement_for(eid, detachment_id=None):
     store = get_store()
     if not eid:
         return None
+    # w40k.db enhancement ids are integers, but the API/DB round-trips them as
+    # strings (army_units.enhancement_id is TEXT). Compare as strings so a
+    # posted "91" still matches the stored int 91.
+    eid_s = str(eid)
     if detachment_id:
         for e in store.enhancements_by_detachment.get(detachment_id, []):
-            if e.get("id") == eid:
+            if str(e.get("id")) == eid_s:
                 return e
         return None
     for enhs in store.enhancements_by_detachment.values():
         for e in enhs:
-            if e.get("id") == eid:
+            if str(e.get("id")) == eid_s:
                 return e
     return None
 
@@ -83,6 +128,48 @@ def _valid_detachment_for_faction(fid, dtid):
     return det_fac == fid or det_fac == store.faction_parent(fid)
 
 
+def battle_size_caps(name):
+    """Caps for a battle size name, or all-None for Custom/unknown (no limits
+    enforced). Used by the army API and the validation engine."""
+    bs = get_store().battle_size_by_name.get(name or "")
+    if not bs:
+        return {"points_limit": None, "enhancement_limit": None,
+                "duplicate_unit_limit": None, "detachment_points_limit": None}
+    return {
+        "points_limit": bs["points_limit"],
+        "enhancement_limit": bs["enhancement_limit"],
+        # Surface the authoritative base (DUP_BASE) so the value shown matches what
+        # duplicate_cap enforces — the v886 data has a stale Onslaught=3.
+        "duplicate_unit_limit": DUP_BASE.get(name, bs["duplicate_unit_limit"]),
+        "detachment_points_limit": bs["detachment_points_limit"],
+    }
+
+
+# Authoritative per-datasheet duplicate limits (Rule of N). v886 data has a stale
+# Onslaught=3; the correct base is 4. Battleline / Dedicated Transport double these;
+# Epic Heroes are always 1.
+DUP_BASE = {"Incursion": 2, "Strike Force": 3, "Onslaught": 4}
+
+
+def duplicate_cap(battle_size, did):
+    """Max copies of datasheet ``did`` at ``battle_size``. Epic Heroes → 1 at any
+    size (unique). Otherwise the per-size base from ``DUP_BASE`` (``None`` for Custom
+    / Combat Patrol → no Rule-of-N), **doubled for Battleline / Dedicated Transport**.
+    Battleline/Transport are detected via the unit's keywords, never ``role`` (which
+    is single-valued and has no Dedicated-Transport entry); safe because Battleline
+    never intersects Character or Epic Hero."""
+    ds = get_store().ds_by_id.get(did, {})
+    if ds.get("role") == "Epic Hero":
+        return 1
+    base = DUP_BASE.get(battle_size)  # None for Custom / Combat Patrol
+    if base is None:
+        return None
+    kws = set(ds.get("_keywords") or [])
+    if "Battleline" in kws or "Dedicated Transport" in kws:
+        return base * 2
+    return base
+
+
 def _datasheet_in_faction(did, fid):
     # Parent-aware: a chapter unit validates as in its own chapter and in the
     # parent faction (a Blood Angels unit is in both Blood Angels and Adeptus
@@ -99,8 +186,8 @@ def _army_unit_row(c, au):
     if canonical_did != did:
         c.execute("UPDATE army_units SET datasheet_id=? WHERE id=?", (canonical_did, au["id"]))
         did = canonical_did
-    bounds = _squad_range_for(did)
-    squad_size = _normalise_squad_size(did, au["squad_size"], bounds["min"])
+    bounds = _squad_bounds(did)
+    squad_size = _normalise_squad_size(did, au["squad_size"])
     if squad_size != au["squad_size"]:
         c.execute("UPDATE army_units SET squad_size=? WHERE id=?", (squad_size, au["id"]))
     assigned = au["assigned_count"]
@@ -117,16 +204,82 @@ def _army_unit_row(c, au):
         assigned = max_current_assignment
         c.execute("UPDATE army_units SET assigned_count=? WHERE id=?", (assigned, au["id"]))
 
-    pts = _points_for(did, squad_size)
+    base_pts = _points_for(did, squad_size)
+
+    # ---- wargear loadout: reconcile the stored selection to the current squad
+    # size, price the delta, and persist it. The denormalized wargear_points lets
+    # api_list_armies add it without importing the wargear engine. (Local import
+    # avoids an army<->wargear module cycle.) ----
+    import json
+    import wargear
+    _keys = au.keys()
+    try:
+        _overrides = json.loads(au["loadout"]) if ("loadout" in _keys and au["loadout"]) else {}
+    except (TypeError, ValueError):
+        _overrides = {}
+    _wg = wargear.validate_selection(did, squad_size,
+                                     wargear.apply_overrides(did, squad_size, _overrides))
+    loadout = _wg["selection"]
+    wargear_pts = _wg["points_delta"]
+    wargear_violations = _wg["violations"]
+    loadout_summary = _wg["loadout_summary"]
+    # Persist the normalized sparse overrides ("" when default) + points delta.
+    _loadout_json = json.dumps(_wg["overrides"], separators=(",", ":")) if _wg["overrides"] else ""
+    _prev_loadout = (au["loadout"] if "loadout" in _keys else "") or ""
+    _prev_wgpts = (au["wargear_points"] if "wargear_points" in _keys else 0) or 0
+    if _loadout_json != _prev_loadout or wargear_pts != _prev_wgpts:
+        c.execute("UPDATE army_units SET loadout=?, wargear_points=? WHERE id=?",
+                  (_loadout_json, wargear_pts, au["id"]))
+    pts = base_pts + wargear_pts
+
+    army_row = c.execute("SELECT faction_id, detachment_id FROM army_lists WHERE id=?",
+                         (au["army_list_id"],)).fetchone()
+    army_fid = (army_row["faction_id"] if army_row else "") or ""
+    army_dtid = (army_row["detachment_id"] if army_row else "") or ""
 
     enh_name = ""
     enh_cost = 0
     if enhancement_id:
-        army = c.execute("SELECT detachment_id FROM army_lists WHERE id=?", (au["army_list_id"],)).fetchone()
-        e = _enhancement_for(enhancement_id, (army["detachment_id"] if army else "") or "")
+        e = _enhancement_for(enhancement_id, army_dtid)
         if e:
             enh_name = e.get("name", "")
             enh_cost = _int(e.get("cost", 0))
+
+    # Character / Warlord facts (enhancements + warlord are CHARACTER-only; Epic
+    # Heroes can never take an Enhancement). Leader-attachment fields land in 4b.
+    keywords = set(ds.get("_keywords") or [])
+    is_character = "Character" in keywords
+    is_epic_hero = ds.get("role") == "Epic Hero"
+    _keys = au.keys()
+    is_warlord = bool(au["is_warlord"]) if "is_warlord" in _keys else False
+    attached_to = (au["attached_to"] if "attached_to" in _keys else "") or ""
+
+    # Allied unit (Phase 5b): tagged when NOT native to the army faction but allowed
+    # via an ally config (native-first). Allied units can't take Enhancements unless
+    # their config's can_take_enhancements.
+    ally_cfg = None if _datasheet_in_faction(did, army_fid) else store.ally_config_for(army_fid, did)
+    is_ally = ally_cfg is not None
+    ally_faction = " / ".join(ally_cfg["ally_faction_names"]) if ally_cfg else ""
+
+    # ---- Leader attachment (Phase 4b). A leader (datasheet in store.leads) can
+    # attach to an in-army Bodyguard it may lead, capped at one leader per bodyguard.
+    leads_targets = {t["id"] for t in store.leads.get(did, [])}
+    attach_targets = []
+    attached_leader_name = ""
+    siblings = c.execute(
+        "SELECT id, datasheet_id, attached_to FROM army_units WHERE army_list_id=? AND id!=?",
+        (au["army_list_id"], au["id"])).fetchall()
+    if leads_targets:  # this unit is a leader → list bodyguards it can still join
+        taken = {s["attached_to"] for s in siblings if s["attached_to"]}
+        for sib in siblings:
+            sdid = store.ds_by_id.get(sib["datasheet_id"], {}).get("id") or sib["datasheet_id"]
+            if sdid in leads_targets and (sib["id"] not in taken or sib["id"] == attached_to):
+                attach_targets.append({"id": sib["id"],
+                                       "name": store.ds_by_id.get(sdid, {}).get("name", "")})
+    for sib in siblings:  # is a leader attached to THIS unit (bodyguard)?
+        if sib["attached_to"] == au["id"]:
+            attached_leader_name = store.ds_by_id.get(sib["datasheet_id"], {}).get("name", "")
+            break
 
     return {
         "id": au["id"],
@@ -136,13 +289,29 @@ def _army_unit_row(c, au):
         "squad_size": squad_size,
         "squad_min": bounds["min"],
         "squad_max": bounds["max"],
+        "composition": _composition_breakdown(did, squad_size),
         "assigned_count": assigned,
         "owned_count": owned,
         "available_count": available,
         "points": pts,
+        "wargear_points": wargear_pts,
+        "loadout": loadout,
+        "loadout_summary": loadout_summary,
+        "wargear_schema": wargear.wargear_schema(did),
+        "wargear_violations": wargear_violations,
         "enhancement_id": enhancement_id,
         "enhancement_name": enh_name,
         "enhancement_cost": enh_cost,
+        "is_character": is_character,
+        "is_epic_hero": is_epic_hero,
+        "can_have_enhancement": is_character and not is_epic_hero
+                                and (not is_ally or bool(ally_cfg and ally_cfg["can_take_enhancements"])),
+        "is_warlord": is_warlord,
+        "is_ally": is_ally,
+        "ally_faction": ally_faction,
+        "attached_to": attached_to,
+        "attach_targets": attach_targets,
+        "attached_leader_name": attached_leader_name,
         "notes": au["notes"] or "",
         "sort_order": au["sort_order"],
     }

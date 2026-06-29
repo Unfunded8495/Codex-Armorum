@@ -18,10 +18,11 @@ from flask import (Flask, Response, abort, jsonify, render_template, request,
 
 import factions_theme as ft
 from army import (
-    _army_unit_row, _datasheet_in_faction, _enhancement_cost,
+    _army_unit_row, _enhancement_cost,
     _enhancement_for, _normalise_squad_size, _points_for,
-    _valid_detachment_for_faction,
+    _valid_detachment_for_faction, battle_size_caps,
 )
+from army_validation import validation_payload
 from box_sets import (
     _clean_box_payload, _save_custom_box, _unit_search_pool,
     bought_info, bought_totals, box_set_by_id, box_sets,
@@ -428,6 +429,20 @@ def api_faction_units(fid):
     # membership, used by the faction grid and other browse surfaces.
     if request.args.get("for") == "army-builder":
         units = store.selectable_units_for_army(fid)
+        # Allied units (Phase 5b): offer the host faction's allowed allies, tagged
+        # is_ally + ally_faction. Native-first — a datasheet native to the faction is
+        # never offered as an ally even if it also appears in an ally config.
+        added = {u["id"] for u in units}
+        for cfg in store.allied_configs(fid):
+            label = " / ".join(cfg["ally_faction_names"]) or "Allies"
+            for did in cfg["datasheet_ids"]:
+                ds = store.ds_by_id.get(did)
+                if ds and did not in added:
+                    added.add(did)
+                    au = dict(ds)
+                    au["is_ally"] = True
+                    au["ally_faction"] = label
+                    units.append(au)
     else:
         units = store.units_for_faction(fid)
     for u in units:
@@ -463,8 +478,13 @@ def api_faction_detachments(fid):
     # Space Marines pool because Wahapedia does not attribute detachments to
     # chapters.
     detachments = store.detachments_for_faction(fid)
-    return jsonify([{"id": d["id"], "name": d["name"], "type": d.get("type", "")}
-                    for d in detachments])
+    # Combat Patrol detachments are a separate (Phase 6) game mode and must not
+    # appear in the normal builder. points_cost lets the UI gate detachments
+    # against the army's battle-size detachment limit.
+    return jsonify([{"id": d["id"], "name": d["name"], "type": d.get("type", ""),
+                     "points_cost": d.get("points_cost", 0)}
+                    for d in detachments
+                    if not d.get("is_combat_patrol")])
 
 
 @app.route("/api/detachments/<dtid>/enhancements")
@@ -478,6 +498,39 @@ def api_detachment_enhancements(dtid):
         "cost": _int(e.get("cost", 0)),
         "description": e.get("description", ""),
     } for e in enhs])
+
+
+@app.route("/api/army-units/<auid>/enhancements")
+def api_army_unit_enhancements(auid):
+    """Enhancements a specific army-unit may take: eligible for the unit, in the
+    army's detachment, and not already assigned to a sibling unit (uniqueness). The
+    unit's own current pick is always included so it stays visible and clearable."""
+    from db import db
+    from eligibility import eligible_enhancements
+    with db() as c:
+        row = c.execute("SELECT * FROM army_units WHERE id=?", (auid,)).fetchone()
+        if not row:
+            abort(404)
+        army = c.execute("SELECT * FROM army_lists WHERE id=?", (row["army_list_id"],)).fetchone()
+        dtid = (army["detachment_id"] if army else "") or ""
+        own = str(row["enhancement_id"] or "")
+        taken = {str(r["enhancement_id"]) for r in c.execute(
+            "SELECT enhancement_id FROM army_units WHERE army_list_id=? AND id!=? AND enhancement_id!=''",
+            (row["army_list_id"], auid)).fetchall()}
+    did = store.ds_by_id.get(row["datasheet_id"], {}).get("id") or row["datasheet_id"]
+    out, seen = [], set()
+    for e in eligible_enhancements(did, dtid):
+        if str(e["id"]) in taken:
+            continue
+        out.append({"id": e["id"], "name": e["name"], "cost": _int(e.get("cost", 0)),
+                    "description": e.get("description", "")})
+        seen.add(str(e["id"]))
+    if own and own not in seen:  # keep the current pick visible even if now ineligible
+        oe = _enhancement_for(own, dtid)
+        if oe:
+            out.append({"id": oe["id"], "name": oe["name"], "cost": _int(oe.get("cost", 0)),
+                        "description": oe.get("description", "")})
+    return jsonify(out)
 
 
 # ---------------------------------------------------------------- unit api
@@ -1020,6 +1073,35 @@ def serve_upload(fname):
 
 
 # ---------------------------------------------------------------- army api
+def _resolve_battle_size(name, posted_points):
+    """(battle_size, points_limit, caps). A named size derives its points limit;
+    anything else is stored as Custom and keeps the posted points."""
+    name = str(name or "").strip()
+    caps = battle_size_caps(name)
+    if caps["points_limit"] is not None:
+        return name, caps["points_limit"], caps
+    return "Custom", _as_int(posted_points, 2000, minimum=0), caps
+
+
+def _detachment_cost_error(dtid, caps):
+    """Error string if the detachment's points cost exceeds the battle size's
+    detachment limit, else None. A null limit (Custom) never errors."""
+    limit = caps["detachment_points_limit"]
+    if not dtid or limit is None:
+        return None
+    det = store.detachment_by_id.get(dtid)
+    if det and (det.get("points_cost") or 0) > limit:
+        return (f"Detachment costs {det['points_cost']} points but this "
+                f"battle size allows {limit}")
+    return None
+
+
+@app.route("/api/battle-sizes")
+def api_battle_sizes():
+    """The three battle sizes with their points / enhancement / duplicate caps."""
+    return jsonify(store.battle_sizes)
+
+
 @app.route("/api/armies")
 def api_list_armies():
     from db import db
@@ -1028,11 +1110,12 @@ def api_list_armies():
         out = []
         for r in rows:
             units = c.execute(
-                "SELECT squad_size, datasheet_id, enhancement_id FROM army_units WHERE army_list_id=?",
+                "SELECT squad_size, datasheet_id, enhancement_id, wargear_points FROM army_units WHERE army_list_id=?",
                 (r["id"],)).fetchall()
             total_pts = sum(
                 _points_for(u["datasheet_id"], u["squad_size"]) +
-                _enhancement_cost(u["enhancement_id"], r["detachment_id"] or "")
+                _enhancement_cost(u["enhancement_id"], r["detachment_id"] or "") +
+                (u["wargear_points"] or 0)
                 for u in units)
             fac = store.faction_by_id.get(r["faction_id"], {})
             # theme_for keeps reading the canonical name so the colours follow
@@ -1040,6 +1123,7 @@ def api_list_armies():
             # label (common_name or canonical).
             primary, accent, _ = ft.theme_for(fac.get("name", ""))
             dt = store.detachment_by_id.get(r["detachment_id"] or "", {})
+            caps = battle_size_caps(r["battle_size"])
             out.append({
                 "id": r["id"],
                 "name": r["name"],
@@ -1051,6 +1135,10 @@ def api_list_armies():
                 "detachment_id": r["detachment_id"] or "",
                 "detachment_name": dt.get("name", ""),
                 "points_limit": r["points_limit"],
+                "battle_size": r["battle_size"] or "",
+                "enhancement_limit": caps["enhancement_limit"],
+                "duplicate_unit_limit": caps["duplicate_unit_limit"],
+                "detachment_points_limit": caps["detachment_points_limit"],
                 "total_points": total_pts,
                 "unit_count": len(units),
                 "primary": primary,
@@ -1070,12 +1158,17 @@ def api_create_army():
     dtid = str(data.get("detachment_id", ""))
     if not _valid_detachment_for_faction(fid, dtid):
         return jsonify({"ok": False, "error": "Detachment does not belong to that faction"}), 400
-    pts_limit = _as_int(data.get("points_limit"), 2000, minimum=0)
+    battle_size, pts_limit, caps = _resolve_battle_size(
+        data.get("battle_size", ""), data.get("points_limit"))
+    err = _detachment_cost_error(dtid, caps)
+    if err:
+        return jsonify({"ok": False, "error": err}), 400
     notes = str(data.get("notes", ""))[:2000]
     aid = uuid.uuid4().hex
     with db() as c:
-        c.execute("""INSERT INTO army_lists(id, name, faction_id, detachment_id, points_limit, notes, created_at)
-                     VALUES(?,?,?,?,?,?,?)""", (aid, name, fid, dtid, pts_limit, notes, time.time()))
+        c.execute("""INSERT INTO army_lists(id, name, faction_id, detachment_id, points_limit, battle_size, notes, created_at)
+                     VALUES(?,?,?,?,?,?,?,?)""",
+                  (aid, name, fid, dtid, pts_limit, battle_size, notes, time.time()))
     return jsonify({"ok": True, "id": aid})
 
 
@@ -1090,7 +1183,9 @@ def api_get_army(aid):
             "SELECT * FROM army_units WHERE army_list_id=? ORDER BY sort_order, rowid",
             (aid,)).fetchall()
         units = [_army_unit_row(c, u) for u in units_rows]
-    total_pts = sum(u["points"] + (u["enhancement_cost"] or 0) for u in units)
+        vp = validation_payload(c, aid, units=units)
+    total_pts = vp["total_points"]
+    caps = battle_size_caps(row["battle_size"])
     fac = store.faction_by_id.get(row["faction_id"], {})
     primary, accent, _ = ft.theme_for(fac.get("name", ""))
     dt = store.detachment_by_id.get(row["detachment_id"] or "", {})
@@ -1104,10 +1199,18 @@ def api_get_army(aid):
         "icon_url": _faction_icon_url(row["faction_id"], fac.get("name", "")),
         "detachment_id": row["detachment_id"] or "",
         "detachment_name": dt.get("name", ""),
+        "detachment_rules": dt.get("rules", []),
+        "detachment_unlocks": dt.get("unlocks_datasheets", []),
+        "detachment_excludes": dt.get("excludes_datasheets", []),
         "points_limit": row["points_limit"],
+        "battle_size": row["battle_size"] or "",
+        "enhancement_limit": caps["enhancement_limit"],
+        "duplicate_unit_limit": caps["duplicate_unit_limit"],
+        "detachment_points_limit": caps["detachment_points_limit"],
         "total_points": total_pts,
         "notes": row["notes"] or "",
         "units": units,
+        "validation": vp["validation"],
         "primary": primary,
         "accent": accent,
     })
@@ -1125,13 +1228,30 @@ def api_update_army(aid):
         dtid = str(data.get("detachment_id", row["detachment_id"] or ""))
         if not _valid_detachment_for_faction(row["faction_id"], dtid):
             return jsonify({"ok": False, "error": "Detachment does not belong to this army's faction"}), 400
-        pts_limit = _as_int(data.get("points_limit", row["points_limit"]), row["points_limit"], minimum=0)
+        battle_size, pts_limit, caps = _resolve_battle_size(
+            data.get("battle_size", row["battle_size"]),
+            data.get("points_limit", row["points_limit"]))
+        # Auto-clear a detachment that no longer fits the (possibly downgraded)
+        # battle size rather than rejecting — avoids a save dead-end where the
+        # user can change neither value first.
+        if _detachment_cost_error(dtid, caps):
+            dtid = ""
         notes = str(data.get("notes", row["notes"] or ""))[:2000]
-        c.execute("UPDATE army_lists SET name=?, detachment_id=?, points_limit=?, notes=? WHERE id=?",
-                  (name, dtid, pts_limit, notes, aid))
+        c.execute("UPDATE army_lists SET name=?, detachment_id=?, points_limit=?, battle_size=?, notes=? WHERE id=?",
+                  (name, dtid, pts_limit, battle_size, notes, aid))
         if dtid != (row["detachment_id"] or ""):
             c.execute("UPDATE army_units SET enhancement_id='' WHERE army_list_id=?", (aid,))
-    return jsonify({"ok": True})
+        payload = validation_payload(c, aid)
+    return jsonify({
+        "ok": True,
+        "battle_size": battle_size,
+        "points_limit": pts_limit,
+        "detachment_id": dtid,
+        "enhancement_limit": caps["enhancement_limit"],
+        "duplicate_unit_limit": caps["duplicate_unit_limit"],
+        "detachment_points_limit": caps["detachment_points_limit"],
+        **payload,
+    })
 
 
 @app.route("/api/armies/<aid>", methods=["DELETE"])
@@ -1158,11 +1278,19 @@ def api_add_army_unit(aid):
     if did not in store.ds_by_id:
         return jsonify({"ok": False, "error": "Unknown datasheet"}), 400
     did = store.ds_by_id[did]["id"]  # Normalize to canonical Wahapedia id
-    if not _datasheet_in_faction(did, army["faction_id"]):
+    # Picker-parity guard: accept exactly the set the unit picker offered
+    # (selectable_units_for_army = the army faction's own units plus its parent's
+    # generics), so a chapter army can add the parent generics it was shown. This
+    # keeps picker and add-guard in lockstep by construction, while still rejecting
+    # cross-chapter sheets (e.g. Death Company Marines for an Ultramarines army).
+    # Allied datasheets are admitted by the separate ally clause (Phase 5b).
+    fid = army["faction_id"]
+    selectable = {u["id"] for u in store.selectable_units_for_army(fid)}
+    if did not in selectable and not store.ally_config_for(fid, did):
         return jsonify({"ok": False, "error": "Unit does not belong to this army's faction"}), 400
-    comp_range = _parse_comp_range(store.composition.get(did, []))
-    default_size = comp_range["min"] if comp_range else 1
-    squad_size = _normalise_squad_size(did, data.get("squad_size", default_size), default_size)
+    # _normalise_squad_size resolves the default (the unit's default composition
+    # size) from the structured tiers when no squad_size is posted.
+    squad_size = _normalise_squad_size(did, data.get("squad_size"))
     auid = uuid.uuid4().hex
     with db() as c:
         max_order = c.execute(
@@ -1173,7 +1301,8 @@ def api_add_army_unit(aid):
                   (auid, aid, did, squad_size, 0, "", "", max_order + 1))
         row = c.execute("SELECT * FROM army_units WHERE id=?", (auid,)).fetchone()
         unit_data = _army_unit_row(c, row)
-    return jsonify({"ok": True, "unit": unit_data})
+        payload = validation_payload(c, aid)
+    return jsonify({"ok": True, "unit": unit_data, **payload})
 
 
 @app.route("/api/army-units/<auid>", methods=["POST"])
@@ -1197,9 +1326,73 @@ def api_update_army_unit(auid):
         squad_size = _normalise_squad_size(
             did, data.get("squad_size", row["squad_size"]), row["squad_size"])
         enhancement_id = str(data.get("enhancement_id", row["enhancement_id"] or ""))[:64]
-        if enhancement_id and not _enhancement_for(enhancement_id, army["detachment_id"] or ""):
-            return jsonify({"ok": False, "error": "Enhancement does not belong to this army's detachment"}), 400
+        if enhancement_id:
+            from eligibility import enhancement_eligible
+            e = _enhancement_for(enhancement_id, army["detachment_id"] or "")
+            if not e:
+                return jsonify({"ok": False, "error": "Enhancement does not belong to this army's detachment"}), 400
+            _u = store.ds_by_id.get(did, {})
+            if not enhancement_eligible(set(_u.get("_keywords") or []), _u.get("role"),
+                                        e.get("eligibility_struct") or {}, _u.get("name")):
+                return jsonify({"ok": False, "error": "This unit is not eligible for that enhancement"}), 400
+            dup = c.execute(
+                "SELECT 1 FROM army_units WHERE army_list_id=? AND id!=? AND enhancement_id=? LIMIT 1",
+                (row["army_list_id"], auid, enhancement_id)).fetchone()
+            if dup:
+                return jsonify({"ok": False, "error": "That enhancement is already taken in this army"}), 400
         notes = str(data.get("notes", row["notes"] or ""))[:2000]
+
+        # ---- Warlord: at most one per army; only a Character may hold it. Setting
+        # true clears every other unit and reports the cleared id to the client. ----
+        cleared_warlord_auid = None
+        if "is_warlord" in data:
+            is_warlord = 1 if data.get("is_warlord") else 0
+            if is_warlord:
+                _u = store.ds_by_id.get(did, {})
+                if "Character" not in set(_u.get("_keywords") or []):
+                    return jsonify({"ok": False, "error": "Only a Character can be the Warlord"}), 400
+                _prev = c.execute(
+                    "SELECT id FROM army_units WHERE army_list_id=? AND id!=? AND is_warlord=1 LIMIT 1",
+                    (row["army_list_id"], auid)).fetchone()
+                cleared_warlord_auid = _prev["id"] if _prev else None
+                c.execute("UPDATE army_units SET is_warlord=0 WHERE army_list_id=? AND id!=?",
+                          (row["army_list_id"], auid))
+        else:
+            is_warlord = row["is_warlord"] if "is_warlord" in row.keys() else 0
+
+        # ---- Leader attachment (Phase 4b): attach this leader to an in-army
+        # Bodyguard it may lead (one leader per bodyguard), or '' to detach. ----
+        if "attached_to" in data:
+            attached_to = str(data.get("attached_to") or "")[:64]
+            if attached_to:
+                tgt = c.execute("SELECT * FROM army_units WHERE id=? AND army_list_id=?",
+                                (attached_to, row["army_list_id"])).fetchone()
+                if not tgt:
+                    return jsonify({"ok": False, "error": "Bodyguard unit not found in this army"}), 400
+                tgt_did = store.ds_by_id.get(tgt["datasheet_id"], {}).get("id") or tgt["datasheet_id"]
+                if tgt_did not in {t["id"] for t in store.leads.get(did, [])}:
+                    return jsonify({"ok": False, "error": "This leader cannot join that unit"}), 400
+                if c.execute("SELECT 1 FROM army_units WHERE army_list_id=? AND id!=? AND attached_to=? LIMIT 1",
+                             (row["army_list_id"], auid, attached_to)).fetchone():
+                    return jsonify({"ok": False, "error": "That unit already has a leader"}), 400
+        else:
+            attached_to = row["attached_to"] if "attached_to" in row.keys() else ""
+
+        # ---- wargear loadout patch: merge the posted keys onto the stored sparse
+        # overrides, validate at the (possibly new) squad size, store the diff. ----
+        loadout_json = row["loadout"] if "loadout" in row.keys() else ""
+        if "loadout" in data:
+            import json as _json
+            import wargear
+            try:
+                _existing = _json.loads(row["loadout"]) if (("loadout" in row.keys()) and row["loadout"]) else {}
+            except (TypeError, ValueError):
+                _existing = {}
+            _full = wargear.apply_overrides(did, squad_size, _existing)
+            for _k, _v in (data.get("loadout") or {}).items():
+                _full[_k] = _as_int(_v, 0)
+            _valid = wargear.validate_selection(did, squad_size, _full)
+            loadout_json = _json.dumps(_valid["overrides"], separators=(",", ":")) if _valid["overrides"] else ""
 
         owned = c.execute(
             "SELECT COUNT(*) cnt FROM minis WHERE unit_bsdata_id=?", (did,)).fetchone()["cnt"]
@@ -1210,21 +1403,30 @@ def api_update_army_unit(auid):
         requested_assigned = data["assigned_count"] if "assigned_count" in data else row["assigned_count"]
         assigned = max(0, min(_as_int(requested_assigned, 0), max_assignable))
 
-        c.execute("""UPDATE army_units SET squad_size=?, assigned_count=?, enhancement_id=?, notes=?
-                     WHERE id=?""", (squad_size, assigned, enhancement_id, notes, auid))
+        c.execute("""UPDATE army_units SET squad_size=?, assigned_count=?, enhancement_id=?, notes=?, loadout=?, is_warlord=?, attached_to=?
+                     WHERE id=?""", (squad_size, assigned, enhancement_id, notes, loadout_json, is_warlord, attached_to, auid))
         updated_row = c.execute("SELECT * FROM army_units WHERE id=?", (auid,)).fetchone()
         unit_data = _army_unit_row(c, updated_row)
-    return jsonify({"ok": True, "unit": unit_data})
+        if "loadout" in data:
+            # surface what the validator corrected during this request
+            unit_data["wargear_violations"] = _valid["violations"]
+        payload = validation_payload(c, row["army_list_id"])
+    return jsonify({"ok": True, "unit": unit_data, "cleared_warlord_auid": cleared_warlord_auid, **payload})
 
 
 @app.route("/api/army-units/<auid>", methods=["DELETE"])
 def api_delete_army_unit(auid):
     from db import db
     with db() as c:
-        if not c.execute("SELECT id FROM army_units WHERE id=?", (auid,)).fetchone():
+        row = c.execute("SELECT army_list_id FROM army_units WHERE id=?", (auid,)).fetchone()
+        if not row:
             abort(404)
         c.execute("DELETE FROM army_units WHERE id=?", (auid,))
-    return jsonify({"ok": True})
+        # Clear any leader still attached to the now-deleted bodyguard (no dangling ref).
+        c.execute("UPDATE army_units SET attached_to='' WHERE army_list_id=? AND attached_to=?",
+                  (row["army_list_id"], auid))
+        payload = validation_payload(c, row["army_list_id"])
+    return jsonify({"ok": True, **payload})
 
 
 # ---------------------------------------------------------------- purchases api

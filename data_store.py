@@ -112,6 +112,12 @@ class DataStore:
         self.wargear_options = {}
         self.loadout = {}
         self.wargear = {}
+        # Phase 0: structured army-building data surfaced from w40k.db. These
+        # were loaded then discarded; the army builder consumes them directly.
+        self.battle_sizes = []          # [{name, points_limit, enhancement_limit, ...}]
+        self.battle_size_by_name = {}   # name -> battle size dict (O(1) lookup)
+        self.composition_tiers = {}     # did -> [{points, is_default, models:[{model,min,max}]}]
+        self.wargear_loadout = {}       # did -> {options, choose_from, limited_choices, all_model_choices, ...}
         self.keywords = {}
         self.detachments_by_faction = {}
         self.detachment_by_id = {}
@@ -122,6 +128,7 @@ class DataStore:
         self.leaders_for = {}
         self.led_by = {}
         self.leads = {}
+        self.allied_by_host = {}        # host_faction_id -> [ally config dict] (Phase 5b)
 
         # Retained for back-compat with anything that may still test for it.
         # Chapter rollup is gone - chapters are real factions now.
@@ -149,8 +156,32 @@ class DataStore:
             self._load_factions(conn)
             self._load_datasheets(conn)
             self._load_detachment_data(conn)
+            self._load_battle_sizes(conn)
         finally:
             conn.close()
+
+    def _load_battle_sizes(self, conn):
+        """Load the three battle sizes (Incursion / Strike Force / Onslaught)
+        with their points, enhancement and duplicate-unit limits. These drive
+        roster legality in the army builder. Sorted ascending by points."""
+        try:
+            rows = conn.execute(
+                "SELECT name, points_limit, detachment_points_limit, "
+                "enhancement_limit, duplicate_unit_limit FROM battle_size"
+            ).fetchall()
+        except sqlite3.OperationalError:
+            return
+        self.battle_sizes = sorted(
+            ({
+                "name": r["name"],
+                "points_limit": r["points_limit"],
+                "detachment_points_limit": r["detachment_points_limit"],
+                "enhancement_limit": r["enhancement_limit"],
+                "duplicate_unit_limit": r["duplicate_unit_limit"],
+            } for r in rows),
+            key=lambda b: b["points_limit"] or 0,
+        )
+        self.battle_size_by_name = {b["name"]: b for b in self.battle_sizes}
 
     def _load_factions(self, conn):
         # `name` is the canonical faction keyword (identity / linking / theming).
@@ -347,6 +378,7 @@ class DataStore:
                 "_ranged":       ranged,
                 "_melee":        melee,
                 "_composition":  composition,
+                "_comp_tiers":   pts_tiers_raw,
                 "_options":      wargear_loadout,
                 "_loadout":      loadout_sentence,
                 "_leads_names":  leads_units,
@@ -377,7 +409,11 @@ class DataStore:
                 self.keywords[u["id"]] = kws
             if u.get("_composition"):
                 self.composition[u["id"]] = u["_composition"]
+            if u.get("_comp_tiers"):
+                self.composition_tiers[u["id"]] = u["_comp_tiers"]
             options = u.get("_options") or {}
+            if options:
+                self.wargear_loadout[u["id"]] = options
             rules_text = options.get("rules_text") if isinstance(options, dict) else None
             if rules_text:
                 # Surface rules_text as a list of {description: ...} entries so
@@ -763,8 +799,12 @@ class DataStore:
                 self.detachments_by_faction.setdefault(fid, []).append(det)
 
         for r in conn.execute("""SELECT id, detachment_id, name, points, type,
-                                        rules_text, eligibility_text
+                                        rules_text, eligibility_text, eligibility
                                  FROM enhancement""").fetchall():
+            try:
+                eligibility_struct = json.loads(r["eligibility"] or "{}")
+            except (TypeError, ValueError):
+                eligibility_struct = {}
             self.enhancements_by_detachment.setdefault(
                 r["detachment_id"], []).append({
                     "id":            r["id"],
@@ -774,6 +814,7 @@ class DataStore:
                     "description":   r["rules_text"] or "",
                     "type":          r["type"] or "",
                     "eligibility":   r["eligibility_text"] or "",
+                    "eligibility_struct": eligibility_struct,
                 })
 
         for r in conn.execute("""SELECT id, detachment_id, name, cp_cost,
@@ -783,12 +824,61 @@ class DataStore:
             self.stratagems_by_detachment.setdefault(
                 r["detachment_id"], []).append(dict(r))
 
+        # Allied factions (Phase 5b): each host faction's allowed ally configs.
+        ally_hosts = {}      # allied_faction_id -> [host_faction_id]
+        for r in conn.execute("SELECT allied_faction_id, host_faction_id FROM allied_faction_host"):
+            ally_hosts.setdefault(r["allied_faction_id"], []).append(r["host_faction_id"])
+        ally_dids = {}       # allied_faction_id -> {datasheet_id}
+        for r in conn.execute("SELECT allied_faction_id, datasheet_id FROM allied_faction_datasheet"):
+            if r["datasheet_id"]:
+                ally_dids.setdefault(r["allied_faction_id"], set()).add(r["datasheet_id"])
+        for r in conn.execute("""SELECT id, ally_factions, can_take_enhancements,
+                                        mutually_exclusive_keyword_limit, keyword_limits,
+                                        points_limits, required_detachments
+                                 FROM allied_faction"""):
+            try:
+                cfg = {
+                    "id": r["id"],
+                    "ally_faction_names": json.loads(r["ally_factions"] or "[]"),
+                    "datasheet_ids": ally_dids.get(r["id"], set()),
+                    "can_take_enhancements": bool(r["can_take_enhancements"]),
+                    "mutually_exclusive_keyword_limit": r["mutually_exclusive_keyword_limit"] or 0,
+                    "keyword_limits": json.loads(r["keyword_limits"] or "[]"),
+                    "points_limits": json.loads(r["points_limits"] or "[]"),
+                    "required_detachments": json.loads(r["required_detachments"] or "[]"),
+                }
+            except (TypeError, ValueError):
+                continue
+            for host_fid in ally_hosts.get(r["id"], []):
+                self.allied_by_host.setdefault(host_fid, []).append(cfg)
+
     # ---- queries -------------------------------------------------------
 
     def faction_parent(self, fid):
         """Parent faction id, or the input id when there is no parent."""
         parent = self._faction_parent.get(fid)
         return parent if parent else fid
+
+    def allied_configs(self, host_fid):
+        """Ally configs available to a host faction, with a parent-faction fallback
+        (mirrors detachment eligibility) so a chapter inherits its parent's allies.
+        De-duplicated by config id — a chapter that is itself a host shares configs
+        with its parent."""
+        seen, out = set(), []
+        for fid in (host_fid, self.faction_parent(host_fid)):
+            for cfg in self.allied_by_host.get(fid, []):
+                if cfg["id"] not in seen:
+                    seen.add(cfg["id"])
+                    out.append(cfg)
+        return out
+
+    def ally_config_for(self, host_fid, did):
+        """The ally config that makes datasheet ``did`` an allowed ally of host
+        faction ``host_fid`` (parent fallback), or ``None``."""
+        for cfg in self.allied_configs(host_fid):
+            if did in cfg["datasheet_ids"]:
+                return cfg
+        return None
 
     def is_chapter_faction(self, fid):
         """True when fid has a parent_faction (i.e. lives one level down from a

@@ -1,7 +1,9 @@
 import { showArmyList, deleteArmy, toggleCreateForm,
-         loadDetachmentsFor, submitCreateArmy } from './army-list.js';
+         loadDetachmentsFor, submitCreateArmy, onCafBattleSize } from './army-list.js';
 import { showArmy, saveArmyMeta, updateSquadSize, updateAssigned,
-         toggleEnhEditor, saveEnhancement, removeArmyUnit } from './army-detail.js';
+         toggleEnhEditor, saveEnhancement, removeArmyUnit, toggleWarlord,
+         attachLeader, detachLeader, onAbBattleSize, toggleDetRule,
+         toggleWargear, setWargearStep, setWargearRadio, setWargearSlot } from './army-detail.js';
 import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy } from './unit-picker.js';
 import { initLightbox } from './lightbox.js';
 import { refreshLedger } from './header.js';
@@ -21,9 +23,10 @@ refreshLedger();
 
 /* ---- exports for inline onclick handlers in dynamically-rendered HTML --- */
 Object.assign(window, {
-  deleteArmy, toggleCreateForm, loadDetachmentsFor, submitCreateArmy,
+  deleteArmy, toggleCreateForm, loadDetachmentsFor, submitCreateArmy, onCafBattleSize,
   saveArmyMeta, updateSquadSize, updateAssigned,
-  toggleEnhEditor, saveEnhancement, removeArmyUnit,
+  toggleEnhEditor, saveEnhancement, removeArmyUnit, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleDetRule,
+  toggleWargear, setWargearStep, setWargearRadio, setWargearSlot,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy,
 });
 

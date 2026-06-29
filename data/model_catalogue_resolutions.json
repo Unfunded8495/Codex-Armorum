@@ -2053,11 +2053,13 @@
     },
     {
       "catalogue_model_id": "MD-50349",
-      "action": "no_current_datasheet",
-      "catalogue_type": "model_release",
-      "datasheet_ids": [],
+      "action": "link_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [
+        "7deaf954-52cc-4aa0-ac42-a0ef8e80caba"
+      ],
       "notes": "",
-      "updated_at": 1780330682.3707514
+      "updated_at": 1782672882.0725064
     },
     {
       "catalogue_model_id": "MD-50350",
@@ -2107,13 +2109,13 @@
     },
     {
       "catalogue_model_id": "MD-50355",
-      "action": "link_multiple_datasheets",
-      "catalogue_type": "model_release",
+      "action": "link_datasheet",
+      "catalogue_type": "",
       "datasheet_ids": [
         "fca25525-c8dc-4ae0-b1b3-83d44b824eb1"
       ],
       "notes": "",
-      "updated_at": 1780346467.876183
+      "updated_at": 1782672105.2274325
     },
     {
       "catalogue_model_id": "MD-50356",
@@ -6559,9 +6561,11 @@
       "catalogue_model_id": "MD-50977",
       "action": "link_datasheet",
       "catalogue_type": "",
-      "datasheet_ids": [],
+      "datasheet_ids": [
+        "d7d98a90-7e1d-4432-976e-9219baece76c"
+      ],
       "notes": "",
-      "updated_at": 1782046599.3696358
+      "updated_at": 1782671682.3170962
     },
     {
       "catalogue_model_id": "MD-50978",
@@ -6573,11 +6577,13 @@
     },
     {
       "catalogue_model_id": "MD-50979",
-      "action": "no_current_datasheet",
+      "action": "link_datasheet",
       "catalogue_type": "",
-      "datasheet_ids": [],
+      "datasheet_ids": [
+        "a0a04c15-fee5-4144-9bb7-6d9fdc78fea1"
+      ],
       "notes": "",
-      "updated_at": 1781684329.7498658
+      "updated_at": 1782667782.9063504
     },
     {
       "catalogue_model_id": "MD-50980",

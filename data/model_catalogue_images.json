@@ -1402,6 +1402,12 @@
       "caption": ""
     },
     {
+      "catalogue_model_id": "MD-50349",
+      "local_path": "cache/images/catalogue/MD-50349.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
       "catalogue_model_id": "MD-50351",
       "local_path": "cache/images/catalogue/MD-50351.jpg",
       "source": "user",
@@ -1410,6 +1416,12 @@
     {
       "catalogue_model_id": "MD-50354",
       "local_path": "cache/images/catalogue/MD-50354.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50355",
+      "local_path": "cache/images/catalogue/MD-50355.jpg",
       "source": "user",
       "caption": ""
     },
