@@ -500,7 +500,8 @@ def api_faction_detachments(fid):
     # a supported game mode in the builder. points_cost lets the UI gate
     # detachments against the army's battle-size detachment limit.
     return jsonify([{"id": d["id"], "name": d["name"], "type": d.get("type", ""),
-                     "points_cost": d.get("points_cost", 0)}
+                     "points_cost": d.get("points_cost", 0),
+                     "restrictions": d.get("restrictions") or []}
                     for d in detachments
                     if not d.get("is_combat_patrol")])
 
@@ -1341,6 +1342,9 @@ def api_get_army(aid):
         "faction_display_name": fac.get("display_name") or fac.get("name", row["faction_id"]),
         "faction_parent_display_name": fac.get("parent_display_name") or "",
         "icon_url": _faction_icon_url(row["faction_id"], fac.get("name", "")),
+        "banner_url": _faction_card_image_url(
+            fac.get("display_name") or fac.get("name", row["faction_id"]),
+            fac.get("name", row["faction_id"])),
         "detachment_id": dt_ids[0] if dt_ids else "",
         "detachment_ids": dt_ids,
         "detachments": dp["detachments"],

@@ -1,7 +1,7 @@
 """Army builder helpers: points calculation, enhancements, unit row assembly."""
 import json
 
-from data_store import get_store, ROLE_ORDER
+from data_store import foc_category, get_store, ROLE_ORDER
 from utils import _int, _as_int
 
 
@@ -217,18 +217,16 @@ DUP_BASE = {"Incursion": 2, "Strike Force": 3, "Onslaught": 4}
 def duplicate_cap(battle_size, did):
     """Max copies of datasheet ``did`` at ``battle_size``. Epic Heroes → 1 at any
     size (unique). Otherwise the per-size base from ``DUP_BASE`` (``None`` for Custom
-    / Combat Patrol → no Rule-of-N), **doubled for Battleline / Dedicated Transport**.
-    Battleline/Transport are detected via the unit's keywords, never ``role`` (which
-    is single-valued and has no Dedicated-Transport entry); safe because Battleline
-    never intersects Character or Epic Hero."""
+    / Combat Patrol → no Rule-of-N), **doubled for Battleline / Dedicated Transport**
+    (via ``foc_category()``, the same Force-Org bucket the roster's section
+    headers use, so the two never disagree)."""
     ds = get_store().ds_by_id.get(did, {})
     if ds.get("role") == "Epic Hero":
         return 1
     base = DUP_BASE.get(battle_size)  # None for Custom / Combat Patrol
     if base is None:
         return None
-    kws = set(ds.get("_keywords") or [])
-    if "Battleline" in kws or "Dedicated Transport" in kws:
+    if foc_category(ds) in ("Battleline", "Dedicated Transports"):
         return base * 2
     return base
 
@@ -350,6 +348,7 @@ def _army_unit_row(c, au):
         "datasheet_id": did,
         "name": ds.get("name", ""),
         "role": ds.get("role", ""),
+        "foc_category": foc_category(ds),
         "squad_size": squad_size,
         "squad_min": bounds["min"],
         "squad_max": bounds["max"],

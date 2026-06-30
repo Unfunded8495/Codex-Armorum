@@ -49,6 +49,22 @@ ROLE_ORDER = [
 FACTION_KW_PREFIX = "Faction: "
 
 
+def foc_category(ds):
+    """Force-Org bucket for the army-builder roster's section headers:
+    Characters, Battleline, Dedicated Transports, Other Datasheets. Detected
+    via keywords (not `role`, which is single-valued and has no
+    Dedicated-Transport entry) -- the same source `duplicate_cap()` and
+    `is_character` already use, so the three stay in lockstep."""
+    kws = set(ds.get("_keywords") or [])
+    if ds.get("role") == "Epic Hero" or "Character" in kws:
+        return "Characters"
+    if "Dedicated Transport" in kws:
+        return "Dedicated Transports"
+    if "Battleline" in kws:
+        return "Battleline"
+    return "Other Datasheets"
+
+
 def _nfkd(s):
     """NFKD-normalise, strip combining marks, and casefold a string for tolerant
     name lookup. Used for the `leads_units` / `can_be_led_by` name resolution;
@@ -1005,6 +1021,7 @@ class DataStore:
                 "name":   d["name"],
                 "role":   d.get("role") or "Other",
                 "points": self._cheapest_points(d["id"]),
+                "foc_category": foc_category(d),
             })
         units.sort(key=lambda u: (_role_rank(u["role"]), u["name"]))
         return units
