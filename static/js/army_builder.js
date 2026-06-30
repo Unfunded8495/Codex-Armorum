@@ -3,7 +3,7 @@ import { showArmyList, deleteArmy, toggleCreateForm, importArmyList,
 import { showArmy, saveArmyMeta, updateSquadSize, updateAssigned,
          toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord,
          attachLeader, detachLeader, onAbBattleSize, toggleCollapse, toggleAccordion, toggleOptBody,
-         onAddDetachment, removeDetachment, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
+         toggleDetachmentCard, removeDetachment, toggleDpExpand, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
          toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard, exportArmy } from './army-detail.js';
 import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy } from './unit-picker.js';
 import { initLightbox } from './lightbox.js';
@@ -27,7 +27,7 @@ Object.assign(window, {
   deleteArmy, toggleCreateForm, submitCreateArmy, onCafBattleSize,
   saveArmyMeta, updateSquadSize, updateAssigned,
   toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleCollapse, toggleAccordion, toggleOptBody,
-  onAddDetachment, removeDetachment, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
+  toggleDetachmentCard, removeDetachment, toggleDpExpand, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
   toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy,
   exportArmy, importArmyList,

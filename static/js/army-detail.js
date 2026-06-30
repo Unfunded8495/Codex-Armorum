@@ -158,60 +158,67 @@ function renderConfigBattleSize(army){
 // budget-aware add control). The add options are filled on open.
 function renderConfigDetachment(army){
   return `
-    <div class="ab-rp-head"><h3 class="ab-rp-title">Detachment${(army.detachments||[]).length===1?'':'s'}</h3>
+    <div class="ab-rp-head"><h3 class="ab-rp-title">Choose Detachments</h3>
       <button class="ab-rp-close" type="button" onclick="clearRight()" title="Close">&times;</button></div>
     <div class="ab-rp-body">
       ${renderDetachmentPanel(army)}
     </div>`;
 }
 
-// Detachment Points panel: the selected detachments as removable chips, a live
-// "used / budget DP" readout, and an add control. This is the reusable
-// spend-against-a-budget primitive (enhancement / duplicate indicators reuse it).
+// "**word**" markdown bold -> <b>, applied to already-escaped text (the `**`
+// markers survive esc() since they aren't HTML-special, and the tags this
+// injects are ours, not user input, so this is safe to run post-escape).
+function mdBold(escaped){
+  return escaped.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+}
+
+// DP-budget card list (matches the reference app's "Choose Detachments"
+// screen): every faction detachment is its own card, selected ones outlined,
+// unaffordable ones dimmed, and a chevron expands the detachment's
+// `restrictions` blurb text when it has any. Clicking a card's name toggles
+// it on/off directly -- no separate add control.
 function renderDetachmentPanel(army){
   const budget = army.detachment_points_limit;          // null = Custom (no cap)
   const used   = army.detachment_points_used || 0;
-  const dets   = army.detachments || [];
   const over   = budget != null && used > budget;
   const budgetLabel = budget == null ? `${used} DP` : `${used} / ${budget} DP`;
-  const chips = dets.length
-    ? dets.map(d=>`
-        <div class="ab-detach-chip" data-testid="detachment-chip" data-id="${esc(d.id)}">
-          <span class="ab-detach-chip-main">
-            <span class="ab-detach-chip-name">${esc(d.name||d.id)}</span>
-            ${d.disposition?`<span class="ab-detach-chip-disp" data-testid="detachment-disposition" title="Force Disposition">⬡ ${esc(d.disposition)}</span>`:''}
-          </span>
-          <span class="ab-detach-chip-cost">${d.cost||0} DP</span>
-          <button class="ab-detach-chip-x" type="button" title="Remove detachment"
-                  data-testid="detachment-remove" onclick="removeDetachment('${esc(d.id)}')">&times;</button>
-        </div>`).join('')
-    : `<span class="ab-detach-empty">No detachment selected</span>`;
-  return `
-    <div class="ab-card ab-detach-card" data-testid="detachment-panel">
-      <div class="ab-detach-head">
-        <p class="ab-card-title" style="margin:0">Detachment${dets.length===1?'':'s'}</p>
-        <span class="ab-dp-budget ${over?'is-over':''}" id="abDpBudget" data-testid="dp-budget">${budgetLabel}</span>
+  const have = new Set(army.detachment_ids || []);
+  const remaining = budget == null ? Infinity : budget - used;
+  const dispositionFor = {};
+  (army.detachments||[]).forEach(d=>{ dispositionFor[d.id] = d.disposition; });
+
+  const all = (state.detachCache[army.faction_id] || []).slice()
+    .sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  const cards = all.length ? all.map(d=>{
+    const selected = have.has(d.id);
+    const affordable = selected || (d.points_cost||0) <= remaining;
+    const restrictions = d.restrictions || [];
+    const expandId = `dpExpand-${esc(d.id)}`;
+    const disposition = dispositionFor[d.id];
+    // No per-detachment art exists -- the faction banner is the documented
+    // substitute, same image bled into every card per the reference app's look.
+    const artStyle = army.banner_url
+      ? `style="background-image:url('${esc(army.banner_url)}')${affordable?'':';opacity:.45'}"`
+      : (affordable?'':'style="opacity:.45"');
+    return `<div class="dp-card ${selected?'is-selected':''}" ${artStyle}>
+        ${restrictions.length?`<button type="button" class="dp-card-chev" onclick="event.stopPropagation();toggleDpExpand('${expandId}')" title="Show details">&#9662;</button>`:'<span class="dp-card-chev"></span>'}
+        <span class="dp-card-name" data-testid="detachment-chip" ${affordable?`onclick="toggleDetachmentCard('${esc(d.id)}')" style="cursor:pointer"`:''}>${esc(d.name)}${selected&&disposition?` <span class="ab-detach-chip-disp" data-testid="detachment-disposition" title="Force Disposition">&#11043; ${esc(disposition)}</span>`:''}</span>
+        <span class="dp-card-cost">${d.points_cost||0} DP</span>
       </div>
-      <div class="ab-detach-list" id="abDetachList">${chips}</div>
-      <select class="ab-detach-add" id="abDetachAdd" data-testid="detachment-add" onchange="onAddDetachment(this)">
-        <option value="">+ Add detachment&hellip;</option>
-      </select>
-    </div>`;
+      ${restrictions.length?`<div class="dp-card-expand" id="${expandId}" hidden>${restrictions.map(r=>`${r.title?`<h4>${esc(r.title)}</h4>`:''}${(r.bullets||[]).map(b=>`<p>${mdBold(esc(b))}</p>`).join('')}`).join('')}</div>`:''}`;
+  }).join('') : `<p class="po-empty">No detachments available for this faction.</p>`;
+
+  return `
+    <div class="dp-budget-head" data-testid="detachment-panel">
+      <span class="dp-budget-label">Available Detachment Points (DP)</span>
+      <span class="dp-budget-pill ${over?'is-over':''}" id="abDpBudget" data-testid="dp-budget">${budgetLabel}</span>
+    </div>
+    <div id="abDetachList">${cards}</div>`;
 }
 
-// <option>s for the "+ Add detachment" control: faction detachments not already
-// selected whose DP cost fits the remaining budget (all, for Custom).
-function addableDetachmentOptions(army){
-  const dts = state.detachCache[army.faction_id] || [];
-  const budget = army.detachment_points_limit;
-  const used   = army.detachment_points_used || 0;
-  const remaining = budget == null ? Infinity : budget - used;
-  const have = new Set(army.detachment_ids || []);
-  return dts
-    .filter(d => !have.has(d.id) && (d.points_cost||0) <= remaining)
-    .slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''))
-    .map(d => `<option value="${esc(d.id)}">${esc(d.name)} · ${d.points_cost||0} DP</option>`)
-    .join('');
+export function toggleDpExpand(id){
+  const el = document.getElementById(id);
+  if(el) el.hidden = !el.hidden;
 }
 
 function renderDetachmentRuleCard(army){
@@ -363,12 +370,6 @@ function fillBattleSizeSelect(army){
     + `<option value="Custom" ${cur==='Custom'?'selected':''}>Custom</option>`;
 }
 
-// Fill the "+ Add detachment" control in the right panel when its config opens.
-function fillDetachAdd(army){
-  const addSel = document.getElementById('abDetachAdd');
-  if(addSel) addSel.innerHTML = `<option value="">+ Add detachment&hellip;</option>` +
-    addableDetachmentOptions(army);
-}
 
 /* ---- right panel orchestration ------------------------------------------ */
 
@@ -379,7 +380,7 @@ export function selectConfig(kind){
   const rp = document.getElementById('rightPanel');
   if(!rp) return;
   if(kind === 'battlesize'){ rp.innerHTML = renderConfigBattleSize(state.army); fillBattleSizeSelect(state.army); }
-  else if(kind === 'detachment'){ rp.innerHTML = renderConfigDetachment(state.army); fillDetachAdd(state.army); }
+  else if(kind === 'detachment'){ rp.innerHTML = renderConfigDetachment(state.army); }
   rp.classList.add('is-open'); document.getElementById('rpScrim')?.classList.add('is-open');
 }
 
@@ -665,11 +666,13 @@ export function onAbBattleSize(){
 // Add / remove mutate the in-memory set then persist. Because a detachment
 // brings its own rules, enhancements and stratagems, the whole army is
 // re-fetched and re-rendered after the change.
-export function onAddDetachment(sel){
-  const id = sel && sel.value;
+// Click a detachment card's name to toggle it on/off (replaces the old
+// "+ Add detachment" <select>, which had no on-card way to remove one either).
+export function toggleDetachmentCard(id){
   if(!id || !state.army) return;
   const ids = state.army.detachment_ids || (state.army.detachment_ids = []);
-  if(!ids.includes(id)) ids.push(id);
+  if(ids.includes(id)) return removeDetachment(id);
+  ids.push(id);
   commitDetachments();
 }
 
