@@ -437,15 +437,60 @@ function renderUnitDetail(u){
     </div>
     <div class="ab-rp-body">
       <div class="ab-rp-pts"><b>${pts}</b> pts · <span class="ab-rp-role">${esc(u.role||'')}</span>${u.is_ally?` · <span class="au-ally">⚔ ${esc(u.ally_faction)}</span>`:''}</div>
-      ${u.is_character?`<button class="ab-rp-btn ${u.is_warlord?'is-on':''}" type="button" data-testid="unit-warlord-toggle" onclick="toggleWarlord('${u.id}')">${u.is_warlord?'★ Warlord':'☆ Set as Warlord'}</button>`:''}
-      ${u.can_have_enhancement?`<div class="ab-rp-section"><div class="ab-rp-sec-head">Enhancement</div><div id="rpEnh" class="au-enh-editor" data-testid="unit-enhancement-editor"></div></div>`:''}
-      ${hasWg?`<div class="ab-rp-section"><div class="ab-rp-sec-head">Wargear</div><div class="au-wargear-editor" data-testid="wargear-editor" id="rpWargear">${renderWargearEditor(u)}</div></div>`:''}
+      ${u.is_character?`<label class="uo-warlord-row"><span>Warlord</span><input type="checkbox" class="opt-check" data-testid="unit-warlord-toggle" ${u.is_warlord?'checked':''} onchange="toggleWarlord('${u.id}')"></label>`:''}
+      ${u.can_have_enhancement?accordionSection('Enhancements', `<div id="rpEnh" data-testid="unit-enhancement-editor"></div>`):''}
+      ${hasWg?accordionSection('Wargear Options', `<div class="opt-theme" data-testid="wargear-editor" id="rpWargear">${renderWargearEditor(u)}</div>`):''}
+      ${renderStatControls(u)}
       ${renderLeaderSection(u)}
       <div class="ab-rp-section">
         <button class="ab-rp-collapse" type="button" data-testid="unit-profiles-toggle" onclick="toggleUnitProfiles('${u.datasheet_id}', this)">
           <span class="ab-rp-sec-head" style="margin:0">Profiles</span><span class="ab-rp-collapse-chev">▸</span></button>
         <div id="rpProfiles" hidden></div>
       </div>
+    </div>`;
+}
+
+// Grey collapsible accordion (Enhancements / Wargear Options), open by
+// default. bodyHtml owns its own ids, so this is just the chrome around it.
+function accordionSection(title, bodyHtml){
+  return `<div class="ab-rp-section" style="border-top:none;margin-top:0;padding-top:0">
+      <button class="uo-accordion-head" type="button" onclick="toggleAccordion(this)">
+        <span>${esc(title)}</span><span class="uo-accordion-chev">▾</span>
+      </button>
+      <div class="uo-accordion-body">${bodyHtml}</div>
+    </div>`;
+}
+
+export function toggleAccordion(btn){
+  const body = btn.nextElementSibling;
+  const chev = btn.querySelector('.uo-accordion-chev');
+  if(!body) return;
+  const opening = body.hidden;
+  body.hidden = !opening;
+  if(chev) chev.textContent = opening ? '▾' : '▸';
+}
+
+// Squad size + assigned-from-collection: this project's collection tracking,
+// which the reference app has no equivalent screen for, so it lives here
+// rather than mapping to one of the app's own sections.
+function renderStatControls(u){
+  const squadMin = u.squad_min || 1;
+  const squadMax = u.squad_max || '';
+  const owned = u.owned_count, avail = u.available_count, assigned = u.assigned_count;
+  return `<div class="ab-rp-section">
+      <div class="ab-rp-sec-head">Squad &amp; Collection</div>
+      <div class="uo-stat-row">
+        <label>Squad Size</label>
+        <input class="au-size-input" data-testid="unit-size-input" type="number" min="${squadMin}" ${squadMax?`max="${squadMax}"`:''} value="${u.squad_size}"
+               onchange="updateSquadSize('${u.id}',this.value)" title="Squad size">
+      </div>
+      ${owned>0?`<div class="uo-stat-row">
+        <label>Assigned</label>
+        <input class="au-assign-input" type="number" min="0" max="${avail+assigned}" value="${assigned}"
+               onchange="updateAssigned('${u.id}',this.value)" title="Assigned models from collection">
+        <span style="font-family:'Oswald',sans-serif;font-size:11px;color:var(--parch-dim)">/ ${owned} owned</span>
+      </div>`:''}
+      <div class="au-ownership" id="au-own-${u.id}">${ownershipText(u)}</div>
     </div>`;
 }
 
@@ -520,10 +565,35 @@ async function fillUnitEnhancement(u){
     box.innerHTML = `<p class="ab-rp-hint">${(state.army.detachment_ids||[]).length?'No eligible enhancements for this unit.':'Select a detachment first.'}</p>`;
     return;
   }
-  box.innerHTML = `<select onchange="saveEnhancement('${u.id}',this.value)">
-      <option value="">— No enhancement —</option>
-      ${enhs.map(e=>`<option value="${esc(e.id)}" ${String(e.id)===String(u.enhancement_id)?'selected':''}>${esc(e.name)} (+${e.cost} pts)</option>`).join('')}
-    </select>`;
+  // Each enhancement is its own expand-for-rules-text card with a trailing
+  // checkbox (radio-like: choosing one clears any other via chooseEnhancement).
+  box.innerHTML = enhs.map(e=>{
+    const checked = String(e.id)===String(u.enhancement_id);
+    return `<div class="opt-row">
+        <button type="button" class="opt-chev" onclick="toggleOptBody(this)">▸</button>
+        <span class="opt-name">${esc(e.name)}</span>
+        <span class="opt-pts">${e.cost} Points</span>
+        <input type="checkbox" class="opt-check" data-enh-id="${esc(e.id)}" ${checked?'checked':''} onchange="chooseEnhancement('${u.id}',this)">
+      </div>
+      <div class="opt-body" hidden>${esc(e.description||'')}</div>`;
+  }).join('');
+}
+
+// Radio-like selection over the enhancement .opt-row checkboxes: unchecking
+// clears the enhancement, checking one clears any sibling immediately (so the
+// UI never shows two ticked while the save request is in flight).
+export function chooseEnhancement(auid, cb){
+  const id = cb.checked ? cb.dataset.enhId : '';
+  cb.closest('#rpEnh')?.querySelectorAll('.opt-check').forEach(o=>{ if(o!==cb) o.checked=false; });
+  saveEnhancement(auid, id);
+}
+
+export function toggleOptBody(btn){
+  const body = btn.parentElement.nextElementSibling;
+  if(!body) return;
+  const opening = body.hidden;
+  body.hidden = !opening;
+  btn.textContent = opening ? '▾' : '▸';
 }
 
 // Re-render the right panel's unit detail if `auid` is the one on screen (after a
@@ -766,15 +836,13 @@ document.addEventListener('click', closeAllKebabMenus);
 // reference app has no collection-tracking equivalent, so there's no screen
 // of theirs to place them in) -- they move into the unit-options right panel
 // once it grows Enhancements/Wargear Options accordions of its own.
+// Squad size / assigned-from-collection live in the unit-options right panel
+// (renderStatControls) now, reached via this row's body click -- the row
+// itself only needs a lightweight ownership indicator (the dot), not the
+// full controls.
 export function armyUnitRow(u, accent){
-  const auid     = u.id;
-  const owned    = u.owned_count;
-  const avail    = u.available_count;
-  const assigned = u.assigned_count;
-  const squad    = u.squad_size;
-  const pts      = u.points + (u.enhancement_cost||0);
-  const squadMin = u.squad_min || 1;
-  const squadMax = u.squad_max || '';
+  const auid = u.id;
+  const pts  = u.points + (u.enhancement_cost||0);
   const bodyguard = u.attached_to && state.army?.units.find(x=>x.id===u.attached_to);
 
   return `<div class="uc-row" data-testid="unit-row" id="au-${auid}" style="--cardarmy:${state.army?.primary||'var(--panel)'};--cardaccent:${accent||'var(--gold)'};--cardglow:${accent||'var(--gold)'}">
@@ -788,20 +856,6 @@ export function armyUnitRow(u, accent){
       <ul class="uc-bullets" id="au-comp-${auid}">${summaryBullets(u.loadout_summary).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
       ${bodyguard?`<div class="uc-attached-tag">Attached to <b>${esc(bodyguard.name)}</b></div>`:''}
       <div id="au-enh-line-${auid}">${u.enhancement_name?`<div class="uc-attached-tag">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>`:''}</div>
-      <div class="au-controls" onclick="event.stopPropagation()">
-        <div class="au-size-wrap">
-          <label>Squad</label>
-          <input class="au-size-input" data-testid="unit-size-input" type="number" min="${squadMin}" ${squadMax?`max="${squadMax}"`:''} value="${squad}"
-                 onchange="updateSquadSize('${auid}',this.value)" title="Squad size">
-        </div>
-        ${owned>0?`<div class="au-assign-wrap">
-          <label>Assign</label>
-          <input class="au-assign-input" type="number" min="0" max="${avail+assigned}" value="${assigned}"
-                 onchange="updateAssigned('${auid}',this.value)" title="Assigned models from collection">
-          <span style="font-family:'Oswald',sans-serif;font-size:11px;color:var(--parch-dim)">/ ${owned} owned</span>
-        </div>`:''}
-      </div>
-      <div class="au-ownership" id="au-own-${auid}">${ownershipText(u)}</div>
     </div>
     <div class="uc-side">
       <span class="uc-pts-pill" id="au-pts-${auid}">${pts} Points</span>
@@ -855,6 +909,7 @@ export async function updateAssigned(auid, val){
   if(!res.ok) return;
   mergeUnit(auid, res.unit);
   applyServerState(res);
+  refreshUnitDetailIfSelected(auid);   // assigned_count may be server-clamped
 }
 
 /* ---- enhancement editor ------------------------------------------------- */
@@ -922,12 +977,10 @@ export async function toggleWarlord(auid){
 function setWarlordVisual(auid, on){
   const row = document.getElementById(`au-${auid}`);
   if(!row) return;
-  const nameEl = row.querySelector('.au-name');
+  const nameEl = row.querySelector('.uc-name');
   const badge = nameEl && nameEl.querySelector('.au-warlord');
   if(on && nameEl && !badge) nameEl.insertAdjacentHTML('beforeend', ' <span class="au-warlord" title="Warlord">★</span>');
   else if(!on && badge) badge.remove();
-  const btn = row.querySelector('.au-warlord-btn');
-  if(btn){ btn.classList.toggle('is-on', on); btn.textContent = on ? '★ Warlord' : '☆ Warlord'; }
 }
 
 /* ---- leader attachment -------------------------------------------------- */
@@ -1226,42 +1279,23 @@ export function mergeUnit(auid, updated){
   const idx = state.army.units.findIndex(u=>u.id===auid);
   if(idx>=0) state.army.units[idx] = {...state.army.units[idx], ...updated};
 
-  const u        = updated;
-  const owned    = u.owned_count;
-  const assigned = u.assigned_count;
-  const squad    = u.squad_size;
-  const avail    = u.available_count;
-  const pts      = (u.points||0) + (u.enhancement_cost||0);
+  const u   = updated;
+  const pts = (u.points||0) + (u.enhancement_cost||0);
 
   const ptsEl = document.getElementById(`au-pts-${auid}`);
-  if(ptsEl) ptsEl.textContent = `${pts} pts`;
+  if(ptsEl) ptsEl.textContent = `${pts} Points`;
 
-  const ownEl = document.getElementById(`au-own-${auid}`);
-  if(ownEl){
-    let html = '';
-    if(owned===0)          html = `<span class="own-none">Not owned — wishlist</span>`;
-    else if(assigned>=squad) html = `<span class="own-ok">✓ ${assigned} of ${squad} assigned</span>`;
-    else{
-      const short = squad-assigned;
-      html = `<span class="own-warn">⚠ ${assigned}/${squad} assigned — need ${short} more (${avail} available)</span>`;
-    }
-    ownEl.innerHTML = html;
-  }
+  // Squad-size/assigned inputs and the full ownership text now live in the
+  // right panel, which a subsequent refreshUnitDetailIfSelected() rebuilds in
+  // full -- the row only needs its lightweight ownership dot kept in sync.
+  const dotEl = document.querySelector(`#au-${auid} .uc-owned-dot`);
+  if(dotEl) dotEl.className = `uc-owned-dot ${ownershipDot(u)}`;
 
-  const assignInput = document.querySelector(`#au-${auid} .au-assign-input`);
-  if(assignInput){ assignInput.max = avail+assigned; assignInput.value = assigned; }
-  const sizeInput = document.querySelector(`#au-${auid} .au-size-input`);
-  if(sizeInput){
-    sizeInput.min = u.squad_min || 1;
-    if(u.squad_max) sizeInput.max = u.squad_max;
-    else sizeInput.removeAttribute('max');
-    sizeInput.value = squad;
-  }
   const compEl = document.getElementById(`au-comp-${auid}`);
-  if(compEl) compEl.innerHTML = compLine(u.composition);
+  if(compEl) compEl.innerHTML = summaryBullets(u.loadout_summary).map(b=>`<li>${esc(b)}</li>`).join('');
 
-  // Enhancement summary line in the centre row (empty -> hidden via :empty CSS).
+  // Enhancement summary tag on the row (empty -> nothing rendered).
   const enhEl = document.getElementById(`au-enh-line-${auid}`);
   if(enhEl) enhEl.innerHTML = u.enhancement_name
-    ? `Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)` : '';
+    ? `<div class="uc-attached-tag">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>` : '';
 }
