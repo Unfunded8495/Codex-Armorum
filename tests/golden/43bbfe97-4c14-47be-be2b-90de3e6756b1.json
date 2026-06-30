@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Covenite Coterie",
+  "faction": "Drukhari",
+  "total_points": 265,
+  "units": [
+    {
+      "datasheet_id": "a1654b25-220b-4f99-87f7-3f6545186b8f",
+      "loadout_summary": "Drazhar \u2014 Executioner\u2019s demiklaives",
+      "name": "Drazhar",
+      "points": 85,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "4416d0b0-3c86-47c6-ad02-4f6d55a6828a",
+      "loadout_summary": "Lady Malys \u2014 Lady\u2019s Blade, Razor fan",
+      "name": "Lady Malys",
+      "points": 100,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "97d12366-0971-4196-91ee-f5e5af2144b4",
+      "loadout_summary": "Lelith Hesperax \u2014 Lelith\u2019s blades",
+      "name": "Lelith Hesperax",
+      "points": 80,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

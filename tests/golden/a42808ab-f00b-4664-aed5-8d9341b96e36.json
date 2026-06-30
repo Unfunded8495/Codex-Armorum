@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Brandfast Oathband",
+  "faction": "Leagues of Votann",
+  "total_points": 280,
+  "units": [
+    {
+      "datasheet_id": "20452ed8-27ed-4054-ac5e-0063e3999072",
+      "loadout_summary": "Berehk Stornbr\u00f6w \u2014 Kroml\u00f4k\u2019s Revenge, Warforge Gauntlets",
+      "name": "Berehk Stornbr\u00f6w",
+      "points": 95,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "21b906dd-a191-4f75-a0fc-70064567b1f4",
+      "loadout_summary": "Buri Aegnirssen \u2014 Autoch\u2011pattern bolt pistol, Bane",
+      "name": "Buri Aegnirssen",
+      "points": 95,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "881989f1-fee0-445e-b855-dff836e6649f",
+      "loadout_summary": "\u00dbthar the Destined \u2014 Volkanite disintegrator, Blade of the Ancestors, Rampart Crest",
+      "name": "\u00dbthar the Destined",
+      "points": 90,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

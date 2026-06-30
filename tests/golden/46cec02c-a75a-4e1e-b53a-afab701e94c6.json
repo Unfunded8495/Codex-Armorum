@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "",
+  "faction": "Titanicus Traitoris",
+  "total_points": 5900,
+  "units": [
+    {
+      "datasheet_id": "8f87372e-5a06-47dd-a98f-68061be3f51e",
+      "loadout_summary": "Chaos Reaver Titan \u2014 Reaver apocalypse launcher, Reaver gatling blaster, Reaver laser blaster, Reaver feet",
+      "name": "Chaos Reaver Titan",
+      "points": 2200,
+      "role": "Vehicle",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "232ffc10-a301-4e38-9f71-93682f54dcc8",
+      "loadout_summary": "Chaos Warbringer Nemesis Titan \u2014 2 Anvillus defence battery, 3 Ardex-defensor mauler, Nemesis quake cannon, Reaver gatling blaster, Reaver laser blaster, Nemesis feet",
+      "name": "Chaos Warbringer Nemesis Titan",
+      "points": 2600,
+      "role": "Vehicle",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "89a9e228-43e5-4741-8dbe-37b5b65ab71f",
+      "loadout_summary": "Chaos Warhound Titan \u2014 Warhound plasma blastgun, Warhound vulcan mega-bolter, Warhound feet",
+      "name": "Chaos Warhound Titan",
+      "points": 1100,
+      "role": "Vehicle",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "no_detachment",
+    "points_over",
+    "wishlist_units"
+  ]
+}

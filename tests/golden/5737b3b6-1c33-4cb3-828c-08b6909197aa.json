@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Questoris Companions",
+  "faction": "Imperial Knights",
+  "total_points": 1200,
+  "units": [
+    {
+      "datasheet_id": "4ff8f443-858f-4788-bad0-576ef36b69b8",
+      "loadout_summary": "Canis Rex \u2014 Las-impulsor, Questoris multi-laser, Freedom\u2019s Hand",
+      "name": "Canis Rex",
+      "points": 415,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "bd104009-e79b-4bd5-80be-4ac7bf33d0ab",
+      "loadout_summary": "Cerastus Knight Acheron \u2014 Acheron flame cannon, Twin heavy bolter, Reaper chainfist",
+      "name": "Cerastus Knight Acheron",
+      "points": 380,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "d449bcb0-5528-4018-92dd-1558a7a75197",
+      "loadout_summary": "Cerastus Knight Atrapos \u2014 Atrapos lascutter, Graviton singularity cannon",
+      "name": "Cerastus Knight Atrapos",
+      "points": 405,
+      "role": "Character",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

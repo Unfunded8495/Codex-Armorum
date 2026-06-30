@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Hammer of the Emperor",
+  "faction": "Astra Militarum",
+  "total_points": 320,
+  "units": [
+    {
+      "datasheet_id": "c44173e3-4f62-4315-9ce9-79ae18fb9350",
+      "loadout_summary": "Commissar Graves \u2014 Chiron gatling cannon, 2 Prefectus heavy stubber, Power sword and Manus Mortis, Enforcer crew, Armoured hull, Aquiline Prow",
+      "name": "Commissar Graves",
+      "points": 125,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "82cd4b5e-d171-4ed7-bd67-a3a1bdae62ce",
+      "loadout_summary": "Commissar Graves on Foot \u2014 Bolt Pistol, Power sword and Manus Mortis",
+      "name": "Commissar Graves on Foot",
+      "points": 65,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "085f2132-e2f9-4367-847a-5978597d525e",
+      "loadout_summary": "Commissar Yarrick \u2014 Storm bolter, Laspistol, Bale Eye, Power klaw, Power sword",
+      "name": "Commissar Yarrick",
+      "points": 130,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

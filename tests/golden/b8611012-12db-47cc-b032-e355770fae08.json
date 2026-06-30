@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "",
+  "faction": "Legions of Excess",
+  "total_points": 685,
+  "units": [
+    {
+      "datasheet_id": "10ee530b-16d0-4bd2-9e36-014321ec4f18",
+      "loadout_summary": "Shalaxi Helbane \u2014 Lash of Slaanesh, Pavane of Slaanesh, Snapping claws, Soulpiercer",
+      "name": "Shalaxi Helbane",
+      "points": 340,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "7ea7ecb2-8a8f-4b0c-a9a4-6d60bbbf939d",
+      "loadout_summary": "Keeper of Secrets \u2014 Phantasmagoria, Snapping claws, Witstealer sword",
+      "name": "Keeper of Secrets",
+      "points": 255,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "a975eaf3-5caa-41b6-8b08-aa797d298651",
+      "loadout_summary": "Alluress \u2014 Slashing claws \u00b7 Daemonette \u2014 9 Slashing claws",
+      "name": "Daemonettes",
+      "points": 90,
+      "role": "Battleline",
+      "squad_size": 10
+    }
+  ],
+  "validation": [
+    "no_detachment",
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

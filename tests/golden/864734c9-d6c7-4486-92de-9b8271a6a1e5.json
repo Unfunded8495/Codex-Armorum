@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Angelic Inheritors",
+  "faction": "Blood Angels",
+  "total_points": 320,
+  "units": [
+    {
+      "datasheet_id": "d37c55b2-43dc-4093-9051-ea1b50a23b29",
+      "loadout_summary": "Astorath \u2014 The Executioner\u2019s Axe",
+      "name": "Astorath",
+      "points": 85,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "72f541ed-6136-42e2-b86e-d2243ac6952e",
+      "loadout_summary": "Chief Librarian Mephiston \u2014 Plasma pistol, Fury of the Ancients, Vitarus",
+      "name": "Chief Librarian Mephiston",
+      "points": 110,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "d906421b-e147-452b-86bc-f0293746c545",
+      "loadout_summary": "Commander Dante \u2014 Perdition Pistol, The Axe Mortalis",
+      "name": "Commander Dante",
+      "points": 125,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

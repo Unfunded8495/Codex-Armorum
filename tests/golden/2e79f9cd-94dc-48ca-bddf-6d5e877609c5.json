@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Iconoclast Fiefdom",
+  "faction": "Chaos Knights",
+  "total_points": 1135,
+  "units": [
+    {
+      "datasheet_id": "c8f37cef-bd7b-4423-83d3-b155f23240e5",
+      "loadout_summary": "Chaos Cerastus Knight Acheron \u2014 Acheron flame cannon, Twin heavy bolter, Reaper chainfist",
+      "name": "Chaos Cerastus Knight Acheron",
+      "points": 370,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "5d31cefd-4c39-4f3f-85d3-08a6a9b4e1a4",
+      "loadout_summary": "Chaos Cerastus Knight Atrapos \u2014 Atrapos lascutter, Graviton singularity cannon",
+      "name": "Chaos Cerastus Knight Atrapos",
+      "points": 395,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "75295c7f-777d-4090-8d0b-8aba724ec3ad",
+      "loadout_summary": "Chaos Cerastus Knight Castigator \u2014 Castigator bolt cannon, Tempest warblade",
+      "name": "Chaos Cerastus Knight Castigator",
+      "points": 370,
+      "role": "Character",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

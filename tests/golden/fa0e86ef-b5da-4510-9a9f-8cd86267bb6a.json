@@ -1,0 +1,39 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Firestorm Assault Force",
+  "faction": "Dark Angels",
+  "total_points": 285,
+  "units": [
+    {
+      "datasheet_id": "00422d3c-a337-4c70-a521-4c3f268fecc6",
+      "loadout_summary": "Asmodai \u2014 Heavy bolt pistol, Crozius arcanum and power weapon",
+      "name": "Asmodai",
+      "points": 70,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "2c8e0331-4d53-44dc-bd48-5a1aacca2818",
+      "loadout_summary": "Azrael \u2014 Lion\u2019s Wrath, The Sword of Secrets, The Lion Helm",
+      "name": "Azrael",
+      "points": 140,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "28dd278b-fdb7-4c37-9171-c924399c20c1",
+      "loadout_summary": "Belial \u2014 Master-crafted storm bolter, The Sword of Silence",
+      "name": "Belial",
+      "points": 75,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "under_assigned",
+    "under_assigned",
+    "warlord_missing"
+  ]
+}

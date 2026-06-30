@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Champions of Fenris",
+  "faction": "Space Wolves",
+  "total_points": 375,
+  "units": [
+    {
+      "datasheet_id": "a8dc6d02-1303-4d45-bbca-4ddb1406451c",
+      "loadout_summary": "Arjac Rockfist \u2014 Foehammer",
+      "name": "Arjac Rockfist",
+      "points": 105,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "c5acd20b-d9dc-4ba1-800e-1f9157533cda",
+      "loadout_summary": "Bjorn the Fell-Handed \u2014 Assault cannon, Heavy flamer, Trueclaw",
+      "name": "Bjorn the Fell-Handed",
+      "points": 160,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "3786f037-dab8-4c69-9173-3946fe7044b3",
+      "loadout_summary": "Logan Grimnar \u2014 Tyrnak and Fenrir, Storm bolter, Axe Morkai",
+      "name": "Logan Grimnar",
+      "points": 110,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

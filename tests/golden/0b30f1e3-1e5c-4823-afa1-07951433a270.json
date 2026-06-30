@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Taktikal Brigade",
+  "faction": "Orks",
+  "total_points": 435,
+  "units": [
+    {
+      "datasheet_id": "ca1b7913-c219-4acb-b6bb-a95e669c4ae5",
+      "loadout_summary": "Boss Snikrot \u2014 Slugga, Mork\u2019s Teeth",
+      "name": "Boss Snikrot",
+      "points": 75,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "85197265-dcd6-4f1c-b699-cacba1b123c6",
+      "loadout_summary": "Ghazghkull Thraka \u2014 Mork\u2019s Roar, Gork\u2019s Klaw \u00b7 Makari \u2014 Makari\u2019s stabba",
+      "name": "Ghazghkull Thraka",
+      "points": 235,
+      "role": "Epic Hero",
+      "squad_size": 2
+    },
+    {
+      "datasheet_id": "2f346abf-971d-4e4d-a528-7d7a820c605f",
+      "loadout_summary": "Mozrog Skragbad \u2014 Thump gun, Big Chompa\u2019s jaws, Gutrippa",
+      "name": "Mozrog Skragbad",
+      "points": 125,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

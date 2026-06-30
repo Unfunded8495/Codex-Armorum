@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Possessed Slaughterband",
+  "faction": "World Eaters",
+  "total_points": 575,
+  "units": [
+    {
+      "datasheet_id": "1c2f7059-455d-4e9c-a5c8-b92e74c6b26f",
+      "loadout_summary": "Angron \u2014 Samni\u2019arius and Spinegrinder",
+      "name": "Angron",
+      "points": 350,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "579377ed-babf-41a9-b9dc-3ed4283d8289",
+      "loadout_summary": "Kh\u00e2rn the Betrayer \u2014 Plasma pistol, Gorechild",
+      "name": "Kh\u00e2rn the Betrayer",
+      "points": 115,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "d2f7b46b-4b90-44e4-bbe8-486f3dc2297e",
+      "loadout_summary": "Lord Invocatus \u2014 Bolt pistol, Coward\u2019s Bane, Bladed horn",
+      "name": "Lord Invocatus",
+      "points": 110,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

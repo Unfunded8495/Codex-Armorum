@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "",
+  "faction": "Plague Legions",
+  "total_points": 660,
+  "units": [
+    {
+      "datasheet_id": "71f1dac7-11cc-4f1e-a47c-5a100781e7cd",
+      "loadout_summary": "Rotigus \u2014 Streams of brackish filth, Gnarlrod",
+      "name": "Rotigus",
+      "points": 280,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "9515922a-ddf1-4503-b48c-a0cfb72db6ca",
+      "loadout_summary": "Great Unclean One \u2014 Plague flail, Putrid vomit, Bilesword",
+      "name": "Great Unclean One",
+      "points": 265,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "24af7758-52d7-4260-a41c-5a88e685306c",
+      "loadout_summary": "Plagueridden \u2014 Plaguesword \u00b7 Plaguebearer \u2014 9 Plaguesword",
+      "name": "Plaguebearers",
+      "points": 115,
+      "role": "Battleline",
+      "squad_size": 10
+    }
+  ],
+  "validation": [
+    "no_detachment",
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

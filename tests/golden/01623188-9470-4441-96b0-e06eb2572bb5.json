@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Firestorm Assault Force",
+  "faction": "Adeptus Astartes",
+  "total_points": 145,
+  "units": [
+    {
+      "datasheet_id": "6d01dddf-c440-4751-93ff-54502221c9f8",
+      "loadout_summary": "Ancient \u2014 Bolt pistol, Bolt rifle, Close combat weapon",
+      "name": "Ancient",
+      "points": 40,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "eff3e091-a068-49b7-9a0a-6eb02e546be4",
+      "loadout_summary": "Ancient in Terminator Armour \u2014 Storm bolter, Power fist",
+      "name": "Ancient in Terminator Armour",
+      "points": 65,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "848cfd43-e850-4440-aadb-e26cd4946454",
+      "loadout_summary": "Apothecary \u2014 Absolvor bolt pistol, Reductor pistol, Close combat weapon",
+      "name": "Apothecary",
+      "points": 40,
+      "role": "Character",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

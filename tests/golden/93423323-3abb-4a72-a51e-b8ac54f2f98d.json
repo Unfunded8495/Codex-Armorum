@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Augurium Task Force",
+  "faction": "Grey Knights",
+  "total_points": 240,
+  "units": [
+    {
+      "datasheet_id": "ac4cd293-e1c8-41fe-81da-a4cb2300b824",
+      "loadout_summary": "Castellan Crowe \u2014 Purifying Flame, Storm bolter, Black Blade of Antwyr",
+      "name": "Castellan Crowe",
+      "points": 100,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "457d7106-1522-470f-9f0f-aed40b399df8",
+      "loadout_summary": "Grand Master Voldus \u2014 Searing Purity, Storm bolter, Malleus Argyrum",
+      "name": "Grand Master Voldus",
+      "points": 140,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "de361e3b-77a8-4325-af10-7a4799556ae7",
+      "loadout_summary": "Castellan Crowe \u2014 Black Blade of Antwyr, Purifying Flame, Storm Bolter",
+      "name": "Sanctifiers Castellan Crowe",
+      "points": 0,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

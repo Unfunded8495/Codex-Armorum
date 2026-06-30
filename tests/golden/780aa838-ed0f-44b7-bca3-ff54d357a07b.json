@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Firestorm Assault Force",
+  "faction": "Iron Hands",
+  "total_points": 215,
+  "units": [
+    {
+      "datasheet_id": "911a0552-404b-4c2b-a114-726c525230a0",
+      "loadout_summary": "Caanok Var \u2014 Storm bolter, Axiom",
+      "name": "Caanok Var",
+      "points": 90,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "4cdce960-e935-45fc-82e0-fcc28c665015",
+      "loadout_summary": "Iron Father Feirros \u2014 Bolt Pistol, Gorgon\u2019s Wrath, Harrowhand, Medusan Manipuli",
+      "name": "Iron Father Feirros",
+      "points": 85,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "6d01dddf-c440-4751-93ff-54502221c9f8",
+      "loadout_summary": "Ancient \u2014 Bolt pistol, Bolt rifle, Close combat weapon",
+      "name": "Ancient",
+      "points": 40,
+      "role": "Character",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

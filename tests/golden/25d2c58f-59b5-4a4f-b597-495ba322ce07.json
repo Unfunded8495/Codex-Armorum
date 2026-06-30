@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Changehost of Deceit",
+  "faction": "Thousand Sons",
+  "total_points": 725,
+  "units": [
+    {
+      "datasheet_id": "c2e892a2-2af9-48fa-ab84-2010eb1a5151",
+      "loadout_summary": "Ahriman \u2014 Transmogrifying Blast, Inferno bolt pistol, Black Staff of Ahriman",
+      "name": "Ahriman",
+      "points": 100,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "368d22c0-7fd5-43dc-97fe-8b00dab195fe",
+      "loadout_summary": "Magnus the Red \u2014 Gaze of Magnus, Tzeentch\u2019s Firestorm, Blade of Magnus",
+      "name": "Magnus the Red",
+      "points": 455,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "d126ce53-96fb-470c-8b26-e7fff449fb06",
+      "loadout_summary": "Daemon Prince of Tzeentch \u2014 Dark Blessing, Infernal cannon, Hellforged weapons",
+      "name": "Daemon Prince of Tzeentch",
+      "points": 170,
+      "role": "Character",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

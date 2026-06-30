@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Devoted of Ynnead",
+  "faction": "Asuryani",
+  "total_points": 525,
+  "units": [
+    {
+      "datasheet_id": "d7c61e16-4b79-4bfd-a219-afd567369de8",
+      "loadout_summary": "Asurmen \u2014 Bloody Twins, Sword of Asur",
+      "name": "Asurmen",
+      "points": 135,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "1f4ac739-28b1-4367-b840-96bb109db719",
+      "loadout_summary": "Avatar of Khaine \u2014 The Wailing Doom",
+      "name": "Avatar of Khaine",
+      "points": 265,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "c5693ad4-6d69-4284-9633-0b948cb58ee7",
+      "loadout_summary": "Baharroth \u2014 Fury of the Tempest, Shining Blade",
+      "name": "Baharroth",
+      "points": 125,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

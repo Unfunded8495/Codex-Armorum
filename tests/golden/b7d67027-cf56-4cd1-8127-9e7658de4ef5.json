@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Firestorm Assault Force",
+  "faction": "Ultramarines",
+  "total_points": 280,
+  "units": [
+    {
+      "datasheet_id": "2d6d9a94-ad2f-425e-853e-4bce65e228c7",
+      "loadout_summary": "Captain Titus \u2014 Bolt Pistol, Master-crafted bolter, Master-crafted chainsword",
+      "name": "Captain Titus",
+      "points": 90,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "65df5837-39c7-4d85-b9fb-b66459cb7cdc",
+      "loadout_summary": "Cato Sicarius \u2014 Artisan plasma pistol, Talassarian tempest blade",
+      "name": "Cato Sicarius",
+      "points": 95,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "399140e8-8abf-43e9-a48e-30583dbce343",
+      "loadout_summary": "Chief Librarian Tigurius \u2014 Bolt Pistol, Storm of the Emperor\u2019s Wrath, Rod of Tigurius",
+      "name": "Chief Librarian Tigurius",
+      "points": 95,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

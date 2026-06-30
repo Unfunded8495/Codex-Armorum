@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Veterans of the Long War",
+  "faction": "Heretic Astartes",
+  "total_points": 475,
+  "units": [
+    {
+      "datasheet_id": "6b2f238d-de10-4a32-ada7-f048040b7dd5",
+      "loadout_summary": "Abaddon the Despoiler \u2014 Talon of Horus, Drach\u2019nyen",
+      "name": "Abaddon the Despoiler",
+      "points": 285,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "19560b64-7c16-44f8-bcfa-be84464a9dac",
+      "loadout_summary": "Cypher \u2014 Cypher\u2019s bolt pistol, Cypher\u2019s plasma pistol",
+      "name": "Cypher",
+      "points": 90,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "f50b5963-c8b1-468d-9a18-4e0a4e37ccc1",
+      "loadout_summary": "Fabius Bile \u2014 Xyclos Needler, Chirurgeon, Rod of Torment \u00b7 Surgeon Acolyte \u2014 Surgeon Acolyte\u2019s tools",
+      "name": "Fabius Bile",
+      "points": 100,
+      "role": "Epic Hero",
+      "squad_size": 2
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "under_assigned",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

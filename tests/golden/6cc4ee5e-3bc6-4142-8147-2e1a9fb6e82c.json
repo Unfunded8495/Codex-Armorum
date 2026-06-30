@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Null Maiden Vigil",
+  "faction": "Adeptus Custodes",
+  "total_points": 310,
+  "units": [
+    {
+      "datasheet_id": "bf3e8f52-2e65-4ad8-9131-72184cf9548b",
+      "loadout_summary": "Aleya \u2014 Somnus",
+      "name": "Aleya",
+      "points": 65,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "3eede144-e2a5-4806-8f4c-0716c5803a55",
+      "loadout_summary": "Trajann Valoris \u2014 Watcher\u2019s Axe, Eagle\u2019s Scream",
+      "name": "Trajann Valoris",
+      "points": 135,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "bac43b52-54eb-41b0-bff0-3b4c6bab9cfc",
+      "loadout_summary": "Valerian \u2014 Gnosis",
+      "name": "Valerian",
+      "points": 110,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

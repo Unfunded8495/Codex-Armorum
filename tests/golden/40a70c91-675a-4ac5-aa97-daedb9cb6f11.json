@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Blood Legion",
+  "faction": "Legiones Daemonica",
+  "total_points": 590,
+  "units": [
+    {
+      "datasheet_id": "bd832fd9-cafc-450c-947f-8f41f09a956e",
+      "loadout_summary": "Be\u2019lakor \u2014 Betraying Shades, The Blade of Shadows",
+      "name": "Be\u2019lakor",
+      "points": 390,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "068d1de7-ae32-4fd3-96e6-ef08995e682b",
+      "loadout_summary": "Epidemius \u2014 Balesword and Nurgling attendants",
+      "name": "Epidemius",
+      "points": 80,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "a57ab24e-0653-4539-9679-d387bfb8238c",
+      "loadout_summary": "Horticulous Slimux \u2014 Acidic maw, Lopping shears",
+      "name": "Horticulous Slimux",
+      "points": 120,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Ordo Xenos, Alien Hunters",
+  "faction": "Agents of the Imperium",
+  "total_points": 295,
+  "units": [
+    {
+      "datasheet_id": "1226ca12-8382-4ee5-a951-d0388b0daed6",
+      "loadout_summary": "Callidus Assassin \u2014 Neural shredder, Phase sword and poison blades",
+      "name": "Callidus Assassin",
+      "points": 100,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "f2201df4-0031-4c22-b938-38bbe0396ff0",
+      "loadout_summary": "Culexus Assassin \u2014 Animus speculum, Life-draining touch",
+      "name": "Culexus Assassin",
+      "points": 85,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "2863b534-dc9f-403b-8cd6-13afcc11ec40",
+      "loadout_summary": "Eversor Assassin \u2014 Executioner pistol, Power sword and neuro gauntlet",
+      "name": "Eversor Assassin",
+      "points": 110,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Assimilation Swarm",
+  "faction": "Tyranids",
+  "total_points": 350,
+  "units": [
+    {
+      "datasheet_id": "98839c9f-9131-4349-b485-c6769bfc1d8b",
+      "loadout_summary": "Deathleaper \u2014 Lictor claws and talons",
+      "name": "Deathleaper",
+      "points": 80,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "3637d8e2-08ec-47c2-bab7-a63f119732d9",
+      "loadout_summary": "Old One Eye \u2014 Old One Eye\u2019s claws and talons",
+      "name": "Old One Eye",
+      "points": 140,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "657c1613-454f-49a9-9619-ba906aac38ce",
+      "loadout_summary": "The Red Terror \u2014 Gaping maw, Scything talons",
+      "name": "The Red Terror",
+      "points": 130,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

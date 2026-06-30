@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "",
+  "faction": "Scintillating Legions",
+  "total_points": 685,
+  "units": [
+    {
+      "datasheet_id": "4d987664-7ac1-448b-9cd4-715be7646fd3",
+      "loadout_summary": "Kairos Fateweaver \u2014 Infernal Gateway, Staff of Tomorrow",
+      "name": "Kairos Fateweaver",
+      "points": 295,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "b2b8e02b-e2f5-4d5b-8712-d53aff660882",
+      "loadout_summary": "Lord of Change \u2014 Bolt of Change, Staff of Tzeentch",
+      "name": "Lord of Change",
+      "points": 300,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "3b144e84-8928-4347-b3d1-2962a5131988",
+      "loadout_summary": "Blue Horror \u2014 10 Coruscating blue flames, 10 Blue claws",
+      "name": "Blue Horrors",
+      "points": 90,
+      "role": "Battleline",
+      "squad_size": 10
+    }
+  ],
+  "validation": [
+    "no_detachment",
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "",
+  "faction": "Adeptus Titanicus",
+  "total_points": 5900,
+  "units": [
+    {
+      "datasheet_id": "d6c72a3c-73c9-4d94-9542-d4dd5d44502f",
+      "loadout_summary": "Reaver Titan \u2014 Reaver apocalypse launcher, Reaver gatling blaster, Reaver laser blaster, Reaver feet",
+      "name": "Reaver Titan",
+      "points": 2200,
+      "role": "Vehicle",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "f08b3f77-12ad-41a1-b971-eb71181db9f0",
+      "loadout_summary": "Warbringer Nemesis Titan \u2014 2 Anvillus defence battery, 3 Ardex-defensor mauler, Nemesis quake cannon, Reaver gatling blaster, Reaver laser blaster, Nemesis feet",
+      "name": "Warbringer Nemesis Titan",
+      "points": 2600,
+      "role": "Vehicle",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "67366c41-bb5e-4b3a-9a32-b574957924c9",
+      "loadout_summary": "Warhound Titan \u2014 Warhound plasma blastgun, Warhound vulcan mega-bolter, Warhound feet",
+      "name": "Warhound Titan",
+      "points": 1100,
+      "role": "Vehicle",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "no_detachment",
+    "points_over",
+    "wishlist_units"
+  ]
+}

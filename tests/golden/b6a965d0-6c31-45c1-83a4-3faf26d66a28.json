@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "",
+  "faction": "Harlequins",
+  "total_points": 255,
+  "units": [
+    {
+      "datasheet_id": "6ceafe5d-f8b8-499f-a410-d7dd07b29f51",
+      "loadout_summary": "Solitaire \u2014 Flip Belt, Solitaire weapons",
+      "name": "Solitaire",
+      "points": 115,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "3ec2afc4-c1fa-42ce-9c0a-7f5cf5c9a3f4",
+      "loadout_summary": "Death Jester \u2014 Flip Belt, Shrieker cannon, Jester\u2019s blade",
+      "name": "Death Jester",
+      "points": 80,
+      "role": "Character",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "556550dd-0a58-4ba4-8232-f15522c6c12b",
+      "loadout_summary": "Shadowseer \u2014 Shuriken pistol, Miststave, Flip Belt",
+      "name": "Shadowseer",
+      "points": 60,
+      "role": "Character",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "no_detachment",
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

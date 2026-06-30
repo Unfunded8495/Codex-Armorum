@@ -1,0 +1,38 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "",
+  "faction": "Ynnari",
+  "total_points": 435,
+  "units": [
+    {
+      "datasheet_id": "60d72f94-af3d-4cb2-a5ad-b555eabd4e46",
+      "loadout_summary": "Visarch \u2014 Asu-var",
+      "name": "The Visarch",
+      "points": 90,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "56a49059-c5b3-4eda-9d69-89437d799a5e",
+      "loadout_summary": "Yncarne \u2014 Swirling soul energy, Vilith-zhar",
+      "name": "The Yncarne",
+      "points": 245,
+      "role": "Epic Hero",
+      "squad_size": 1
+    },
+    {
+      "datasheet_id": "db20a3df-7600-4d3a-a74d-f67f50610f8b",
+      "loadout_summary": "Yvraine \u2014 Storm of Whispers, Kha-vir",
+      "name": "Yvraine",
+      "points": 100,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "no_detachment",
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}

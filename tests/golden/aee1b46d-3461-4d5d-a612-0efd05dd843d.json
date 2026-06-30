@@ -1,0 +1,37 @@
+{
+  "battle_size": "Strike Force",
+  "detachment": "Chorus of Condemnation",
+  "faction": "Adepta Sororitas",
+  "total_points": 315,
+  "units": [
+    {
+      "datasheet_id": "85deb9d8-5e41-4f82-bd5b-cefc2507ef99",
+      "loadout_summary": "Aestred Thurga \u2014 Bolt pistol, Blade of Vigil \u00b7 Agathae Dolan \u2014 Bolt pistol, Scribe\u2019s staff",
+      "name": "Aestred Thurga and Agathae Dolan",
+      "points": 80,
+      "role": "Epic Hero",
+      "squad_size": 2
+    },
+    {
+      "datasheet_id": "2bb1b8ac-84b3-40df-9e81-3b541fe5dcbb",
+      "loadout_summary": "Ephrael Stern \u2014 Bolt pistol, Sanctity \u00b7 Kyganil of the Bloody Tears \u2014 The Outcast\u2019s Weapons",
+      "name": "Daemonifuge",
+      "points": 85,
+      "role": "Epic Hero",
+      "squad_size": 2
+    },
+    {
+      "datasheet_id": "3ff1c1c4-f11b-48e8-bc70-34f72e623409",
+      "loadout_summary": "Intranzia Fraye \u2014 2 Heavy bolter, 2 Ministorum heavy flamer, Melta missile array, Mace of Saint Praxedes, Throne of Blame",
+      "name": "Intranzia Fraye",
+      "points": 150,
+      "role": "Epic Hero",
+      "squad_size": 1
+    }
+  ],
+  "validation": [
+    "points_ok",
+    "warlord_missing",
+    "wishlist_units"
+  ]
+}
