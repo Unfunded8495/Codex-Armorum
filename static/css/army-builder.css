@@ -664,3 +664,15 @@
 .opt-theme .wg-radio .wg-box-input:checked + .wg-box { background:var(--steel-blue); border-color:var(--steel-blue); }
 .opt-theme .wg-stepper input, .opt-theme .wg-slot { background:var(--parch); border-color:var(--card-light-2); color:var(--card-ink); }
 .opt-theme .wg-violation { background:rgba(200,154,58,.15); }
+
+/* ---- Two-panel layout (centre + right rail) once the unit picker stops
+   being a persistent third column and becomes the full overlay below. ---- */
+.ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 340px; gap:18px; }
+@media(max-width:1180px){ .ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 300px; gap:12px; } }
+@media(max-width:900px){ .ab-detail.ab-2panel { grid-template-columns:1fr; } }
+
+/* ---- Add-unit picker: full-screen overlay (not the centred .modal-box
+   shell), matching the reference app's dedicated add-unit screen. ---- */
+.po-overlay { position:fixed; inset:0; z-index:55; background:var(--ink); display:flex; flex-direction:column; }
+.po-overlay[hidden] { display:none; }
+.po-overlay-head .cb-back { background:none; border:none; color:var(--parch); font-size:18px; cursor:pointer; padding:0 10px 0 0; }

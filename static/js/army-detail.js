@@ -1,7 +1,6 @@
 import { esc, api, intOr } from './utils.js';
 import { state, ensureBattleSizes } from './army-state.js';
 import { setBreadcrumb } from './header.js';
-import { renderLeftPicker, refreshLeftPicker } from './unit-picker.js';
 
 const view       = document.getElementById('view');
 const breadcrumb = document.getElementById('breadcrumb');
@@ -34,19 +33,18 @@ export async function showArmy(aid){
     {label:army.name},
   ]);
 
-  // Three-panel layout: persistent unit picker (left), roster + config (centre),
-  // context-sensitive detail (right).
+  // Two-panel layout: roster + config (centre), context-sensitive unit-options
+  // detail (right). The unit picker is no longer a persistent third column --
+  // it's the full-screen overlay in #unitPickerModal (unit-picker.js), opened
+  // on demand from a Force-Org section's "+".
   view.innerHTML = `
-    <div class="ab-detail ab-3panel" data-testid="army-detail">
-      <aside class="ab-leftpanel" id="leftPanel" data-testid="unit-picker-panel"></aside>
+    <div class="ab-detail ab-2panel" data-testid="army-detail">
       <section class="ab-centre" id="centrePanel">${renderCentre(army)}</section>
       <aside class="ab-rightpanel" id="rightPanel" data-testid="detail-panel">${renderRightPlaceholder()}</aside>
     </div>
-    <button class="ab-mobile-units-btn" type="button" onclick="toggleLeftPanel()" aria-label="Toggle unit picker">✚ Units</button>
     <div class="ab-rp-scrim" id="rpScrim" onclick="clearRight()"></div>`;
 
   wireCentreInputs(army);
-  renderLeftPicker(army);   // populate the persistent left picker (async)
   restoreRight();           // re-open a prior right-panel selection after a refetch
 }
 
@@ -887,7 +885,6 @@ export async function duplicateArmyUnit(auid){
   const body = document.getElementById('rosterBody');
   if(body) body.innerHTML = renderRoster(state.army.units, state.army.accent);
   applyServerState(res);
-  refreshLeftPicker();
 }
 
 /* ---- squad / assign updates --------------------------------------------- */
@@ -1270,7 +1267,6 @@ export async function removeArmyUnit(auid){
   if(body) body.innerHTML = renderRoster(state.army.units, state.army.accent);
   if(state.rightSel && state.rightSel.type==='unit' && state.rightSel.id===auid) clearRight();
   applyServerState(res);
-  refreshLeftPicker();   // drop the "in list" count in the left picker
 }
 
 /* ---- merge unit state --------------------------------------------------- */

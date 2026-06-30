@@ -5,8 +5,7 @@ import { showArmy, saveArmyMeta, updateSquadSize, updateAssigned,
          attachLeader, detachLeader, onAbBattleSize, toggleCollapse, toggleAccordion, toggleOptBody,
          onAddDetachment, removeDetachment, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
          toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard, exportArmy } from './army-detail.js';
-import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy,
-         filterLeftPicker, toggleLeftPanel } from './unit-picker.js';
+import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy } from './unit-picker.js';
 import { initLightbox } from './lightbox.js';
 import { refreshLedger } from './header.js';
 
@@ -31,7 +30,6 @@ Object.assign(window, {
   onAddDetachment, removeDetachment, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
   toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy,
-  filterLeftPicker, toggleLeftPanel,
   exportArmy, importArmyList,
 });
 

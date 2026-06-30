@@ -4,6 +4,7 @@ export const state = {
   army:        null,
   rightSel:    null,   // {type:'unit'|'battlesize'|'detachment', id?} -> right panel
   picker:      null,
+  pickerCategory: null,   // Force-Org category the open add-unit picker is scoped to
   detachCache: {},
   enhCache:    {},
   unitsCache:  {},

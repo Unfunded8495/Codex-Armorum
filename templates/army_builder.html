@@ -18,18 +18,17 @@
 
   <main id="view"></main>
 
-  <!-- Unit picker modal -->
-  <div class="modal-backdrop" id="unitPickerModal" hidden>
-    <div class="modal-box">
-      <div class="modal-head">
-        <h2 class="modal-title">Add Unit to Army</h2>
-        <button class="modal-close" onclick="closeUnitPicker()">&times;</button>
-      </div>
-      <div class="modal-search">
-        <input id="pickerSearch" placeholder="Search units&hellip;" oninput="filterPicker(this.value)" autocomplete="off">
-      </div>
-      <div class="modal-body" id="pickerBody"></div>
+  <!-- Add-unit picker: full-screen overlay, matching the reference app's
+       dedicated add-unit screen (back chevron + category title + search). -->
+  <div class="po-overlay" id="unitPickerModal" data-testid="unit-picker-panel" hidden>
+    <div class="po-overlay-head">
+      <button class="cb-back" type="button" onclick="closeUnitPicker()" aria-label="Back" title="Back">&#10094;</button>
+      <h2 class="po-overlay-title" id="pickerTitle">Add Unit</h2>
     </div>
+    <div class="po-search-wrap">
+      <input class="po-search" id="pickerSearch" placeholder="Search units&hellip;" oninput="filterPicker(this.value)" autocomplete="off">
+    </div>
+    <div class="po-body" id="pickerBody"></div>
   </div>
 
   <!-- Lightbox -->
