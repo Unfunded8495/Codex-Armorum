@@ -408,3 +408,225 @@
 .ab-empty-icon { font-size:36px; color:var(--gold); opacity:.3; margin-bottom:14px; display:block; }
 .ab-empty h3 { font-family:'Cinzel',serif; font-size:16px; color:var(--parch); margin:0 0 8px; }
 .ab-empty p { font-style:italic; font-size:14px; line-height:1.5; margin:0; }
+
+/* ============================================================
+   Companion-app-parity rebuild (new component families below).
+   Tokens new to this stylesheet only -- additive, nothing here
+   overrides an existing :root variable from style.css.
+   ============================================================ */
+:root {
+  --steel-blue: #3f6d82;
+  --steel-blue-bright: #5a93ac;
+  --card-light: #ece4cf;
+  --card-light-2: #e2d8bd;
+  --card-ink: #2a2620;
+  --card-ink-dim: #6b6353;
+  --warn-amber: #c89a3a;
+}
+
+/* ---- Force-Org section headers (Characters/Battleline/Dedicated
+   Transports/Other Datasheets), each scoped to one of these 4 buckets. ---- */
+.foc-section { margin-bottom:18px; }
+.foc-section-head {
+  display:flex; align-items:center; gap:14px; background:var(--ink-2);
+  border:1px solid var(--edge); padding:12px 14px;
+}
+.foc-section-name {
+  font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--parch); flex:1;
+}
+.foc-section-pts { font-family:'Oswald',sans-serif; font-size:13px; font-weight:600; color:var(--gold-bright); white-space:nowrap; }
+.foc-add-btn {
+  flex-shrink:0; width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+  background:none; border:1px solid var(--gold); color:var(--gold); font-size:16px; line-height:1;
+  cursor:pointer; transition:.15s;
+}
+.foc-add-btn:hover { background:var(--gold); color:#0a0a0c; }
+
+/* ---- Unit row card: light parchment surface, thumbnail + bulleted wargear +
+   points pill + kebab menu. Distinct surface from the dark .ab-card family on
+   purpose -- this is the roster's primary content, matching the reference
+   app's white-card-on-dark-page look. ---- */
+.uc-row {
+  display:flex; align-items:flex-start; gap:12px; background:var(--card-light);
+  border:1px solid var(--card-light-2); padding:10px 12px; margin-bottom:1px; position:relative;
+}
+.uc-thumb { width:64px; height:64px; object-fit:cover; flex-shrink:0; background:#0c0b10; border:1px solid var(--card-light-2); }
+.uc-body { flex:1; min-width:0; cursor:pointer; }
+.uc-name { display:flex; align-items:center; gap:6px; font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink); }
+.uc-owned-dot { width:7px; height:7px; border-radius:50%; background:var(--card-ink-dim); flex-shrink:0; }
+.uc-owned-dot.is-warn { background:var(--warn-amber); }
+.uc-owned-dot.is-none { background:var(--blood-bright); }
+.uc-bullets { list-style:none; margin:3px 0 0; padding:0; font-family:'EB Garamond',serif; font-size:13px; color:var(--card-ink-dim); line-height:1.45; }
+.uc-bullets li { padding-left:0; }
+.uc-attached-tag {
+  display:inline-block; margin-top:6px; background:var(--ink-2); color:var(--parch-dim);
+  font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:.5px; text-transform:uppercase;
+  padding:3px 7px;
+}
+.uc-attached-tag b { color:var(--parch); font-weight:600; }
+.uc-side { flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+.uc-pts-pill {
+  background:var(--steel-blue); color:#eef5f8; font-family:'Oswald',sans-serif; font-size:12px;
+  font-weight:600; padding:3px 9px; white-space:nowrap;
+}
+.uc-kebab-wrap { position:relative; }
+.uc-kebab { background:none; border:none; color:var(--card-ink-dim); font-size:17px; line-height:1; cursor:pointer; padding:2px 6px; }
+.uc-kebab:hover { color:var(--card-ink); }
+.uc-kebab-menu {
+  position:absolute; right:0; top:100%; z-index:5; background:var(--parch); border:1px solid var(--card-light-2);
+  box-shadow:var(--shadow); min-width:160px; display:flex; flex-direction:column; padding:4px 0;
+}
+.uc-kebab-menu[hidden] { display:none; }
+.uc-kebab-menu button {
+  background:none; border:none; text-align:left; padding:8px 14px; cursor:pointer;
+  font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink);
+}
+.uc-kebab-menu button:hover { background:rgba(0,0,0,.06); }
+.uc-kebab-menu button.is-danger:hover { color:var(--blood-bright); }
+
+/* Attached Units: nested under their bodyguard unit, title-case header (not
+   all-caps -- distinguishes it from the bold Force-Org section headers). */
+.uc-attached-head {
+  background:var(--ink-2); color:var(--parch); font-family:'EB Garamond',serif; font-style:italic;
+  font-size:13px; padding:7px 14px;
+}
+.uc-attached-row { display:flex; align-items:center; gap:10px; background:var(--card-light); border:1px solid var(--card-light-2); padding:8px 12px; margin-bottom:1px; }
+.uc-attached-row .uc-thumb { width:40px; height:40px; }
+.uc-attached-name { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink); cursor:pointer; }
+.uc-role-pill {
+  background:var(--ink-2); color:var(--parch-dim); font-family:'Oswald',sans-serif; font-size:10px;
+  letter-spacing:.5px; text-transform:uppercase; padding:3px 8px;
+}
+
+/* ---- Persistent points/validity HUD: stays pinned to the bottom of the
+   centre column while the roster scrolls underneath it. ---- */
+.hud-pill {
+  position:sticky; bottom:14px; z-index:8; display:inline-flex; align-items:stretch;
+  margin-top:10px; box-shadow:0 8px 24px rgba(0,0,0,.5); font-family:'Oswald',sans-serif;
+}
+.hud-warn {
+  display:flex; align-items:center; justify-content:center; gap:4px; background:var(--warn-amber);
+  color:#1a1604; font-size:15px; font-weight:700; padding:8px 12px;
+}
+.hud-pts { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; background:var(--steel-blue); color:#eef5f8; padding:6px 14px; }
+.hud-pts b { font-size:15px; font-weight:700; }
+.hud-pts small { font-size:9px; letter-spacing:1px; opacity:.85; }
+
+/* ---- Command Bunker: steel-blue outer accordion (distinct from the gold
+   .ab-detrule-card family -- this is a separate reference screen, not a
+   roster-page card, and the reference app codes it in a different color). The
+   rule/stratagem cards *inside* a section keep reusing .ab-detrule-card. ---- */
+.cb-overlay-head { display:flex; align-items:center; gap:14px; padding:14px 16px; border-bottom:1px solid var(--edge); }
+.cb-overlay-title { font-family:'Cinzel',serif; font-weight:700; font-size:16px; color:var(--gold-bright); margin:0; flex:1; }
+.cb-back { background:none; border:none; color:var(--parch); font-size:20px; cursor:pointer; padding:0 6px 0 0; }
+.cb-head {
+  width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:var(--steel-blue); color:#eef5f8; border:none; cursor:pointer;
+  font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  padding:12px 16px; text-align:left;
+}
+.cb-head:hover { background:var(--steel-blue-bright); }
+.cb-chev { font-size:11px; }
+.cb-section { padding:12px 16px 16px; background:var(--ink-2); }
+.cb-section[hidden] { display:none; }
+.cb-ds-row { display:flex; align-items:center; gap:10px; background:var(--card-light); border:1px solid var(--card-light-2); padding:8px 10px; margin-bottom:6px; cursor:pointer; }
+.cb-ds-row .uc-thumb { width:40px; height:40px; }
+.cb-ds-name { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink); }
+.cb-ds-chev { color:var(--card-ink-dim); }
+.cb-phase-head { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); opacity:.8; margin:12px 0 6px; }
+.cb-phase-head:first-child { margin-top:0; }
+
+/* Stratagem category color pills (battleTactic/strategicPloy/epicDeed/wargear). */
+.strat-pill { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; margin-bottom:6px; color:#fff; cursor:pointer; }
+.strat-pill-name { font-family:'Cinzel',serif; font-weight:700; font-size:13px; }
+.strat-pill-cp { font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; white-space:nowrap; }
+.strat-pill-chev { font-size:10px; opacity:.85; }
+.strat-pill-battleTactic  { background:var(--steel-blue); }
+.strat-pill-strategicPloy { background:var(--blood-bright); }
+.strat-pill-epicDeed      { background:var(--good); }
+.strat-pill-wargear       { background:var(--rust); }
+.strat-pill-body { background:var(--card-light); color:var(--card-ink); font-family:'EB Garamond',serif; font-size:13px; line-height:1.5; padding:10px 12px; margin:-5px 0 6px; }
+.strat-pill-body[hidden] { display:none; }
+
+/* ---- Checkbox-accordion option rows: Enhancements / Wargear Options. Each
+   item is its own expand-for-rules-text card with a trailing checkbox. ---- */
+.opt-row { display:flex; align-items:center; gap:10px; background:var(--card-light); border:1px solid var(--card-light-2); padding:9px 11px; margin-bottom:1px; }
+.opt-chev { background:none; border:none; color:var(--card-ink-dim); font-size:11px; cursor:pointer; padding:0; flex-shrink:0; }
+.opt-name { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink); }
+.opt-pts { font-family:'Oswald',sans-serif; font-size:11px; color:var(--card-ink-dim); margin-right:4px; white-space:nowrap; }
+.opt-check { width:16px; height:16px; accent-color:var(--steel-blue); flex-shrink:0; }
+.opt-body { background:var(--card-light); border:1px solid var(--card-light-2); border-top:none; padding:0 11px 10px; font-family:'EB Garamond',serif; font-size:13px; color:var(--card-ink-dim); line-height:1.5; margin-top:-1px; margin-bottom:1px; }
+.opt-body[hidden] { display:none; }
+.opt-group-label { background:var(--ink-2); color:var(--parch-dim); font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; padding:6px 11px; margin-bottom:1px; }
+
+/* ---- Unit-options panel: Warlord row + relocated squad-size/assigned
+   controls (this project's collection tracking -- no app equivalent). ---- */
+.uo-warlord-row { display:flex; align-items:center; gap:10px; background:var(--card-light); border:1px solid var(--card-light-2); padding:10px 12px; margin-bottom:10px; cursor:pointer; }
+.uo-warlord-row span { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink); }
+.uo-stat-row { display:flex; align-items:center; gap:10px; padding:6px 0; }
+.uo-stat-row label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); min-width:90px; }
+
+/* ---- Add-unit picker overlay (full screen, replaces the always-visible left
+   rail and the old centred modal). ---- */
+.po-overlay-head { display:flex; align-items:center; gap:14px; padding:14px 16px; border-bottom:1px solid var(--edge); }
+.po-overlay-title { font-family:'Cinzel',serif; font-weight:700; font-size:16px; color:var(--parch); margin:0; flex:1; }
+.po-search-wrap { padding:10px 16px; border-bottom:1px solid var(--edge); }
+.po-search { width:100%; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:14px; padding:8px 12px; }
+.po-search:focus { outline:none; border-color:rgba(199,154,58,.5); }
+.po-body { padding:14px 16px; overflow-y:auto; }
+.po-card { display:flex; align-items:center; gap:12px; background:var(--card-light); border:1px solid var(--card-light-2); padding:10px 12px; margin-bottom:8px; }
+.po-thumb { width:56px; height:56px; object-fit:cover; flex-shrink:0; background:#0c0b10; border:1px solid var(--card-light-2); }
+.po-body-text { flex:1; min-width:0; }
+.po-name { font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink); }
+.po-owned { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.3px; color:var(--steel-blue); margin-top:2px; }
+.po-side { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:5px; }
+.po-add {
+  width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+  background:none; border:1px solid var(--card-ink); color:var(--card-ink); font-size:17px;
+  line-height:1; cursor:pointer; transition:.15s;
+}
+.po-add:hover { background:var(--card-ink); color:var(--card-light); }
+.po-pts { font-family:'Oswald',sans-serif; font-size:11px; color:var(--steel-blue); white-space:nowrap; }
+.po-role-head { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); opacity:.7; padding:10px 0 4px; }
+.po-ally-head { color:var(--blood-bright); opacity:.8; border-top:1px solid rgba(150,40,40,.3); margin-top:8px; }
+.po-empty { color:var(--parch-dim); font-style:italic; padding:20px 0; }
+
+/* ---- Detachment-picker art cards: DP-budget header + selectable cards with
+   faction banner/icon bleeding in (no per-detachment art exists -- this is
+   the documented substitute). ---- */
+.dp-budget-head { display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--parch); color:var(--card-ink); padding:12px 16px; margin-bottom:14px; }
+.dp-budget-label { font-family:'Cinzel',serif; font-weight:700; font-size:13px; }
+.dp-budget-pill { background:var(--steel-blue); color:#eef5f8; font-family:'Oswald',sans-serif; font-size:12px; font-weight:700; padding:3px 10px; }
+.dp-budget-pill.is-over { background:var(--blood-bright); }
+.dp-card {
+  position:relative; display:flex; align-items:center; gap:10px; background:var(--ink-2) center/cover no-repeat;
+  border:2px solid transparent; padding:14px 16px; margin-bottom:8px; cursor:pointer; min-height:64px; overflow:hidden;
+}
+.dp-card::before {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg, var(--ink-2) 35%, rgba(18,17,22,.55) 65%, rgba(18,17,22,.15) 100%);
+}
+.dp-card.is-selected { border-color:var(--gold); }
+.dp-card-chev { position:relative; z-index:1; background:none; border:none; color:var(--parch); font-size:12px; flex-shrink:0; }
+.dp-card-name { position:relative; z-index:1; flex:1; font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--parch); }
+.dp-card-cost { position:relative; z-index:1; background:rgba(0,0,0,.4); color:var(--gold-bright); font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; padding:3px 8px; white-space:nowrap; }
+.dp-card-expand { background:var(--ink-2); border-top:1px solid rgba(0,0,0,.3); padding:10px 16px; margin:-8px 0 8px; }
+.dp-card-expand[hidden] { display:none; }
+.dp-card-expand h4 { font-family:'Cinzel',serif; font-size:12px; color:var(--gold-bright); margin:0 0 4px; }
+.dp-card-expand p { font-family:'EB Garamond',serif; font-size:12px; color:var(--parch-dim); margin:0 0 6px; line-height:1.4; }
+.dp-confirm-wrap { position:sticky; bottom:0; padding:10px 0 2px; background:linear-gradient(0deg, var(--panel) 60%, transparent); }
+.dp-confirm-btn { width:100%; background:var(--gold); color:#0a0a0c; border:none; font-family:'Oswald',sans-serif; font-weight:700; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:12px; cursor:pointer; }
+.dp-confirm-btn:hover { background:var(--gold-bright); }
+
+/* ---- Edit Roster modal: reuses .modal-backdrop/.modal-box (defined above)
+   as the generic full-screen-modal shell. ---- */
+.er-body { padding:16px 18px; overflow-y:auto; }
+.er-label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); opacity:.8; margin:0 0 8px; }
+.er-label:not(:first-child) { margin-top:18px; }
+.er-name-input { width:100%; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'Cinzel',serif; font-weight:700; font-size:16px; padding:9px 12px; }
+.er-name-input:focus { outline:none; border-color:rgba(199,154,58,.6); }
+.er-faction-row { background:var(--ink-2); border:1px solid var(--edge); color:var(--parch-dim); font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:14px 16px; }
+.er-config-row { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:14px; padding:12px 16px; cursor:pointer; margin-top:6px; text-align:left; }
+.er-config-row:hover { border-color:rgba(199,154,58,.5); }
+.er-config-chev { color:var(--gold); }
