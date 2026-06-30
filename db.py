@@ -191,6 +191,7 @@ def init_db():
             name TEXT NOT NULL,
             faction_id TEXT NOT NULL,
             detachment_id TEXT DEFAULT '',
+            detachment_ids TEXT DEFAULT '',
             points_limit INTEGER DEFAULT 2000,
             battle_size TEXT DEFAULT '',
             notes TEXT DEFAULT '',
@@ -322,6 +323,22 @@ def init_db():
             c.execute("ALTER TABLE army_units ADD COLUMN is_warlord INTEGER DEFAULT 0")
         if _table_exists(c, "army_units") and "attached_to" not in _columns(c, "army_units"):
             c.execute("ALTER TABLE army_units ADD COLUMN attached_to TEXT DEFAULT ''")
+
+        # Migration: an army can now unlock MULTIPLE detachments by spending its
+        # battle-size Detachment Points (Incursion 2 / Strike Force 3 / Onslaught 3),
+        # each detachment costing 1-3 DP. The ordered set lives in a JSON-array
+        # `detachment_ids`; the legacy scalar `detachment_id` is kept mirrored to
+        # the first selected id for back-compat (theming / v1 roster export).
+        # Backfill: seed detachment_ids from a non-empty legacy detachment_id.
+        if _table_exists(c, "army_lists") and "detachment_ids" not in _columns(c, "army_lists"):
+            c.execute("ALTER TABLE army_lists ADD COLUMN detachment_ids TEXT DEFAULT ''")
+        if _table_exists(c, "army_lists"):
+            for r in c.execute(
+                    "SELECT id, detachment_id FROM army_lists "
+                    "WHERE (detachment_ids IS NULL OR detachment_ids='') "
+                    "AND detachment_id IS NOT NULL AND detachment_id!=''").fetchall():
+                c.execute("UPDATE army_lists SET detachment_ids=? WHERE id=?",
+                          (json.dumps([r["detachment_id"]], separators=(",", ":")), r["id"]))
 
         # Arsenal owns these tables and initialises them after this general
         # schema pass.  On a brand-new database they do not exist yet.

@@ -19,8 +19,9 @@ from flask import (Flask, Response, abort, jsonify, render_template, request,
 import factions_theme as ft
 from army import (
     _army_unit_row, _enhancement_cost,
-    _enhancement_for, _normalise_squad_size, _points_for,
+    _enhancement_for, _enhancement_for_ids, _normalise_squad_size, _points_for,
     _valid_detachment_for_faction, battle_size_caps,
+    parse_detachment_ids, detachment_set_cost, clear_orphaned_enhancements,
 )
 from army_validation import validation_payload
 from box_sets import (
@@ -519,9 +520,10 @@ def api_detachment_enhancements(dtid):
 
 @app.route("/api/army-units/<auid>/enhancements")
 def api_army_unit_enhancements(auid):
-    """Enhancements a specific army-unit may take: eligible for the unit, in the
-    army's detachment, and not already assigned to a sibling unit (uniqueness). The
-    unit's own current pick is always included so it stays visible and clearable."""
+    """Enhancements a specific army-unit may take: eligible for the unit, drawn
+    from ANY of the army's selected detachments (their pools are unioned), and not
+    already assigned to a sibling unit (uniqueness). The unit's own current pick is
+    always included so it stays visible and clearable."""
     from db import db
     from eligibility import eligible_enhancements
     with db() as c:
@@ -529,21 +531,22 @@ def api_army_unit_enhancements(auid):
         if not row:
             abort(404)
         army = c.execute("SELECT * FROM army_lists WHERE id=?", (row["army_list_id"],)).fetchone()
-        dtid = (army["detachment_id"] if army else "") or ""
+        dt_ids = parse_detachment_ids(army) if army else []
         own = str(row["enhancement_id"] or "")
         taken = {str(r["enhancement_id"]) for r in c.execute(
             "SELECT enhancement_id FROM army_units WHERE army_list_id=? AND id!=? AND enhancement_id!=''",
             (row["army_list_id"], auid)).fetchall()}
     did = store.ds_by_id.get(row["datasheet_id"], {}).get("id") or row["datasheet_id"]
     out, seen = [], set()
-    for e in eligible_enhancements(did, dtid):
-        if str(e["id"]) in taken:
-            continue
-        out.append({"id": e["id"], "name": e["name"], "cost": _int(e.get("cost", 0)),
-                    "description": e.get("description", "")})
-        seen.add(str(e["id"]))
+    for dtid in dt_ids:
+        for e in eligible_enhancements(did, dtid):
+            if str(e["id"]) in taken or str(e["id"]) in seen:
+                continue
+            out.append({"id": e["id"], "name": e["name"], "cost": _int(e.get("cost", 0)),
+                        "description": e.get("description", "")})
+            seen.add(str(e["id"]))
     if own and own not in seen:  # keep the current pick visible even if now ineligible
-        oe = _enhancement_for(own, dtid)
+        oe = _enhancement_for_ids(own, dt_ids)
         if oe:
             out.append({"id": oe["id"], "name": oe["name"], "cost": _int(oe.get("cost", 0)),
                         "description": oe.get("description", "")})
@@ -1100,17 +1103,76 @@ def _resolve_battle_size(name, posted_points):
     return "Custom", _as_int(posted_points, 2000, minimum=0), caps
 
 
-def _detachment_cost_error(dtid, caps):
-    """Error string if the detachment's points cost exceeds the battle size's
-    detachment limit, else None. A null limit (Custom) never errors."""
-    limit = caps["detachment_points_limit"]
-    if not dtid or limit is None:
-        return None
-    det = store.detachment_by_id.get(dtid)
-    if det and (det.get("points_cost") or 0) > limit:
-        return (f"Detachment costs {det['points_cost']} points but this "
-                f"battle size allows {limit}")
-    return None
+def _posted_detachment_ids(data, fallback_row=None):
+    """Read a posted detachment set, supporting the new ``detachment_ids`` array
+    and the legacy single ``detachment_id``. When neither key is present, keep
+    the army's existing set (``fallback_row``)."""
+    if isinstance(data.get("detachment_ids"), list):
+        return [str(x) for x in data["detachment_ids"] if x]
+    if "detachment_id" in data:
+        d = str(data.get("detachment_id") or "")
+        return [d] if d else []
+    if fallback_row is not None:
+        return parse_detachment_ids(fallback_row)
+    return []
+
+
+def _normalize_detachment_ids(fid, posted_ids, caps, *, drop_invalid=False,
+                              trim_to_budget=False):
+    """``(ids, error)``. De-dup (order-preserving), reject ids the faction is not
+    offered, and enforce the battle-size Detachment-Points budget (Sum of costs
+    <= cap; null cap = Custom = unlimited). ``drop_invalid`` silently skips
+    wrong-faction ids (import path); ``drop_invalid``/``trim_to_budget`` trim the
+    set from the end until it fits instead of erroring (import / size-downgrade)."""
+    seen, ids = set(), []
+    for d in posted_ids:
+        d = str(d or "")
+        if not d or d in seen:
+            continue
+        if not _valid_detachment_for_faction(fid, d):
+            if drop_invalid:
+                continue
+            return None, "Detachment does not belong to this army's faction"
+        seen.add(d)
+        ids.append(d)
+    budget = caps["detachment_points_limit"]
+    if budget is not None and detachment_set_cost(ids) > budget:
+        if drop_invalid or trim_to_budget:
+            while ids and detachment_set_cost(ids) > budget:
+                ids.pop()
+        else:
+            cost = detachment_set_cost(ids)
+            return None, (f"Detachments cost {cost} Detachment Points but this "
+                          f"battle size allows {budget}")
+    return ids, None
+
+
+def _detachment_payload(dt_ids):
+    """Merged view of an army's selected detachments for the builder UI: the
+    detachment chips, and the unioned rules / stratagems / unlocks / excludes
+    (each rule and stratagem tagged with its source ``detachment_name``)."""
+    detachments, rules, unlocks, excludes, strats = [], [], [], [], []
+    for d in dt_ids:
+        dt = store.detachment_by_id.get(d, {})
+        name = dt.get("name", "")
+        detachments.append({"id": d, "name": name,
+                            "cost": dt.get("points_cost", 0),
+                            "disposition": store.disposition_by_detachment.get(d, "")})
+        for r in dt.get("rules", []):
+            rules.append({**r, "detachment_name": name})
+        unlocks += dt.get("unlocks_datasheets", [])
+        excludes += dt.get("excludes_datasheets", [])
+        for s in store.stratagems_by_detachment.get(d, []):
+            strats.append({**s, "detachment_name": name})
+    return {
+        "detachments": detachments,
+        "detachment_name": ", ".join(d["name"] for d in detachments if d["name"]),
+        "detachment_rules": rules,
+        "detachment_unlocks": unlocks,
+        "detachment_excludes": excludes,
+        "stratagems": strats,
+        "detachment_points_used": detachment_set_cost(dt_ids),
+    }
 
 
 @app.route("/api/battle-sizes")
@@ -1131,7 +1193,10 @@ def api_list_armies():
                 (r["id"],)).fetchall()
             total_pts = sum(
                 _points_for(u["datasheet_id"], u["squad_size"]) +
-                _enhancement_cost(u["enhancement_id"], r["detachment_id"] or "") +
+                # Enhancement ids are globally unique, so resolve cost without a
+                # detachment hint — the unit's enhancement may belong to any of
+                # the army's selected detachments.
+                _enhancement_cost(u["enhancement_id"]) +
                 (u["wargear_points"] or 0)
                 for u in units)
             fac = store.faction_by_id.get(r["faction_id"], {})
@@ -1139,7 +1204,8 @@ def api_list_armies():
             # the seven renamed factions; faction_display_name is the user-facing
             # label (common_name or canonical).
             primary, accent, _ = ft.theme_for(fac.get("name", ""))
-            dt = store.detachment_by_id.get(r["detachment_id"] or "", {})
+            dt_ids = parse_detachment_ids(r)
+            det_names = [store.detachment_by_id.get(d, {}).get("name", "") for d in dt_ids]
             caps = battle_size_caps(r["battle_size"])
             out.append({
                 "id": r["id"],
@@ -1149,8 +1215,10 @@ def api_list_armies():
                 "faction_display_name": fac.get("display_name") or fac.get("name", r["faction_id"]),
                 "faction_parent_display_name": fac.get("parent_display_name") or "",
                 "icon_url": _faction_icon_url(r["faction_id"], fac.get("name", "")),
-                "detachment_id": r["detachment_id"] or "",
-                "detachment_name": dt.get("name", ""),
+                "detachment_id": dt_ids[0] if dt_ids else "",
+                "detachment_ids": dt_ids,
+                "detachment_name": ", ".join(n for n in det_names if n),
+                "detachment_points_used": detachment_set_cost(dt_ids),
                 "points_limit": r["points_limit"],
                 "battle_size": r["battle_size"] or "",
                 "enhancement_limit": caps["enhancement_limit"],
@@ -1172,20 +1240,19 @@ def api_create_army():
     fid = str(data.get("faction_id", ""))
     if fid not in store.faction_by_id:
         return jsonify({"ok": False, "error": "Unknown faction"}), 400
-    dtid = str(data.get("detachment_id", ""))
-    if not _valid_detachment_for_faction(fid, dtid):
-        return jsonify({"ok": False, "error": "Detachment does not belong to that faction"}), 400
     battle_size, pts_limit, caps = _resolve_battle_size(
         data.get("battle_size", ""), data.get("points_limit"))
-    err = _detachment_cost_error(dtid, caps)
+    dt_ids, err = _normalize_detachment_ids(fid, _posted_detachment_ids(data), caps)
     if err:
         return jsonify({"ok": False, "error": err}), 400
     notes = str(data.get("notes", ""))[:2000]
     aid = uuid.uuid4().hex
+    dt_json = json.dumps(dt_ids, separators=(",", ":")) if dt_ids else ""
     with db() as c:
-        c.execute("""INSERT INTO army_lists(id, name, faction_id, detachment_id, points_limit, battle_size, notes, created_at)
-                     VALUES(?,?,?,?,?,?,?,?)""",
-                  (aid, name, fid, dtid, pts_limit, battle_size, notes, time.time()))
+        c.execute("""INSERT INTO army_lists(id, name, faction_id, detachment_id, detachment_ids, points_limit, battle_size, notes, created_at)
+                     VALUES(?,?,?,?,?,?,?,?,?)""",
+                  (aid, name, fid, dt_ids[0] if dt_ids else "", dt_json,
+                   pts_limit, battle_size, notes, time.time()))
     return jsonify({"ok": True, "id": aid})
 
 
@@ -1203,18 +1270,22 @@ def api_import_army():
         return jsonify({"ok": False, "error": "Unknown faction in roster"}), 400
     battle_size, pts_limit, caps = _resolve_battle_size(
         data.get("battle_size", ""), data.get("points_limit"))
-    dtid = str(data.get("detachment_id", "") or "")
-    if dtid and not _valid_detachment_for_faction(fid, dtid):
-        dtid = ""  # drop an invalid detachment rather than reject the whole import
+    # v2 rosters carry detachment_ids; v1 carry a single detachment_id. Drop any
+    # that don't belong to the faction and trim to the DP budget rather than
+    # rejecting the whole import.
+    dt_ids, _ = _normalize_detachment_ids(fid, _posted_detachment_ids(data), caps,
+                                          drop_invalid=True)
+    dt_json = json.dumps(dt_ids, separators=(",", ":")) if dt_ids else ""
     name = str(data.get("name", "Imported Army"))[:120].strip() or "Imported Army"
     units = data.get("units")
     units = units if isinstance(units, list) else []
     selectable = {x["id"] for x in store.selectable_units_for_army(fid)}
     aid = uuid.uuid4().hex
     with db() as c:
-        c.execute("""INSERT INTO army_lists(id, name, faction_id, detachment_id, points_limit, battle_size, notes, created_at)
-                     VALUES(?,?,?,?,?,?,?,?)""",
-                  (aid, name, fid, dtid, pts_limit, battle_size, "", time.time()))
+        c.execute("""INSERT INTO army_lists(id, name, faction_id, detachment_id, detachment_ids, points_limit, battle_size, notes, created_at)
+                     VALUES(?,?,?,?,?,?,?,?,?)""",
+                  (aid, name, fid, dt_ids[0] if dt_ids else "", dt_json,
+                   pts_limit, battle_size, "", time.time()))
         new_ids = []
         for i, u in enumerate(units):
             u = u or {}
@@ -1259,9 +1330,9 @@ def api_get_army(aid):
     caps = battle_size_caps(row["battle_size"])
     fac = store.faction_by_id.get(row["faction_id"], {})
     primary, accent, _ = ft.theme_for(fac.get("name", ""))
-    dt = store.detachment_by_id.get(row["detachment_id"] or "", {})
+    dt_ids = parse_detachment_ids(row)
+    dp = _detachment_payload(dt_ids)
     army_rules = store.army_rules_for(row["faction_id"])
-    strats = store.stratagems_by_detachment.get(row["detachment_id"] or "", [])
     return jsonify({
         "id": row["id"],
         "name": row["name"],
@@ -1270,13 +1341,16 @@ def api_get_army(aid):
         "faction_display_name": fac.get("display_name") or fac.get("name", row["faction_id"]),
         "faction_parent_display_name": fac.get("parent_display_name") or "",
         "icon_url": _faction_icon_url(row["faction_id"], fac.get("name", "")),
-        "detachment_id": row["detachment_id"] or "",
-        "detachment_name": dt.get("name", ""),
-        "detachment_rules": dt.get("rules", []),
-        "detachment_unlocks": dt.get("unlocks_datasheets", []),
-        "detachment_excludes": dt.get("excludes_datasheets", []),
+        "detachment_id": dt_ids[0] if dt_ids else "",
+        "detachment_ids": dt_ids,
+        "detachments": dp["detachments"],
+        "detachment_name": dp["detachment_name"],
+        "detachment_rules": dp["detachment_rules"],
+        "detachment_unlocks": dp["detachment_unlocks"],
+        "detachment_excludes": dp["detachment_excludes"],
+        "detachment_points_used": dp["detachment_points_used"],
         "army_rules": army_rules,
-        "stratagems": strats,
+        "stratagems": dp["stratagems"],
         "core_stratagems": store.core_stratagems,
         "points_limit": row["points_limit"],
         "battle_size": row["battle_size"] or "",
@@ -1324,28 +1398,32 @@ def api_update_army(aid):
             abort(404)
         data = request.get_json(force=True)
         name = str(data.get("name", row["name"]))[:120].strip() or row["name"]
-        dtid = str(data.get("detachment_id", row["detachment_id"] or ""))
-        if not _valid_detachment_for_faction(row["faction_id"], dtid):
-            return jsonify({"ok": False, "error": "Detachment does not belong to this army's faction"}), 400
         battle_size, pts_limit, caps = _resolve_battle_size(
             data.get("battle_size", row["battle_size"]),
             data.get("points_limit", row["points_limit"]))
-        # Auto-clear a detachment that no longer fits the (possibly downgraded)
-        # battle size rather than rejecting — avoids a save dead-end where the
-        # user can change neither value first.
-        if _detachment_cost_error(dtid, caps):
-            dtid = ""
+        # Validate the posted detachment set. On a battle-size downgrade the set
+        # may no longer fit the DP budget, so trim it to fit rather than rejecting
+        # — avoids a save dead-end where neither value can change first.
+        dt_ids, err = _normalize_detachment_ids(
+            row["faction_id"], _posted_detachment_ids(data, row), caps,
+            trim_to_budget=True)
+        if err:
+            return jsonify({"ok": False, "error": err}), 400
         notes = str(data.get("notes", row["notes"] or ""))[:2000]
-        c.execute("UPDATE army_lists SET name=?, detachment_id=?, points_limit=?, battle_size=?, notes=? WHERE id=?",
-                  (name, dtid, pts_limit, battle_size, notes, aid))
-        if dtid != (row["detachment_id"] or ""):
-            c.execute("UPDATE army_units SET enhancement_id='' WHERE army_list_id=?", (aid,))
+        dt_json = json.dumps(dt_ids, separators=(",", ":")) if dt_ids else ""
+        c.execute("UPDATE army_lists SET name=?, detachment_id=?, detachment_ids=?, points_limit=?, battle_size=?, notes=? WHERE id=?",
+                  (name, dt_ids[0] if dt_ids else "", dt_json, pts_limit, battle_size, notes, aid))
+        # Clear only enhancements that no longer resolve in the new detachment set
+        # (a de-selected detachment's enhancements), not every enhancement.
+        clear_orphaned_enhancements(c, aid, dt_ids)
         payload = validation_payload(c, aid)
     return jsonify({
         "ok": True,
         "battle_size": battle_size,
         "points_limit": pts_limit,
-        "detachment_id": dtid,
+        "detachment_id": dt_ids[0] if dt_ids else "",
+        "detachment_ids": dt_ids,
+        "detachment_points_used": detachment_set_cost(dt_ids),
         "enhancement_limit": caps["enhancement_limit"],
         "duplicate_unit_limit": caps["duplicate_unit_limit"],
         "detachment_points_limit": caps["detachment_points_limit"],
@@ -1427,9 +1505,9 @@ def api_update_army_unit(auid):
         enhancement_id = str(data.get("enhancement_id", row["enhancement_id"] or ""))[:64]
         if enhancement_id:
             from eligibility import enhancement_eligible
-            e = _enhancement_for(enhancement_id, army["detachment_id"] or "")
+            e = _enhancement_for_ids(enhancement_id, parse_detachment_ids(army))
             if not e:
-                return jsonify({"ok": False, "error": "Enhancement does not belong to this army's detachment"}), 400
+                return jsonify({"ok": False, "error": "Enhancement does not belong to any of this army's detachments"}), 400
             _u = store.ds_by_id.get(did, {})
             if not enhancement_eligible(set(_u.get("_keywords") or []), _u.get("role"),
                                         e.get("eligibility_struct") or {}, _u.get("name")):

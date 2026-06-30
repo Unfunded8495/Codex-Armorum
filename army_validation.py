@@ -8,7 +8,8 @@ renderer keys off ``level`` only, so later phases add new ``code`` values
 Phase 1 codes: points_over / points_ok, enhancement_over / enhancement_ok,
 no_detachment, under_assigned, over_assigned, wishlist_units.
 """
-from army import _army_unit_row, battle_size_caps, duplicate_cap
+from army import (_army_unit_row, battle_size_caps, duplicate_cap,
+                  parse_detachment_ids, detachment_set_cost)
 from data_store import get_store
 
 
@@ -26,6 +27,7 @@ def _total_points(units):
 
 def _rows(army, units, store):
     caps = battle_size_caps(army["battle_size"])
+    dt_ids = parse_detachment_ids(army)
     rows = []
     total = _total_points(units)
 
@@ -53,10 +55,21 @@ def _rows(army, units, store):
             rows.append({"level": "ok", "code": "enhancement_ok",
                          "message": f"{enh_count} of {enh_limit} enhancements"})
 
-    # Detachment chosen?
-    if not (army["detachment_id"] or ""):
+    # Detachment(s) chosen, and Detachment Points within the battle-size budget.
+    # Each detachment costs 1-3 DP; their sum must not exceed the size's DP cap
+    # (null for Custom -> no DP limit, any number of detachments allowed).
+    dp_budget = caps["detachment_points_limit"]
+    if not dt_ids:
         rows.append({"level": "info", "code": "no_detachment",
                      "message": "No detachment selected"})
+    elif dp_budget is not None:
+        dp_used = detachment_set_cost(dt_ids)
+        if dp_used > dp_budget:
+            rows.append({"level": "err", "code": "detachment_points_over",
+                         "message": f"{dp_used} DP used - limit is {dp_budget}"})
+        elif len(dt_ids) > 1:
+            rows.append({"level": "ok", "code": "detachment_points_ok",
+                         "message": f"{dp_used} of {dp_budget} Detachment Points"})
 
     # Ownership rows (carried over from the old client-side checks).
     for u in units:
@@ -85,7 +98,8 @@ def _rows(army, units, store):
 
     # Enhancement eligibility + uniqueness, and the single-Warlord rule (Phase 4).
     from eligibility import enhancement_eligible
-    dtid = army["detachment_id"] or ""
+    # Enhancements come from the union of every selected detachment's pool.
+    enh_pool = [e for d in dt_ids for e in store.enhancements_by_detachment.get(d, [])]
     by_enh = {}
     for u in units:
         eid = str(u.get("enhancement_id") or "")
@@ -93,8 +107,7 @@ def _rows(army, units, store):
             continue
         by_enh.setdefault(eid, []).append(u)
         ds = store.ds_by_id.get(u.get("datasheet_id"), {})
-        e = next((x for x in store.enhancements_by_detachment.get(dtid, [])
-                  if str(x.get("id")) == eid), None)
+        e = next((x for x in enh_pool if str(x.get("id")) == eid), None)
         if e and not enhancement_eligible(set(ds.get("_keywords") or []), ds.get("role"),
                                           e.get("eligibility_struct") or {}, ds.get("name")):
             rows.append({"level": "err", "code": "enhancement_ineligible",
@@ -144,12 +157,16 @@ def _rows(army, units, store):
                          "message": f"{counts[did]}x {u['name']}, max {cap}{at}"})
 
     # Detachment excludes (Phase 5a): excludes_datasheets holds datasheet NAMES.
-    det = store.detachment_by_id.get(army["detachment_id"] or "")
-    excludes = set(det.get("excludes_datasheets") or []) if det else set()
+    # Union the excludes of every selected detachment.
+    excludes = set()
+    for d in dt_ids:
+        det = store.detachment_by_id.get(d)
+        if det:
+            excludes.update(det.get("excludes_datasheets") or [])
     for u in units:
         if u["name"] in excludes:
             rows.append({"level": "err", "code": "detachment_excluded",
-                         "message": f"{u['name']} is excluded by this detachment"})
+                         "message": f"{u['name']} is excluded by a selected detachment"})
 
     # Allied factions (Phase 5b): per ally config, a points budget and the keyword
     # caps, both at the army's battle size. Custom has no limits -> unlimited.

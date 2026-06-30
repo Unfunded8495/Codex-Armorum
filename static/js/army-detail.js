@@ -1,6 +1,7 @@
 import { esc, api, intOr } from './utils.js';
-import { state, ensureBattleSizes, detLimitFor, detOptions } from './army-state.js';
+import { state, ensureBattleSizes } from './army-state.js';
 import { setBreadcrumb } from './header.js';
+import { renderLeftPicker, refreshLeftPicker } from './unit-picker.js';
 
 const view       = document.getElementById('view');
 const breadcrumb = document.getElementById('breadcrumb');
@@ -27,41 +28,65 @@ export async function showArmy(aid){
     {label:army.name},
   ]);
 
+  // Three-panel layout: persistent unit picker (left), roster + config (centre),
+  // context-sensitive detail (right).
   view.innerHTML = `
-    <div class="ab-detail">
-      <div class="ab-sidebar">
-        ${renderSidebar(army)}
-      </div>
-      <div class="ab-main">
-        <div class="ab-roster-head">
-          <h2 class="ab-roster-title">Unit Roster</h2>
-          <button class="add-unit-btn" onclick="openUnitPicker()">+ Add Unit</button>
-        </div>
-        <div id="rosterBody">
-          ${renderRoster(army.units, army.accent)}
-        </div>
-      </div>
-    </div>`;
+    <div class="ab-detail ab-3panel" data-testid="army-detail">
+      <aside class="ab-leftpanel" id="leftPanel" data-testid="unit-picker-panel"></aside>
+      <section class="ab-centre" id="centrePanel">${renderCentre(army)}</section>
+      <aside class="ab-rightpanel" id="rightPanel" data-testid="detail-panel">${renderRightPlaceholder()}</aside>
+    </div>
+    <button class="ab-mobile-units-btn" type="button" onclick="toggleLeftPanel()" aria-label="Toggle unit picker">✚ Units</button>
+    <div class="ab-rp-scrim" id="rpScrim" onclick="clearRight()"></div>`;
 
-  wireSidebarInputs(army);
+  wireCentreInputs(army);
+  renderLeftPicker(army);   // populate the persistent left picker (async)
+  restoreRight();           // re-open a prior right-panel selection after a refetch
 }
 
-/* ---- sidebar ------------------------------------------------------------ */
+function renderRightPlaceholder(){
+  return `<div class="ab-rp-empty" data-testid="detail-empty">
+      <span class="ab-rp-empty-icon">✦</span>
+      <p>Select a unit or a configuration row to edit it here.</p>
+    </div>`;
+}
 
-function renderSidebar(army){
+/* ---- centre panel (roster + config) ------------------------------------- */
+
+function renderCentre(army){
+  return `
+    ${renderRosterHeader(army)}
+    ${renderConfigSection(army)}
+    ${renderArmyRuleCard(army)}
+    ${renderDetachmentRuleCard(army)}
+    ${renderStratagemsCard(army)}
+    <div class="ab-roster-head">
+      <h2 class="ab-roster-title">Unit Roster</h2>
+      <button class="add-unit-btn" data-testid="add-unit-button" onclick="openUnitPicker()">+ Add Unit</button>
+    </div>
+    <div id="rosterBody">${renderRoster(army.units, army.accent)}</div>
+    <div class="ab-card ab-validation" id="validationCard" data-testid="validation-card">
+      <p class="ab-card-title">Validation</p>
+      <div id="validationBody">${renderValidation(army)}</div>
+    </div>`;
+}
+
+function renderRosterHeader(army){
   const pct  = army.points_limit>0 ? Math.min(100,Math.round(army.total_points/army.points_limit*100)) : 0;
   const over = army.total_points>army.points_limit && army.points_limit>0;
-  const isCustom = (army.battle_size||'Custom') === 'Custom';
   return `
-    <div class="ab-card">
-      <p class="ab-card-title">Army Name</p>
+    <div class="ab-centre-head">
       <input class="ab-name-input" id="abName" value="${esc(army.name)}" placeholder="Army name">
+      <div class="ab-export-btns">
+        <button class="ab-export-btn" type="button" data-testid="export-button" onclick="exportArmy('copy', this)">Copy list</button>
+        <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">.txt</button>
+        <button class="ab-export-btn" type="button" onclick="exportArmy('json', this)">.json</button>
+      </div>
     </div>
-    <div class="ab-card">
-      <p class="ab-card-title">Points</p>
+    <div class="ab-centre-meters">
       <div class="pts-bar-wrap">
         <div class="pts-bar-nums">
-          <span class="pts-used ${over?'is-over':''}" id="ptsUsed">${army.total_points}</span>
+          <span class="pts-used ${over?'is-over':''}" id="ptsUsed" data-testid="army-points">${army.total_points}</span>
           <span class="pts-limit-label">/ <span id="ptsLimit">${army.points_limit}</span> pts</span>
         </div>
         <div class="pts-bar-track">
@@ -69,41 +94,117 @@ function renderSidebar(army){
         </div>
         ${over?`<div class="pts-over-msg" id="ptsOverMsg">⚠ ${army.total_points-army.points_limit} pts over limit</div>`:'<div id="ptsOverMsg"></div>'}
       </div>
-    </div>
-    <div class="ab-card">
-      <p class="ab-card-title">Battle Size &amp; Detachment</p>
-      <div class="ab-meta-row">
-        <div class="ab-meta-item">
-          <label>Battle Size</label>
-          <select id="abBattleSize" onchange="onAbBattleSize()"></select>
-        </div>
-        <div class="ab-meta-item" id="abPtsField" ${isCustom?'':'hidden'}>
-          <label>Points Limit</label>
-          <input type="number" id="abPtsLimit" value="${army.points_limit}" min="0" step="100" onchange="saveArmyMeta()">
-        </div>
-        <div class="ab-meta-item">
-          <label>Detachment</label>
-          <select id="abDetachment" onchange="saveArmyMeta()">
-            <option value="">— none —</option>
-          </select>
-        </div>
+    </div>`;
+}
+
+// Config rows: Battle Size and Detachment(s). Each is a clickable row that opens
+// its editor in the right panel (matching the reference three-panel UX).
+function renderConfigSection(army){
+  const bs = army.battle_size || 'Custom';
+  const dets = army.detachments || [];
+  const budget = army.detachment_points_limit;
+  const used = army.detachment_points_used || 0;
+  const dpLabel = budget==null ? '' : `${used} / ${budget} DP`;
+  const sel = state.rightSel || {};
+  const detSummary = dets.length
+    ? dets.map(d=>esc(d.name)).join(', ')
+    : '<span class="ab-cfg-empty">None selected</span>';
+  return `
+    <div class="ab-config">
+      <button class="ab-cfg-row ${sel.type==='battlesize'?'is-active':''}" type="button"
+              data-testid="config-battlesize" onclick="selectConfig('battlesize')">
+        <span class="ab-cfg-label">Battle Size</span>
+        <span class="ab-cfg-value">${esc(bs)}${army.points_limit?` · ${army.points_limit} pts`:''}</span>
+        <span class="ab-cfg-chev">▸</span>
+      </button>
+      <button class="ab-cfg-row ${sel.type==='detachment'?'is-active':''}" type="button"
+              data-testid="config-detachment" onclick="selectConfig('detachment')">
+        <span class="ab-cfg-label">Detachment${dets.length===1?'':'s'}</span>
+        <span class="ab-cfg-value">${detSummary}${dpLabel?` <em class="ab-cfg-dp">${dpLabel}</em>`:''}</span>
+        <span class="ab-cfg-chev">▸</span>
+      </button>
+    </div>`;
+}
+
+/* ---- sidebar ------------------------------------------------------------ */
+
+// Right-panel editor for the Battle Size config row. Keeps the existing select +
+// custom-points input; options are filled on open (fillBattleSizeSelect).
+function renderConfigBattleSize(army){
+  const isCustom = (army.battle_size||'Custom') === 'Custom';
+  return `
+    <div class="ab-rp-head"><h3 class="ab-rp-title">Battle Size</h3>
+      <button class="ab-rp-close" type="button" onclick="clearRight()" title="Close">&times;</button></div>
+    <div class="ab-rp-body">
+      <div class="ab-meta-item">
+        <label>Battle Size</label>
+        <select id="abBattleSize" onchange="onAbBattleSize()"></select>
       </div>
-    </div>
-    ${renderArmyRuleCard(army)}
-    ${renderDetachmentRuleCard(army)}
-    ${renderStratagemsCard(army)}
-    <div class="ab-card ab-validation" id="validationCard">
-      <p class="ab-card-title">Validation</p>
-      <div id="validationBody">${renderValidation(army)}</div>
-    </div>
-    <div class="ab-card">
-      <p class="ab-card-title">Export</p>
-      <div class="ab-export-btns">
-        <button class="ab-export-btn" type="button" onclick="exportArmy('copy', this)">Copy list</button>
-        <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">Download .txt</button>
-        <button class="ab-export-btn" type="button" onclick="exportArmy('json', this)">Download .json</button>
+      <div class="ab-meta-item ab-custom-pts" id="abPtsField" ${isCustom?'':'hidden'}>
+        <label>Points Limit</label>
+        <input type="number" id="abPtsLimit" value="${army.points_limit}" min="0" step="100" onchange="saveArmyMeta()">
       </div>
     </div>`;
+}
+
+// Right-panel editor for the Detachment config row: the DP-budget panel (chips +
+// budget-aware add control). The add options are filled on open.
+function renderConfigDetachment(army){
+  return `
+    <div class="ab-rp-head"><h3 class="ab-rp-title">Detachment${(army.detachments||[]).length===1?'':'s'}</h3>
+      <button class="ab-rp-close" type="button" onclick="clearRight()" title="Close">&times;</button></div>
+    <div class="ab-rp-body">
+      ${renderDetachmentPanel(army)}
+    </div>`;
+}
+
+// Detachment Points panel: the selected detachments as removable chips, a live
+// "used / budget DP" readout, and an add control. This is the reusable
+// spend-against-a-budget primitive (enhancement / duplicate indicators reuse it).
+function renderDetachmentPanel(army){
+  const budget = army.detachment_points_limit;          // null = Custom (no cap)
+  const used   = army.detachment_points_used || 0;
+  const dets   = army.detachments || [];
+  const over   = budget != null && used > budget;
+  const budgetLabel = budget == null ? `${used} DP` : `${used} / ${budget} DP`;
+  const chips = dets.length
+    ? dets.map(d=>`
+        <div class="ab-detach-chip" data-testid="detachment-chip" data-id="${esc(d.id)}">
+          <span class="ab-detach-chip-main">
+            <span class="ab-detach-chip-name">${esc(d.name||d.id)}</span>
+            ${d.disposition?`<span class="ab-detach-chip-disp" data-testid="detachment-disposition" title="Force Disposition">⬡ ${esc(d.disposition)}</span>`:''}
+          </span>
+          <span class="ab-detach-chip-cost">${d.cost||0} DP</span>
+          <button class="ab-detach-chip-x" type="button" title="Remove detachment"
+                  data-testid="detachment-remove" onclick="removeDetachment('${esc(d.id)}')">&times;</button>
+        </div>`).join('')
+    : `<span class="ab-detach-empty">No detachment selected</span>`;
+  return `
+    <div class="ab-card ab-detach-card" data-testid="detachment-panel">
+      <div class="ab-detach-head">
+        <p class="ab-card-title" style="margin:0">Detachment${dets.length===1?'':'s'}</p>
+        <span class="ab-dp-budget ${over?'is-over':''}" id="abDpBudget" data-testid="dp-budget">${budgetLabel}</span>
+      </div>
+      <div class="ab-detach-list" id="abDetachList">${chips}</div>
+      <select class="ab-detach-add" id="abDetachAdd" data-testid="detachment-add" onchange="onAddDetachment(this)">
+        <option value="">+ Add detachment&hellip;</option>
+      </select>
+    </div>`;
+}
+
+// <option>s for the "+ Add detachment" control: faction detachments not already
+// selected whose DP cost fits the remaining budget (all, for Custom).
+function addableDetachmentOptions(army){
+  const dts = state.detachCache[army.faction_id] || [];
+  const budget = army.detachment_points_limit;
+  const used   = army.detachment_points_used || 0;
+  const remaining = budget == null ? Infinity : budget - used;
+  const have = new Set(army.detachment_ids || []);
+  return dts
+    .filter(d => !have.has(d.id) && (d.points_cost||0) <= remaining)
+    .slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''))
+    .map(d => `<option value="${esc(d.id)}">${esc(d.name)} · ${d.points_cost||0} DP</option>`)
+    .join('');
 }
 
 function renderDetachmentRuleCard(army){
@@ -145,7 +246,7 @@ function renderArmyRuleCard(army){
       <div class="ab-detrule-body">${esc(r.body_text||'')}</div>
     </div>`).join('');
   return `
-    <div class="ab-card ab-detrule-card">
+    <div class="ab-card ab-detrule-card" data-testid="army-rule-card">
       <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
         <span class="ab-card-title" style="margin:0">Army Rule${rules.length>1?'s':''}</span>
         <span class="ab-detrule-chevron">▸</span>
@@ -177,14 +278,19 @@ function renderStratagemsCard(army){
   const group = (title, arr)=> arr.length
     ? `<div class="ab-strat-group"><div class="ab-strat-grouphead">${esc(title)}</div>${arr.map(stratItem).join('')}</div>`
     : '';
+  // Detachment stratagems group under their source detachment (order preserved).
+  const byDet = {}; const order = [];
+  det.forEach(s=>{ const k = s.detachment_name || army.detachment_name || 'Detachment';
+    if(!byDet[k]){ byDet[k] = []; order.push(k); } byDet[k].push(s); });
+  const detGroups = order.map(k=>group(k, byDet[k])).join('');
   return `
-    <div class="ab-card ab-detrule-card ab-strat-card">
+    <div class="ab-card ab-detrule-card ab-strat-card" data-testid="stratagems-card">
       <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
         <span class="ab-card-title" style="margin:0">Stratagems <span class="ab-count">${det.length+core.length}</span></span>
         <span class="ab-detrule-chevron">▸</span>
       </button>
       <div class="ab-detrule-content" hidden>
-        ${group(army.detachment_name||'Detachment', det)}
+        ${detGroups}
         ${group('Core', core)}
       </div>
     </div>`;
@@ -217,27 +323,19 @@ export async function exportArmy(mode, btn){
   document.body.appendChild(a); a.click(); a.remove();
 }
 
-async function wireSidebarInputs(army){
-  let battleSizes;
+async function wireCentreInputs(army){
+  // Warm the caches the right-panel config editors need (this faction's
+  // detachments + the battle sizes). The selects themselves live in the right
+  // panel and are filled when their config row is opened.
   let dts = state.detachCache[army.faction_id];
   try{
-    [dts, battleSizes] = await Promise.all([
+    const [d] = await Promise.all([
       dts ? Promise.resolve(dts) : api(`/api/factions/${encodeURIComponent(army.faction_id)}/detachments`),
       ensureBattleSizes(),
     ]);
-  }catch(e){ dts = dts || []; battleSizes = state.battleSizes || []; }
+    dts = d;
+  }catch(e){ dts = dts || []; }
   state.detachCache[army.faction_id] = dts;
-
-  const bsSel = document.getElementById('abBattleSize');
-  if(bsSel){
-    const cur = army.battle_size || 'Custom';
-    bsSel.innerHTML = battleSizes.map(b=>
-        `<option value="${esc(b.name)}" ${b.name===cur?'selected':''}>${esc(b.name)} · ${b.points_limit} pts</option>`).join('')
-      + `<option value="Custom" ${cur==='Custom'?'selected':''}>Custom</option>`;
-  }
-  const sel = document.getElementById('abDetachment');
-  if(sel) sel.innerHTML = `<option value="">— none —</option>`+
-    detOptions(dts, army.detachment_id, detLimitFor(army.battle_size));
 
   const nameInput = document.getElementById('abName');
   let nameTimer;
@@ -247,26 +345,214 @@ async function wireSidebarInputs(army){
   });
 }
 
+// Fill the battle-size <select> in the right panel when its config row opens.
+function fillBattleSizeSelect(army){
+  const sel = document.getElementById('abBattleSize');
+  if(!sel) return;
+  const sizes = state.battleSizes || [];
+  const cur = army.battle_size || 'Custom';
+  sel.innerHTML = sizes.map(b=>
+      `<option value="${esc(b.name)}" ${b.name===cur?'selected':''}>${esc(b.name)} · ${b.points_limit} pts</option>`).join('')
+    + `<option value="Custom" ${cur==='Custom'?'selected':''}>Custom</option>`;
+}
+
+// Fill the "+ Add detachment" control in the right panel when its config opens.
+function fillDetachAdd(army){
+  const addSel = document.getElementById('abDetachAdd');
+  if(addSel) addSel.innerHTML = `<option value="">+ Add detachment&hellip;</option>` +
+    addableDetachmentOptions(army);
+}
+
+/* ---- right panel orchestration ------------------------------------------ */
+
+export function selectConfig(kind){
+  if(!state.army) return;
+  state.rightSel = {type: kind};
+  markActiveSelection();
+  const rp = document.getElementById('rightPanel');
+  if(!rp) return;
+  if(kind === 'battlesize'){ rp.innerHTML = renderConfigBattleSize(state.army); fillBattleSizeSelect(state.army); }
+  else if(kind === 'detachment'){ rp.innerHTML = renderConfigDetachment(state.army); fillDetachAdd(state.army); }
+  rp.classList.add('is-open'); document.getElementById('rpScrim')?.classList.add('is-open');
+}
+
+export function selectUnit(auid){
+  if(!state.army) return;
+  const u = state.army.units.find(x=>x.id===auid);
+  if(!u) return;
+  state.rightSel = {type:'unit', id:auid};
+  markActiveSelection();
+  const rp = document.getElementById('rightPanel');
+  if(rp){ rp.innerHTML = renderUnitDetail(u); wireUnitDetail(u); rp.classList.add('is-open'); }
+  document.getElementById('rpScrim')?.classList.add('is-open');
+}
+
+export function clearRight(){
+  state.rightSel = null;
+  markActiveSelection();
+  const rp = document.getElementById('rightPanel');
+  if(rp) rp.innerHTML = renderRightPlaceholder();
+  rp?.classList.remove('is-open'); document.getElementById('rpScrim')?.classList.remove('is-open');
+}
+
+// Re-open whatever was selected before a full re-render (showArmy refetch).
+function restoreRight(){
+  const sel = state.rightSel;
+  if(!sel) return clearRight();
+  if(sel.type === 'unit'){
+    if(state.army.units.some(u=>u.id===sel.id)) selectUnit(sel.id);
+    else clearRight();
+  } else {
+    selectConfig(sel.type);
+  }
+}
+
+function markActiveSelection(){
+  const sel = state.rightSel || {};
+  document.querySelectorAll('.ab-cfg-row').forEach(r=>r.classList.remove('is-active'));
+  if(sel.type === 'battlesize') document.querySelector('[data-testid="config-battlesize"]')?.classList.add('is-active');
+  if(sel.type === 'detachment') document.querySelector('[data-testid="config-detachment"]')?.classList.add('is-active');
+  document.querySelectorAll('.au-row').forEach(r=>r.classList.remove('is-selected'));
+  if(sel.type === 'unit') document.getElementById('au-'+sel.id)?.classList.add('is-selected');
+}
+
+/* ---- right panel: unit detail ------------------------------------------- */
+
+function renderUnitDetail(u){
+  const pts = u.points + (u.enhancement_cost||0);
+  const hasWg = u.wargear_schema && u.wargear_schema.length;
+  return `
+    <div class="ab-rp-head">
+      <h3 class="ab-rp-title">${esc(u.name)}${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}</h3>
+      <button class="ab-rp-close" type="button" onclick="clearRight()" title="Close">&times;</button>
+    </div>
+    <div class="ab-rp-body">
+      <div class="ab-rp-pts"><b>${pts}</b> pts · <span class="ab-rp-role">${esc(u.role||'')}</span>${u.is_ally?` · <span class="au-ally">⚔ ${esc(u.ally_faction)}</span>`:''}</div>
+      ${u.is_character?`<button class="ab-rp-btn ${u.is_warlord?'is-on':''}" type="button" data-testid="unit-warlord-toggle" onclick="toggleWarlord('${u.id}')">${u.is_warlord?'★ Warlord':'☆ Set as Warlord'}</button>`:''}
+      ${u.can_have_enhancement?`<div class="ab-rp-section"><div class="ab-rp-sec-head">Enhancement</div><div id="rpEnh" class="au-enh-editor" data-testid="unit-enhancement-editor"></div></div>`:''}
+      ${hasWg?`<div class="ab-rp-section"><div class="ab-rp-sec-head">Wargear</div><div class="au-wargear-editor" data-testid="wargear-editor" id="rpWargear">${renderWargearEditor(u)}</div></div>`:''}
+      ${renderLeaderSection(u)}
+      <div class="ab-rp-section">
+        <button class="ab-rp-collapse" type="button" data-testid="unit-profiles-toggle" onclick="toggleUnitProfiles('${u.datasheet_id}', this)">
+          <span class="ab-rp-sec-head" style="margin:0">Profiles</span><span class="ab-rp-collapse-chev">▸</span></button>
+        <div id="rpProfiles" hidden></div>
+      </div>
+    </div>`;
+}
+
+// Lazy-load the datasheet statline + weapon profiles on first expand (cached).
+export async function toggleUnitProfiles(did, btn){
+  const box = document.getElementById('rpProfiles');
+  if(!box) return;
+  const opening = box.hidden;
+  box.hidden = !opening;
+  const chev = btn && btn.querySelector('.ab-rp-collapse-chev');
+  if(chev) chev.textContent = opening ? '▾' : '▸';
+  if(opening && !box.dataset.loaded){
+    box.innerHTML = `<p class="ab-rp-hint">Loading profiles…</p>`;
+    let detail = state.unitDetailCache[did];
+    if(!detail){
+      try{ detail = await api(`/api/units/${did}`); state.unitDetailCache[did] = detail; }
+      catch(e){ box.innerHTML = `<p class="ab-rp-hint">Could not load profiles.</p>`; return; }
+    }
+    box.innerHTML = renderProfiles(detail);
+    box.dataset.loaded = '1';
+  }
+}
+
+function renderProfiles(detail){
+  const models = Array.isArray(detail.models) ? detail.models
+               : (detail.models && detail.models.name ? [detail.models] : []);
+  const g = (m, ...ks)=>{ for(const k of ks){ if(m[k]!=null && m[k]!=='') return m[k]; } return '—'; };
+  const statRow = m=>`<tr><td class="wp-nm">${esc(m.name||'')}</td>
+    <td>${esc(g(m,'M'))}</td><td>${esc(g(m,'T'))}</td><td>${esc(g(m,'SV','Sv'))}</td>
+    <td>${esc(g(m,'W'))}</td><td>${esc(g(m,'LD','Ld'))}</td><td>${esc(g(m,'OC'))}</td>
+    <td>${esc(g(m,'INV','Inv'))}</td></tr>`;
+  const statTable = models.length ? `
+    <table class="wp-table"><thead><tr><th>Model</th><th>M</th><th>T</th><th>SV</th><th>W</th><th>LD</th><th>OC</th><th>INV</th></tr></thead>
+    <tbody>${models.map(statRow).join('')}</tbody></table>` : '';
+  const wpnRow = w=>`<tr><td class="wp-nm">${esc(w.name||'')}${w.keywords?`<span class="wp-kw">${esc(w.keywords)}</span>`:''}</td>
+    <td>${esc(w.range||'')}</td><td>${esc(w.A||'')}</td><td>${esc(w.BS_WS||'')}</td>
+    <td>${esc(w.S||'')}</td><td>${esc(w.AP||'')}</td><td>${esc(w.D||'')}</td></tr>`;
+  const wpnTable = (title, arr)=> arr && arr.length ? `
+    <div class="wp-grp">${title}</div>
+    <table class="wp-table"><thead><tr><th>Weapon</th><th>Rng</th><th>A</th><th>BS/WS</th><th>S</th><th>AP</th><th>D</th></tr></thead>
+    <tbody>${arr.map(wpnRow).join('')}</tbody></table>` : '';
+  return (statTable + wpnTable('Ranged Weapons', detail.ranged) + wpnTable('Melee Weapons', detail.melee))
+    || `<p class="ab-rp-hint">No profile data.</p>`;
+}
+
+function renderLeaderSection(u){
+  let html = '';
+  if(u.attached_leader_name) html += `<p class="ab-rp-hint">⮡ Led by ${esc(u.attached_leader_name)}</p>`;
+  if(u.attached_to){
+    html += `<button class="ab-rp-btn" type="button" onclick="detachLeader('${u.id}')">Detach from bodyguard</button>`;
+  } else if(u.attach_targets && u.attach_targets.length){
+    html += `<select class="ab-rp-select" data-testid="unit-leader-attach" onchange="attachLeader('${u.id}',this.value)">
+        <option value="">Attach to&hellip;</option>
+        ${u.attach_targets.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('')}
+      </select>`;
+  }
+  return html ? `<div class="ab-rp-section"><div class="ab-rp-sec-head">Leader</div>${html}</div>` : '';
+}
+
+function wireUnitDetail(u){
+  if(u.can_have_enhancement) fillUnitEnhancement(u);
+}
+
+async function fillUnitEnhancement(u){
+  const box = document.getElementById('rpEnh');
+  if(!box) return;
+  let enhs = [];
+  if((state.army.detachment_ids||[]).length){
+    try{ enhs = await api(`/api/army-units/${u.id}/enhancements`); }catch(e){ enhs = []; }
+  }
+  if(!enhs.length){
+    box.innerHTML = `<p class="ab-rp-hint">${(state.army.detachment_ids||[]).length?'No eligible enhancements for this unit.':'Select a detachment first.'}</p>`;
+    return;
+  }
+  box.innerHTML = `<select onchange="saveEnhancement('${u.id}',this.value)">
+      <option value="">— No enhancement —</option>
+      ${enhs.map(e=>`<option value="${esc(e.id)}" ${String(e.id)===String(u.enhancement_id)?'selected':''}>${esc(e.name)} (+${e.cost} pts)</option>`).join('')}
+    </select>`;
+}
+
+// Re-render the right panel's unit detail if `auid` is the one on screen (after a
+// squad/loadout/enhancement change).
+function refreshUnitDetailIfSelected(auid){
+  const sel = state.rightSel;
+  if(sel && sel.type === 'unit' && sel.id === auid){
+    const u = state.army.units.find(x=>x.id===auid);
+    const rp = document.getElementById('rightPanel');
+    if(u && rp){ rp.innerHTML = renderUnitDetail(u); wireUnitDetail(u); }
+  }
+}
+
 export async function saveArmyMeta(){
   if(!state.army) return;
-  const name = (document.getElementById('abName')?.value||'').trim() || state.army.name;
-  const dtid = document.getElementById('abDetachment')?.value || '';
-  const bs   = document.getElementById('abBattleSize')?.value || state.army.battle_size || 'Custom';
-  const pts  = intOr(document.getElementById('abPtsLimit')?.value, state.army.points_limit);
+  const prevBs = state.army.battle_size || 'Custom';
+  const name  = (document.getElementById('abName')?.value||'').trim() || state.army.name;
+  const bs    = document.getElementById('abBattleSize')?.value || state.army.battle_size || 'Custom';
+  const pts   = intOr(document.getElementById('abPtsLimit')?.value, state.army.points_limit);
+  const dtids = state.army.detachment_ids || [];
   let res;
   try{
     res = await api(`/api/armies/${state.army.id}`, {method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({name, detachment_id:dtid, battle_size:bs, points_limit:pts})});
+      body: JSON.stringify({name, detachment_ids:dtids, battle_size:bs, points_limit:pts})});
   }catch(e){ return; }
   if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
 
   // The server is authoritative: it derives the points limit from the battle
-  // size and may auto-clear an over-cost detachment on a downgrade.
-  const detachmentChanged = (res.detachment_id||'') !== (state.army.detachment_id||'');
+  // size and may trim the detachment set to fit a downgraded DP budget.
+  const before = JSON.stringify(state.army.detachment_ids||[]);
+  const after  = JSON.stringify(res.detachment_ids||[]);
+  const detachmentChanged = before !== after;
   state.army.name                    = name;
   state.army.battle_size             = res.battle_size;
   state.army.points_limit            = res.points_limit;
+  state.army.detachment_ids          = res.detachment_ids || [];
   state.army.detachment_id           = res.detachment_id || '';
+  state.army.detachment_points_used  = res.detachment_points_used || 0;
   state.army.enhancement_limit       = res.enhancement_limit;
   state.army.duplicate_unit_limit    = res.duplicate_unit_limit;
   state.army.detachment_points_limit = res.detachment_points_limit;
@@ -274,9 +560,10 @@ export async function saveArmyMeta(){
   state.army.validation              = res.validation;
   breadcrumb.querySelector('.cur').textContent = name;
 
-  if(detachmentChanged){
-    // Detachment changed (possibly auto-cleared) — refetch so the rule card,
-    // detachment select and stripped enhancements all stay consistent.
+  if(detachmentChanged || res.battle_size !== prevBs){
+    // Detachment set trimmed on a downgrade, or the battle size changed (which
+    // moves the points limit + DP budget) — refetch so the config rows, rule/
+    // stratagem cards, chips and any stripped enhancements all stay consistent.
     showArmy(state.army.id);
     return;
   }
@@ -286,22 +573,44 @@ export async function saveArmyMeta(){
   refreshValidation();
 }
 
-// Sidebar battle-size change: reveal the points input only for Custom, re-filter
-// detachments against the new cost limit (clearing one that no longer fits),
-// then persist via saveArmyMeta.
+// Sidebar battle-size change: reveal the points input only for Custom, then
+// persist. The server re-derives the DP budget and trims the detachment set if
+// it no longer fits; saveArmyMeta refetches when that happens.
 export function onAbBattleSize(){
   const bs = document.getElementById('abBattleSize')?.value || 'Custom';
   const ptsField = document.getElementById('abPtsField');
   if(ptsField) ptsField.hidden = bs !== 'Custom';
-  const sel = document.getElementById('abDetachment');
-  const dts = state.detachCache[state.army?.faction_id] || [];
-  if(sel){
-    const limit = detLimitFor(bs);
-    const cur = sel.value;
-    const stillValid = dts.some(d=>d.id===cur && (limit==null || (d.points_cost||0)<=limit));
-    sel.innerHTML = `<option value="">— none —</option>`+ detOptions(dts, stillValid?cur:'', limit);
-  }
   saveArmyMeta();
+}
+
+/* ---- detachment set (Detachment Points) --------------------------------- */
+
+// Add / remove mutate the in-memory set then persist. Because a detachment
+// brings its own rules, enhancements and stratagems, the whole army is
+// re-fetched and re-rendered after the change.
+export function onAddDetachment(sel){
+  const id = sel && sel.value;
+  if(!id || !state.army) return;
+  const ids = state.army.detachment_ids || (state.army.detachment_ids = []);
+  if(!ids.includes(id)) ids.push(id);
+  commitDetachments();
+}
+
+export function removeDetachment(id){
+  if(!state.army) return;
+  state.army.detachment_ids = (state.army.detachment_ids||[]).filter(x=>x!==id);
+  commitDetachments();
+}
+
+async function commitDetachments(){
+  if(!state.army) return;
+  let res;
+  try{
+    res = await api(`/api/armies/${state.army.id}`, {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({detachment_ids: state.army.detachment_ids})});
+  }catch(e){ return; }
+  if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
+  showArmy(state.army.id);
 }
 
 /* ---- validation --------------------------------------------------------- */
@@ -415,15 +724,19 @@ export function armyUnitRow(u, accent){
     ownHtml = `<span class="own-warn">⚠ ${assigned}/${squad} assigned — need ${short} more (${avail} available)</span>`;
   }
 
-  return `<div class="au-row faction-surface" id="au-${auid}" style="--cardarmy:${state.army?.primary||'var(--panel)'};--cardaccent:${accent||'var(--gold)'};--cardglow:${accent||'var(--gold)'};--au-accent:${accent||'var(--gold)'}">
+  // The whole row is clickable to open the unit in the right detail panel; the
+  // inline controls (squad/assign/remove) stop propagation so they don't also
+  // trigger a select. Wargear / enhancement / warlord / leader editing all live
+  // in the right panel now.
+  return `<div class="au-row faction-surface" data-testid="unit-row" id="au-${auid}" onclick="selectUnit('${auid}')" style="--cardarmy:${state.army?.primary||'var(--panel)'};--cardaccent:${accent||'var(--gold)'};--cardglow:${accent||'var(--gold)'};--au-accent:${accent||'var(--gold)'}">
     <div>
-      <div class="au-name">${esc(u.name)}${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}</div>
+      <div class="au-name">${esc(u.name)}${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}</div>
       <div class="au-role">${esc(u.role)}</div>
       <div class="au-comp" id="au-comp-${auid}">${compLine(u.composition)}</div>
-      <div class="au-controls">
+      <div class="au-controls" onclick="event.stopPropagation()">
         <div class="au-size-wrap">
           <label>Squad</label>
-          <input class="au-size-input" type="number" min="${squadMin}" ${squadMax?`max="${squadMax}"`:''} value="${squad}"
+          <input class="au-size-input" data-testid="unit-size-input" type="number" min="${squadMin}" ${squadMax?`max="${squadMax}"`:''} value="${squad}"
                  onchange="updateSquadSize('${auid}',this.value)" title="Squad size">
         </div>
         <div class="au-pts" id="au-pts-${auid}">${pts} pts</div>
@@ -435,18 +748,12 @@ export function armyUnitRow(u, accent){
         </div>`:''}
       </div>
       <div class="au-ownership" id="au-own-${auid}">${ownHtml}</div>
-      ${u.enhancement_name?`<div class="au-enh">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>`:''}
+      <div class="au-enh" id="au-enh-line-${auid}">${u.enhancement_name?`Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)`:''}</div>
     </div>
-    <div class="au-actions">
+    <div class="au-actions" onclick="event.stopPropagation()">
       <button class="au-del" onclick="removeArmyUnit('${auid}')">Remove</button>
-      ${u.is_character?`<button class="au-enh-btn au-warlord-btn ${u.is_warlord?'is-on':''}" onclick="toggleWarlord('${auid}')">${u.is_warlord?'★ Warlord':'☆ Warlord'}</button>`:''}
-      ${u.wargear_schema&&u.wargear_schema.length?`<button class="au-enh-btn" onclick="toggleWargear('${auid}')">Wargear</button>`:''}
-      ${u.can_have_enhancement?`<button class="au-enh-btn" onclick="toggleEnhEditor('${auid}')">Enhancement</button>`:''}
-      ${u.attached_to?`<button class="au-enh-btn" onclick="detachLeader('${auid}')">Detach</button>`
-        :(u.attach_targets&&u.attach_targets.length?`<select class="au-attach" onchange="attachLeader('${auid}',this.value)"><option value="">Attach to…</option>${u.attach_targets.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('')}</select>`:'')}
+      <span class="au-edit-hint" aria-hidden="true">Edit ▸</span>
     </div>
-    <div class="au-wargear-editor" id="au-wg-ed-${auid}" hidden></div>
-    <div class="au-enh-editor" id="au-enh-ed-${auid}" hidden></div>
   </div>`;
 }
 
@@ -459,6 +766,7 @@ export async function updateSquadSize(auid, val){
   if(!res.ok) return;
   mergeUnit(auid, res.unit);
   applyServerState(res);
+  refreshUnitDetailIfSelected(auid);   // squad size rescales bulk wargear in the editor
 }
 
 export async function updateAssigned(auid, val){
@@ -503,20 +811,9 @@ export async function saveEnhancement(auid, enhId){
     body: JSON.stringify({enhancement_id:enhId})}); }
   catch(e){ return; }
   if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
-  mergeUnit(auid, res.unit);
+  mergeUnit(auid, res.unit);   // updates the centre row's enhancement line + points
   applyServerState(res);
-  const row = document.getElementById(`au-${auid}`);
-  if(row){
-    let enhDiv = row.querySelector('.au-enh');
-    const u    = state.army.units.find(u=>u.id===auid) || {};
-    if(u.enhancement_name){
-      const html = `<div class="au-enh">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>`;
-      if(enhDiv) enhDiv.outerHTML = html;
-      else document.getElementById(`au-own-${auid}`).insertAdjacentHTML('afterend', html);
-    }else{
-      if(enhDiv) enhDiv.remove();
-    }
-  }
+  refreshUnitDetailIfSelected(auid);
 }
 
 /* ---- warlord ------------------------------------------------------------ */
@@ -535,10 +832,12 @@ export async function toggleWarlord(auid){
     const prev = state.army.units.find(x=>x.id===res.cleared_warlord_auid);
     if(prev) prev.is_warlord = false;
     setWarlordVisual(res.cleared_warlord_auid, false);
+    refreshUnitDetailIfSelected(res.cleared_warlord_auid);
   }
   u.is_warlord = !!res.unit.is_warlord;
   setWarlordVisual(auid, u.is_warlord);
   applyServerState(res);
+  refreshUnitDetailIfSelected(auid);
 }
 
 function setWarlordVisual(auid, on){
@@ -639,42 +938,109 @@ function renderModelsSub(u, g, sub){
 }
 
 function renderArrayGroup(u, g, sel){
-  const head = `<div class="wg-group-head">${esc(g.instruction)}</div>`;
   const subs = g.mode==='models'
     ? (g.minis||[]).map(sub=>renderModelsSub(u, g, sub)).join('')
     : (g.minis||[]).map(sub=>renderArraySub(u.id, g, sub, sel)).join('');
-  return `<div class="wg-group wg-array">${head}${subs}</div>`;
+  return subs;
+}
+
+// "The Aspiring Champion's boltgun can be replaced with..." / "...have their
+// boltgun replaced with..." -> "Boltgun". Falls back to the first item's name
+// so every card still gets a usable title.
+function wgCap(s){ s = (s||'').trim(); return s.charAt(0).toUpperCase() + s.slice(1); }
+function wgGroupTitle(g){
+  const instr = g.instruction || '';
+  let m = /['’]s\s+([a-z][a-z\s]*?)\s+can be replaced/i.exec(instr);
+  if(m) return 'Replace ' + wgCap(m[1]);
+  m = /have (?:its|their)\s+([a-z][a-z\s]*?)\s+replaced with/i.exec(instr);
+  if(m) return 'Replace ' + wgCap(m[1]);
+  const first = (g.items && g.items[0]) || (g.minis && g.minis[0] && (g.minis[0].bundles||[])[0]);
+  if(first) return 'Equip ' + wgCap(first.item || first.label || '');
+  return 'Wargear Option';
+}
+
+const WG_MECH = {
+  replace_one:  { tag:'Either/Or Swap',  icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/></svg>' },
+  all_model:    { tag:'Unit-wide Swap',  icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/><rect x="3" y="14" width="7" height="7" rx="1.4"/><rect x="14" y="14" width="7" height="7" rx="1.4"/></svg>' },
+  limited_per_n:{ tag:'Capped Option',   icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="8.5" stroke-opacity=".3"/><circle cx="12" cy="12" r="8.5" stroke-dasharray="27 53" stroke-linecap="round" transform="rotate(-90 12 12)"/></svg>' },
+  array_mounts: { tag:'Weapon Array',    icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="3" y="9" width="4" height="12" rx="1"/><rect x="10" y="4" width="4" height="17" rx="1"/><rect x="17" y="12" width="4" height="9" rx="1"/></svg>' },
+  array_models: { tag:'Loadout Bundle',  icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg>' },
+  choice:       { tag:'Optional',        icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' },
+};
+function wgMechMeta(g){
+  if(g.type==='array') return WG_MECH[g.mode==='models' ? 'array_models' : 'array_mounts'];
+  return WG_MECH[g.type] || WG_MECH.choice;
+}
+function wgCard(g, title, badge, contentHtml){
+  if(!contentHtml) return '';
+  const meta = wgMechMeta(g);
+  return `<div class="wg-card">
+    <button type="button" class="wg-card-toggle" onclick="toggleWgCard(this)" aria-expanded="true">
+      <span class="wg-card-title"><span class="wg-card-icon">${meta.icon}</span>${esc(title)}<span class="wg-card-tag">${esc(meta.tag)}</span>${badge?` <span class="wg-card-badge">${esc(badge)}</span>`:''}</span>
+      <span class="wg-card-chev">▾</span>
+    </button>
+    <div class="wg-card-content">${contentHtml}</div>
+  </div>`;
+}
+
+export function toggleWgCard(btn){
+  const content = btn.parentElement.querySelector('.wg-card-content');
+  const chev    = btn.querySelector('.wg-card-chev');
+  if(!content) return;
+  content.hidden = !content.hidden;
+  if(chev) chev.textContent = content.hidden ? '▸' : '▾';
+  btn.setAttribute('aria-expanded', String(!content.hidden));
 }
 
 function renderWargearEditor(u){
   const sel = u.loadout || {};
   const size = u.squad_size;
   const comp = {}; (u.composition||[]).forEach(c=>comp[c.model]=c.count);
-  const groups = (u.wargear_schema||[]).map(g=>{
-    const head = `<div class="wg-group-head">${esc(g.instruction)}</div>`;
+  const schema = u.wargear_schema || [];
+  const defaultGroup = schema.find(g=>g.type==='default');
+  const defaultItems = defaultGroup ? defaultGroup.items : [];
+  // Replace-one/all-model groups fold their default item into the card itself
+  // (as the pre-checked option), so drop it from the plain "Default:" summary
+  // to avoid listing the same weapon twice.
+  const coveredKeys = new Set();
+  schema.forEach(g=>{
+    if(g.type!=='replace_one' && g.type!=='all_model') return;
+    const label = wgGroupTitle(g).replace(/^Replace\s+/, '');
+    const match = defaultItems.find(i=>i.miniature===g.miniature && i.item.toLowerCase()===label.toLowerCase());
+    if(match) coveredKeys.add(match.key);
+  });
+
+  const groups = schema.map(g=>{
     if(g.type==='default'){
-      const list = g.items.filter(i=>(sel[i.key]||0)>0)
-        .map(i=>`${(sel[i.key]||0)>1?(sel[i.key]+'× '):''}${esc(i.item)}`).join(', ');
-      return list ? `<div class="wg-group wg-default"><span class="wg-default-lbl">Default</span> ${list}</div>` : '';
+      const remaining = g.items.filter(i=>!coveredKeys.has(i.key) && (sel[i.key]||0)>0);
+      const singles = remaining.filter(i=>(sel[i.key]||0)===1 && (i.default_value||0)<=1);
+      const multi   = remaining.filter(i=>!singles.includes(i));
+      const singleHtml = singles.map(i=>`<label class="wg-fixed"><input type="checkbox" checked disabled><span>${esc(i.item)}</span></label>`).join('');
+      const multiText = multi.map(i=>`${(sel[i.key]||0)>1?(sel[i.key]+'× '):''}${esc(i.item)}`).join(', ');
+      const multiHtml = multiText ? `<div class="wg-group wg-default"><span class="wg-default-lbl">Default</span> ${multiText}</div>` : '';
+      return `${singleHtml}${multiHtml}`;
     }
     if(g.type==='array'){
-      return renderArrayGroup(u, g, sel);
+      return wgCard(g, wgGroupTitle(g), '', renderArrayGroup(u, g, sel));
     }
     if(g.type==='replace_one' || g.type==='all_model'){
       const nm = ('wg'+u.id+g.items[0].key).replace(/[^a-zA-Z0-9]/g,'');
       const gk = esc(JSON.stringify(g.items.map(i=>i.key)));
       const chosen = g.items.find(i=>(sel[i.key]||0)>0);
-      let html = `<label class="wg-radio"><input type="radio" name="${nm}" data-keys="${gk}" data-key="" ${!chosen?'checked':''} onchange="setWargearRadio('${u.id}',this)"><span>Default</span></label>`;
+      const title = wgGroupTitle(g);
+      const defaultLabel = title.replace(/^Replace\s+/, '');
+      let html = wgRadio(u.id, nm, gk, '', !chosen, defaultLabel, '');
       g.items.forEach(i=>{
         const val = g.type==='all_model' ? (comp[i.miniature]||size) : 1;
-        html += `<label class="wg-radio"><input type="radio" name="${nm}" data-keys="${gk}" data-key="${esc(i.key)}" data-val="${val}" ${chosen&&chosen.key===i.key?'checked':''} onchange="setWargearRadio('${u.id}',this)"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span></label>`;
+        html += wgRadio(u.id, nm, gk, i.key, !!(chosen&&chosen.key===i.key), i.item, i.points, val);
       });
-      return `<div class="wg-group">${head}${html}</div>`;
+      return wgCard(g, title, '1/1', html);
     }
     if(g.type==='limited_per_n'){
       const cap = limitedCap(g.limits, size);
+      const count = g.items.reduce((n,i)=>n+(sel[i.key]||0), 0);
       const its = g.items.map(i=>`<div class="wg-stepper"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${cap}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`).join('');
-      return `<div class="wg-group">${head}<div class="wg-cap">up to ${cap} at ${size} models</div>${its}</div>`;
+      return wgCard(g, wgGroupTitle(g), `${count}/${cap}`, `<div class="wg-cap">up to ${cap} at ${size} models</div>${its}`);
     }
     const its = g.items.map(i=>{
       if(i.input_type==='checkbox'){
@@ -683,9 +1049,20 @@ function renderWargearEditor(u){
       const mc = comp[i.miniature] || size;
       return `<div class="wg-stepper"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${mc}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`;
     }).join('');
-    return its ? `<div class="wg-group">${head}${its}</div>` : '';
+    return wgCard(g, wgGroupTitle(g), '', its);
   }).join('');
-  return `<div class="wg-summary">${esc(u.loadout_summary||'')}</div>${groups}`;
+  const violHtml = (u.wargear_violations && u.wargear_violations.length)
+    ? `<div class="wg-violation">${u.wargear_violations.map(v=>`<div>⚠ ${esc(v.message||'')}</div>`).join('')}</div>` : '';
+  return `<div class="wg-summary">${esc(u.loadout_summary||'')}</div>${violHtml}${groups}`;
+}
+
+function wgRadio(auid, name, keysAttr, key, checked, label, points, val){
+  const valAttr = val!=null ? ` data-val="${val}"` : '';
+  return `<label class="wg-radio">
+    <input type="radio" name="${name}" data-keys="${keysAttr}" data-key="${esc(key)}"${valAttr} ${checked?'checked':''} onchange="setWargearRadio('${auid}',this)" class="wg-box-input">
+    <span class="wg-box"></span>
+    <span>${esc(label)}${points?` <em>+${points}</em>`:''}</span>
+  </label>`;
 }
 
 export function toggleWargear(auid){
@@ -699,15 +1076,18 @@ export function toggleWargear(auid){
 }
 
 async function postLoadout(auid, patch){
+  const wgElBefore = document.getElementById('rpWargear');
+  if(wgElBefore) wgElBefore.classList.add('is-pending');
   let res;
   try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({loadout:patch})}); }
-  catch(e){ return; }
-  if(!res || !res.ok) return;
+  catch(e){ wgElBefore?.classList.remove('is-pending'); return; }
+  if(!res || !res.ok){ wgElBefore?.classList.remove('is-pending'); return; }
   mergeUnit(auid, res.unit);
   applyServerState(res);
   const u = state.army.units.find(x=>x.id===auid);
-  const ed = document.getElementById(`au-wg-ed-${auid}`);
-  if(ed && !ed.hidden && u) ed.innerHTML = renderWargearEditor(u);
+  const wgEl = document.getElementById('rpWargear');   // wargear editor in right panel
+  if(wgEl && u && state.rightSel && state.rightSel.id===auid) wgEl.innerHTML = renderWargearEditor(u);
+  wgElBefore?.classList.remove('is-pending');
 }
 
 export function setWargearStep(auid, input){
@@ -758,7 +1138,9 @@ export async function removeArmyUnit(auid){
   const body = document.getElementById('rosterBody');
   if(body&&!body.querySelector('.au-row'))
     body.innerHTML = `<div class="ab-empty"><span class="ab-empty-icon">✠</span><h3>No units yet</h3><p>Click "Add Unit" to start building your roster.</p></div>`;
+  if(state.rightSel && state.rightSel.type==='unit' && state.rightSel.id===auid) clearRight();
   applyServerState(res);
+  refreshLeftPicker();   // drop the "in list" count in the left picker
 }
 
 /* ---- merge unit state --------------------------------------------------- */
@@ -800,4 +1182,9 @@ export function mergeUnit(auid, updated){
   }
   const compEl = document.getElementById(`au-comp-${auid}`);
   if(compEl) compEl.innerHTML = compLine(u.composition);
+
+  // Enhancement summary line in the centre row (empty -> hidden via :empty CSS).
+  const enhEl = document.getElementById(`au-enh-line-${auid}`);
+  if(enhEl) enhEl.innerHTML = u.enhancement_name
+    ? `Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)` : '';
 }

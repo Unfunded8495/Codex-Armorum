@@ -1,5 +1,5 @@
 import { esc, api, intOr } from './utils.js';
-import { state, ensureBattleSizes, detLimitFor, detOptions } from './army-state.js';
+import { ensureBattleSizes } from './army-state.js';
 import { setBreadcrumb } from './header.js';
 
 const view       = document.getElementById('view');
@@ -23,8 +23,8 @@ export async function showArmyList(){
     <div id="armyGrid" class="army-grid">
       ${armies.map(a=>armyTile(a)).join('')}
     </div>
-    <button class="new-army-btn" onclick="toggleCreateForm()">✠ Create New Army List</button>
-    <button class="new-army-btn new-army-btn--ghost" onclick="importArmyList()">⬆ Import List (JSON)</button>
+    <button class="new-army-btn" data-testid="new-army-button" onclick="toggleCreateForm()">✠ Create New Army List</button>
+    <button class="new-army-btn new-army-btn--ghost" data-testid="import-button" onclick="importArmyList()">⬆ Import List (JSON)</button>
     <div id="createArmyForm" hidden></div>`;
 }
 
@@ -92,20 +92,14 @@ export async function toggleCreateForm(){
         </div>
         <div class="caf-field">
           <label>Faction</label>
-          <select id="cafFaction" onchange="loadDetachmentsFor(this.value)">
+          <select id="cafFaction" data-testid="faction-select">
             <option value="">— select faction —</option>
             ${factions.map(f=>`<option value="${esc(f.id)}">${esc(f.name)}</option>`).join('')}
           </select>
         </div>
         <div class="caf-field">
-          <label>Detachment</label>
-          <select id="cafDetachment">
-            <option value="">— select faction first —</option>
-          </select>
-        </div>
-        <div class="caf-field">
           <label>Battle Size</label>
-          <select id="cafBattleSize" onchange="onCafBattleSize()">
+          <select id="cafBattleSize" data-testid="battle-size-select" onchange="onCafBattleSize()">
             ${battleSizes.map(b=>`<option value="${esc(b.name)}" ${b.name==='Strike Force'?'selected':''}>${esc(b.name)} · ${b.points_limit} pts</option>`).join('')}
             <option value="Custom">Custom</option>
           </select>
@@ -116,7 +110,7 @@ export async function toggleCreateForm(){
         </div>
       </div>
       <div class="ff-actions" style="margin-top:16px">
-        <button class="btn-primary" onclick="submitCreateArmy()">Create Army</button>
+        <button class="btn-primary" data-testid="create-army-confirm" onclick="submitCreateArmy()">Create Army</button>
         <button class="btn-ghost"   onclick="toggleCreateForm()">Cancel</button>
       </div>
     </div>`;
@@ -124,38 +118,23 @@ export async function toggleCreateForm(){
   document.getElementById('cafName').focus();
 }
 
-export async function loadDetachmentsFor(fid){
-  const sel = document.getElementById('cafDetachment');
-  if(!fid){sel.innerHTML=`<option value="">— select faction first —</option>`;return;}
-  let dts = state.detachCache[fid];
-  if(!dts){
-    dts = await api(`/api/factions/${fid}/detachments`);
-    state.detachCache[fid] = dts;
-  }
-  const limit = detLimitFor(document.getElementById('cafBattleSize')?.value);
-  sel.innerHTML = `<option value="">— no detachment —</option>`+ detOptions(dts, '', limit);
-}
-
-// Battle-size change in the create form: reveal the points input only for
-// Custom, and re-filter the detachment list against the new cost limit.
+// Battle-size change in the create form: reveal the points input only for Custom.
 export function onCafBattleSize(){
   const bs = document.getElementById('cafBattleSize')?.value;
   const ptsField = document.getElementById('cafPtsField');
   if(ptsField) ptsField.hidden = bs !== 'Custom';
-  loadDetachmentsFor(document.getElementById('cafFaction')?.value || '');
 }
 
 export async function submitCreateArmy(){
   const name  = (document.getElementById('cafName')?.value || '').trim();
   const fid   = document.getElementById('cafFaction')?.value || '';
-  const dtid  = document.getElementById('cafDetachment')?.value || '';
   const bs    = document.getElementById('cafBattleSize')?.value || 'Strike Force';
   const pts   = intOr(document.getElementById('cafPts')?.value, 2000);
   if(!fid){alert('Please select a faction.');return;}
   let res;
   try {
     res = await api('/api/armies', {method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({name: name||'New Army', faction_id:fid, detachment_id:dtid, battle_size:bs, points_limit:pts})});
+      body: JSON.stringify({name: name||'New Army', faction_id:fid, battle_size:bs, points_limit:pts})});
   } catch(e) {
     alert('Could not reach the server. Please try again.');
     return;

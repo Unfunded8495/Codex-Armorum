@@ -2,10 +2,12 @@ import { esc, api } from './utils.js';
 
 export const state = {
   army:        null,
+  rightSel:    null,   // {type:'unit'|'battlesize'|'detachment', id?} -> right panel
   picker:      null,
   detachCache: {},
   enhCache:    {},
   unitsCache:  {},
+  unitDetailCache: {},   // did -> /api/units/<did> payload (statline + weapons)
   battleSizes: null,
 };
 

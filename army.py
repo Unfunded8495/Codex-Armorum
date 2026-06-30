@@ -115,6 +115,65 @@ def _enhancement_cost(eid, detachment_id=None):
     return _int(e.get("cost", 0)) if e else 0
 
 
+# ---- multi-detachment (Detachment Points) ---------------------------------
+# An army unlocks one or more detachments by spending its battle-size Detachment
+# Points; each contributes its own rules / enhancements / stratagems additively.
+# The ordered set lives in army_lists.detachment_ids (JSON array); the legacy
+# scalar detachment_id is mirrored to the first id for back-compat.
+
+def parse_detachment_ids(row):
+    """Ordered list of selected detachment ids for an ``army_lists`` row (or a
+    plain mapping). Reads the JSON-array ``detachment_ids``; falls back to the
+    legacy scalar ``detachment_id`` for un-migrated rows / v1 roster imports."""
+    keys = row.keys() if hasattr(row, "keys") else row
+    raw = (row["detachment_ids"] if "detachment_ids" in keys else "") or ""
+    if raw:
+        try:
+            ids = json.loads(raw)
+            if isinstance(ids, list):
+                return [str(x) for x in ids if x]
+        except (TypeError, ValueError):
+            pass
+    legacy = (row["detachment_id"] if "detachment_id" in keys else "") or ""
+    return [legacy] if legacy else []
+
+
+def detachment_set_cost(ids):
+    """Total Detachment Points spent by the selected detachment ids."""
+    store = get_store()
+    return sum(_int(store.detachment_by_id.get(d, {}).get("points_cost")) for d in ids)
+
+
+def _enhancement_for_ids(eid, dt_ids):
+    """Resolve enhancement ``eid`` within the union of the given detachments'
+    pools (enhancement ids are globally unique, but restricting to the selected
+    set means an enhancement from a de-selected detachment stops resolving)."""
+    if not eid:
+        return None
+    store = get_store()
+    eid_s = str(eid)
+    for d in dt_ids:
+        for e in store.enhancements_by_detachment.get(d, []):
+            if str(e.get("id")) == eid_s:
+                return e
+    return None
+
+
+def clear_orphaned_enhancements(c, aid, dt_ids):
+    """Clear any unit enhancement that no longer resolves within the army's
+    selected detachments (e.g. after a detachment is de-selected). Returns the
+    number of units cleared. Replaces the old blunt "clear all on any change"."""
+    rows = c.execute(
+        "SELECT id, enhancement_id FROM army_units WHERE army_list_id=? AND enhancement_id!=''",
+        (aid,)).fetchall()
+    cleared = 0
+    for r in rows:
+        if _enhancement_for_ids(r["enhancement_id"], dt_ids) is None:
+            c.execute("UPDATE army_units SET enhancement_id='' WHERE id=?", (r["id"],))
+            cleared += 1
+    return cleared
+
+
 def _valid_detachment_for_faction(fid, dtid):
     store = get_store()
     if not dtid:
@@ -236,15 +295,16 @@ def _army_unit_row(c, au):
                   (_loadout_json, wargear_pts, au["id"]))
     pts = base_pts + wargear_pts
 
-    army_row = c.execute("SELECT faction_id, detachment_id FROM army_lists WHERE id=?",
-                         (au["army_list_id"],)).fetchone()
+    army_row = c.execute(
+        "SELECT faction_id, detachment_id, detachment_ids FROM army_lists WHERE id=?",
+        (au["army_list_id"],)).fetchone()
     army_fid = (army_row["faction_id"] if army_row else "") or ""
-    army_dtid = (army_row["detachment_id"] if army_row else "") or ""
+    army_dtids = parse_detachment_ids(army_row) if army_row else []
 
     enh_name = ""
     enh_cost = 0
     if enhancement_id:
-        e = _enhancement_for(enhancement_id, army_dtid)
+        e = _enhancement_for_ids(enhancement_id, army_dtids)
         if e:
             enh_name = e.get("name", "")
             enh_cost = _int(e.get("cost", 0))
@@ -333,14 +393,18 @@ def roster_json(c, aid):
         "SELECT * FROM army_units WHERE army_list_id=? ORDER BY sort_order, rowid",
         (aid,)).fetchall()
     idx = {r["id"]: i for i, r in enumerate(rows)}
+    dt_ids = parse_detachment_ids(army)
     return {
         "format": "codex-armorum-roster",
-        "version": 1,
+        "version": 2,
         "name": army["name"],
         "faction_id": army["faction_id"],
         "battle_size": army["battle_size"] or "",
         "points_limit": army["points_limit"],
-        "detachment_id": army["detachment_id"] or "",
+        # v2 carries the full ordered detachment set; detachment_id (first id)
+        # is kept so a v1 importer still restores the primary detachment.
+        "detachment_ids": dt_ids,
+        "detachment_id": dt_ids[0] if dt_ids else "",
         "units": [{
             "datasheet_id": r["datasheet_id"],
             "squad_size": r["squad_size"],
@@ -383,12 +447,14 @@ def roster_text(c, aid):
     units = [_army_unit_row(c, r) for r in rows]
     store = get_store()
     fac = store.faction_by_id.get(army["faction_id"], {})
-    det = store.detachment_by_id.get(army["detachment_id"] or "", {})
+    det_names = [store.detachment_by_id.get(d, {}).get("name", "")
+                 for d in parse_detachment_ids(army)]
+    det_names = [n for n in det_names if n]
     total = sum(u["points"] for u in units)
     bs = army["battle_size"] or "Custom"
     sub = fac.get("display_name") or fac.get("name", "") or army["faction_id"]
-    if det.get("name"):
-        sub += " - " + det["name"]
+    if det_names:
+        sub += " - " + ", ".join(det_names)
     lines = ["%s (%s) - %d/%s pts" % (army["name"], bs, total, army["points_limit"]), sub]
     leader_for = {u["attached_to"]: u for u in units if u["attached_to"]}
     standalone = [u for u in units if not u["attached_to"]]

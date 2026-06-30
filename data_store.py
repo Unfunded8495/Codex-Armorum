@@ -121,6 +121,8 @@ class DataStore:
         self.keywords = {}
         self.detachments_by_faction = {}
         self.detachment_by_id = {}
+        # detachment_id -> Force Disposition English name (1:1 read-only label).
+        self.disposition_by_detachment = {}
         self.enhancements_by_detachment = {}
         # Detachment stratagems (keyed by detachment id) plus the universal Core
         # stratagems (Phase 6 surfaces both to the army-builder panels).
@@ -860,6 +862,15 @@ class DataStore:
             self.detachment_by_id[did] = det
             for fid in memberships:
                 self.detachments_by_faction.setdefault(fid, []).append(det)
+
+        # Force Disposition: a read-only label derived 1:1 from the detachment.
+        # detachment_id -> English disposition name (e.g. "Take and Hold").
+        for r in conn.execute(
+                "SELECT d.detachment_id detachment_id, f.name name "
+                "FROM detachment_force_disposition d "
+                "JOIN force_disposition f ON f.id = d.force_disposition_id"
+        ).fetchall():
+            self.disposition_by_detachment[r["detachment_id"]] = r["name"]
 
         for r in conn.execute("""SELECT id, detachment_id, name, points, type,
                                         rules_text, eligibility_text, eligibility

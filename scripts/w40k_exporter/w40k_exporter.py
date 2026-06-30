@@ -1475,6 +1475,10 @@ CREATE TABLE mission_preset (
 CREATE TABLE mission_twist (
     id TEXT PRIMARY KEY, mission_pack_id TEXT, name TEXT, lore TEXT, rules TEXT
 );
+CREATE TABLE force_disposition (id TEXT PRIMARY KEY, name TEXT);
+CREATE TABLE detachment_force_disposition (
+    detachment_id TEXT, force_disposition_id TEXT
+);
 CREATE TABLE core_rule (
     id INTEGER PRIMARY KEY AUTOINCREMENT, section TEXT, container TEXT,
     subtitle TEXT, type TEXT, title TEXT, text TEXT
@@ -1711,6 +1715,14 @@ def build_sqlite(data, idx, ref, db_path, log=print):
     cur.executemany("INSERT INTO mission_twist VALUES (?,?,?,?,?)",
                     [(m["id"], m["pack"], m["name"], m["lore"], m["rules"])
                      for m in ref["missions"]["twists"]])
+    # Force dispositions and the 1:1 detachment -> disposition link. Read straight
+    # from the dump (camelCase ids), name resolved via en() like every other
+    # localised table. 5 dispositions, 290 link rows.
+    cur.executemany("INSERT INTO force_disposition VALUES (?,?)",
+                    [(m["id"], en(m)) for m in data["force_disposition"]])
+    cur.executemany("INSERT INTO detachment_force_disposition VALUES (?,?)",
+                    [(r["detachmentId"], r["forceDispositionId"])
+                     for r in data["detachment_force_disposition"]])
     for sec in ref["core_rules"]:
         for cont in sec["containers"]:
             for comp in cont["components"]:

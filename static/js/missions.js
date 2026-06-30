@@ -59,13 +59,13 @@ function render(){
   if(!DATA) return;
   const pack = (DATA.packs && DATA.packs[0] && DATA.packs[0].name) || 'Matched Play';
   const tab = TABS.find(t => t.key === active) || TABS[0];
-  view.innerHTML = `
+  view.innerHTML = `<div data-testid="missions-view">
     <p class="mz-pack">${esc(pack)}</p>
     <p class="mz-intro">Mission reference &mdash; primary &amp; secondary missions, deployments, layouts, maps and twists.</p>
     <div class="mz-tabs">
       ${TABS.map(t => `<button class="mz-tab${t.key === active ? ' is-active' : ''}" data-tab="${t.key}">${esc(t.label)} <span style="opacity:.6">${(DATA[t.key] || []).length}</span></button>`).join('')}
     </div>
-    <div class="mz-content">${tab.render(DATA)}</div>`;
+    <div class="mz-content">${tab.render(DATA)}</div></div>`;
   view.querySelectorAll('.mz-tab').forEach(b =>
     b.addEventListener('click', () => { active = b.dataset.tab; render(); }));
 }
