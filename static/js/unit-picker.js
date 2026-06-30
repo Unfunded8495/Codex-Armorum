@@ -1,6 +1,6 @@
 import { esc, api } from './utils.js';
 import { state } from './army-state.js';
-import { ROLE_ORDER, armyUnitRow, applyServerState } from './army-detail.js';
+import { ROLE_ORDER, armyUnitRow, applyServerState, renderRoster } from './army-detail.js';
 
 /* ---- persistent left-panel picker --------------------------------------- */
 
@@ -132,28 +132,11 @@ export async function addUnitToArmy(did){
   const unit = res.unit;
   state.army.units.push(unit);
 
+  // All 4 Force-Org sections already exist in the DOM (renderRoster always
+  // renders them), so a full re-render is simpler and correct here -- no
+  // surgical per-section DOM creation/insertion-order logic needed.
   const body = document.getElementById('rosterBody');
-  body.querySelector('.ab-empty')?.remove();
-
-  const role = unit.role || 'Other';
-  let roleSection = null;
-  body.querySelectorAll('.role-section').forEach(sec=>{
-    if(sec.querySelector('.role-section-head')?.textContent===role) roleSection=sec;
-  });
-  if(!roleSection){
-    roleSection = document.createElement('div');
-    roleSection.className = 'role-section';
-    roleSection.innerHTML = `<div class="role-section-head">${esc(role)}</div>`;
-    const roleIdx = ROLE_ORDER.indexOf(role);
-    let inserted  = false;
-    body.querySelectorAll('.role-section').forEach(sec=>{
-      if(inserted) return;
-      const secRole = sec.querySelector('.role-section-head')?.textContent || '';
-      if(ROLE_ORDER.indexOf(secRole)>roleIdx){ body.insertBefore(roleSection,sec); inserted=true; }
-    });
-    if(!inserted) body.appendChild(roleSection);
-  }
-  roleSection.insertAdjacentHTML('beforeend', armyUnitRow(unit, state.army.accent));
+  if(body) body.innerHTML = renderRoster(state.army.units, state.army.accent);
   applyServerState(res);
   refreshLeftPicker();   // bump the "in list" count in the left picker
 }

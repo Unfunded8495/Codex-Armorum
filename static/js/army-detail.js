@@ -9,7 +9,13 @@ const breadcrumb = document.getElementById('breadcrumb');
 const ROLE_ORDER = ['Epic Hero','Character','Battleline','Infantry','Mounted',
   'Beast','Monster','Vehicle','Swarm','Transport','Fortification','Other','Unaligned'];
 
-export { ROLE_ORDER };
+// Force-Org buckets the roster screen groups into (matches the reference
+// app's section order exactly). Driven by each unit's server-computed
+// `foc_category`, not the finer-grained battlefield `role` above (which the
+// unit picker still uses for its own internal grouping).
+const FOC_ORDER = ['Characters', 'Battleline', 'Dedicated Transports', 'Other Datasheets'];
+
+export { ROLE_ORDER, FOC_ORDER };
 
 /* ---- army detail view --------------------------------------------------- */
 
@@ -60,20 +66,35 @@ function renderCentre(army){
     ${renderArmyRuleCard(army)}
     ${renderDetachmentRuleCard(army)}
     ${renderStratagemsCard(army)}
-    <div class="ab-roster-head">
-      <h2 class="ab-roster-title">Unit Roster</h2>
-      <button class="add-unit-btn" data-testid="add-unit-button" onclick="openUnitPicker()">+ Add Unit</button>
-    </div>
     <div id="rosterBody">${renderRoster(army.units, army.accent)}</div>
+    ${renderPointsHud(army)}
     <div class="ab-card ab-validation" id="validationCard" data-testid="validation-card">
       <p class="ab-card-title">Validation</p>
       <div id="validationBody">${renderValidation(army)}</div>
     </div>`;
 }
 
+// Persistent points/validity HUD pill: sticks to the bottom of the viewport
+// while the roster above it scrolls, and shows a warning half whenever the
+// list has ANY validation issue (not just over points), matching the
+// reference app. id="ptsUsed"/data-testid="army-points" are kept stable so
+// existing live-points-update wiring (updatePointsBar) and the UI test suite
+// keep working unchanged.
+function renderPointsHud(army){
+  const hasIssues = hudHasIssues(army);
+  return `
+    <div class="hud-pill" data-testid="points-hud">
+      <span class="hud-warn" id="hudWarn" ${hasIssues?'':'hidden'}>&#9888;</span>
+      <span class="hud-pts"><b id="ptsUsed" data-testid="army-points">${army.total_points}</b><small>/ <span id="ptsLimit">${army.points_limit}</span> POINTS</small></span>
+    </div>`;
+}
+
+function hudHasIssues(army){
+  const over = army.points_limit>0 && army.total_points>army.points_limit;
+  return over || (army.validation||[]).some(v=>v.level==='err'||v.level==='warn');
+}
+
 function renderRosterHeader(army){
-  const pct  = army.points_limit>0 ? Math.min(100,Math.round(army.total_points/army.points_limit*100)) : 0;
-  const over = army.total_points>army.points_limit && army.points_limit>0;
   return `
     <div class="ab-centre-head">
       <input class="ab-name-input" id="abName" value="${esc(army.name)}" placeholder="Army name">
@@ -81,18 +102,6 @@ function renderRosterHeader(army){
         <button class="ab-export-btn" type="button" data-testid="export-button" onclick="exportArmy('copy', this)">Copy list</button>
         <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">.txt</button>
         <button class="ab-export-btn" type="button" onclick="exportArmy('json', this)">.json</button>
-      </div>
-    </div>
-    <div class="ab-centre-meters">
-      <div class="pts-bar-wrap">
-        <div class="pts-bar-nums">
-          <span class="pts-used ${over?'is-over':''}" id="ptsUsed" data-testid="army-points">${army.total_points}</span>
-          <span class="pts-limit-label">/ <span id="ptsLimit">${army.points_limit}</span> pts</span>
-        </div>
-        <div class="pts-bar-track">
-          <div class="pts-bar-fill ${over?'is-over':''}" id="ptsBarFill" style="width:${pct}%"></div>
-        </div>
-        ${over?`<div class="pts-over-msg" id="ptsOverMsg">⚠ ${army.total_points-army.points_limit} pts over limit</div>`:'<div id="ptsOverMsg"></div>'}
       </div>
     </div>`;
 }
@@ -649,16 +658,12 @@ export function refreshPointsTotal(){
 
 export function updatePointsBar(){
   if(!state.army) return;
-  const total = state.army.total_points;
-  const limit = state.army.points_limit;
-  const over  = limit>0 && total>limit;
-  const pct   = limit>0 ? Math.min(100,Math.round(total/limit*100)) : 0;
   const usedEl = document.getElementById('ptsUsed');
-  if(usedEl){usedEl.textContent=total;usedEl.classList.toggle('is-over',over);}
-  const fillEl = document.getElementById('ptsBarFill');
-  if(fillEl){fillEl.style.width=pct+'%';fillEl.classList.toggle('is-over',over);}
-  const overEl = document.getElementById('ptsOverMsg');
-  if(overEl) overEl.textContent = over ? `⚠ ${total-limit} pts over limit` : '';
+  if(usedEl) usedEl.textContent = state.army.total_points;
+  const limEl = document.getElementById('ptsLimit');
+  if(limEl) limEl.textContent = state.army.points_limit;
+  const warnEl = document.getElementById('hudWarn');
+  if(warnEl) warnEl.hidden = !hudHasIssues(state.army);
 }
 
 // Apply the {total_points, validation} a mutation endpoint returns, then repaint
@@ -674,26 +679,35 @@ export function applyServerState(res){
 
 /* ---- roster rendering --------------------------------------------------- */
 
+function focSlug(cat){ return cat.replace(/\s+/g,'-').toLowerCase(); }
+
+// All 4 Force-Org sections always render (matching the reference app, which
+// shows e.g. an empty "Dedicated Transports" with just a "+" rather than
+// hiding the section). Each section's "+" opens the picker pre-scoped to
+// that category; a unit's category is never a player choice.
 export function renderRoster(units, accent){
-  if(!units||!units.length) return `
-    <div class="ab-empty">
-      <span class="ab-empty-icon">✠</span>
-      <h3>No units yet</h3>
-      <p>Click "Add Unit" to start building your roster.</p>
-    </div>`;
+  units = units || [];
   // Attached leaders render nested under their bodyguard, not as standalone rows.
   const leaderFor = {};
   units.forEach(u=>{ if(u.attached_to) leaderFor[u.attached_to] = u; });
   const standalone = units.filter(u=>!u.attached_to);
   const groups = {};
-  standalone.forEach(u=>{ const role=u.role||'Other'; (groups[role]=groups[role]||[]).push(u); });
-  const ordered = ROLE_ORDER.filter(r=>groups[r]).concat(Object.keys(groups).filter(r=>!ROLE_ORDER.includes(r)));
-  return ordered.map(role=>`
-    <div class="role-section">
-      <div class="role-section-head">${esc(role)}<span class="role-count">${groups[role].length}</span></div>
-      ${groups[role].map(u=>armyUnitRow(u,accent)
+  FOC_ORDER.forEach(cat=>groups[cat]=[]);
+  standalone.forEach(u=>{ const cat=u.foc_category||'Other Datasheets'; (groups[cat]=groups[cat]||groups['Other Datasheets']).push(u); });
+  return FOC_ORDER.map(cat=>{
+    const list = groups[cat];
+    const pts = list.reduce((s,u)=>s+(u.points||0)+(u.enhancement_cost||0), 0);
+    return `
+    <div class="foc-section" data-testid="foc-section-${focSlug(cat)}">
+      <div class="foc-section-head">
+        <span class="foc-section-name">${esc(cat)}</span>
+        ${pts?`<span class="foc-section-pts">${pts} Points</span>`:''}
+        <button class="foc-add-btn" type="button" title="Add to ${esc(cat)}" onclick="openUnitPicker('${esc(cat)}')">+</button>
+      </div>
+      ${list.map(u=>armyUnitRow(u,accent)
         + (leaderFor[u.id]?`<div class="au-nested">${armyUnitRow(leaderFor[u.id],accent)}</div>`:'')).join('')}
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function compLine(comp){
@@ -1131,13 +1145,11 @@ export async function removeArmyUnit(auid){
   try{ res = await api(`/api/army-units/${auid}`, {method:'DELETE'}); }
   catch(e){ return; }
   state.army.units = state.army.units.filter(u=>u.id!==auid);
-  document.getElementById(`au-${auid}`)?.remove();
-  document.querySelectorAll('.role-section').forEach(sec=>{
-    if(!sec.querySelector('.au-row')) sec.remove();
-  });
+  // All 4 Force-Org sections stay visible even when empty (matching the
+  // reference app), so a full re-render is simpler and correct here -- no
+  // surgical per-row DOM removal / empty-state fallback needed.
   const body = document.getElementById('rosterBody');
-  if(body&&!body.querySelector('.au-row'))
-    body.innerHTML = `<div class="ab-empty"><span class="ab-empty-icon">✠</span><h3>No units yet</h3><p>Click "Add Unit" to start building your roster.</p></div>`;
+  if(body) body.innerHTML = renderRoster(state.army.units, state.army.accent);
   if(state.rightSel && state.rightSel.type==='unit' && state.rightSel.id===auid) clearRight();
   applyServerState(res);
   refreshLeftPicker();   // drop the "in list" count in the left picker
