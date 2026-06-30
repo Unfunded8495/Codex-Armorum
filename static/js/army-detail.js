@@ -94,10 +94,10 @@ function renderRosterHeader(army){
       <h2 class="ab-army-title" data-testid="army-title">${esc(army.name)}</h2>
       <button class="cb-open-btn" type="button" data-testid="open-command-bunker" onclick="openCommandBunker()" title="Command Bunker">${army.icon_url?`<img src="${esc(army.icon_url)}" alt="">`:'&#9879;'}</button>
       <div class="uc-kebab-wrap" onclick="event.stopPropagation()">
-        <button class="uc-kebab rh-kebab" type="button" title="More actions" data-testid="open-edit-roster" onclick="toggleKebabMenu(this)">&#8942;</button>
+        <button class="uc-kebab rh-kebab" type="button" title="More actions" data-testid="roster-kebab" onclick="toggleKebabMenu(this)">&#8942;</button>
         <div class="uc-kebab-menu" hidden>
-          <button type="button" onclick="openEditRoster()">Edit Roster</button>
-          <button type="button" onclick="duplicateRoster()">Duplicate Roster</button>
+          <button type="button" data-testid="menu-edit-roster" onclick="openEditRoster()">Edit Roster</button>
+          <button type="button" data-testid="menu-duplicate-roster" onclick="duplicateRoster()">Duplicate Roster</button>
         </div>
       </div>
       <div class="ab-export-btns">
@@ -108,8 +108,6 @@ function renderRosterHeader(army){
     </div>`;
 }
 
-// Config rows: Battle Size and Detachment(s). Each is a clickable row that opens
-// its editor in the right panel (matching the reference three-panel UX).
 /* ---- sidebar ------------------------------------------------------------ */
 
 // Battle Size body (select + custom-points input): shared by the Edit Roster
@@ -243,10 +241,10 @@ function renderEditRosterMain(army){
       <input class="er-name-input" id="erName" value="${esc(army.name)}" placeholder="Army name" onchange="saveArmyMeta()">
       <p class="er-label">Army</p>
       <div class="er-faction-row">${esc(army.faction_display_name||army.faction_name||'')}</div>
-      <button class="er-config-row" type="button" onclick="editRosterShow('battlesize')">
+      <button class="er-config-row" type="button" data-testid="er-row-battlesize" onclick="editRosterShow('battlesize')">
         <span>${esc(bs)}${army.points_limit?` &middot; ${army.points_limit} pts`:''}</span><span class="er-config-chev">&#9656;</span>
       </button>
-      <button class="er-config-row" type="button" onclick="editRosterShow('detachment')">
+      <button class="er-config-row" type="button" data-testid="er-row-detachment" onclick="editRosterShow('detachment')">
         <span>${esc(detSummary)}</span><span class="er-config-chev">&#9656;</span>
       </button>
     </div>`;
@@ -868,7 +866,7 @@ export function renderRoster(units, accent){
       <div class="foc-section-head">
         <span class="foc-section-name">${esc(cat)}</span>
         ${pts?`<span class="foc-section-pts">${pts} Points</span>`:''}
-        <button class="foc-add-btn" type="button" title="Add to ${esc(cat)}" onclick="openUnitPicker('${esc(cat)}')">+</button>
+        <button class="foc-add-btn" type="button" data-testid="foc-add-${focSlug(cat)}" title="Add to ${esc(cat)}" onclick="openUnitPicker('${esc(cat)}')">+</button>
       </div>
       ${list.map(u=>armyUnitRow(u,accent)
         + (leaderFor[u.id]?`<div class="au-nested">${armyUnitRow(leaderFor[u.id],accent)}</div>`:'')).join('')}

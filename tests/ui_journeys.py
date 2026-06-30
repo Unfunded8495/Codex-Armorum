@@ -85,21 +85,32 @@ def sel(page, testid, fallback=None):
     return loc.first  # will fail visibly, prompting a TESTIDS.md addition
 
 
-def add_unit(page, name, timeout=8000):
-    """Add the unit named exactly ``name`` from the persistent left-panel picker.
+def foc_slug(category):
+    return category.replace(" ", "-").lower()
 
-    The three-panel layout makes the picker an always-visible left panel (no modal
-    round-trip). It fills asynchronously after the army loads, so we wait for the
-    exact ``picker-unit-<name>`` hook before clicking. The testid also appears in
-    the legacy modal, so we scope to ``unit-picker-panel`` to bind unambiguously.
+
+def add_unit(page, name, category, timeout=8000):
+    """Add the unit named exactly ``name`` via the category-scoped add-unit
+    overlay. A unit's Force-Org category is never a player choice -- every
+    "+" on the roster is already scoped to one of the 4 sections (Characters/
+    Battleline/Dedicated Transports/Other Datasheets), so the picker it opens
+    only ever offers units of that one category and ``category`` must match
+    the unit's actual one or the card won't be there to find.
+
+    The picker is a full-screen overlay (not an always-visible panel), so this
+    closes it again afterward -- left open it would block every subsequent
+    click (it sits above the roster at a higher stacking order while visible).
     Binding to the exact name (never a substring ``text=`` fallback) avoids
-    grabbing a similarly named sheet -- e.g. a bare "Intercessor Squad" match would
-    otherwise hit "Assault Force Intercessor Squad", whichever renders first.
+    grabbing a similarly named sheet -- e.g. a bare "Intercessor Squad" match
+    would otherwise hit "Assault Force Intercessor Squad", whichever renders
+    first.
     """
-    opt = page.locator(
-        f"[data-testid='unit-picker-panel'] [data-testid='picker-unit-{name}']")
-    opt.wait_for(state="visible", timeout=timeout)
-    opt.click()
+    page.locator(f"[data-testid='foc-add-{foc_slug(category)}']").first.click()
+    card = page.locator(f"[data-testid='unit-picker-panel'] [data-testid='picker-unit-{name}']")
+    card.wait_for(state="visible", timeout=timeout)
+    card.locator(".po-add").click()
+    page.locator("[data-testid='unit-picker-panel'] .cb-back").click()
+    page.locator("[data-testid='unit-picker-panel']").wait_for(state="hidden", timeout=timeout)
 
 
 def run():
@@ -122,11 +133,10 @@ def run():
             errors = []
             page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
 
-            # Journey 1: create an army and add a unit.
+            # Journey 1: create an army and add a unit. The create flow (army
+            # list page) is untouched by the companion-app-parity rebuild.
             page.goto(f"{BASE}/army-builder")
             sel(page, "new-army-button", "text=New Army").click()
-            # The create flow is app-specific; these are the hooks to wire up.
-            # Pick faction Ultramarines, Strike Force, a detachment, confirm.
             try:
                 sel(page, "faction-select").select_option(label="Ultramarines")
                 # The battle-size option label carries the points ("Strike Force ·
@@ -138,22 +148,26 @@ def run():
             except Exception as e:
                 r.check("journey: create army reaches the army detail view", False, repr(e))
 
-            # Journey 2: add a unit, roster grows.
+            # Journey 2: add a unit (Battleline section's "+"), roster grows.
             try:
-                add_unit(page, "Intercessor Squad")
+                add_unit(page, "Intercessor Squad", "Battleline")
                 page.wait_for_selector("[data-testid='unit-row']", timeout=5000)
                 r.check("journey: adding a unit shows a roster row", True)
             except Exception as e:
                 r.check("journey: adding a unit shows a roster row", False, repr(e))
 
-            # Journey 3: editing a unit moves the live points total. A wargear
-            # swap is points-neutral for most 10e units (and Intercessors expose
-            # no points-bearing option), so drive the squad-size stepper -- the
-            # reliable points mover. Both run the same applyServerState -> points
-            # -bar path, which is what this journey verifies: no reload needed.
+            # Journey 3: editing a unit moves the live points total. The
+            # squad-size stepper lives in the unit-options right panel now
+            # (not inline on the row), so open a unit first. A wargear swap is
+            # points-neutral for most 10e units (and Intercessors expose no
+            # points-bearing option), so the stepper is still the reliable
+            # points mover; both run the same applyServerState -> points-HUD
+            # path, which is what this journey verifies: no reload needed.
             try:
                 before = sel(page, "army-points").inner_text()
+                page.locator("[data-testid='unit-row']").first.click()
                 size = sel(page, "unit-size-input", ".au-size-input")
+                size.wait_for(state="visible", timeout=4000)
                 target = size.get_attribute("max") or "10"
                 size.fill(target)
                 size.dispatch_event("change")
@@ -172,7 +186,7 @@ def run():
             try:
                 target_rows = page.locator("[data-testid='unit-row']").count() + 7
                 for _ in range(7):
-                    add_unit(page, "Intercessor Squad")
+                    add_unit(page, "Intercessor Squad", "Battleline")
                 page.wait_for_function(
                     "n => document.querySelectorAll(\"[data-testid='unit-row']\").length >= n",
                     arg=target_rows, timeout=8000)
@@ -183,9 +197,9 @@ def run():
             except Exception as e:
                 r.check("journey: an over-limit roster surfaces a validation message", False, repr(e))
 
-            # Journey 4b: the three-panel detail. Clicking a roster row opens the
-            # unit in the right detail panel (warlord / enhancement / wargear /
-            # profiles all live there now, not inline).
+            # Journey 4b: clicking a roster row opens the unit in the right
+            # detail panel (warlord / enhancement / wargear / profiles all
+            # live there, not inline on the row).
             try:
                 page.locator("[data-testid='unit-row']").first.click()
                 page.wait_for_selector(
@@ -194,20 +208,31 @@ def run():
             except Exception as e:
                 r.check("journey: clicking a unit opens its right-panel detail", False, repr(e))
 
-            # Journey 4c: open the Detachment config row, add a detachment, and
-            # confirm its derived Force Disposition label renders on the chip.
+            # Journey 4c: Battle Size / Detachments live in the Edit Roster
+            # overlay now (roster-kebab -> menu-edit-roster), each as a
+            # tap-through sub-screen. Open the Detachments sub-screen, pick
+            # the first selectable card, and confirm its derived Force
+            # Disposition label renders -- then close back out to main so a
+            # later journey doesn't find the overlay still open.
             try:
-                page.locator("[data-testid='config-detachment']").click()
-                add = page.locator("[data-testid='detachment-add']")
-                add.wait_for(state="visible", timeout=4000)
-                if add.locator("option").count() > 1:
-                    add.select_option(index=1)
-                    page.wait_for_selector("[data-testid='detachment-disposition']", timeout=5000)
-                    r.check("journey: adding a detachment shows its Force Disposition label", True)
+                page.locator("[data-testid='roster-kebab']").click()
+                sel(page, "menu-edit-roster").click()
+                page.locator("[data-testid='edit-roster-modal'] [data-testid='er-row-detachment']").click()
+                # Affordable (clickable) cards carry style="cursor:pointer";
+                # unaffordable ones render with no style attribute at all.
+                card = page.locator("[data-testid='edit-roster-modal'] [data-testid='detachment-chip'][style*='cursor:pointer']").first
+                if card.count() > 0:
+                    card.wait_for(state="visible", timeout=4000)
+                    card.click()
+                    page.wait_for_selector(
+                        "[data-testid='edit-roster-modal'] [data-testid='detachment-disposition']", timeout=5000)
+                    r.check("journey: choosing a detachment shows its Force Disposition label", True)
                 else:
-                    r.skip("journey: detachment disposition", "no addable detachment options")
+                    r.skip("journey: detachment disposition", "no selectable detachment cards")
+                page.locator("[data-testid='edit-roster-modal'] .cb-back").first.click()
+                page.locator("[data-testid='edit-roster-modal'] .cb-back").first.click()
             except Exception as e:
-                r.check("journey: adding a detachment shows its Force Disposition label", False, repr(e))
+                r.check("journey: choosing a detachment shows its Force Disposition label", False, repr(e))
 
             # Journey 5: missions reference renders (Phase 6).
             try:
