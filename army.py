@@ -119,15 +119,17 @@ def _valid_detachment_for_faction(fid, dtid):
     store = get_store()
     if not dtid:
         return True
-    detachment = store.detachment_by_id.get(dtid)
-    if not detachment:
-        return False
-    # A chapter army accepts detachments from its own faction or from the
-    # parent faction (so e.g. Blood Angels can field a generic Adeptus
-    # Astartes detachment). Codex-divergent chapters get a slightly wider
-    # detachment list than strict canon - accepted simplification.
-    det_fac = detachment.get("faction_id")
-    return det_fac == fid or det_fac == store.faction_parent(fid)
+    # Picker parity: accept exactly the detachments the picker offers for this
+    # faction (membership via detachments_for_faction - own set or the parent's),
+    # minus Combat Patrol, mirroring api_faction_detachments so the guard and the
+    # picker agree by construction. The leaf-wins primary faction_id is NOT a
+    # reliable membership test for multi-faction generic detachments - e.g. a
+    # generic Space Marines detachment's primary is a chapter, not Adeptus
+    # Astartes, so the old `det_fac == fid` check rejected Gladius for an
+    # Adeptus Astartes army even though the picker offered it.
+    offered = {d["id"] for d in store.detachments_for_faction(fid)
+               if not d.get("is_combat_patrol")}
+    return dtid in offered
 
 
 def battle_size_caps(name):
