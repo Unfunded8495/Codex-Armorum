@@ -1,7 +1,7 @@
 import { showArmyList, deleteArmy, toggleCreateForm, importArmyList,
          submitCreateArmy, onCafBattleSize } from './army-list.js';
 import { showArmy, saveArmyMeta, updateSquadSize, updateAssigned,
-         toggleEnhEditor, saveEnhancement, removeArmyUnit, toggleWarlord,
+         toggleEnhEditor, saveEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord,
          attachLeader, detachLeader, onAbBattleSize, toggleCollapse,
          onAddDetachment, removeDetachment, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
          toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard, exportArmy } from './army-detail.js';
@@ -27,7 +27,7 @@ refreshLedger();
 Object.assign(window, {
   deleteArmy, toggleCreateForm, submitCreateArmy, onCafBattleSize,
   saveArmyMeta, updateSquadSize, updateAssigned,
-  toggleEnhEditor, saveEnhancement, removeArmyUnit, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleCollapse,
+  toggleEnhEditor, saveEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleCollapse,
   onAddDetachment, removeDetachment, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
   toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy,

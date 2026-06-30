@@ -718,6 +718,54 @@ function compLine(comp){
     .map(c=>`${c.count}× ${esc(c.model)}`).join(' · ');
 }
 
+// "Aspiring Champion — Bolt pistol, Boltgun · Legionary — 9 Boltgun, Chaos Icon"
+// -> one bullet per "·"-separated mini-group (resolved_loadout() in wargear.py
+// already groups by miniature, so this needs no further structuring).
+function summaryBullets(summary){
+  return (summary||'').split(' · ').map(s=>s.trim()).filter(Boolean);
+}
+
+function ownershipDot(u){
+  if(u.owned_count===0) return 'is-none';
+  if(u.assigned_count<u.squad_size) return 'is-warn';
+  return '';
+}
+
+function ownershipText(u){
+  if(u.owned_count===0) return `<span class="own-none">Not owned — wishlist</span>`;
+  if(u.assigned_count>=u.squad_size) return `<span class="own-ok">✓ ${u.assigned_count} of ${u.squad_size} assigned</span>`;
+  const short = u.squad_size-u.assigned_count;
+  return `<span class="own-warn">⚠ ${u.assigned_count}/${u.squad_size} assigned — need ${short} more (${u.available_count} available)</span>`;
+}
+
+function kebabMenu(u){
+  const auid = u.id;
+  return `<div class="uc-kebab-wrap" onclick="event.stopPropagation()">
+      <button class="uc-kebab" type="button" title="More actions" onclick="toggleKebabMenu(this)">&#8942;</button>
+      <div class="uc-kebab-menu" hidden>
+        <button type="button" onclick="duplicateArmyUnit('${auid}')">Duplicate</button>
+        ${u.attached_to?`<button type="button" onclick="detachLeader('${auid}')">Remove from attached unit</button>`:''}
+        <button type="button" class="is-danger" onclick="removeArmyUnit('${auid}')">Delete</button>
+      </div>
+    </div>`;
+}
+
+export function toggleKebabMenu(btn){
+  const menu = btn.nextElementSibling;
+  const opening = menu.hidden;
+  closeAllKebabMenus();
+  if(menu) menu.hidden = !opening;
+}
+
+function closeAllKebabMenus(){
+  document.querySelectorAll('.uc-kebab-menu').forEach(m=>m.hidden=true);
+}
+document.addEventListener('click', closeAllKebabMenus);
+
+// NOTE: squad-size / assigned-from-collection stay inline here for now (the
+// reference app has no collection-tracking equivalent, so there's no screen
+// of theirs to place them in) -- they move into the unit-options right panel
+// once it grows Enhancements/Wargear Options accordions of its own.
 export function armyUnitRow(u, accent){
   const auid     = u.id;
   const owned    = u.owned_count;
@@ -727,33 +775,25 @@ export function armyUnitRow(u, accent){
   const pts      = u.points + (u.enhancement_cost||0);
   const squadMin = u.squad_min || 1;
   const squadMax = u.squad_max || '';
+  const bodyguard = u.attached_to && state.army?.units.find(x=>x.id===u.attached_to);
 
-  let ownHtml = '';
-  if(owned===0){
-    ownHtml = `<span class="own-none">Not owned — wishlist</span>`;
-  }else if(assigned>=squad){
-    ownHtml = `<span class="own-ok">✓ ${assigned} of ${squad} assigned</span>`;
-  }else{
-    const short = squad-assigned;
-    ownHtml = `<span class="own-warn">⚠ ${assigned}/${squad} assigned — need ${short} more (${avail} available)</span>`;
-  }
-
-  // The whole row is clickable to open the unit in the right detail panel; the
-  // inline controls (squad/assign/remove) stop propagation so they don't also
-  // trigger a select. Wargear / enhancement / warlord / leader editing all live
-  // in the right panel now.
-  return `<div class="au-row faction-surface" data-testid="unit-row" id="au-${auid}" onclick="selectUnit('${auid}')" style="--cardarmy:${state.army?.primary||'var(--panel)'};--cardaccent:${accent||'var(--gold)'};--cardglow:${accent||'var(--gold)'};--au-accent:${accent||'var(--gold)'}">
-    <div>
-      <div class="au-name">${esc(u.name)}${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}</div>
-      <div class="au-role">${esc(u.role)}</div>
-      <div class="au-comp" id="au-comp-${auid}">${compLine(u.composition)}</div>
+  return `<div class="uc-row" data-testid="unit-row" id="au-${auid}" style="--cardarmy:${state.army?.primary||'var(--panel)'};--cardaccent:${accent||'var(--gold)'};--cardglow:${accent||'var(--gold)'}">
+    <img class="uc-thumb" src="/api/units/${u.datasheet_id}/image" alt="" loading="lazy" onclick="selectUnit('${auid}')">
+    <div class="uc-body" onclick="selectUnit('${auid}')">
+      <div class="uc-name">
+        <span class="uc-owned-dot ${ownershipDot(u)}" title="${esc(ownershipText(u).replace(/<[^>]+>/g,''))}"></span>
+        ${esc(u.name)}${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}
+      </div>
+      <div class="au-role">${esc(u.role)}${u.composition&&u.composition.length>1?` · ${compLine(u.composition)}`:''}</div>
+      <ul class="uc-bullets" id="au-comp-${auid}">${summaryBullets(u.loadout_summary).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
+      ${bodyguard?`<div class="uc-attached-tag">Attached to <b>${esc(bodyguard.name)}</b></div>`:''}
+      <div id="au-enh-line-${auid}">${u.enhancement_name?`<div class="uc-attached-tag">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>`:''}</div>
       <div class="au-controls" onclick="event.stopPropagation()">
         <div class="au-size-wrap">
           <label>Squad</label>
           <input class="au-size-input" data-testid="unit-size-input" type="number" min="${squadMin}" ${squadMax?`max="${squadMax}"`:''} value="${squad}"
                  onchange="updateSquadSize('${auid}',this.value)" title="Squad size">
         </div>
-        <div class="au-pts" id="au-pts-${auid}">${pts} pts</div>
         ${owned>0?`<div class="au-assign-wrap">
           <label>Assign</label>
           <input class="au-assign-input" type="number" min="0" max="${avail+assigned}" value="${assigned}"
@@ -761,14 +801,39 @@ export function armyUnitRow(u, accent){
           <span style="font-family:'Oswald',sans-serif;font-size:11px;color:var(--parch-dim)">/ ${owned} owned</span>
         </div>`:''}
       </div>
-      <div class="au-ownership" id="au-own-${auid}">${ownHtml}</div>
-      <div class="au-enh" id="au-enh-line-${auid}">${u.enhancement_name?`Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)`:''}</div>
+      <div class="au-ownership" id="au-own-${auid}">${ownershipText(u)}</div>
     </div>
-    <div class="au-actions" onclick="event.stopPropagation()">
-      <button class="au-del" onclick="removeArmyUnit('${auid}')">Remove</button>
-      <span class="au-edit-hint" aria-hidden="true">Edit ▸</span>
+    <div class="uc-side">
+      <span class="uc-pts-pill" id="au-pts-${auid}">${pts} Points</span>
+      ${kebabMenu(u)}
     </div>
   </div>`;
+}
+
+// Re-add the same datasheet at the same squad size, then copy its loadout (if
+// customized) onto the new copy. Reuses the existing add/patch endpoints --
+// no backend change needed for "Duplicate".
+export async function duplicateArmyUnit(auid){
+  const u = state.army?.units.find(x=>x.id===auid);
+  if(!u) return;
+  let res;
+  try{ res = await api(`/api/armies/${state.army.id}/units`, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({datasheet_id:u.datasheet_id, squad_size:u.squad_size})}); }
+  catch(e){ return; }
+  if(!res || !res.ok) return;
+  let unit = res.unit;
+  if(u.loadout && Object.keys(u.loadout).length){
+    let res2;
+    try{ res2 = await api(`/api/army-units/${unit.id}`, {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({loadout:u.loadout})}); }
+    catch(e){ res2 = null; }
+    if(res2 && res2.ok) unit = res2.unit;
+  }
+  state.army.units.push(unit);
+  const body = document.getElementById('rosterBody');
+  if(body) body.innerHTML = renderRoster(state.army.units, state.army.accent);
+  applyServerState(res);
+  refreshLeftPicker();
 }
 
 /* ---- squad / assign updates --------------------------------------------- */
