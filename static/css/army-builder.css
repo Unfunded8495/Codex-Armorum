@@ -91,7 +91,7 @@
 
 /* Centre panel header + config rows */
 .ab-centre-head { display:flex; align-items:center; gap:14px; margin-bottom:12px; flex-wrap:wrap; }
-.ab-centre-head .ab-name-input { flex:1; min-width:180px; font-size:22px; }
+.ab-army-title { flex:1; min-width:180px; margin:0; font-family:'Cinzel',serif; font-weight:700; font-size:22px; color:var(--parch); }
 .ab-centre-meters { margin-bottom:18px; }
 .ab-config { display:flex; flex-direction:column; gap:6px; margin-bottom:18px; }
 .ab-cfg-row { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:var(--panel); border:1px solid var(--edge); border-left:3px solid var(--gold); padding:10px 14px; cursor:pointer; transition:.15s; }
@@ -137,11 +137,8 @@
 .wp-table td.wp-nm { text-align:left; font-family:'EB Garamond',serif; font-size:13px; color:var(--parch); }
 .wp-kw { display:block; font-family:'Oswald',sans-serif; font-size:9px; letter-spacing:.4px; text-transform:uppercase; color:var(--parch-dim); }
 
-/* Roster unit row: clickable selection + edit affordance */
-.au-row { cursor:pointer; }
-.au-row.is-selected { border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold); }
-.au-edit-hint { font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--parch-dim); }
-.au-row:hover .au-edit-hint { color:var(--gold); }
+/* Roster unit row: selection highlight (the row itself is .uc-row now). */
+.uc-row.is-selected { border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold); }
 
 /* Detachment chip: stacked name + Force Disposition label */
 .ab-detach-chip-main { display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
@@ -688,3 +685,9 @@
 .cb-open-btn:hover { border-color:var(--gold-bright); color:var(--gold-bright); }
 .cb-section[hidden] { display:none; }
 .cb-section { padding-bottom:4px; }
+
+/* Roster-header overflow kebab (Edit Roster / Duplicate Roster): same
+   .uc-kebab-wrap/.uc-kebab-menu pattern as a unit row's kebab, just
+   recoloured for this dark header instead of a light card. */
+.rh-kebab { color:var(--parch); font-size:22px; }
+.rh-kebab:hover { color:var(--gold); }

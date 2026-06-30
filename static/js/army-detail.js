@@ -60,7 +60,6 @@ function renderRightPlaceholder(){
 function renderCentre(army){
   return `
     ${renderRosterHeader(army)}
-    ${renderConfigSection(army)}
     <div id="rosterBody">${renderRoster(army.units, army.accent)}</div>
     ${renderPointsHud(army)}
     <div class="ab-card ab-validation" id="validationCard" data-testid="validation-card">
@@ -92,8 +91,15 @@ function hudHasIssues(army){
 function renderRosterHeader(army){
   return `
     <div class="ab-centre-head">
-      <input class="ab-name-input" id="abName" value="${esc(army.name)}" placeholder="Army name">
+      <h2 class="ab-army-title" data-testid="army-title">${esc(army.name)}</h2>
       <button class="cb-open-btn" type="button" data-testid="open-command-bunker" onclick="openCommandBunker()" title="Command Bunker">${army.icon_url?`<img src="${esc(army.icon_url)}" alt="">`:'&#9879;'}</button>
+      <div class="uc-kebab-wrap" onclick="event.stopPropagation()">
+        <button class="uc-kebab rh-kebab" type="button" title="More actions" data-testid="open-edit-roster" onclick="toggleKebabMenu(this)">&#8942;</button>
+        <div class="uc-kebab-menu" hidden>
+          <button type="button" onclick="openEditRoster()">Edit Roster</button>
+          <button type="button" onclick="duplicateRoster()">Duplicate Roster</button>
+        </div>
+      </div>
       <div class="ab-export-btns">
         <button class="ab-export-btn" type="button" data-testid="export-button" onclick="exportArmy('copy', this)">Copy list</button>
         <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">.txt</button>
@@ -104,62 +110,20 @@ function renderRosterHeader(army){
 
 // Config rows: Battle Size and Detachment(s). Each is a clickable row that opens
 // its editor in the right panel (matching the reference three-panel UX).
-function renderConfigSection(army){
-  const bs = army.battle_size || 'Custom';
-  const dets = army.detachments || [];
-  const budget = army.detachment_points_limit;
-  const used = army.detachment_points_used || 0;
-  const dpLabel = budget==null ? '' : `${used} / ${budget} DP`;
-  const sel = state.rightSel || {};
-  const detSummary = dets.length
-    ? dets.map(d=>esc(d.name)).join(', ')
-    : '<span class="ab-cfg-empty">None selected</span>';
-  return `
-    <div class="ab-config">
-      <button class="ab-cfg-row ${sel.type==='battlesize'?'is-active':''}" type="button"
-              data-testid="config-battlesize" onclick="selectConfig('battlesize')">
-        <span class="ab-cfg-label">Battle Size</span>
-        <span class="ab-cfg-value">${esc(bs)}${army.points_limit?` · ${army.points_limit} pts`:''}</span>
-        <span class="ab-cfg-chev">▸</span>
-      </button>
-      <button class="ab-cfg-row ${sel.type==='detachment'?'is-active':''}" type="button"
-              data-testid="config-detachment" onclick="selectConfig('detachment')">
-        <span class="ab-cfg-label">Detachment${dets.length===1?'':'s'}</span>
-        <span class="ab-cfg-value">${detSummary}${dpLabel?` <em class="ab-cfg-dp">${dpLabel}</em>`:''}</span>
-        <span class="ab-cfg-chev">▸</span>
-      </button>
-    </div>`;
-}
-
 /* ---- sidebar ------------------------------------------------------------ */
 
-// Right-panel editor for the Battle Size config row. Keeps the existing select +
-// custom-points input; options are filled on open (fillBattleSizeSelect).
-function renderConfigBattleSize(army){
+// Battle Size body (select + custom-points input): shared by the Edit Roster
+// sub-screen below. Options are filled on open (fillBattleSizeSelect).
+function renderBattleSizePanel(army){
   const isCustom = (army.battle_size||'Custom') === 'Custom';
   return `
-    <div class="ab-rp-head"><h3 class="ab-rp-title">Battle Size</h3>
-      <button class="ab-rp-close" type="button" onclick="clearRight()" title="Close">&times;</button></div>
-    <div class="ab-rp-body">
-      <div class="ab-meta-item">
-        <label>Battle Size</label>
-        <select id="abBattleSize" onchange="onAbBattleSize()"></select>
-      </div>
-      <div class="ab-meta-item ab-custom-pts" id="abPtsField" ${isCustom?'':'hidden'}>
-        <label>Points Limit</label>
-        <input type="number" id="abPtsLimit" value="${army.points_limit}" min="0" step="100" onchange="saveArmyMeta()">
-      </div>
-    </div>`;
-}
-
-// Right-panel editor for the Detachment config row: the DP-budget panel (chips +
-// budget-aware add control). The add options are filled on open.
-function renderConfigDetachment(army){
-  return `
-    <div class="ab-rp-head"><h3 class="ab-rp-title">Choose Detachments</h3>
-      <button class="ab-rp-close" type="button" onclick="clearRight()" title="Close">&times;</button></div>
-    <div class="ab-rp-body">
-      ${renderDetachmentPanel(army)}
+    <div class="ab-meta-item">
+      <label>Battle Size</label>
+      <select id="abBattleSize" onchange="onAbBattleSize()"></select>
+    </div>
+    <div class="ab-meta-item ab-custom-pts" id="abPtsField" ${isCustom?'':'hidden'}>
+      <label>Points Limit</label>
+      <input type="number" id="abPtsLimit" value="${army.points_limit}" min="0" step="100" onchange="saveArmyMeta()">
     </div>`;
 }
 
@@ -217,6 +181,88 @@ function renderDetachmentPanel(army){
 export function toggleDpExpand(id){
   const el = document.getElementById(id);
   if(el) el.hidden = !el.hidden;
+}
+
+/* ---- Edit Roster: name + Battle Size + Detachments, consolidated into one
+   overlay with the latter two as tap-through sub-screens (matches the
+   reference app's Edit Roster screen; previously these were 3 separate
+   always-visible/right-panel surfaces on the roster page). ------------------ */
+
+export function openEditRoster(){
+  if(!state.army) return;
+  state.editRosterView = 'main';
+  renderEditRosterInto(state.army);
+  const overlay = document.getElementById('editRosterModal');
+  if(overlay) overlay.hidden = false;
+}
+
+export function closeEditRoster(){
+  const overlay = document.getElementById('editRosterModal');
+  if(overlay) overlay.hidden = true;
+}
+
+export function editRosterShow(view){
+  state.editRosterView = view;
+  renderEditRosterInto(state.army);
+}
+
+function renderEditRosterInto(army){
+  const overlay = document.getElementById('editRosterModal');
+  if(!overlay) return;
+  overlay.innerHTML = renderEditRoster(army);
+  if(state.editRosterView === 'battlesize') fillBattleSizeSelect(army);
+}
+
+function renderEditRoster(army){
+  const view = state.editRosterView || 'main';
+  if(view === 'battlesize') return erSubScreen('Battle Size', renderBattleSizePanel(army));
+  if(view === 'detachment') return erSubScreen('Choose Detachments', renderDetachmentPanel(army));
+  return renderEditRosterMain(army);
+}
+
+function erSubScreen(title, bodyHtml){
+  return `
+    <div class="po-overlay-head">
+      <button class="cb-back" type="button" onclick="editRosterShow('main')" aria-label="Back" title="Back">&#10094;</button>
+      <h2 class="po-overlay-title">${esc(title)}</h2>
+    </div>
+    <div class="po-body">${bodyHtml}</div>`;
+}
+
+function renderEditRosterMain(army){
+  const bs = army.battle_size || 'Custom';
+  const dets = army.detachments || [];
+  const detSummary = dets.length ? dets.map(d=>esc(d.name)).join(', ') : 'None selected';
+  return `
+    <div class="po-overlay-head">
+      <button class="cb-back" type="button" onclick="closeEditRoster()" aria-label="Back" title="Back">&#10094;</button>
+      <h2 class="po-overlay-title">Edit Roster</h2>
+    </div>
+    <div class="po-body er-body">
+      <p class="er-label">Name</p>
+      <input class="er-name-input" id="erName" value="${esc(army.name)}" placeholder="Army name" onchange="saveArmyMeta()">
+      <p class="er-label">Army</p>
+      <div class="er-faction-row">${esc(army.faction_display_name||army.faction_name||'')}</div>
+      <button class="er-config-row" type="button" onclick="editRosterShow('battlesize')">
+        <span>${esc(bs)}${army.points_limit?` &middot; ${army.points_limit} pts`:''}</span><span class="er-config-chev">&#9656;</span>
+      </button>
+      <button class="er-config-row" type="button" onclick="editRosterShow('detachment')">
+        <span>${esc(detSummary)}</span><span class="er-config-chev">&#9656;</span>
+      </button>
+    </div>`;
+}
+
+// Re-POST the army's own export as a fresh import -- reuses the existing
+// export/import endpoints rather than adding a dedicated duplicate route.
+export async function duplicateRoster(){
+  if(!state.army) return;
+  let res;
+  try{
+    const data = await (await fetch(`/api/armies/${state.army.id}/export?fmt=json`)).json();
+    res = await (await fetch('/api/armies/import', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)})).json();
+  }catch(e){ return; }
+  if(res && res.ok && res.id) location.hash = '/army/' + res.id;
 }
 
 const STRAT_CAT = {battleTactic:'Battle Tactic', strategicPloy:'Strategic Ploy',
@@ -397,9 +443,9 @@ export async function exportArmy(mode, btn){
 }
 
 async function wireCentreInputs(army){
-  // Warm the caches the right-panel config editors need (this faction's
-  // detachments + the battle sizes). The selects themselves live in the right
-  // panel and are filled when their config row is opened.
+  // Warm the caches the Edit Roster sub-screens need (this faction's
+  // detachments + the battle sizes), so they're ready the first time
+  // openEditRoster() renders them.
   let dts = state.detachCache[army.faction_id];
   try{
     const [d] = await Promise.all([
@@ -409,13 +455,6 @@ async function wireCentreInputs(army){
     dts = d;
   }catch(e){ dts = dts || []; }
   state.detachCache[army.faction_id] = dts;
-
-  const nameInput = document.getElementById('abName');
-  let nameTimer;
-  if(nameInput) nameInput.addEventListener('input', ()=>{
-    clearTimeout(nameTimer);
-    nameTimer = setTimeout(()=>saveArmyMeta(), 600);
-  });
 }
 
 // Fill the battle-size <select> in the right panel when its config row opens.
@@ -432,22 +471,13 @@ function fillBattleSizeSelect(army){
 
 /* ---- right panel orchestration ------------------------------------------ */
 
-export function selectConfig(kind){
-  if(!state.army) return;
-  state.rightSel = {type: kind};
-  markActiveSelection();
-  const rp = document.getElementById('rightPanel');
-  if(!rp) return;
-  if(kind === 'battlesize'){ rp.innerHTML = renderConfigBattleSize(state.army); fillBattleSizeSelect(state.army); }
-  else if(kind === 'detachment'){ rp.innerHTML = renderConfigDetachment(state.army); }
-  rp.classList.add('is-open'); document.getElementById('rpScrim')?.classList.add('is-open');
-}
-
+// The right panel only ever shows a unit now -- Battle Size and Detachment
+// editing moved into the Edit Roster overlay's own sub-screens.
 export function selectUnit(auid){
   if(!state.army) return;
   const u = state.army.units.find(x=>x.id===auid);
   if(!u) return;
-  state.rightSel = {type:'unit', id:auid};
+  state.rightSel = {id:auid};
   markActiveSelection();
   const rp = document.getElementById('rightPanel');
   if(rp){ rp.innerHTML = renderUnitDetail(u); wireUnitDetail(u); rp.classList.add('is-open'); }
@@ -462,25 +492,18 @@ export function clearRight(){
   rp?.classList.remove('is-open'); document.getElementById('rpScrim')?.classList.remove('is-open');
 }
 
-// Re-open whatever was selected before a full re-render (showArmy refetch).
+// Re-open whatever unit was selected before a full re-render (showArmy refetch).
 function restoreRight(){
   const sel = state.rightSel;
   if(!sel) return clearRight();
-  if(sel.type === 'unit'){
-    if(state.army.units.some(u=>u.id===sel.id)) selectUnit(sel.id);
-    else clearRight();
-  } else {
-    selectConfig(sel.type);
-  }
+  if(state.army.units.some(u=>u.id===sel.id)) selectUnit(sel.id);
+  else clearRight();
 }
 
 function markActiveSelection(){
-  const sel = state.rightSel || {};
-  document.querySelectorAll('.ab-cfg-row').forEach(r=>r.classList.remove('is-active'));
-  if(sel.type === 'battlesize') document.querySelector('[data-testid="config-battlesize"]')?.classList.add('is-active');
-  if(sel.type === 'detachment') document.querySelector('[data-testid="config-detachment"]')?.classList.add('is-active');
-  document.querySelectorAll('.au-row').forEach(r=>r.classList.remove('is-selected'));
-  if(sel.type === 'unit') document.getElementById('au-'+sel.id)?.classList.add('is-selected');
+  const sel = state.rightSel;
+  document.querySelectorAll('.uc-row').forEach(r=>r.classList.remove('is-selected'));
+  if(sel) document.getElementById('au-'+sel.id)?.classList.add('is-selected');
 }
 
 /* ---- right panel: unit detail ------------------------------------------- */
@@ -668,7 +691,7 @@ function refreshUnitDetailIfSelected(auid){
 export async function saveArmyMeta(){
   if(!state.army) return;
   const prevBs = state.army.battle_size || 'Custom';
-  const name  = (document.getElementById('abName')?.value||'').trim() || state.army.name;
+  const name  = (document.getElementById('erName')?.value||'').trim() || state.army.name;
   const bs    = document.getElementById('abBattleSize')?.value || state.army.battle_size || 'Custom';
   const pts   = intOr(document.getElementById('abPtsLimit')?.value, state.army.points_limit);
   const dtids = state.army.detachment_ids || [];
@@ -699,11 +722,14 @@ export async function saveArmyMeta(){
 
   if(detachmentChanged || res.battle_size !== prevBs){
     // Detachment set trimmed on a downgrade, or the battle size changed (which
-    // moves the points limit + DP budget) — refetch so the config rows, rule/
-    // stratagem cards, chips and any stripped enhancements all stay consistent.
-    showArmy(state.army.id);
+    // moves the points limit + DP budget) — refetch so the roster, rule/
+    // stratagem content, chips and any stripped enhancements all stay consistent.
+    await showArmy(state.army.id);
+    refreshEditRosterIfOpen();
     return;
   }
+  const titleEl = document.querySelector('[data-testid="army-title"]');
+  if(titleEl) titleEl.textContent = name;
   const limEl = document.getElementById('ptsLimit');
   if(limEl) limEl.textContent = state.army.points_limit;
   updatePointsBar();
@@ -741,6 +767,15 @@ export function removeDetachment(id){
   commitDetachments();
 }
 
+// showArmy() rebuilds #view, which #editRosterModal lives outside of (it's a
+// separate overlay so its own sub-screen survives a roster refetch) -- so
+// every caller that triggers a refetch while the modal might be open also
+// re-renders it in place, on whatever sub-screen the user was on.
+function refreshEditRosterIfOpen(){
+  const overlay = document.getElementById('editRosterModal');
+  if(overlay && !overlay.hidden) renderEditRosterInto(state.army);
+}
+
 async function commitDetachments(){
   if(!state.army) return;
   let res;
@@ -749,7 +784,8 @@ async function commitDetachments(){
       body: JSON.stringify({detachment_ids: state.army.detachment_ids})});
   }catch(e){ return; }
   if(!res || !res.ok){ if(res&&res.error) alert(res.error); return; }
-  showArmy(state.army.id);
+  await showArmy(state.army.id);
+  refreshEditRosterIfOpen();
 }
 
 /* ---- validation --------------------------------------------------------- */

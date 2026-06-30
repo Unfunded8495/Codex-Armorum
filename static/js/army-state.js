@@ -2,9 +2,10 @@ import { esc, api } from './utils.js';
 
 export const state = {
   army:        null,
-  rightSel:    null,   // {type:'unit'|'battlesize'|'detachment', id?} -> right panel
+  rightSel:    null,   // {id} -> unit shown in the right panel, or null
   picker:      null,
   pickerCategory: null,   // Force-Org category the open add-unit picker is scoped to
+  editRosterView: 'main', // 'main'|'battlesize'|'detachment' -> Edit Roster sub-screen
   detachCache: {},
   enhCache:    {},
   unitsCache:  {},
