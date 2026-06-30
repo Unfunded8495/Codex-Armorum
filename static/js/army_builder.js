@@ -2,9 +2,10 @@ import { showArmyList, deleteArmy, toggleCreateForm, importArmyList,
          submitCreateArmy, onCafBattleSize } from './army-list.js';
 import { showArmy, saveArmyMeta, updateSquadSize, updateAssigned,
          toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord,
-         attachLeader, detachLeader, onAbBattleSize, toggleCollapse, toggleAccordion, toggleOptBody,
+         attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
          toggleDetachmentCard, removeDetachment, toggleDpExpand, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
-         toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard, exportArmy } from './army-detail.js';
+         toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard, exportArmy,
+         openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleCbDatasheet } from './army-detail.js';
 import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy } from './unit-picker.js';
 import { initLightbox } from './lightbox.js';
 import { refreshLedger } from './header.js';
@@ -19,17 +20,25 @@ function router(){
 
 window.addEventListener('hashchange', router);
 
-initLightbox(()=>{ document.getElementById('unitPickerModal').hidden = true; });
+// Escape closes whichever full-screen overlay is open (unit picker or
+// Command Bunker); harmless no-op on the one that's already hidden.
+initLightbox(()=>{
+  const picker = document.getElementById('unitPickerModal');
+  if(picker) picker.hidden = true;
+  const bunker = document.getElementById('commandBunker');
+  if(bunker) bunker.hidden = true;
+});
 refreshLedger();
 
 /* ---- exports for inline onclick handlers in dynamically-rendered HTML --- */
 Object.assign(window, {
   deleteArmy, toggleCreateForm, submitCreateArmy, onCafBattleSize,
   saveArmyMeta, updateSquadSize, updateAssigned,
-  toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleCollapse, toggleAccordion, toggleOptBody,
+  toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
   toggleDetachmentCard, removeDetachment, toggleDpExpand, selectConfig, selectUnit, clearRight, toggleUnitProfiles,
   toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy,
+  openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleCbDatasheet,
   exportArmy, importArmyList,
 });
 

@@ -676,3 +676,15 @@
 .po-overlay { position:fixed; inset:0; z-index:55; background:var(--ink); display:flex; flex-direction:column; }
 .po-overlay[hidden] { display:none; }
 .po-overlay-head .cb-back { background:none; border:none; color:var(--parch); font-size:18px; cursor:pointer; padding:0 10px 0 0; }
+
+/* ---- Command Bunker: faction badge entry point + the overlay's own body
+   (reuses .po-overlay/.po-overlay-head/.po-body for the screen shell). ---- */
+.cb-open-btn {
+  flex-shrink:0; width:34px; height:34px; border-radius:50%; overflow:hidden;
+  background:var(--ink-2); border:1px solid var(--gold); color:var(--gold);
+  display:flex; align-items:center; justify-content:center; font-size:17px; cursor:pointer;
+}
+.cb-open-btn img { width:100%; height:100%; object-fit:cover; }
+.cb-open-btn:hover { border-color:var(--gold-bright); color:var(--gold-bright); }
+.cb-section[hidden] { display:none; }
+.cb-section { padding-bottom:4px; }

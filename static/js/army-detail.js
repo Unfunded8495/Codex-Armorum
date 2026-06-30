@@ -61,9 +61,6 @@ function renderCentre(army){
   return `
     ${renderRosterHeader(army)}
     ${renderConfigSection(army)}
-    ${renderArmyRuleCard(army)}
-    ${renderDetachmentRuleCard(army)}
-    ${renderStratagemsCard(army)}
     <div id="rosterBody">${renderRoster(army.units, army.accent)}</div>
     ${renderPointsHud(army)}
     <div class="ab-card ab-validation" id="validationCard" data-testid="validation-card">
@@ -96,6 +93,7 @@ function renderRosterHeader(army){
   return `
     <div class="ab-centre-head">
       <input class="ab-name-input" id="abName" value="${esc(army.name)}" placeholder="Army name">
+      <button class="cb-open-btn" type="button" data-testid="open-command-bunker" onclick="openCommandBunker()" title="Command Bunker">${army.icon_url?`<img src="${esc(army.icon_url)}" alt="">`:'&#9879;'}</button>
       <div class="ab-export-btns">
         <button class="ab-export-btn" type="button" data-testid="export-button" onclick="exportArmy('copy', this)">Copy list</button>
         <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">.txt</button>
@@ -221,102 +219,163 @@ export function toggleDpExpand(id){
   if(el) el.hidden = !el.hidden;
 }
 
-function renderDetachmentRuleCard(army){
-  const rules    = army.detachment_rules    || [];
-  const unlocks  = army.detachment_unlocks  || [];
-  const excludes = army.detachment_excludes || [];
-  if(!rules.length && !unlocks.length && !excludes.length) return '';
-  const ruleHtml = rules.map(r=>`
-    <div class="ab-detrule">
-      ${r.name?`<div class="ab-detrule-name">${esc(r.name)}</div>`:''}
-      <div class="ab-detrule-body">${esc(r.description||'')}</div>
-    </div>`).join('');
-  const list = (label, arr)=> arr.length
-    ? `<div class="ab-detlist"><span class="ab-detlist-label">${label}:</span> ${arr.map(esc).join(', ')}</div>`
-    : '';
-  const metaHtml = (unlocks.length||excludes.length)
-    ? `<div class="ab-detrule-meta">${list('Unlocks',unlocks)}${list('Excludes',excludes)}</div>` : '';
-  return `
-    <div class="ab-card ab-detrule-card">
-      <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
-        <span class="ab-card-title" style="margin:0">Detachment Rule${rules.length>1?'s':''}</span>
-        <span class="ab-detrule-chevron" id="abDetChevron">▸</span>
-      </button>
-      <div class="ab-detrule-content" id="abDetRuleContent" hidden>
-        ${ruleHtml}${metaHtml}
-      </div>
-    </div>`;
-}
-
 const STRAT_CAT = {battleTactic:'Battle Tactic', strategicPloy:'Strategic Ploy',
   epicDeed:'Epic Deed', wargear:'Wargear'};
+const STRAT_PILL_CLASS = {battleTactic:'strat-pill-battleTactic', strategicPloy:'strat-pill-strategicPloy',
+  epicDeed:'strat-pill-epicDeed', wargear:'strat-pill-wargear'};
+const STRAT_PHASE_ORDER = ['Command','Movement','Shooting','Charge','Fight','Any','Other'];
 
-function renderArmyRuleCard(army){
-  const rules = army.army_rules || [];
-  if(!rules.length) return '';
-  const body = rules.map(r=>`
-    <div class="ab-detrule">
-      ${r.name?`<div class="ab-detrule-name">${esc(r.name)}</div>`:''}
-      <div class="ab-detrule-body">${esc(r.body_text||'')}</div>
-    </div>`).join('');
+/* ---- Command Bunker: faction/army reference overlay (Datasheets,
+   Stratagems, Detachment Rules, Army Rules) -- a dedicated screen reached
+   from the roster's faction badge, not inline content on the roster page. */
+
+export async function openCommandBunker(){
+  if(!state.army) return;
+  const overlay = document.getElementById('commandBunker');
+  if(!overlay) return;
+  overlay.innerHTML = renderCommandBunker(state.army);
+  overlay.hidden = false;
+  loadCbDatasheets(state.army);
+}
+
+export function closeCommandBunker(){
+  const overlay = document.getElementById('commandBunker');
+  if(overlay) overlay.hidden = true;
+}
+
+function renderCommandBunker(army){
+  const unlocks  = army.detachment_unlocks  || [];
+  const excludes = army.detachment_excludes || [];
+  const list = (label, arr)=> arr.length
+    ? `<div class="ab-detlist"><span class="ab-detlist-label">${label}:</span> ${arr.map(esc).join(', ')}</div>` : '';
+  const detRulesBody = renderCbRuleList(army.detachment_rules)
+    + ((unlocks.length||excludes.length) ? `<div class="ab-detrule-meta">${list('Unlocks',unlocks)}${list('Excludes',excludes)}</div>` : '');
   return `
-    <div class="ab-card ab-detrule-card" data-testid="army-rule-card">
-      <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
-        <span class="ab-card-title" style="margin:0">Army Rule${rules.length>1?'s':''}</span>
-        <span class="ab-detrule-chevron">▸</span>
+    <div class="po-overlay-head">
+      <button class="cb-back" type="button" onclick="closeCommandBunker()" aria-label="Back" title="Back">&#10094;</button>
+      <h2 class="po-overlay-title">Command Bunker</h2>
+    </div>
+    <div class="po-body">
+      ${cbSection('Datasheets', 'cbDatasheets', `<div id="cbDatasheetsBody"><p class="ab-rp-hint">Loading&hellip;</p></div>`, true)}
+      ${cbSection('Stratagems', 'cbStratagems', renderCbStratagems(army))}
+      ${cbSection('Detachment Rules', 'cbDetRules', detRulesBody)}
+      ${cbSection('Army Rules', 'cbArmyRules', renderCbRuleList((army.army_rules||[]).map(r=>({name:r.name, description:r.body_text}))))}
+    </div>`;
+}
+
+function cbSection(title, id, bodyHtml, openByDefault){
+  return `<div>
+      <button class="cb-head" type="button" onclick="toggleCbSection(this)">
+        <span>${esc(title)}</span><span class="cb-chev">${openByDefault?'&#9652;':'&#9662;'}</span>
       </button>
-      <div class="ab-detrule-content" hidden>${body}</div>
+      <div class="cb-section" id="${id}" ${openByDefault?'':'hidden'}>${bodyHtml}</div>
     </div>`;
 }
 
-function stratItem(s){
-  const meta = [STRAT_CAT[s.category] || '', s.used_when].filter(Boolean).join(' · ');
-  return `
-    <div class="ab-strat">
-      <div class="ab-strat-head">
-        <span class="ab-strat-name">${esc(s.name||'')}</span>
-        ${s.cp_cost?`<span class="ab-strat-cp">${esc(String(s.cp_cost))}CP</span>`:''}
-      </div>
-      ${meta?`<div class="ab-strat-cat">${esc(meta)}</div>`:''}
-      ${s.when_text?`<div class="ab-strat-line"><b>When:</b> ${esc(s.when_text)}</div>`:''}
-      ${s.target_text?`<div class="ab-strat-line"><b>Target:</b> ${esc(s.target_text)}</div>`:''}
-      ${s.effect_text?`<div class="ab-strat-line"><b>Effect:</b> ${esc(s.effect_text)}</div>`:''}
-      ${s.restriction_text?`<div class="ab-strat-line"><b>Restrictions:</b> ${esc(s.restriction_text)}</div>`:''}
+export function toggleCbSection(btn){
+  const body = btn.nextElementSibling;
+  const chev = btn.querySelector('.cb-chev');
+  if(!body) return;
+  const opening = body.hidden;
+  body.hidden = !opening;
+  if(chev) chev.innerHTML = opening ? '&#9652;' : '&#9662;';
+}
+
+function renderCbRuleList(rules){
+  if(!rules || !rules.length) return `<p class="ab-rp-hint">None.</p>`;
+  return `<div class="ab-card ab-detrule-card" style="padding:14px 16px">
+      ${rules.map(r=>`<div class="ab-detrule">
+          ${r.name?`<div class="ab-detrule-name">${esc(r.name)}</div>`:''}
+          <div class="ab-detrule-body">${esc(r.description||'')}</div>
+        </div>`).join('')}
     </div>`;
 }
 
-function renderStratagemsCard(army){
-  const det  = army.stratagems || [];
-  const core = army.core_stratagems || [];
-  if(!det.length && !core.length) return '';
-  const group = (title, arr)=> arr.length
-    ? `<div class="ab-strat-group"><div class="ab-strat-grouphead">${esc(title)}</div>${arr.map(stratItem).join('')}</div>`
-    : '';
-  // Detachment stratagems group under their source detachment (order preserved).
-  const byDet = {}; const order = [];
-  det.forEach(s=>{ const k = s.detachment_name || army.detachment_name || 'Detachment';
-    if(!byDet[k]){ byDet[k] = []; order.push(k); } byDet[k].push(s); });
-  const detGroups = order.map(k=>group(k, byDet[k])).join('');
-  return `
-    <div class="ab-card ab-detrule-card ab-strat-card" data-testid="stratagems-card">
-      <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
-        <span class="ab-card-title" style="margin:0">Stratagems <span class="ab-count">${det.length+core.length}</span></span>
-        <span class="ab-detrule-chevron">▸</span>
-      </button>
-      <div class="ab-detrule-content" hidden>
-        ${detGroups}
-        ${group('Core', core)}
-      </div>
-    </div>`;
+// `phases` is a JSON array string (e.g. '["Command","Fight"]'); a stratagem
+// renders under every phase it lists, not just the first, since that's how
+// it'd actually be looked up mid-game.
+function stratPhases(s){
+  try{ const p = JSON.parse(s.phases||'[]'); return Array.isArray(p) && p.length ? p : ['Other']; }
+  catch(e){ return ['Other']; }
 }
 
-export function toggleCollapse(btn){
-  const content = btn.parentElement.querySelector('.ab-detrule-content');
-  const chev    = btn.querySelector('.ab-detrule-chevron');
-  if(!content) return;
-  content.hidden = !content.hidden;
-  if(chev) chev.textContent = content.hidden ? '▸' : '▾';
-  btn.setAttribute('aria-expanded', String(!content.hidden));
+function renderCbStratagems(army){
+  const all = [...(army.stratagems||[]), ...(army.core_stratagems||[])];
+  if(!all.length) return `<p class="ab-rp-hint">No stratagems available.</p>`;
+  const byPhase = {};
+  all.forEach(s=>{ stratPhases(s).forEach(p=>{ (byPhase[p]=byPhase[p]||[]).push(s); }); });
+  const phases = Object.keys(byPhase).sort((a,b)=>{
+    const ia = STRAT_PHASE_ORDER.indexOf(a), ib = STRAT_PHASE_ORDER.indexOf(b);
+    return (ia<0?99:ia) - (ib<0?99:ib);
+  });
+  return phases.map(p=>`
+    <div class="cb-phase-head">${esc(p)} Phase</div>
+    ${byPhase[p].map(s=>cbStratPill(s,p)).join('')}`).join('');
+}
+
+function cbStratPill(s, phase){
+  const catClass = STRAT_PILL_CLASS[s.category] || 'strat-pill-wargear';
+  const uid = ('cbStrat-'+s.id+'-'+phase).replace(/[^a-zA-Z0-9-]/g,'');
+  const meta = [STRAT_CAT[s.category]||'', s.detachment_name||'Core'].filter(Boolean).join(' · ');
+  const lines = [
+    s.when_text?`<p><b>When:</b> ${esc(s.when_text)}</p>`:'',
+    s.target_text?`<p><b>Target:</b> ${esc(s.target_text)}</p>`:'',
+    s.effect_text?`<p><b>Effect:</b> ${esc(s.effect_text)}</p>`:'',
+    s.restriction_text?`<p><b>Restrictions:</b> ${esc(s.restriction_text)}</p>`:'',
+  ].join('');
+  return `<div class="strat-pill ${catClass}" onclick="toggleStratPill(this)">
+      <span class="strat-pill-name">${esc(s.name||'')}</span>
+      ${s.cp_cost?`<span class="strat-pill-cp">${esc(String(s.cp_cost))}CP</span>`:''}
+      <span class="strat-pill-chev">&#9662;</span>
+    </div>
+    <div class="strat-pill-body" id="${uid}" hidden>${meta?`<p><em>${esc(meta)}</em></p>`:''}${lines}</div>`;
+}
+
+export function toggleStratPill(el){
+  const body = el.nextElementSibling;
+  if(body) body.hidden = !body.hidden;
+}
+
+async function loadCbDatasheets(army){
+  const box = document.getElementById('cbDatasheetsBody');
+  if(!box) return;
+  let units = state.unitsCache[army.faction_id];
+  if(!units){
+    try{ const data = await api(`/api/factions/${army.faction_id}/units?for=army-builder`); units = data.units || []; }
+    catch(e){ units = []; }
+    state.unitsCache[army.faction_id] = units;
+  }
+  const native = units.filter(u=>!u.is_ally);
+  box.innerHTML = native.length ? native.map(cbDatasheetRow).join('') : `<p class="ab-rp-hint">No datasheets found.</p>`;
+}
+
+function cbDatasheetRow(u){
+  return `<div class="cb-ds-row" onclick="toggleCbDatasheet('${esc(u.id)}')">
+      <img class="uc-thumb" src="/api/units/${esc(u.id)}/image" alt="" loading="lazy">
+      <span class="cb-ds-name">${esc(u.name)}</span>
+      <span class="cb-ds-chev">&#9656;</span>
+    </div>
+    <div class="cb-section" id="cbDs-${esc(u.id)}" hidden></div>`;
+}
+
+// Lazy-load the datasheet statline + weapon profiles on first expand
+// (reuses the same cache + renderProfiles() the unit-options panel's
+// Profiles section uses).
+export async function toggleCbDatasheet(did){
+  const box = document.getElementById(`cbDs-${did}`);
+  if(!box) return;
+  const opening = box.hidden;
+  box.hidden = !opening;
+  if(opening && !box.dataset.loaded){
+    box.innerHTML = `<p class="ab-rp-hint">Loading&hellip;</p>`;
+    let detail = state.unitDetailCache[did];
+    if(!detail){
+      try{ detail = await api(`/api/units/${did}`); state.unitDetailCache[did] = detail; }
+      catch(e){ box.innerHTML = `<p class="ab-rp-hint">Could not load profiles.</p>`; return; }
+    }
+    box.innerHTML = renderProfiles(detail);
+    box.dataset.loaded = '1';
+  }
 }
 
 export async function exportArmy(mode, btn){
@@ -1157,7 +1216,9 @@ function renderWargearEditor(u){
     }
     if(g.type==='replace_one' || g.type==='all_model'){
       const nm = ('wg'+u.id+g.items[0].key).replace(/[^a-zA-Z0-9]/g,'');
-      const gk = esc(JSON.stringify(g.items.map(i=>i.key)));
+      // data-keys must also cover the Default-group item this swap displaces, or
+      // setWargearRadio's zero-out patch leaves it behind alongside the new pick.
+      const gk = esc(JSON.stringify(g.items.map(i=>i.key).concat(g.linked_default_keys||[])));
       const chosen = g.items.find(i=>(sel[i.key]||0)>0);
       const title = wgGroupTitle(g);
       const defaultLabel = title.replace(/^Replace\s+/, '');
