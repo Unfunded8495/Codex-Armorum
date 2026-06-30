@@ -1,5 +1,7 @@
 """Army builder helpers: points calculation, enhancements, unit row assembly."""
-from data_store import get_store
+import json
+
+from data_store import get_store, ROLE_ORDER
 from utils import _int, _as_int
 
 
@@ -315,3 +317,87 @@ def _army_unit_row(c, au):
         "notes": au["notes"] or "",
         "sort_order": au["sort_order"],
     }
+
+
+# ---- roster export / import (Phase 6e) -----------------------------------
+
+def roster_json(c, aid):
+    """Re-importable structured roster. Leader attachments are stored as indices
+    into the units array because army-unit ids are regenerated on import."""
+    army = c.execute("SELECT * FROM army_lists WHERE id=?", (aid,)).fetchone()
+    if not army:
+        return None
+    rows = c.execute(
+        "SELECT * FROM army_units WHERE army_list_id=? ORDER BY sort_order, rowid",
+        (aid,)).fetchall()
+    idx = {r["id"]: i for i, r in enumerate(rows)}
+    return {
+        "format": "codex-armorum-roster",
+        "version": 1,
+        "name": army["name"],
+        "faction_id": army["faction_id"],
+        "battle_size": army["battle_size"] or "",
+        "points_limit": army["points_limit"],
+        "detachment_id": army["detachment_id"] or "",
+        "units": [{
+            "datasheet_id": r["datasheet_id"],
+            "squad_size": r["squad_size"],
+            "loadout": json.loads(r["loadout"] or "{}"),
+            "enhancement_id": r["enhancement_id"] or "",
+            "is_warlord": bool(r["is_warlord"]),
+            "attached_to_index": idx.get(r["attached_to"]) if r["attached_to"] else None,
+        } for r in rows],
+    }
+
+
+def _roster_unit_lines(u, leader):
+    sz = (" x%d" % u["squad_size"]) if u["squad_size"] > 1 else ""
+    star = " [Warlord]" if u["is_warlord"] else ""
+    ally = (" [Ally: %s]" % u["ally_faction"]) if u.get("is_ally") and u.get("ally_faction") else ""
+    out = ["  %s%s - %d pts%s%s" % (u["name"], sz, u["points"], star, ally)]
+    if u.get("enhancement_name"):
+        out.append("    Enhancement: %s" % u["enhancement_name"])
+    if u.get("loadout_summary"):
+        out.append("    %s" % u["loadout_summary"])
+    if leader:
+        lstar = " [Warlord]" if leader["is_warlord"] else ""
+        out.append("    + %s - %d pts%s" % (leader["name"], leader["points"], lstar))
+        if leader.get("enhancement_name"):
+            out.append("      Enhancement: %s" % leader["enhancement_name"])
+        if leader.get("loadout_summary"):
+            out.append("      %s" % leader["loadout_summary"])
+    return out
+
+
+def roster_text(c, aid):
+    """Human-readable roster: faction, detachment, points, then units by role
+    with wargear, enhancements, warlord and attached leaders."""
+    army = c.execute("SELECT * FROM army_lists WHERE id=?", (aid,)).fetchone()
+    if not army:
+        return ""
+    rows = c.execute(
+        "SELECT * FROM army_units WHERE army_list_id=? ORDER BY sort_order, rowid",
+        (aid,)).fetchall()
+    units = [_army_unit_row(c, r) for r in rows]
+    store = get_store()
+    fac = store.faction_by_id.get(army["faction_id"], {})
+    det = store.detachment_by_id.get(army["detachment_id"] or "", {})
+    total = sum(u["points"] for u in units)
+    bs = army["battle_size"] or "Custom"
+    sub = fac.get("display_name") or fac.get("name", "") or army["faction_id"]
+    if det.get("name"):
+        sub += " - " + det["name"]
+    lines = ["%s (%s) - %d/%s pts" % (army["name"], bs, total, army["points_limit"]), sub]
+    leader_for = {u["attached_to"]: u for u in units if u["attached_to"]}
+    standalone = [u for u in units if not u["attached_to"]]
+    by_role = {}
+    for u in standalone:
+        by_role.setdefault(u["role"] or "Other", []).append(u)
+    order = [r for r in ROLE_ORDER if r in by_role] + \
+            [r for r in by_role if r not in ROLE_ORDER]
+    for role in order:
+        lines.append("")
+        lines.append(role.upper())
+        for u in by_role[role]:
+            lines += _roster_unit_lines(u, leader_for.get(u["id"]))
+    return "\n".join(lines)

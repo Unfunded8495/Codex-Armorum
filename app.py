@@ -351,6 +351,23 @@ def army_builder_page():
     )
 
 
+@app.route("/missions")
+def missions_page():
+    return render_template(
+        "missions.html",
+        active_page="missions",
+        breadcrumb=[{"label": "Missions"}],
+    )
+
+
+@app.route("/api/missions")
+def api_missions():
+    """Mission reference (Phase 6): packs, primary/secondary missions,
+    deployments, layouts, presets and twists. Combat Patrol pack excluded
+    upstream in data_store."""
+    return jsonify(store.missions)
+
+
 @app.route("/catalogue-review")
 def catalogue_review_page():
     return render_template(
@@ -478,9 +495,9 @@ def api_faction_detachments(fid):
     # Space Marines pool because Wahapedia does not attribute detachments to
     # chapters.
     detachments = store.detachments_for_faction(fid)
-    # Combat Patrol detachments are a separate (Phase 6) game mode and must not
-    # appear in the normal builder. points_cost lets the UI gate detachments
-    # against the army's battle-size detachment limit.
+    # Combat Patrol detachments are intentionally excluded - Combat Patrol is not
+    # a supported game mode in the builder. points_cost lets the UI gate
+    # detachments against the army's battle-size detachment limit.
     return jsonify([{"id": d["id"], "name": d["name"], "type": d.get("type", ""),
                      "points_cost": d.get("points_cost", 0)}
                     for d in detachments
@@ -1172,6 +1189,60 @@ def api_create_army():
     return jsonify({"ok": True, "id": aid})
 
 
+@app.route("/api/armies/import", methods=["POST"])
+def api_import_army():
+    """Rebuild a new army from a roster JSON exported by api_export_army.
+    Only datasheets legal for the faction (native or allied) are admitted;
+    leader attachments are restored from their array indices."""
+    from db import db
+    data = request.get_json(force=True, silent=True)
+    if not isinstance(data, dict) or data.get("format") != "codex-armorum-roster":
+        return jsonify({"ok": False, "error": "Not a Codex Armorum roster export"}), 400
+    fid = str(data.get("faction_id", ""))
+    if fid not in store.faction_by_id:
+        return jsonify({"ok": False, "error": "Unknown faction in roster"}), 400
+    battle_size, pts_limit, caps = _resolve_battle_size(
+        data.get("battle_size", ""), data.get("points_limit"))
+    dtid = str(data.get("detachment_id", "") or "")
+    if dtid and not _valid_detachment_for_faction(fid, dtid):
+        dtid = ""  # drop an invalid detachment rather than reject the whole import
+    name = str(data.get("name", "Imported Army"))[:120].strip() or "Imported Army"
+    units = data.get("units")
+    units = units if isinstance(units, list) else []
+    selectable = {x["id"] for x in store.selectable_units_for_army(fid)}
+    aid = uuid.uuid4().hex
+    with db() as c:
+        c.execute("""INSERT INTO army_lists(id, name, faction_id, detachment_id, points_limit, battle_size, notes, created_at)
+                     VALUES(?,?,?,?,?,?,?,?)""",
+                  (aid, name, fid, dtid, pts_limit, battle_size, "", time.time()))
+        new_ids = []
+        for i, u in enumerate(units):
+            u = u or {}
+            did = str(u.get("datasheet_id", ""))
+            if did not in store.ds_by_id:
+                new_ids.append(None); continue
+            did = store.ds_by_id[did]["id"]
+            if did not in selectable and not store.ally_config_for(fid, did):
+                new_ids.append(None); continue
+            auid = uuid.uuid4().hex
+            squad = _normalise_squad_size(did, u.get("squad_size"))
+            loadout = u.get("loadout") if isinstance(u.get("loadout"), dict) else {}
+            eid = str(u.get("enhancement_id", "") or "")
+            c.execute("""INSERT INTO army_units(id, army_list_id, datasheet_id, squad_size,
+                         assigned_count, enhancement_id, is_warlord, loadout, notes, sort_order)
+                         VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                      (auid, aid, did, squad, 0, eid, 1 if u.get("is_warlord") else 0,
+                       json.dumps(loadout, ensure_ascii=False), "", i))
+            new_ids.append(auid)
+        for i, u in enumerate(units):
+            if new_ids[i] is None:
+                continue
+            ti = (u or {}).get("attached_to_index")
+            if isinstance(ti, int) and 0 <= ti < len(new_ids) and new_ids[ti]:
+                c.execute("UPDATE army_units SET attached_to=? WHERE id=?", (new_ids[ti], new_ids[i]))
+    return jsonify({"ok": True, "id": aid})
+
+
 @app.route("/api/armies/<aid>")
 def api_get_army(aid):
     from db import db
@@ -1189,6 +1260,8 @@ def api_get_army(aid):
     fac = store.faction_by_id.get(row["faction_id"], {})
     primary, accent, _ = ft.theme_for(fac.get("name", ""))
     dt = store.detachment_by_id.get(row["detachment_id"] or "", {})
+    army_rules = store.army_rules_for(row["faction_id"])
+    strats = store.stratagems_by_detachment.get(row["detachment_id"] or "", [])
     return jsonify({
         "id": row["id"],
         "name": row["name"],
@@ -1202,6 +1275,9 @@ def api_get_army(aid):
         "detachment_rules": dt.get("rules", []),
         "detachment_unlocks": dt.get("unlocks_datasheets", []),
         "detachment_excludes": dt.get("excludes_datasheets", []),
+        "army_rules": army_rules,
+        "stratagems": strats,
+        "core_stratagems": store.core_stratagems,
         "points_limit": row["points_limit"],
         "battle_size": row["battle_size"] or "",
         "enhancement_limit": caps["enhancement_limit"],
@@ -1214,6 +1290,29 @@ def api_get_army(aid):
         "primary": primary,
         "accent": accent,
     })
+
+
+@app.route("/api/armies/<aid>/export")
+def api_export_army(aid):
+    """Export a roster as readable text (fmt=text, default) or re-importable
+    JSON (fmt=json), as a downloadable attachment."""
+    from army import roster_text, roster_json
+    from db import db
+    fmt = (request.args.get("fmt") or "text").lower()
+    with db() as c:
+        meta = c.execute("SELECT name FROM army_lists WHERE id=?", (aid,)).fetchone()
+        if not meta:
+            abort(404)
+        if fmt == "json":
+            resp = Response(json.dumps(roster_json(c, aid), ensure_ascii=False, indent=2),
+                            mimetype="application/json; charset=utf-8")
+            ext = "json"
+        else:
+            resp = Response(roster_text(c, aid), mimetype="text/plain; charset=utf-8")
+            ext = "txt"
+    safe = re.sub(r"[^A-Za-z0-9_-]+", "_", meta["name"]).strip("_") or "roster"
+    resp.headers["Content-Disposition"] = 'attachment; filename="%s.%s"' % (safe, ext)
+    return resp
 
 
 @app.route("/api/armies/<aid>", methods=["POST"])

@@ -24,6 +24,7 @@ export async function showArmyList(){
       ${armies.map(a=>armyTile(a)).join('')}
     </div>
     <button class="new-army-btn" onclick="toggleCreateForm()">✠ Create New Army List</button>
+    <button class="new-army-btn new-army-btn--ghost" onclick="importArmyList()">⬆ Import List (JSON)</button>
     <div id="createArmyForm" hidden></div>`;
 }
 
@@ -52,6 +53,27 @@ export async function deleteArmy(aid, btn){
   const res = await fetch(`/api/armies/${aid}`, {method:'DELETE'});
   if(!res.ok){ alert('Could not delete army. Please try again.'); return; }
   btn.closest('.army-tile').remove();
+}
+
+export function importArmyList(){
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json,application/json';
+  inp.onchange = async () => {
+    const f = inp.files && inp.files[0];
+    if(!f) return;
+    let data;
+    try { data = JSON.parse(await f.text()); }
+    catch(e){ alert('That file is not valid JSON.'); return; }
+    try {
+      const res = await fetch('/api/armies/import', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+      const j = await res.json();
+      if(res.ok && j.ok && j.id){ location.hash = '/army/' + j.id; }
+      else alert('Import failed: ' + (j.error || ('HTTP ' + res.status)));
+    } catch(e){ alert('Import failed: ' + e); }
+  };
+  inp.click();
 }
 
 export async function toggleCreateForm(){

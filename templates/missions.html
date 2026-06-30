@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missions · Codex Armorum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    /* ---- Missions reference styles ---- */
+    .mz-wrap { max-width:1100px; margin:0 auto; padding:28px 24px 60px; }
+    .mz-pack { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--gold); margin:0 0 4px; }
+    .mz-intro { font-family:'EB Garamond',serif; color:var(--parch-dim); font-size:14px; margin:0 0 24px; }
+    .mz-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--edge); padding-bottom:14px; }
+    .mz-tab { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase;
+      color:var(--parch-dim); background:none; border:1px solid var(--edge); padding:7px 14px; cursor:pointer; transition:.15s; }
+    .mz-tab:hover { color:var(--gold); border-color:var(--gold); }
+    .mz-tab.is-active { color:#0a0a0c; background:var(--gold); border-color:var(--gold); }
+    .mz-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; align-items:start; }
+    .mz-card { border:1px solid var(--edge); border-left:3px solid var(--gold); padding:16px 18px; background:rgba(0,0,0,.15); }
+    .mz-card h3 { font-family:'Cinzel',serif; font-size:15px; color:var(--gold-bright); margin:0 0 6px; }
+    .mz-tag { display:inline-block; font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:1px; text-transform:uppercase;
+      color:var(--gold); border:1px solid var(--edge); border-radius:3px; padding:1px 7px; margin-bottom:8px; }
+    .mz-lore { font-family:'EB Garamond',serif; font-style:italic; font-size:13px; line-height:1.5; color:var(--parch-dim); margin:0 0 8px; }
+    .mz-body { font-family:'EB Garamond',serif; font-size:13px; line-height:1.5; color:var(--parch); white-space:pre-wrap; }
+    .mz-obj { margin:8px 0 0; padding:0; list-style:none; }
+    .mz-obj li { font-family:'EB Garamond',serif; font-size:13px; color:var(--parch); line-height:1.5; padding-left:14px; position:relative; }
+    .mz-obj li::before { content:"\25B8"; color:var(--gold); position:absolute; left:0; }
+    .mz-body b, .mz-obj b { color:var(--gold); font-weight:700; }
+    .mz-names { display:flex; flex-wrap:wrap; gap:8px; }
+    .mz-chip { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; color:var(--parch);
+      border:1px solid var(--edge); padding:7px 13px; }
+    .mz-sub { font-family:'EB Garamond',serif; font-size:12px; color:var(--parch-dim); }
+  </style>
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+    {% include "_topbar.html" %}
+
+  <main id="view" class="mz-wrap"></main>
+
+  <footer class="footer">
+    <p>For the Emperor. Mission data from the official Warhammer 40,000 app.</p>
+  </footer>
+
+  <script type="module" src="{{ url_for('static', filename='js/missions.js') }}"></script>
+</body>
+</html>

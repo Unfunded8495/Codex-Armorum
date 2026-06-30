@@ -122,13 +122,16 @@ class DataStore:
         self.detachments_by_faction = {}
         self.detachment_by_id = {}
         self.enhancements_by_detachment = {}
-        # Stratagems are loaded for completeness but no consumer reads them in
-        # this round (universal stratagems are not in this export anyway).
+        # Detachment stratagems (keyed by detachment id) plus the universal Core
+        # stratagems (Phase 6 surfaces both to the army-builder panels).
         self.stratagems_by_detachment = {}
+        self.core_stratagems = []       # the 11 universal stratagems (detachment_id NULL)
         self.leaders_for = {}
         self.led_by = {}
         self.leads = {}
         self.allied_by_host = {}        # host_faction_id -> [ally config dict] (Phase 5b)
+        self.army_rules_by_faction = {} # faction_id -> [{id,name,body_text,body_html}] (Phase 6)
+        self.missions = {}              # Phase 6 mission reference (Combat Patrol pack excluded)
 
         # Retained for back-compat with anything that may still test for it.
         # Chapter rollup is gone - chapters are real factions now.
@@ -157,6 +160,8 @@ class DataStore:
             self._load_datasheets(conn)
             self._load_detachment_data(conn)
             self._load_battle_sizes(conn)
+            self._load_army_rules(conn)
+            self._load_missions(conn)
         finally:
             conn.close()
 
@@ -182,6 +187,64 @@ class DataStore:
             key=lambda b: b["points_limit"] or 0,
         )
         self.battle_size_by_name = {b["name"]: b for b in self.battle_sizes}
+
+    def _load_army_rules(self, conn):
+        """Faction-level army rules (e.g. Oath of Moment). 71 faction-linked
+        rules in the export; grouped by faction id for the army-rule panel."""
+        try:
+            rows = conn.execute(
+                "SELECT id, faction_id, name, body_text, body_html "
+                "FROM army_rule ORDER BY id").fetchall()
+        except sqlite3.OperationalError:
+            return
+        for r in rows:
+            self.army_rules_by_faction.setdefault(r["faction_id"], []).append({
+                "id": r["id"], "name": r["name"],
+                "body_text": r["body_text"] or "", "body_html": r["body_html"] or ""})
+
+    def army_rules_for(self, fid):
+        """A faction's army rules, falling back to the parent faction so a
+        chapter (e.g. Ultramarines) inherits its parent's rule (Oath of Moment)."""
+        own = self.army_rules_by_faction.get(fid)
+        if own:
+            return own
+        parent = self._faction_parent.get(fid)
+        if parent:
+            return self.army_rules_by_faction.get(parent, [])
+        return []
+
+    def _load_missions(self, conn):
+        """Mission reference (Phase 6): packs, primary/secondary missions,
+        deployments, layouts, presets, twists. The Combat Patrol pack is
+        excluded (matched-play reference only), keyed on its localised name."""
+        try:
+            packs = [{"id": r["id"], "name": r["name"]} for r in
+                     conn.execute("SELECT id, name FROM mission_pack ORDER BY name")]
+        except sqlite3.OperationalError:
+            return
+        cp_ids = {p["id"] for p in packs
+                  if (p["name"] or "").strip().lower() == "combat patrol"}
+
+        def rows(table, order="name"):
+            return [dict(r) for r in
+                    conn.execute("SELECT * FROM %s ORDER BY %s" % (table, order)).fetchall()
+                    if r["mission_pack_id"] not in cp_ids]
+
+        primary = rows("mission_primary")
+        for m in primary:
+            try:
+                m["objectives"] = json.loads(m.get("objectives") or "[]")
+            except (TypeError, ValueError):
+                m["objectives"] = []
+        self.missions = {
+            "packs":       [p for p in packs if p["id"] not in cp_ids],
+            "primary":     primary,
+            "secondary":   rows("mission_secondary"),
+            "deployments": rows("mission_deployment"),
+            "layouts":     rows("mission_layout"),
+            "presets":     rows("mission_preset"),
+            "twists":      rows("mission_twist"),
+        }
 
     def _load_factions(self, conn):
         # `name` is the canonical faction keyword (identity / linking / theming).
@@ -818,11 +881,16 @@ class DataStore:
                 })
 
         for r in conn.execute("""SELECT id, detachment_id, name, cp_cost,
-                                        category, phases, when_text,
-                                        target_text, effect_text
-                                 FROM stratagem""").fetchall():
-            self.stratagems_by_detachment.setdefault(
-                r["detachment_id"], []).append(dict(r))
+                                        category, used_when, phases, when_text,
+                                        target_text, effect_text,
+                                        restriction_text, lore
+                                 FROM stratagem ORDER BY id""").fetchall():
+            row = dict(r)
+            if r["detachment_id"]:
+                self.stratagems_by_detachment.setdefault(
+                    r["detachment_id"], []).append(row)
+            else:
+                self.core_stratagems.append(row)   # universal (Phase 6)
 
         # Allied factions (Phase 5b): each host faction's allowed ally configs.
         ally_hosts = {}      # allied_faction_id -> [host_faction_id]

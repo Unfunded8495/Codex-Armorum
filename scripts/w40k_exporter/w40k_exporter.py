@@ -781,21 +781,32 @@ def resolve_reference(data, idx):
     pm_obj = defaultdict(list)
     for o in sorted(data["primary_mission_objective"], key=lambda o: o.get("displayOrder") or 0):
         pm_obj[o["primaryMissionId"]].append({"name": en(o), "when": to_plain_text(en(o, "whenText"))})
-    primary = [{"name": en(m), "lore": to_plain_text(en(m, "lore")),
+    primary = [{"id": m["id"], "pack": m.get("missionPackId"), "name": en(m),
+                "lore": to_plain_text(en(m, "lore")),
                 "description": to_plain_text(en(m, "description")),
                 "objectives": pm_obj.get(m["id"], [])} for m in data["primary_mission"]]
-    secondary = [{"name": en(m), "fixed": bool(m.get("isFixedSecondary")),
+    secondary = [{"id": m["id"], "pack": m.get("missionPackId"), "name": en(m),
+                  "fixed": bool(m.get("isFixedSecondary")),
                   "scorable_first_turn": bool(m.get("isScorableFirstTurn")),
                   "lore": to_plain_text(en(m, "lore")),
                   "description": to_plain_text(en(m, "description"))}
                  for m in data["secondary_mission"]]
-    deployments = [{"name": en(m)} for m in data["mission_deployment"]]
-    layouts = [{"name": en(m)} for m in data["mission_layout"]]
-    presets = [{"name": en(m)} for m in data["mission_preset"]]
+    deployments = [{"id": m["id"], "pack": m.get("missionPackId"), "name": en(m)}
+                   for m in data["mission_deployment"]]
+    layouts = [{"id": m["id"], "pack": m.get("missionPackId"), "name": en(m)}
+               for m in data["mission_layout"]]
+    presets = [{"id": m["id"], "pack": m.get("missionPackId"),
+                "layout_id": m.get("missionLayoutId"),
+                "deployment_id": m.get("missionDeploymentId"), "name": en(m)}
+               for m in data["mission_preset"]]
+    twists = [{"id": m["id"], "pack": m.get("missionPackId"), "name": en(m),
+               "lore": to_plain_text(en(m, "lore")), "rules": to_plain_text(en(m, "rules"))}
+              for m in data["mission_twist"]]
+    packs = [{"id": m["id"], "name": en(m)} for m in data["mission_pack"]]
     dispositions = [{"name": en(m)} for m in data["force_disposition"]]
-    missions = {"primary_missions": primary, "secondary_missions": secondary,
+    missions = {"packs": packs, "primary_missions": primary, "secondary_missions": secondary,
                 "deployments": deployments, "layouts": layouts, "presets": presets,
-                "force_dispositions": dispositions}
+                "twists": twists, "force_dispositions": dispositions}
 
     # faqs
     cfg_by_faq = defaultdict(list)
@@ -1447,9 +1458,22 @@ CREATE TABLE battle_size (
 CREATE TABLE behaviour_type (
     name TEXT, type TEXT, rule_reference TEXT, eligible_if TEXT, effect TEXT
 );
-CREATE TABLE mission_primary (name TEXT, lore TEXT, description TEXT, objectives TEXT);
+CREATE TABLE mission_primary (
+    id TEXT, mission_pack_id TEXT, name TEXT, lore TEXT, description TEXT, objectives TEXT
+);
 CREATE TABLE mission_secondary (
-    name TEXT, fixed INTEGER, scorable_first_turn INTEGER, lore TEXT, description TEXT
+    id TEXT, mission_pack_id TEXT, name TEXT, fixed INTEGER, scorable_first_turn INTEGER,
+    lore TEXT, description TEXT
+);
+CREATE TABLE mission_pack (id TEXT PRIMARY KEY, name TEXT);
+CREATE TABLE mission_deployment (id TEXT PRIMARY KEY, mission_pack_id TEXT, name TEXT);
+CREATE TABLE mission_layout (id TEXT PRIMARY KEY, mission_pack_id TEXT, name TEXT);
+CREATE TABLE mission_preset (
+    id TEXT PRIMARY KEY, mission_pack_id TEXT, mission_layout_id TEXT,
+    mission_deployment_id TEXT, name TEXT
+);
+CREATE TABLE mission_twist (
+    id TEXT PRIMARY KEY, mission_pack_id TEXT, name TEXT, lore TEXT, rules TEXT
 );
 CREATE TABLE core_rule (
     id INTEGER PRIMARY KEY AUTOINCREMENT, section TEXT, container TEXT,
@@ -1625,6 +1649,21 @@ def build_sqlite(data, idx, ref, db_path, log=print):
                          s["when_text"], s["target_text"], s["effect_text"],
                          s["restriction_text"], s["secondary_effect_text"], s["lore"]))
 
+    # Core (universal) stratagems carry no detachmentId in the source, so the
+    # detachment loop above skipped them. Insert them last (resolved via en(), same
+    # path as detachment stratagems) so the 1421 detachment rows keep ids 1-1421 and
+    # the 11 core land at ids 1422-1432, with detachment_id = NULL.
+    for s in data["stratagem"]:
+        if s.get("detachmentId"):
+            continue
+        cs = resolve_stratagem(s, idx)
+        cur.execute("INSERT INTO stratagem (detachment_id,name,cp_cost,category,used_when,phases,when_text,target_text,effect_text,restriction_text,secondary_effect_text,lore)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (None, cs["name"], cs["cp_cost"], cs["category"], cs["used_when"],
+                     json.dumps(cs["phases"], ensure_ascii=False),
+                     cs["when_text"], cs["target_text"], cs["effect_text"],
+                     cs["restriction_text"], cs["secondary_effect_text"], cs["lore"]))
+
     # reference tables
     cur.executemany("INSERT OR IGNORE INTO keyword VALUES (?)", [(k["name"],) for k in ref["keywords"]])
     for a in ref.get("allied_factions", []):
@@ -1652,13 +1691,26 @@ def build_sqlite(data, idx, ref, db_path, log=print):
     cur.executemany("INSERT INTO behaviour_type VALUES (?,?,?,?,?)",
                     [(b["name"], b["type"], b["rule_reference"], b["eligible_if"], b["effect"])
                      for b in ref["behaviour_types"]])
-    cur.executemany("INSERT INTO mission_primary VALUES (?,?,?,?)",
-                    [(m["name"], m["lore"], m["description"],
+    cur.executemany("INSERT INTO mission_primary VALUES (?,?,?,?,?,?)",
+                    [(m["id"], m["pack"], m["name"], m["lore"], m["description"],
                       json.dumps(m["objectives"], ensure_ascii=False))
                      for m in ref["missions"]["primary_missions"]])
-    cur.executemany("INSERT INTO mission_secondary VALUES (?,?,?,?,?)",
-                    [(m["name"], _b(m["fixed"]), _b(m["scorable_first_turn"]), m["lore"], m["description"])
+    cur.executemany("INSERT INTO mission_secondary VALUES (?,?,?,?,?,?,?)",
+                    [(m["id"], m["pack"], m["name"], _b(m["fixed"]), _b(m["scorable_first_turn"]),
+                      m["lore"], m["description"])
                      for m in ref["missions"]["secondary_missions"]])
+    cur.executemany("INSERT INTO mission_pack VALUES (?,?)",
+                    [(m["id"], m["name"]) for m in ref["missions"]["packs"]])
+    cur.executemany("INSERT INTO mission_deployment VALUES (?,?,?)",
+                    [(m["id"], m["pack"], m["name"]) for m in ref["missions"]["deployments"]])
+    cur.executemany("INSERT INTO mission_layout VALUES (?,?,?)",
+                    [(m["id"], m["pack"], m["name"]) for m in ref["missions"]["layouts"]])
+    cur.executemany("INSERT INTO mission_preset VALUES (?,?,?,?,?)",
+                    [(m["id"], m["pack"], m["layout_id"], m["deployment_id"], m["name"])
+                     for m in ref["missions"]["presets"]])
+    cur.executemany("INSERT INTO mission_twist VALUES (?,?,?,?,?)",
+                    [(m["id"], m["pack"], m["name"], m["lore"], m["rules"])
+                     for m in ref["missions"]["twists"]])
     for sec in ref["core_rules"]:
         for cont in sec["containers"]:
             for comp in cont["components"]:

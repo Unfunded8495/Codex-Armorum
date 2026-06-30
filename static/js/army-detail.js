@@ -89,10 +89,20 @@ function renderSidebar(army){
         </div>
       </div>
     </div>
+    ${renderArmyRuleCard(army)}
     ${renderDetachmentRuleCard(army)}
+    ${renderStratagemsCard(army)}
     <div class="ab-card ab-validation" id="validationCard">
       <p class="ab-card-title">Validation</p>
       <div id="validationBody">${renderValidation(army)}</div>
+    </div>
+    <div class="ab-card">
+      <p class="ab-card-title">Export</p>
+      <div class="ab-export-btns">
+        <button class="ab-export-btn" type="button" onclick="exportArmy('copy', this)">Copy list</button>
+        <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">Download .txt</button>
+        <button class="ab-export-btn" type="button" onclick="exportArmy('json', this)">Download .json</button>
+      </div>
     </div>`;
 }
 
@@ -113,7 +123,7 @@ function renderDetachmentRuleCard(army){
     ? `<div class="ab-detrule-meta">${list('Unlocks',unlocks)}${list('Excludes',excludes)}</div>` : '';
   return `
     <div class="ab-card ab-detrule-card">
-      <button class="ab-detrule-toggle" type="button" onclick="toggleDetRule()" aria-expanded="false">
+      <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
         <span class="ab-card-title" style="margin:0">Detachment Rule${rules.length>1?'s':''}</span>
         <span class="ab-detrule-chevron" id="abDetChevron">▸</span>
       </button>
@@ -123,13 +133,88 @@ function renderDetachmentRuleCard(army){
     </div>`;
 }
 
-export function toggleDetRule(){
-  const content = document.getElementById('abDetRuleContent');
-  const chev    = document.getElementById('abDetChevron');
+const STRAT_CAT = {battleTactic:'Battle Tactic', strategicPloy:'Strategic Ploy',
+  epicDeed:'Epic Deed', wargear:'Wargear'};
+
+function renderArmyRuleCard(army){
+  const rules = army.army_rules || [];
+  if(!rules.length) return '';
+  const body = rules.map(r=>`
+    <div class="ab-detrule">
+      ${r.name?`<div class="ab-detrule-name">${esc(r.name)}</div>`:''}
+      <div class="ab-detrule-body">${esc(r.body_text||'')}</div>
+    </div>`).join('');
+  return `
+    <div class="ab-card ab-detrule-card">
+      <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
+        <span class="ab-card-title" style="margin:0">Army Rule${rules.length>1?'s':''}</span>
+        <span class="ab-detrule-chevron">▸</span>
+      </button>
+      <div class="ab-detrule-content" hidden>${body}</div>
+    </div>`;
+}
+
+function stratItem(s){
+  const meta = [STRAT_CAT[s.category] || '', s.used_when].filter(Boolean).join(' · ');
+  return `
+    <div class="ab-strat">
+      <div class="ab-strat-head">
+        <span class="ab-strat-name">${esc(s.name||'')}</span>
+        ${s.cp_cost?`<span class="ab-strat-cp">${esc(String(s.cp_cost))}CP</span>`:''}
+      </div>
+      ${meta?`<div class="ab-strat-cat">${esc(meta)}</div>`:''}
+      ${s.when_text?`<div class="ab-strat-line"><b>When:</b> ${esc(s.when_text)}</div>`:''}
+      ${s.target_text?`<div class="ab-strat-line"><b>Target:</b> ${esc(s.target_text)}</div>`:''}
+      ${s.effect_text?`<div class="ab-strat-line"><b>Effect:</b> ${esc(s.effect_text)}</div>`:''}
+      ${s.restriction_text?`<div class="ab-strat-line"><b>Restrictions:</b> ${esc(s.restriction_text)}</div>`:''}
+    </div>`;
+}
+
+function renderStratagemsCard(army){
+  const det  = army.stratagems || [];
+  const core = army.core_stratagems || [];
+  if(!det.length && !core.length) return '';
+  const group = (title, arr)=> arr.length
+    ? `<div class="ab-strat-group"><div class="ab-strat-grouphead">${esc(title)}</div>${arr.map(stratItem).join('')}</div>`
+    : '';
+  return `
+    <div class="ab-card ab-detrule-card ab-strat-card">
+      <button class="ab-detrule-toggle" type="button" onclick="toggleCollapse(this)" aria-expanded="false">
+        <span class="ab-card-title" style="margin:0">Stratagems <span class="ab-count">${det.length+core.length}</span></span>
+        <span class="ab-detrule-chevron">▸</span>
+      </button>
+      <div class="ab-detrule-content" hidden>
+        ${group(army.detachment_name||'Detachment', det)}
+        ${group('Core', core)}
+      </div>
+    </div>`;
+}
+
+export function toggleCollapse(btn){
+  const content = btn.parentElement.querySelector('.ab-detrule-content');
+  const chev    = btn.querySelector('.ab-detrule-chevron');
   if(!content) return;
   content.hidden = !content.hidden;
   if(chev) chev.textContent = content.hidden ? '▸' : '▾';
-  document.querySelector('.ab-detrule-toggle')?.setAttribute('aria-expanded', String(!content.hidden));
+  btn.setAttribute('aria-expanded', String(!content.hidden));
+}
+
+export async function exportArmy(mode, btn){
+  const id = state.army && state.army.id;
+  if(!id) return;
+  if(mode === 'copy'){
+    try {
+      const txt = await (await fetch(`/api/armies/${id}/export?fmt=text`)).text();
+      await navigator.clipboard.writeText(txt);
+      if(btn){ const o = btn.textContent; btn.textContent = 'Copied!'; setTimeout(()=>{ btn.textContent = o; }, 1500); }
+    } catch(e){ alert('Copy failed: ' + e); }
+    return;
+  }
+  const fmt = mode === 'json' ? 'json' : 'text';
+  const a = document.createElement('a');
+  a.href = `/api/armies/${id}/export?fmt=${fmt}`;
+  a.download = '';
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 async function wireSidebarInputs(army){
@@ -296,7 +381,7 @@ export function renderRoster(units, accent){
   const ordered = ROLE_ORDER.filter(r=>groups[r]).concat(Object.keys(groups).filter(r=>!ROLE_ORDER.includes(r)));
   return ordered.map(role=>`
     <div class="role-section">
-      <div class="role-section-head">${esc(role)}</div>
+      <div class="role-section-head">${esc(role)}<span class="role-count">${groups[role].length}</span></div>
       ${groups[role].map(u=>armyUnitRow(u,accent)
         + (leaderFor[u.id]?`<div class="au-nested">${armyUnitRow(leaderFor[u.id],accent)}</div>`:'')).join('')}
     </div>`).join('');
