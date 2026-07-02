@@ -11,6 +11,7 @@ is the 0-based occurrence of that triple in the options list, which resolves the
 default** so squad-size changes re-scale bulk weapons while explicit choices are
 preserved.
 """
+import re
 from functools import lru_cache
 
 import army
@@ -284,7 +285,10 @@ def wargear_schema(did):
     items are promoted to ``input_type: radio``. ``linked_default_keys`` holds the
     Default-group key(s) a ``replace_one``/``all_model`` group displaces when one of
     its alternatives is chosen (see the cross-reference pass below) -- empty when
-    that link can't be resolved unambiguously. Empty for the 8 no-options units."""
+    that link can't be resolved unambiguously. For ``limited_per_n`` groups it
+    instead holds the weapon-array *pool* key(s) the capped replacement displaces
+    (see the array cross-reference pass), so taking a replacement can decrement
+    the pool weapon. Empty for the 8 no-options units."""
     keyed = _keyed_options(did)
     limited = _limited_index(did)
     allmodel = _all_model_index(did)
@@ -375,6 +379,66 @@ def wargear_schema(did):
     # Multi-item bundles → mode "models" (each model picks a whole loadout). The pool
     # weapons are managed in the array, so suppress them from the read-only Default.
     specs = _array_specs(did)
+
+    # Fallback for the still-unlinked replace_one groups: the instruction
+    # itself names the displaced weapon ("The Aspiring Champion's boltgun can
+    # be replaced with..."). The choose_from match above goes ambiguous exactly
+    # when one miniature has several swap slots with IDENTICAL alternative sets
+    # (boltgun-slot and bolt-pistol-slot both offering chainsword/accursed/
+    # etc.), but the named weapon disambiguates them for free. Two guards: the
+    # name must exactly match a Default-group item of the group's own miniature
+    # (case-insensitive), and that default key must not be managed by a weapon
+    # array (the array passes re-derive such keys after the replace_one
+    # exclusion runs, which would undo the clear -- e.g. Krieg Combat
+    # Engineers' Watchmaster, whose autopistol is also an "any number of
+    # models" array pool weapon).
+    array_owned = {m["key"] for sp in specs for m in sp["members"]}
+    array_owned |= _multi_item_keys(did)
+    for grp in groups:
+        if grp["type"] != "replace_one" or grp["linked_default_keys"]:
+            continue
+        m = re.search(r"[’']s\s+(.+?)\s+can be replaced", grp["instruction"] or "",
+                      re.IGNORECASE)
+        if not m:
+            continue
+        nm = m.group(1).strip().lower()
+        key = next((k for (mn, item), k in default_keys.items()
+                    if mn == grp["miniature"] and item.lower() == nm), None)
+        if key and key not in array_owned:
+            grp["linked_default_keys"] = (key,)
+
+    # limited_per_n → array-pool cross-reference: a capped "…boltgun can be
+    # replaced with…" group displaces the same pool weapon a replace_any array
+    # manages (Legionaries: the "For every 5 models…" heavy-weapon group and the
+    # "Any number…" chainsword array both draw on the Default boltgun). Link the
+    # group to the spec's pool key(s) so validate_selection can decrement the
+    # pool when a capped replacement is taken. Linked only when every item the
+    # group offers appears in the spec's choose_from bundles (an additive extra
+    # like a Chaos Icon never does) and at least one of them is *not* already a
+    # spec member (members are balanced inside the array itself, so an
+    # all-members group would be double-counted by the link).
+    canon = _canonical_keys(did)
+    for grp in groups:
+        if grp["type"] != "limited_per_n":
+            continue
+        # a group's items can span several miniatures (WE Terminators offer the
+        # same swap to the Champion and the squad), so link per item-miniature
+        minis = {i["miniature"] for i in grp["items"]}
+        names = {i["item"] for i in grp["items"]}
+        linked = []
+        for s in specs:
+            if not (minis & set(s["miniatures"])) or not names <= _flat_items(s["bundles"]):
+                continue
+            member_keys = {m["key"] for m in s["members"]}
+            if all(canon.get((i["miniature"], i["item"])) in member_keys
+                   for i in grp["items"]):
+                continue
+            for m in s["members"]:
+                if m["is_pool"] and m["miniature"] in minis and m["key"] not in linked:
+                    linked.append(m["key"])
+        if linked:
+            grp["linked_default_keys"] = tuple(linked)
+
     spec_by_instr = {s["instruction"]: (idx, s) for idx, s in enumerate(specs)}
     meta = _multi_meta(did)
     suppressed = {(m["miniature"], m["item"])
@@ -512,7 +576,11 @@ def validate_selection(did, squad_size, selection):
 
     Enforced: stepper bounds, ``replace_one``/``all_model`` mutual exclusion
     (including against the Default-group item a chosen alternative displaces, via
-    ``linked_default_keys``), ``limited_per_n`` threshold caps + ``duplicate_limit``."""
+    ``linked_default_keys``), ``limited_per_n`` threshold caps + ``duplicate_limit``
+    -- re-applied after the weapon-array passes for caps that govern array-bundle
+    weapons -- and the pool decrement for ``limited_per_n`` replacements that
+    displace a weapon-array pool weapon (a plasma gun taken on the capped card
+    consumes one of the boltguns the array manages)."""
     schema = wargear_schema(did)
     default = default_selection(did, squad_size)
     sel = dict(default)
@@ -523,7 +591,10 @@ def validate_selection(did, squad_size, selection):
     violations = []
 
     def flag(msg):
-        violations.append({"level": "warn", "code": "wargear_illegal", "message": msg})
+        # deduped: the early per-group clamp and the post-array settlement can
+        # legitimately correct the same card in one request
+        if not any(v["message"] == msg for v in violations):
+            violations.append({"level": "warn", "code": "wargear_illegal", "message": msg})
 
     def clip(text, n=48):
         # Word-boundary truncation for message prefixes -- a hard slice cuts
@@ -533,6 +604,31 @@ def validate_selection(did, squad_size, selection):
             return text
         cut = text[:n].rsplit(" ", 1)[0].rstrip(" ,;:")
         return (cut or text[:n]) + "..."
+
+    # limited_per_n cards whose weapons a multi-item array's bundles also set
+    # (or whose linked pool a multi-item array manages) are settled against that
+    # array *after* the ``@b`` derive pass -- clamping them here first would be
+    # overwritten by the derive and re-flag on every request. ``rel_spec`` maps
+    # each such card to the spec that settles it.
+    specs = _array_specs(did)
+    canon = _canonical_keys(did)
+    meta = _multi_meta(did)
+    linked_groups = [g for g in schema
+                     if g["type"] == "limited_per_n" and g.get("linked_default_keys")]
+    rel_spec = {}
+    for i, md in meta.items():
+        spec_pool = {m["key"] for m in specs[i]["members"] if m["is_pool"]}
+        bundle_keys = set()
+        for pm in md["per_mini"].values():
+            for b in pm["bundles"]:
+                bundle_keys |= set(b["key_counts"])
+        for grp in linked_groups:
+            if grp["instruction"] in rel_spec:
+                continue
+            gkeys = {canon.get((it["miniature"], it["item"]), it["key"])
+                     for it in grp["items"]}
+            if (set(grp["linked_default_keys"]) & spec_pool) or (gkeys & bundle_keys):
+                rel_spec[grp["instruction"]] = i
 
     for grp in schema:
         if grp["type"] == "array":
@@ -568,6 +664,8 @@ def validate_selection(did, squad_size, selection):
                 for k in linked:
                     sel[k] = default.get(k, 0)
         elif t == "limited_per_n":
+            if grp["instruction"] in rel_spec:
+                continue  # settled against its weapon array below (cap + pool)
             cap = limited_cap(grp["limits"], squad_size)
             dup = grp["duplicate_limit"]
             clamped = False
@@ -662,20 +760,228 @@ def validate_selection(did, squad_size, selection):
 
     # multi-item arrays: each model picks a whole loadout (a bundle index in an
     # ``@b|…`` key). Clamp the index, then derive the item counts from the picks.
-    for i, md in _multi_meta(did).items():
+    # Bundle counts land straight on ``sel`` only for the spec's own item_keys;
+    # counts a bundle sets on *foreign* keys (weapons owned by a limited_per_n
+    # card, e.g. a Legionary's plasma gun) are collected in ``derived`` and
+    # reconciled with that card's stepper in the settlement below. Adding them
+    # to ``sel`` unconditionally both double-counted the weapon against its own
+    # stepper and re-introduced over-cap counts *after* the limited_per_n clamp
+    # had already run (the clamp pass sits above the array passes).
+    settled_keys = set()
+    for i, md in meta.items():
+        spec = specs[i]
+        ctx = {}
         for M, pm in md["per_mini"].items():
             bundles = pm["bundles"]
             nb = len(bundles)
-            for k in pm["item_keys"]:
+            item_keys = set(pm["item_keys"])
+            for k in item_keys:
                 sel[k] = 0
+            derived, picks = {}, []
             for model_idx in range(counts.get(M, 0)):
                 bk = _bundle_key(i, M, model_idx)
                 bidx = _int(sel.get(bk, pm["default_idx"]))
                 if bidx < 0 or bidx >= nb:
                     bidx = pm["default_idx"]
                 sel[bk] = bidx
+                picks.append(bk)
                 for k, c in bundles[bidx]["key_counts"].items():
-                    sel[k] = _int(sel.get(k)) + c
+                    derived[k] = derived.get(k, 0) + c
+                    if k in item_keys:
+                        sel[k] = _int(sel.get(k)) + c
+            ctx[M] = {"pm": pm, "bundles": bundles, "item_keys": item_keys,
+                      "derived": derived, "picks": picks,
+                      "pool_keys": [m["key"] for m in spec["members"]
+                                    if m["is_pool"] and m["miniature"] == M]}
+
+        def flip_one(c, keys):
+            """Re-point the last model whose bundle sets one of ``keys`` at the
+            default bundle (the pool loadout), keeping derived/sel in step."""
+            pm, bundles = c["pm"], c["bundles"]
+            for bk in reversed(c["picks"]):
+                bidx = _int(sel.get(bk))
+                if bidx == pm["default_idx"]:
+                    continue
+                if not (set(bundles[bidx]["key_counts"]) & keys):
+                    continue
+                for k2, c2 in bundles[bidx]["key_counts"].items():
+                    c["derived"][k2] = c["derived"].get(k2, 0) - c2
+                    if k2 in c["item_keys"]:
+                        sel[k2] = max(0, _int(sel.get(k2)) - c2)
+                sel[bk] = pm["default_idx"]
+                for k2, c2 in bundles[pm["default_idx"]]["key_counts"].items():
+                    c["derived"][k2] = c["derived"].get(k2, 0) + c2
+                    if k2 in c["item_keys"]:
+                        sel[k2] = _int(sel.get(k2)) + c2
+                return True
+            return False
+
+        def ext_keys_of(grp):
+            """Per-miniature canonical keys of the card's weapons that the array
+            doesn't own itself (the ones its bundles set as *foreign* keys)."""
+            out = {}
+            for it in grp["items"]:
+                M = it["miniature"]
+                ck = canon.get((M, it["item"]), it["key"])
+                if M in ctx and ck not in ctx[M]["item_keys"]:
+                    out.setdefault(M, set()).add(ck)
+            return out
+
+        def picks_using(ext_by_mini):
+            """Models whose current bundle takes one of the card's weapons -- the
+            unit the cap counts (a "1 vexilla and 1 misericordia" bundle is one
+            replacement, not two)."""
+            n = 0
+            for M, ks in ext_by_mini.items():
+                c = ctx[M]
+                for bk in c["picks"]:
+                    if set(c["bundles"][_int(sel.get(bk))]["key_counts"]) & ks:
+                        n += 1
+            return n
+
+        def displaced_pool(c, ck):
+            """Pool keys one stepper replacement of ``ck`` takes: those absent
+            from the bundle that carries ``ck`` alongside the most pool weapons.
+            Additive items (a Regimental Standard rides *with* the lasgun's
+            bundle) displace nothing; an item never offered in a bundle is
+            assumed to displace the whole pool row."""
+            pool = set(c["pool_keys"])
+            best = None
+            for b in c["bundles"]:
+                if ck in b["key_counts"]:
+                    kept = pool & set(b["key_counts"])
+                    if best is None or len(kept) > len(best):
+                        best = kept
+            return list(pool - best) if best is not None else list(pool)
+
+        def consume_rows(keys, amount):
+            """A replacement takes one of EACH displaced pool weapon ("…autopistol
+            and trench club can be replaced…"); returns the shortfall. Nothing to
+            displace (an additive item) means no shortfall."""
+            if amount <= 0 or not keys:
+                return 0
+            rows = min(amount, min(max(0, _int(sel.get(k))) for k in keys))
+            for k in keys:
+                sel[k] = _int(sel.get(k)) - rows
+            return amount - rows
+
+        relevant = [g for g in linked_groups if rel_spec.get(g["instruction"]) == i]
+
+        # phase 1 -- flips only: while more models draw on a card's rule than its
+        # cap (or an item exceeds duplicate_limit), re-point the excess picks at
+        # the default bundle. All flips happen before any card's counts are
+        # written, so a later card's flip can't invalidate an earlier card's
+        # already-settled state (bundles can span two cards' weapons).
+        flagged = set()
+        for grp in relevant:
+            cap = limited_cap(grp["limits"], squad_size)
+            dup = grp["duplicate_limit"]
+            ebm = ext_keys_of(grp)
+            if picks_using(ebm) > cap:
+                flagged.add(grp["instruction"])
+                while picks_using(ebm) > cap:
+                    for M in reversed(list(ebm)):
+                        if flip_one(ctx[M], ebm[M]):
+                            break
+                    else:
+                        break
+            if dup is not None:
+                for M, ks in ebm.items():
+                    for ck in ks:
+                        while ctx[M]["derived"].get(ck, 0) > dup:
+                            if not flip_one(ctx[M], {ck}):
+                                break
+                            flagged.add(grp["instruction"])
+
+        # phase 2 -- write each card's counts. A weapon's final count is its
+        # derived (@b) share plus whatever the card's stepper asks for beyond it
+        # (legacy states persisted both representations of one replacement, so
+        # the derived share is never double-added); each stepper-extra unit is
+        # one more replaced model, so it consumes the cap budget the picks
+        # didn't use and takes the displaced pool weapon(s) off the array.
+        for grp in relevant:
+            cap = limited_cap(grp["limits"], squad_size)
+            dup = grp["duplicate_limit"]
+            capped = grp["instruction"] in flagged
+            short = False
+            budget = cap - picks_using(ext_keys_of(grp))
+            for it in grp["items"]:
+                gk = it["key"]
+                M = it["miniature"]
+                ck = canon.get((M, it["item"]), gk)
+                c = ctx.get(M)
+                if gk in settled_keys:
+                    continue
+                array_owned = c is not None and ck in c["item_keys"]
+                if (array_owned or ck in settled_keys) and gk == ck:
+                    continue  # nothing but the array / an earlier card sets it
+                if array_owned or ck in settled_keys:
+                    key, base, dx = gk, _int(default.get(gk, 0)), 0
+                    st = max(0, _int(sel.get(gk)) - base)
+                else:
+                    key, base = ck, _int(default.get(ck, 0))
+                    dx = max(0, (c["derived"].get(ck, 0) if c else 0))
+                    st = max(0, _int(sel.get(ck)) - base)
+                    if gk != ck:
+                        st += max(0, _int(sel.get(gk)))  # fold the card's own key
+                        sel[gk] = 0
+                    settled_keys.add(ck)
+                settled_keys.add(gk)
+                extra_want = max(0, st - dx)
+                extra = min(extra_want, max(0, budget))
+                if dup is not None:
+                    extra = min(extra, max(0, dup - dx))
+                if extra < extra_want:
+                    capped = True
+                if c is not None:
+                    pool = displaced_pool(c, ck)
+                else:  # miniature outside this spec -- use the card's own link
+                    pool = [k for k in grp["linked_default_keys"]
+                            if k.split("|", 1)[0] == M]
+                rem = consume_rows(pool, extra)
+                if rem:
+                    short = True
+                    extra -= rem
+                sel[key] = base + dx + extra
+                budget -= extra
+            if capped:
+                flag("%s: max %d at this size" % (clip(grp["instruction"]), cap))
+            if short:
+                flag("%s: more replacements than weapons to replace"
+                     % clip(grp["instruction"], 40))
+
+    # linked limited_per_n cards with no multi-item array to settle against
+    # (mounts-mode / single-item specs): every replacement taken on the card
+    # still consumes one of each displaced pool weapon of its own miniature,
+    # trimming the card when the pool runs out. Items the array already
+    # balances as members are excluded.
+    member_keys = set()
+    for grp in linked_groups:
+        if grp["instruction"] in rel_spec:
+            continue
+        if not member_keys:
+            member_keys = {m["key"] for s in specs for m in s["members"]}
+        short = False
+        for it in grp["items"]:
+            gk = it["key"]
+            ck = canon.get((it["miniature"], it["item"]), gk)
+            if gk in member_keys or ck in member_keys or gk in settled_keys:
+                continue
+            settled_keys.add(gk)
+            n = max(0, _int(sel.get(gk)))
+            pool = [k for k in grp["linked_default_keys"]
+                    if k.split("|", 1)[0] == it["miniature"]]
+            if not pool or not n:
+                continue
+            rows = min(n, min(max(0, _int(sel.get(pk))) for pk in pool))
+            for pk in pool:
+                sel[pk] = _int(sel.get(pk)) - rows
+            if rows < n:
+                sel[gk] = rows  # not enough pool weapons left to replace
+                short = True
+        if short:
+            flag("%s: more replacements than weapons to replace"
+                 % clip(grp["instruction"], 40))
 
     return {"selection": sel,
             "overrides": overrides_of(did, squad_size, sel),

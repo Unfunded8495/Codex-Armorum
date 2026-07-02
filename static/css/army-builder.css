@@ -677,9 +677,12 @@
 .opt-theme .wg-array-sub + .wg-array-sub { border-top-color:var(--card-light-2); }
 
 /* ---- Two-panel layout (centre + right rail) once the unit picker stops
-   being a persistent third column and becomes the full overlay below. ---- */
-.ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 340px; gap:18px; }
-@media(max-width:1180px){ .ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 300px; gap:12px; } }
+   being a persistent third column and becomes the full overlay below. The
+   rail is sized for the unit-options editor (wargear cards with stat lines
+   and count controls), not just a summary column. ---- */
+.ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 480px; gap:18px; }
+@media(max-width:1400px){ .ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 420px; gap:14px; } }
+@media(max-width:1180px){ .ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 380px; gap:12px; } }
 @media(max-width:900px){ .ab-detail.ab-2panel { grid-template-columns:1fr; } }
 
 /* ---- Add-unit picker: full-screen overlay (not the centred .modal-box
@@ -705,3 +708,85 @@
    recoloured for this dark header instead of a light card. */
 .rh-kebab { color:var(--parch); font-size:22px; }
 .rh-kebab:hover { color:var(--gold); }
+
+/* ---- Context strip: always-visible faction / battle-size / detachment /
+   enhancement-budget chips under the army title. Each chip is a labeled
+   shortcut to the screen that changes it. ---- */
+.ab-ctx-strip { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.ab-ctx-chip {
+  display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+  background:var(--panel); border:1px solid var(--edge); border-left:3px solid var(--gold);
+  padding:7px 12px; cursor:pointer; text-align:left; transition:.15s; min-width:0;
+}
+.ab-ctx-chip:hover { border-color:rgba(199,154,58,.55); border-left-color:var(--gold-bright); background:rgba(199,154,58,.05); }
+.ab-ctx-chip.ab-ctx-static { cursor:default; }
+.ab-ctx-chip.ab-ctx-static:hover { border-color:var(--edge); border-left-color:var(--gold); background:var(--panel); }
+.ab-ctx-label { font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); opacity:.75; }
+.ab-ctx-value { font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); line-height:1.3; }
+.ab-ctx-value.is-over { color:var(--blood-bright); }
+.ab-ctx-hint { font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:.5px; text-transform:uppercase; color:var(--gold); opacity:.7; }
+/* Missing detachment: the one required pick a new list starts without --
+   warning-coloured so the next action is visible on the roster itself. */
+.ab-ctx-chip.is-missing { border-color:rgba(200,154,58,.6); border-left-color:var(--warn-amber); background:rgba(199,154,58,.07); }
+.ab-ctx-chip.is-missing .ab-ctx-value { color:var(--warn-amber); font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; }
+
+/* Clickable (unit-scoped) validation rows: same look as the static rows plus
+   a jump arrow; button chrome stripped. */
+button.ab-val-row { background:none; border:none; width:100%; text-align:left; cursor:pointer; font-size:13px; }
+button.ab-val-row:hover { background:rgba(199,154,58,.06); }
+.ab-val-go { margin-left:auto; color:var(--gold); opacity:.6; flex-shrink:0; }
+button.ab-val-row:hover .ab-val-go { opacity:1; }
+
+/* Inline ⚠ on a roster row with an illegal wargear selection. */
+.uc-row-warn { color:#a9531f; font-size:13px; cursor:help; }
+
+/* Picker card: model-count/owned meta line, profile chevron + inline
+   datasheet preview (dark panel between the light cards). */
+.po-meta { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.3px; color:var(--card-ink-dim); margin-top:2px; }
+.po-own { color:var(--good); font-weight:600; }
+.po-prof-chev { font-size:10px; color:var(--card-ink-dim); }
+.po-profile { background:var(--ink-2); border:1px solid var(--edge); border-top:none; padding:10px 14px 14px; margin:-8px 0 8px; }
+.po-profile[hidden] { display:none; }
+
+/* Detachment chooser: full rule text inside a card's expand. */
+.dp-rule-text { white-space:pre-wrap; }
+
+/* ---- Wargear editor v2: rule-sentence subtitles, per-option stat lines,
+   and −/N/+ count controls replacing the bare number-spinner inputs. ---- */
+.wg-card-sub { font-family:'EB Garamond',serif; font-size:12.5px; font-style:italic;
+  color:var(--parch-dim); line-height:1.45; margin:2px 0 8px; }
+.opt-theme .wg-card-sub { color:var(--card-ink-dim); }
+
+/* Option label: weapon name + points delta on the first line, compact
+   profile stats underneath, so a choice is readable in place. */
+.wg-opt-label { display:flex; flex-direction:column; gap:1px; min-width:0; flex:1; }
+.wg-statline { font-family:'Oswald',sans-serif; font-size:10.5px; letter-spacing:.4px; color:var(--parch-dim); }
+.opt-theme .wg-statline { color:var(--card-ink-dim); }
+.wg-statline b { font-weight:600; }
+
+/* Two-line labels: pin the radio dot / checkbox to the first line. */
+.wg-radio, .wg-check { align-items:flex-start; }
+.wg-radio .wg-box { margin-top:3px; }
+.wg-check input { margin-top:3px; }
+.opt-theme .wg-radio:hover, .opt-theme .wg-check:hover { background:rgba(63,109,130,.07); }
+
+/* −/N/+ count control: big tap targets; the number stays typeable but loses
+   the fiddly native spinner arrows. */
+.wg-count { display:inline-flex; align-items:stretch; flex-shrink:0; }
+.wg-nudge { width:30px; min-height:30px; display:flex; align-items:center; justify-content:center;
+  background:var(--panel); border:1px solid var(--edge); color:var(--parch);
+  font-size:16px; line-height:1; cursor:pointer; padding:0; transition:.12s; }
+.wg-nudge:hover { border-color:var(--gold); color:var(--gold-bright); }
+.wg-count .wg-num { width:40px; border-left:none; border-right:none; text-align:center;
+  -moz-appearance:textfield; appearance:textfield; padding:3px 2px; }
+.wg-count .wg-num::-webkit-outer-spin-button, .wg-count .wg-num::-webkit-inner-spin-button {
+  -webkit-appearance:none; margin:0; }
+.opt-theme .wg-nudge { background:var(--parch); border-color:var(--card-ink-dim); color:var(--card-ink); }
+.opt-theme .wg-nudge:hover { background:var(--steel-blue); border-color:var(--steel-blue); color:#eef5f8; }
+
+/* "Current loadout" summary block (was a run-on italic sentence). */
+.wg-summary-lbl { display:block; font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:1px;
+  text-transform:uppercase; font-style:normal; color:var(--gold); opacity:.75; margin-bottom:3px; }
+.opt-theme .wg-summary-lbl { color:var(--card-ink-dim); opacity:1; }
+.wg-summary ul { list-style:none; margin:0; padding:0; }
+.wg-summary li { padding:1px 0; }

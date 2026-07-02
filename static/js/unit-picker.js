@@ -1,6 +1,6 @@
 import { esc, api } from './utils.js';
 import { state } from './army-state.js';
-import { ROLE_ORDER, armyUnitRow, applyServerState, renderRoster } from './army-detail.js';
+import { ROLE_ORDER, armyUnitRow, applyServerState, renderRoster, renderProfiles } from './army-detail.js';
 
 /* ---- add-unit picker overlay --------------------------------------------
    Full-screen overlay (matches the reference app's add-unit screen), reached
@@ -38,22 +38,43 @@ export async function openUnitPicker(category){
   renderPicker(scopedUnits(units));
 }
 
+// Model count + real cost range + owned-from-collection, so a card carries
+// what an informed add actually needs (previously: name + one price only).
+function pickerMeta(u){
+  const bits = [];
+  if(u.squad_min){
+    bits.push(u.squad_max>u.squad_min
+      ? `${u.squad_min}&ndash;${u.squad_max} models` : `${u.squad_min} model${u.squad_min===1?'':'s'}`);
+  }
+  if(u.owned>0) bits.push(`<span class="po-own">Own ${u.owned}</span>`);
+  return bits.length ? `<div class="po-meta">${bits.join(' &middot; ')}</div>` : '';
+}
+
+function pickerPts(u){
+  if(u.points_min && u.points_max && u.points_max!==u.points_min)
+    return `${u.points_min}&ndash;${u.points_max} pts`;
+  return u.points ? `${u.points} pts` : '';
+}
+
 export function renderPicker(units){
   const body = document.getElementById('pickerBody');
   if(!units||!units.length){ body.innerHTML = `<p class="po-empty">No units found.</p>`; return; }
   const row = u=>{
     const used = unitsUsedCount(u.id);
+    const pts = pickerPts(u);
     return `<div class="po-card" data-testid="picker-unit-${esc(u.name)}">
-        <img class="po-thumb" src="/api/units/${u.id}/image" alt="" loading="lazy">
-        <div class="po-body-text">
-          <div class="po-name">${esc(u.name)}${u.is_ally?` <span class="modal-ally-tag">${esc(u.ally_faction)}</span>`:''}</div>
+        <img class="po-thumb" src="/api/units/${u.id}/image" alt="" loading="lazy" onclick="togglePickerProfile('${u.id}')">
+        <div class="po-body-text" onclick="togglePickerProfile('${u.id}')" title="Show profile">
+          <div class="po-name">${esc(u.name)}${u.is_ally?` <span class="modal-ally-tag">${esc(u.ally_faction)}</span>`:''} <span class="po-prof-chev" id="poChev-${u.id}">&#9656;</span></div>
+          ${pickerMeta(u)}
           ${used?`<div class="po-owned">${used}&times; Unit In Army</div>`:''}
         </div>
         <div class="po-side">
           <button class="po-add" type="button" aria-label="Add ${esc(u.name)}" onclick="addUnitToArmy('${u.id}')">+</button>
-          ${u.points?`<span class="po-pts">${u.points}+ Points</span>`:''}
+          ${pts?`<span class="po-pts">${pts}</span>`:''}
         </div>
-      </div>`;
+      </div>
+      <div class="po-profile" id="poProf-${u.id}" hidden></div>`;
   };
   const native = units.filter(u=>!u.is_ally);
   const allyGroups = {};
@@ -83,6 +104,28 @@ export function filterPicker(q){
 export function closeUnitPicker(){
   const modal = document.getElementById('unitPickerModal');
   if(modal) modal.hidden = true;
+}
+
+// Tap a picker card's body to preview the datasheet (statline + weapons)
+// in place, before deciding to add it. Lazy-loaded, cached in
+// state.unitDetailCache (shared with the right panel + Command Bunker).
+export async function togglePickerProfile(did){
+  const box = document.getElementById(`poProf-${did}`);
+  if(!box) return;
+  const opening = box.hidden;
+  box.hidden = !opening;
+  const chev = document.getElementById(`poChev-${did}`);
+  if(chev) chev.innerHTML = opening ? '&#9662;' : '&#9656;';
+  if(opening && !box.dataset.loaded){
+    box.innerHTML = `<p class="ab-rp-hint">Loading profile&hellip;</p>`;
+    let detail = state.unitDetailCache[did];
+    if(!detail){
+      try{ detail = await api(`/api/units/${did}`); state.unitDetailCache[did] = detail; }
+      catch(e){ box.innerHTML = `<p class="ab-rp-hint">Could not load profile.</p>`; return; }
+    }
+    box.innerHTML = renderProfiles(detail);
+    box.dataset.loaded = '1';
+  }
 }
 
 // Adds instantly and stays open (matches the reference app: "Nx Unit In

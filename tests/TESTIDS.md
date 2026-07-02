@@ -29,6 +29,11 @@ overlay.
 | `army-detail` | the army-builder detail container (2-panel grid) |
 | `army-title` | the army name heading (centre header; editing moved to Edit Roster) |
 | `open-command-bunker` | the faction-badge button that opens Command Bunker |
+| `context-strip` | the always-visible config summary strip under the title |
+| `ctx-faction` | context-strip chip -> opens Command Bunker |
+| `ctx-battlesize` | context-strip chip -> opens Edit Roster on the Battle Size sub-screen |
+| `ctx-detachment` | context-strip chip -> opens Edit Roster on the Detachments sub-screen; warning-styled (`.is-missing`) when none is selected |
+| `ctx-enhancements` | static context-strip chip: enhancements used / battle-size limit |
 | `roster-kebab` | the overflow (⋮) button next to the army name -> opens the Edit Roster / Duplicate Roster menu |
 | `foc-section-<characters\|battleline\|dedicated-transports\|other-datasheets>` | each Force-Org section wrapper |
 | `foc-add-<slug>` | a section's "+" -- opens the add-unit picker pre-scoped to that category (same slug format as `foc-section-`) |
@@ -56,7 +61,7 @@ overlay.
 | testid | element |
 |---|---|
 | `unit-picker-panel` | the picker overlay itself (`#unitPickerModal`) -- now a full-screen, open-on-demand overlay, not an always-visible panel |
-| `picker-unit-<NAME>` | a unit card in the picker, suffixed by exact name; the `.po-add` button inside it is what actually adds the unit -- the card itself isn't click-to-add |
+| `picker-unit-<NAME>` | a unit card in the picker, suffixed by exact name; the `.po-add` button inside it is what actually adds the unit -- the card body toggles an inline datasheet-profile preview (`.po-profile`) instead |
 
 ## Command Bunker overlay (`static/js/army-detail.js`)
 

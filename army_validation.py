@@ -4,6 +4,8 @@ Returns structured validation rows the army builder renders. Each row is
 ``{"level": "ok"|"warn"|"err"|"info", "code": str, "message": str}``. The
 renderer keys off ``level`` only, so later phases add new ``code`` values
 (duplicate-unit, detachment-cap, allies) without touching the frontend.
+Unit-scoped rows also carry ``auid`` (the army_units id) so the UI can jump
+to the offending unit.
 
 Phase 1 codes: points_over / points_ok, enhancement_over / enhancement_ok,
 no_detachment, under_assigned, over_assigned, wishlist_units.
@@ -77,11 +79,11 @@ def _rows(army, units, store):
         assigned = u.get("assigned_count") or 0
         squad = u.get("squad_size") or 0
         if assigned > squad:
-            rows.append({"level": "err", "code": "over_assigned",
+            rows.append({"level": "err", "code": "over_assigned", "auid": u["id"],
                          "message": f"{u['name']}: {assigned - squad} too many assigned"})
         elif owned > 0 and assigned < squad:
             short = squad - assigned
-            rows.append({"level": "warn", "code": "under_assigned",
+            rows.append({"level": "warn", "code": "under_assigned", "auid": u["id"],
                          "message": f"{u['name']}: assign {short} more "
                                     f"model{'' if short == 1 else 's'}"})
     wishlist = sum(1 for u in units if (u.get("owned_count") or 0) == 0)
@@ -94,6 +96,7 @@ def _rows(army, units, store):
     for u in units:
         for v in (u.get("wargear_violations") or []):
             rows.append({"level": v.get("level", "warn"), "code": "wargear_illegal",
+                         "auid": u["id"],
                          "message": f"{u['name']}: {v.get('message', '')}"})
 
     # Enhancement eligibility + uniqueness, and the single-Warlord rule (Phase 4).
@@ -111,6 +114,7 @@ def _rows(army, units, store):
         if e and not enhancement_eligible(set(ds.get("_keywords") or []), ds.get("role"),
                                           e.get("eligibility_struct") or {}, ds.get("name")):
             rows.append({"level": "err", "code": "enhancement_ineligible",
+                         "auid": u["id"],
                          "message": f"{u['name']}: not eligible for "
                                     f"{u.get('enhancement_name') or 'that enhancement'}"})
     for eid, us in by_enh.items():
@@ -137,6 +141,7 @@ def _rows(army, units, store):
         leads = {t["id"] for t in store.leads.get(u.get("datasheet_id"), [])}
         if not tgt or tgt.get("datasheet_id") not in leads:
             rows.append({"level": "err", "code": "illegal_attachment",
+                         "auid": u["id"],
                          "message": f"{u['name']}: invalid leader attachment"})
 
     # Duplicate-datasheet limit (Phase 5a): Rule of N, Battleline/Transport x2,
@@ -153,7 +158,7 @@ def _rows(army, units, store):
         if cap is not None and counts[did] > cap:
             flagged.add(did)
             at = f" at {bs}" if bs and bs != "Custom" else ""
-            rows.append({"level": "err", "code": "duplicate_over",
+            rows.append({"level": "err", "code": "duplicate_over", "auid": u["id"],
                          "message": f"{counts[did]}x {u['name']}, max {cap}{at}"})
 
     # Detachment excludes (Phase 5a): excludes_datasheets holds datasheet NAMES.

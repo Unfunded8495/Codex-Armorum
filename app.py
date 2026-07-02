@@ -20,7 +20,7 @@ import factions_theme as ft
 from army import (
     _army_unit_row, _enhancement_cost,
     _enhancement_for, _enhancement_for_ids, _normalise_squad_size, _points_for,
-    _valid_detachment_for_faction, battle_size_caps,
+    _squad_bounds, _valid_detachment_for_faction, battle_size_caps,
     parse_detachment_ids, detachment_set_cost, clear_orphaned_enhancements,
 )
 from army_validation import validation_payload
@@ -467,6 +467,14 @@ def api_faction_units(fid):
         u["owned"]    = owned.get(u["id"], 0)
         u["bought"]   = info["totals"].get(u["id"], 0)
         u["unlogged"] = ul_map.get(u["id"], 0)
+        # Squad-size span for the add-unit picker's "N models" line, plus the
+        # min/max-size prices so the card can show the unit's real cost range
+        # (u["points"] is the default-size price, which may be either end).
+        bounds = _squad_bounds(u["id"])
+        u["squad_min"], u["squad_max"] = bounds["min"], bounds["max"]
+        if bounds["max"] > bounds["min"]:
+            u["points_min"] = _points_for(u["id"], bounds["min"])
+            u["points_max"] = _points_for(u["id"], bounds["max"])
         u["multikit_groups"] = [
             {"key": gkey,
              "pool": info["groups"].get(gkey, {}).get("pool", 0),
@@ -499,9 +507,14 @@ def api_faction_detachments(fid):
     # Combat Patrol detachments are intentionally excluded - Combat Patrol is not
     # a supported game mode in the builder. points_cost lets the UI gate
     # detachments against the army's battle-size detachment limit.
+    # ``rules`` (name + full text) ride along so the Choose Detachments screen
+    # can show what a detachment actually does before the user commits a pick.
     return jsonify([{"id": d["id"], "name": d["name"], "type": d.get("type", ""),
                      "points_cost": d.get("points_cost", 0),
-                     "restrictions": d.get("restrictions") or []}
+                     "restrictions": d.get("restrictions") or [],
+                     "rules": [{"name": r.get("name", ""),
+                                "description": r.get("description", "")}
+                               for r in d.get("rules", [])]}
                     for d in detachments
                     if not d.get("is_combat_patrol")])
 

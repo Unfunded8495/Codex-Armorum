@@ -105,6 +105,116 @@ def run():
     r.check("wargear: replace_one auto-correction of a stale default is recorded as a violation",
             not swap_unflagged, f"{len(swap_unflagged)} silent e.g. {swap_unflagged[:3]}")
 
+    # 4c) limited_per_n × weapon-array cross-governance: a capped "…can be
+    #     replaced" card whose weapons displace an array's pool weapon (linked
+    #     via linked_default_keys, e.g. Legionaries' "For every 5 models…"
+    #     heavy-weapon card vs. the "Any number…" boltgun array). Regression
+    #     guard, mirroring 4b, for an order-of-operations bug: the multi-item
+    #     array pass re-derived those weapon counts from @b bundle picks *after*
+    #     the limited_per_n clamp had run, so an over-cap count survived
+    #     validation (flagged at best, silent via the @b path) and app.py
+    #     persisted it; and a capped replacement never decremented the pool
+    #     weapon it displaces, persisting 9 boltguns + 2 plasma guns on 9 mounts.
+    over_kept, over_silent, pool_bad, unconverged, lim_checked = [], [], [], [], 0
+    bundle_kept, bundle_silent, bundle_checked = [], [], 0
+    for did in dsids:
+        schema = wargear.wargear_schema(did)
+        linked = [g for g in schema if g.get("type") == "limited_per_n"
+                  and g.get("linked_default_keys")]
+        if not linked:
+            continue
+        size = army._squad_bounds(did)["max"]
+        nm = s.ds_by_id[did].get("name")
+        derived_keys = wargear._multi_item_keys(did)
+        canon = wargear._canonical_keys(did)
+        default = wargear.default_selection(did, size)
+        for grp in linked:
+            cap = wargear.limited_cap(grp["limits"], size)
+            if cap <= 0:
+                continue
+            k0 = grp["items"][0]["key"]
+            if k0 in derived_keys:
+                continue  # array-owned key; the card's stepper never sets it
+            lim_checked += 1
+            sel = dict(default)
+            sel[k0] = cap + 2  # over the cap, straight on the card's stepper
+            res = wargear.validate_selection(did, size, sel)
+            final = res["selection"]
+            got = _int(final.get(k0))
+            if got > cap:
+                over_kept.append((nm, grp["instruction"][:48]))
+            elif not res["violations"]:
+                over_silent.append((nm, grp["instruction"][:48]))
+            # each kept replacement must displace its pool weapon(s) one-for-one:
+            # every pool key of the item's miniature drops by exactly `got` or
+            # not at all ("choppa AND slugga" rows drop together; a power fist
+            # leaves the combi-bolter alone), and something must drop unless the
+            # data offers the item *alongside* the full pool row (an additive
+            # extra like a Regimental Standard displaces nothing).
+            it0 = grp["items"][0]
+            ck0 = canon.get((it0["miniature"], it0["item"]), k0)
+            pks = [pk for pk in grp["linked_default_keys"]
+                   if pk.split("|", 1)[0] == it0["miniature"]]
+            deltas = [_int(default.get(pk)) - _int(final.get(pk)) for pk in pks]
+            additive = any(ck0 in b["key_counts"] and set(pks) <= set(b["key_counts"])
+                           for md in wargear._multi_meta(did).values()
+                           for pm in [md["per_mini"].get(it0["miniature"])] if pm
+                           for b in pm["bundles"])
+            ok_deltas = all(d in (0, got) for d in deltas)
+            if additive:
+                ok_deltas = ok_deltas and all(d == 0 for d in deltas)
+            else:
+                ok_deltas = ok_deltas and (not pks or got in deltas or got == 0)
+            if not ok_deltas:
+                pool_bad.append((nm, grp["instruction"][:48], deltas, got))
+            # corrections converge: the corrected state is legal and stable
+            res2 = wargear.validate_selection(did, size, final)
+            if res2["violations"] or res2["selection"] != final:
+                unconverged.append((nm, grp["instruction"][:48], res2["violations"][:1]))
+        # the @b path: over-cap counts set via per-model bundle picks alone
+        # (the path that skipped the clamp entirely -- zero violations)
+        mcounts = wargear._miniature_counts(did, size)
+        for spec_idx, md in wargear._multi_meta(did).items():
+            for M, pm in md["per_mini"].items():
+                n = mcounts.get(M, 0)
+                item_keys = set(pm["item_keys"])
+                for grp in linked:
+                    cap = wargear.limited_cap(grp["limits"], size)
+                    if cap <= 0 or cap >= n:
+                        continue  # no over-cap state reachable via n picks
+                    ckeys = {canon.get((it["miniature"], it["item"]))
+                             for it in grp["items"]} - item_keys
+                    tgt = next(((j, k) for j, b in enumerate(pm["bundles"])
+                                for k in b["key_counts"] if k in ckeys), None)
+                    if not tgt:
+                        continue
+                    j, k = tgt
+                    bundle_checked += 1
+                    sel = dict(default)
+                    for mi_ in range(n):
+                        sel[wargear._bundle_key(spec_idx, M, mi_)] = j
+                    res = wargear.validate_selection(did, size, sel)
+                    final = res["selection"]
+                    if _int(final.get(k)) > cap:
+                        bundle_kept.append((nm, grp["instruction"][:48]))
+                    elif not res["violations"]:
+                        bundle_silent.append((nm, grp["instruction"][:48]))
+                    res2 = wargear.validate_selection(did, size, final)
+                    if res2["violations"] or res2["selection"] != final:
+                        unconverged.append((nm, grp["instruction"][:48], res2["violations"][:1]))
+    r.check(f"wargear: limited_per_n cap holds against its linked weapon-array ({lim_checked} linked cards)",
+            lim_checked > 0 and not over_kept, f"{len(over_kept)} over cap e.g. {over_kept[:3]}")
+    r.check("wargear: over-cap limited_per_n correction is recorded as a violation",
+            not over_silent, f"{len(over_silent)} silent e.g. {over_silent[:3]}")
+    r.check("wargear: a limited_per_n replacement displaces its array-pool weapon one-for-one",
+            not pool_bad, f"{len(pool_bad)} unbalanced e.g. {pool_bad[:3]}")
+    r.check(f"wargear: over-cap @b bundle picks are clamped to the limited cap ({bundle_checked} spec×card pairs)",
+            bundle_checked > 0 and not bundle_kept, f"{len(bundle_kept)} over cap e.g. {bundle_kept[:3]}")
+    r.check("wargear: over-cap @b correction is recorded as a violation",
+            not bundle_silent, f"{len(bundle_silent)} silent e.g. {bundle_silent[:3]}")
+    r.check("wargear: limited×array corrections converge (re-validation is legal and stable)",
+            not unconverged, f"{len(unconverged)} unstable e.g. {unconverged[:3]}")
+
     # 5) Enhancement eligibility: classify every enhancement without error; no Epic
     #    Hero ever passes; every datasheet-specific group resolves to a real name.
     names = set(v["name"] for v in s.ds_by_id.values())
