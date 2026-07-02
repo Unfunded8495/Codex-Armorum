@@ -19,16 +19,16 @@ from flask import (Flask, Response, abort, jsonify, render_template, request,
 import factions_theme as ft
 from army import (
     _army_unit_row, _enhancement_cost,
-    _enhancement_for, _enhancement_for_ids, _normalise_squad_size, _points_for,
+    _enhancement_for_ids, _normalise_squad_size, _points_for,
     _squad_bounds, _valid_detachment_for_faction, battle_size_caps,
     parse_detachment_ids, detachment_set_cost, clear_orphaned_enhancements,
 )
 from army_validation import validation_payload
 from box_sets import (
     _clean_box_payload, _save_custom_box, _unit_search_pool,
-    bought_info, bought_totals, box_set_by_id, box_sets,
-    catalogue_model_id_from_key, catalogue_unit_ref, compute_unlogged_map,
-    dedup_group_total, is_catalogue_key, parse_box_text, purchase_payload,
+    bought_info, box_set_by_id, box_sets,
+    catalogue_unit_ref, compute_unlogged_map,
+    dedup_group_total, parse_box_text, purchase_payload,
     relink_catalogue_minis,
 )
 from catalogue_review import (
@@ -866,7 +866,6 @@ def api_upload_mini_photos(mid):
         row = c.execute("SELECT datasheet_id FROM minis WHERE id=?", (mid,)).fetchone()
     if not row:
         abort(404)
-    did = row["datasheet_id"]
     files = request.files.getlist("photos")
     try:
         for f in files:

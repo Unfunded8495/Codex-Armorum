@@ -1078,9 +1078,11 @@ export async function duplicateArmyUnit(auid){
 
 export async function updateSquadSize(auid, val){
   const size = Math.max(1, intOr(val, 1));
-  const res  = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({squad_size:size})});
-  if(!res.ok) return;
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({squad_size:size})}); }
+  catch(e){ return; }
+  if(!res || !res.ok) return;
   mergeUnit(auid, res.unit);
   applyServerState(res);
   refreshUnitDetailIfSelected(auid);   // squad size rescales bulk wargear in the editor
@@ -1088,40 +1090,17 @@ export async function updateSquadSize(auid, val){
 
 export async function updateAssigned(auid, val){
   const count = Math.max(0, intOr(val, 0));
-  const res   = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({assigned_count:count})});
-  if(!res.ok) return;
+  let res;
+  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({assigned_count:count})}); }
+  catch(e){ return; }
+  if(!res || !res.ok) return;
   mergeUnit(auid, res.unit);
   applyServerState(res);
   refreshUnitDetailIfSelected(auid);   // assigned_count may be server-clamped
 }
 
 /* ---- enhancement editor ------------------------------------------------- */
-
-export async function toggleEnhEditor(auid){
-  const ed = document.getElementById(`au-enh-ed-${auid}`);
-  if(!ed.hidden){ed.hidden=true;ed.innerHTML='';return;}
-  if(!state.army) return;
-  const unit = state.army.units.find(u=>u.id===auid) || {};
-  // Per-unit eligible list (eligibility + uniqueness, current pick always included).
-  let enhs = [];
-  if(state.army.detachment_id){
-    try{ enhs = await api(`/api/army-units/${auid}/enhancements`); }catch(e){ enhs = []; }
-  }
-  if(!enhs||!enhs.length){
-    ed.innerHTML = `<p style="font-family:'EB Garamond',serif;font-size:14px;color:var(--parch-dim);margin:0">
-      ${state.army.detachment_id?'No eligible enhancements for this unit.':'Select a detachment first.'}</p>`;
-    ed.hidden = false;
-    return;
-  }
-  ed.innerHTML = `
-    <select onchange="saveEnhancement('${auid}',this.value)" style="margin-bottom:8px">
-      <option value="">— No enhancement —</option>
-      ${enhs.map(e=>`<option value="${esc(e.id)}" ${String(e.id)===String(unit.enhancement_id)?'selected':''}>
-        ${esc(e.name)} (+${e.cost} pts)</option>`).join('')}
-    </select>`;
-  ed.hidden = false;
-}
 
 export async function saveEnhancement(auid, enhId){
   let res;
@@ -1615,16 +1594,6 @@ function wgRadio(u, name, keysAttr, key, checked, label, points, val){
     <span class="wg-box"></span>
     ${wgOptLabel(u.datasheet_id, label, points)}
   </label>`;
-}
-
-export function toggleWargear(auid){
-  const ed = document.getElementById(`au-wg-ed-${auid}`);
-  if(!ed) return;
-  if(!ed.hidden){ ed.hidden=true; ed.innerHTML=''; return; }
-  const u = state.army.units.find(x=>x.id===auid);
-  if(!u) return;
-  ed.innerHTML = renderWargearEditor(u);
-  ed.hidden = false;
 }
 
 async function postLoadout(auid, patch){

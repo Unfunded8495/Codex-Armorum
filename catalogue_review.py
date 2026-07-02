@@ -714,7 +714,6 @@ def duplicate_manual_model(catalogue_model_id, new_name):
         return None, "Model not found in the catalogue."
 
     import copy
-    import time as _time
     new_record = copy.deepcopy(original)
     new_record["name"] = new_name
 

@@ -364,8 +364,6 @@ class DataStore:
                     "w40k.db; override for %r ignored", target_faction, ds_name)
 
         # ---- build unit dicts ---------------------------------------------------
-        ds_name_to_uuids_in_tree = {}  # (root_uuid, nfkd_name) -> [uuid]
-        # Filled below; used for leader-name resolution.
         for ds in ds_rows:
             did = ds["id"]
             name = ds["name"]

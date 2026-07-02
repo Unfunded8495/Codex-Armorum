@@ -30,9 +30,14 @@ export async function openUnitPicker(category){
 
   let units = state.unitsCache[state.army.faction_id];
   if(!units){
-    const data = await api(`/api/factions/${state.army.faction_id}/units?for=army-builder`);
-    units = data.units || [];
-    state.unitsCache[state.army.faction_id] = units;
+    try{
+      const data = await api(`/api/factions/${state.army.faction_id}/units?for=army-builder`);
+      units = data.units || [];
+      state.unitsCache[state.army.faction_id] = units;
+    }catch(e){
+      body.innerHTML = `<p class="po-empty">Could not load units.</p>`;
+      return;
+    }
   }
   state.picker = {units, owned: Object.fromEntries(units.map(u=>[u.id,u.owned]))};
   renderPicker(scopedUnits(units));
@@ -133,9 +138,11 @@ export async function togglePickerProfile(did){
 // picker), rather than the old single-add-then-close modal behaviour.
 export async function addUnitToArmy(did){
   if(!state.army) return;
-  const res = await api(`/api/armies/${state.army.id}/units`, {method:'POST',
-    headers:{'Content-Type':'application/json'}, body: JSON.stringify({datasheet_id:did})});
-  if(!res.ok) return;
+  let res;
+  try{ res = await api(`/api/armies/${state.army.id}/units`, {method:'POST',
+    headers:{'Content-Type':'application/json'}, body: JSON.stringify({datasheet_id:did})}); }
+  catch(e){ return; }
+  if(!res || !res.ok) return;
   state.army.units.push(res.unit);
 
   // All 4 Force-Org sections already exist in the DOM (renderRoster always

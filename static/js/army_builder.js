@@ -1,10 +1,10 @@
 import { showArmyList, deleteArmy, toggleCreateForm, importArmyList,
          submitCreateArmy, onCafBattleSize } from './army-list.js';
 import { showArmy, saveArmyMeta, updateSquadSize, updateAssigned,
-         toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord,
+         saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord,
          attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
          toggleDetachmentCard, removeDetachment, toggleDpExpand, selectUnit, clearRight, toggleUnitProfiles,
-         toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, toggleWgCard, wgNudge, exportArmy,
+         setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, toggleWgCard, wgNudge, exportArmy,
          openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleCbDatasheet,
          openEditRoster, closeEditRoster, editRosterShow, duplicateRoster, jumpToUnit } from './army-detail.js';
 import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy, togglePickerProfile } from './unit-picker.js';
@@ -35,9 +35,9 @@ refreshLedger();
 Object.assign(window, {
   deleteArmy, toggleCreateForm, submitCreateArmy, onCafBattleSize,
   saveArmyMeta, updateSquadSize, updateAssigned,
-  toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
+  saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
   toggleDetachmentCard, removeDetachment, toggleDpExpand, selectUnit, clearRight, toggleUnitProfiles,
-  toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, toggleWgCard, wgNudge,
+  setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, toggleWgCard, wgNudge,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy, togglePickerProfile,
   openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleCbDatasheet,
   openEditRoster, closeEditRoster, editRosterShow, duplicateRoster, jumpToUnit,

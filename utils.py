@@ -1,6 +1,5 @@
 """Generic utility functions shared across modules."""
 import re
-import json
 
 
 def _int(v):

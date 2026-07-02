@@ -3,7 +3,7 @@ from html import unescape
 import json
 import re
 
-from data_store import get_store, strip_html as _strip_html
+from data_store import strip_html as _strip_html
 from db import db
 
 
