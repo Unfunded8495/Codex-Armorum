@@ -279,19 +279,25 @@ def _instruction_type(instruction):
 @lru_cache(maxsize=4096)
 def wargear_schema(did):
     """Ordered render groups. Each: ``{instruction, type, miniature, items, limits,
-    duplicate_limit}`` where ``type`` ∈ {default, replace_one, limited_per_n,
-    all_model, replace_any, choice}. ``replace_one``/``all_model`` items are
-    promoted to ``input_type: radio``. Empty for the 8 no-options units."""
+    duplicate_limit, linked_default_keys}`` where ``type`` ∈ {default, replace_one,
+    limited_per_n, all_model, replace_any, choice}. ``replace_one``/``all_model``
+    items are promoted to ``input_type: radio``. ``linked_default_keys`` holds the
+    Default-group key(s) a ``replace_one``/``all_model`` group displaces when one of
+    its alternatives is chosen (see the cross-reference pass below) -- empty when
+    that link can't be resolved unambiguously. Empty for the 8 no-options units."""
     keyed = _keyed_options(did)
     limited = _limited_index(did)
     allmodel = _all_model_index(did)
+    item_keys = _item_keys(did)
+    cfs = _wl(did).get("choose_from") or []
     groups, index = [], {}
     for o, key in keyed:
         g = o.get("group")
         if g not in index:
             index[g] = len(groups)
             groups.append({"instruction": g, "type": None, "miniature": o.get("miniature"),
-                           "items": [], "limits": None, "duplicate_limit": None})
+                           "items": [], "limits": None, "duplicate_limit": None,
+                           "linked_default_keys": ()})
         groups[index[g]]["items"].append({
             "key": key, "item": o.get("item"), "miniature": o.get("miniature"),
             "input_type": o.get("input_type"), "points": _int(o.get("points")),
@@ -313,11 +319,56 @@ def wargear_schema(did):
             grp["duplicate_limit"] = lc["duplicate_limit"]
         elif am:
             grp["type"] = "all_model"
+            own = {i["key"] for i in grp["items"]}
+            grp["linked_default_keys"] = tuple(k for it in am["items"]
+                                               for k in item_keys.get((mini, it), []) if k not in own)
         else:
             grp["type"] = _instruction_type(grp["instruction"])
         if grp["type"] in ("replace_one", "all_model"):
             for i in grp["items"]:
                 i["input_type"] = "radio"
+
+    # replace_one cross-reference: a group's instruction text only carries its own
+    # alternatives, not the Default-group item it displaces (that lives in a
+    # separate group -- e.g. Chaos Lord's "Daemon hammer" vs. its "replaced with one
+    # of the following: Accursed weapon / Astartes chainsword" group). ``choose_from``
+    # lists the full mutually-exclusive choice set including the default, so use it
+    # to recover the displaced key(s) -- but only when the match is unambiguous:
+    # exactly one choose_from entry overlaps the group's items, that entry isn't
+    # ALSO claimed by some other replace_one group (e.g. a Hive Tyrant's two
+    # independently-swappable arms share one combined choose_from entry -- linking
+    # both to it would cross-wire each arm's default into the other's), and every
+    # leftover item name is a confirmed Default-group item. Ambiguous overlaps and
+    # genuinely defaultless slots (e.g. vehicle sponsons with no baseline weapon) are
+    # left unlinked and fall back to validate_selection's within-group-only check.
+    default_grp = next((g for g in groups if g["type"] == "default"), None)
+    default_keys = {(i["miniature"], i["item"]): i["key"]
+                     for i in (default_grp["items"] if default_grp else [])
+                     if i["default_value"] > 0}
+    grp_match, entry_owners = {}, {}
+    for grp in groups:
+        if grp["type"] != "replace_one":
+            continue
+        mini = grp["miniature"]
+        alt_items = {i["item"] for i in grp["items"]}
+        matches = [c for c in cfs if (c.get("miniature") == mini or c.get("miniature") is None)
+                   and (_flat_items(c.get("choices")) & alt_items)]
+        if len(matches) != 1:
+            continue
+        grp_match[id(grp)] = matches[0]
+        entry_owners.setdefault(id(matches[0]), []).append(grp)
+    for grp in groups:
+        cf = grp_match.get(id(grp))
+        if cf is None or len(entry_owners[id(cf)]) > 1:
+            continue
+        mini = grp["miniature"]
+        alt_items = {i["item"] for i in grp["items"]}
+        leftover = _flat_items(cf.get("choices")) - alt_items
+        if not leftover:
+            continue
+        link_keys = [default_keys[(mini, nm)] for nm in leftover if (mini, nm) in default_keys]
+        if len(link_keys) == len(leftover):
+            grp["linked_default_keys"] = tuple(link_keys)
 
     # Weapon arrays: ``replace_any`` groups with a pool become an ``array`` group.
     # Single-item bundles → mode "mounts" (per-mount weapon selects/steppers).
@@ -328,6 +379,19 @@ def wargear_schema(did):
     meta = _multi_meta(did)
     suppressed = {(m["miniature"], m["item"])
                   for s in specs for m in s["members"] if m["is_pool"]}
+    # A "models"-mode bundle option can silently duplicate a weapon that already has
+    # its own dedicated card elsewhere (e.g. a squad's per-model boltgun-swap bundle
+    # offering "balefire tome" as one of many dropdown choices, when a separate
+    # "up to 1 balefire tome in this unit" capped card already governs that exact
+    # key). Flag those bundles ``redundant`` rather than dropping them here -- the
+    # renderer keeps a model's *current* pick visible even if redundant (dropping it
+    # outright would misrender any existing selection made before this de-dup
+    # existed), and only hides it as an offer for new picks. The other card stays
+    # the one place that controls the key; this just stops the dropdown from
+    # pretending to control it too.
+    standalone_keys = {i["key"] for grp in groups if grp["type"] != "default"
+                        and spec_by_instr.get(grp["instruction"]) is None
+                        for i in grp["items"]}
     out = []
     for grp in groups:
         entry = spec_by_instr.get(grp["instruction"])
@@ -347,10 +411,17 @@ def wargear_schema(did):
                             "minis": [{"miniature": mm, "options": per[mm]} for mm in order]})
             else:
                 md = meta.get(idx)
-                minis = [{"miniature": mm,
-                          "bundles": [{"idx": j, "label": b["label"], "points": b["points"]}
-                                      for j, b in enumerate(md["per_mini"][mm]["bundles"])]}
-                         for mm in (md["miniatures"] if md else []) if mm in md["per_mini"]]
+                minis = []
+                for mm in (md["miniatures"] if md else []):
+                    if mm not in md["per_mini"]:
+                        continue
+                    pm = md["per_mini"][mm]
+                    bundles = [{"idx": j, "label": b["label"], "points": b["points"],
+                                "redundant": j != pm["default_idx"]
+                                             and bool(set(b["key_counts"]) & standalone_keys)}
+                               for j, b in enumerate(pm["bundles"])]
+                    minis.append({"miniature": mm, "bundles": bundles,
+                                  "default_idx": pm["default_idx"]})
                 if minis:  # skip groups whose weapons another picker already owns
                     out.append({"instruction": grp["instruction"], "type": "array",
                                 "mode": "models", "spec_idx": idx, "minis": minis})
@@ -439,8 +510,9 @@ def validate_selection(did, squad_size, selection):
     points_delta, loadout_summary}``. Illegal selections are auto-corrected toward
     the nearest legal state and each correction is recorded as a violation.
 
-    Enforced: stepper bounds, ``replace_one``/``all_model`` mutual exclusion,
-    ``limited_per_n`` threshold caps + ``duplicate_limit``."""
+    Enforced: stepper bounds, ``replace_one``/``all_model`` mutual exclusion
+    (including against the Default-group item a chosen alternative displaces, via
+    ``linked_default_keys``), ``limited_per_n`` threshold caps + ``duplicate_limit``."""
     schema = wargear_schema(did)
     default = default_selection(did, squad_size)
     sel = dict(default)
@@ -453,21 +525,48 @@ def validate_selection(did, squad_size, selection):
     def flag(msg):
         violations.append({"level": "warn", "code": "wargear_illegal", "message": msg})
 
+    def clip(text, n=48):
+        # Word-boundary truncation for message prefixes -- a hard slice cuts
+        # mid-word ("...1 Legionary's b: max 2 at this size").
+        text = (text or "").strip()
+        if len(text) <= n:
+            return text
+        cut = text[:n].rsplit(" ", 1)[0].rstrip(" ,;:")
+        return (cut or text[:n]) + "..."
+
     for grp in schema:
         if grp["type"] == "array":
             continue  # balanced unit-wide below, against its spec
         items = grp["items"]
         t = grp["type"]
-        instr = (grp["instruction"] or "")[:48]
+        instr = clip(grp["instruction"])
         if t == "replace_one":
-            chosen = [i for i in items if _int(sel.get(i["key"])) > 0]
-            if len(chosen) > 1:
-                for i in chosen[1:]:
-                    sel[i["key"]] = 0
+            # ``linked`` is the Default-group item(s) this group's alternatives
+            # displace (resolved by wargear_schema via choose_from when
+            # unambiguous) -- e.g. a Chaos Lord's "Daemon hammer", or a bundled
+            # "bolt pistol and boltgun" baseline that several units replace as a
+            # pair. Treated as one unit: active alongside one of this group's own
+            # alternatives is the conflict this guards (a stale pre-swap default
+            # left behind by an incomplete patch); its own members never conflict
+            # with *each other* -- they're meant to coexist as the un-replaced
+            # baseline.
+            own_keys = [i["key"] for i in items]
+            linked = list(grp.get("linked_default_keys") or ())
+            own_active = [k for k in own_keys if _int(sel.get(k)) > 0]
+            default_active = any(_int(sel.get(k)) > 0 for k in linked)
+            if len(own_active) > 1 or (own_active and default_active):
                 flag("%s: choose only one" % instr)
-            for i in items:
-                if _int(sel.get(i["key"])) > 1:
-                    sel[i["key"]] = 1
+            if own_active:
+                chosen_key = own_active[0]
+                for k in own_keys:
+                    sel[k] = 1 if k == chosen_key else 0
+                for k in linked:
+                    sel[k] = 0
+            else:
+                for k in own_keys:
+                    sel[k] = 0
+                for k in linked:
+                    sel[k] = default.get(k, 0)
         elif t == "limited_per_n":
             cap = limited_cap(grp["limits"], squad_size)
             dup = grp["duplicate_limit"]
@@ -558,7 +657,7 @@ def validate_selection(did, squad_size, selection):
                 assigned += val
             if over:
                 flag("%s: up to %d weapon%s"
-                     % ((spec["instruction"] or "")[:40], slot_count,
+                     % (clip(spec["instruction"], 40), slot_count,
                         "" if slot_count == 1 else "s"))
 
     # multi-item arrays: each model picks a whole loadout (a bundle index in an

@@ -76,6 +76,35 @@ def run():
             array_units > 0 and not array_bad,
             f"{len(array_bad)} unbalanced e.g. {array_bad[:3]}" if array_bad else "no array units found")
 
+    # 4b) replace_one cross-group correctness: picking an alternative must clear
+    #     the Default-group item(s) it displaces. Regression guard for a bug where
+    #     a client patch that sets only the alternative key (never touching the
+    #     pre-swap default key, which lives in a separate schema group) left both
+    #     nonzero in the persisted loadout, silently and without a violation --
+    #     validate_selection's replace_one handling only looked within its own
+    #     group's items, never across to the Default group. Simulates that exact
+    #     incomplete patch for every linked replace_one group in the catalogue.
+    swap_bad, swap_unflagged, swap_checked = [], [], 0
+    for did in dsids:
+        size = army._squad_bounds(did)["default"]
+        for grp in wargear.wargear_schema(did):
+            if grp.get("type") != "replace_one" or not grp.get("linked_default_keys"):
+                continue
+            swap_checked += 1
+            sel = dict(wargear.default_selection(did, size))
+            alt_key = grp["items"][0]["key"]
+            sel[alt_key] = 1  # the alternative, picked without clearing the displaced default
+            res = wargear.validate_selection(did, size, sel)
+            final = res["selection"]
+            if _int(final.get(alt_key)) > 0 and any(_int(final.get(k)) > 0 for k in grp["linked_default_keys"]):
+                swap_bad.append((s.ds_by_id[did].get("name"), grp["instruction"][:48]))
+            elif not res["violations"]:
+                swap_unflagged.append((s.ds_by_id[did].get("name"), grp["instruction"][:48]))
+    r.check(f"wargear: replace_one swap clears its displaced default item ({swap_checked} linked groups)",
+            swap_checked > 0 and not swap_bad, f"{len(swap_bad)} still conflicting e.g. {swap_bad[:3]}")
+    r.check("wargear: replace_one auto-correction of a stale default is recorded as a violation",
+            not swap_unflagged, f"{len(swap_unflagged)} silent e.g. {swap_unflagged[:3]}")
+
     # 5) Enhancement eligibility: classify every enhancement without error; no Epic
     #    Hero ever passes; every datasheet-specific group resolves to a real name.
     names = set(v["name"] for v in s.ds_by_id.values())
