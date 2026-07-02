@@ -77,7 +77,8 @@ function renderCentre(army){
 function renderPointsHud(army){
   const hasIssues = hudHasIssues(army);
   return `
-    <div class="hud-pill" data-testid="points-hud">
+    <div class="hud-pill" data-testid="points-hud" role="button" tabindex="0" title="Jump to validation"
+         onclick="document.getElementById('validationCard')?.scrollIntoView({behavior:'smooth',block:'nearest'})">
       <span class="hud-warn" id="hudWarn" ${hasIssues?'':'hidden'}>&#9888;</span>
       <span class="hud-pts"><b id="ptsUsed" data-testid="army-points">${army.total_points}</b><small>/ <span id="ptsLimit">${army.points_limit}</span> POINTS</small></span>
     </div>`;
@@ -1141,25 +1142,75 @@ function renderArraySub(uid, g, sub, sel){
   return `<div class="wg-array-sub">${miniLabel}${body}</div>`;
 }
 
-// Multi-item arrays: each model of the type picks a whole loadout (bundle). One
-// <select> of bundle labels per model, bound to its @b|spec|mini|model key.
+// Multi-item arrays: each model of the type independently owns a whole-loadout
+// bundle-index key (@b|spec|mini|model), but nothing about that mechanism
+// actually requires showing it per-model -- a model's *bundle index* is all
+// that matters, regardless of how many weapon keys that bundle sets, so this
+// aggregates to one 0..N stepper per surviving bundle (summing to the squad's
+// model count) instead of N near-identical dropdowns, matching the reference
+// app's "N models w/ X" controls. Some bundle options duplicate a weapon that
+// already has its own capped card elsewhere (wargear_schema flags these
+// `redundant`); those are omitted as *new* picks so the same weapon isn't
+// offered in two places, but a model's current pick stays visible (its own
+// stepper) even if it's since become redundant, so an existing selection never
+// silently disappears.
 function renderModelsSub(u, g, sub){
   const sel  = u.loadout || {};
   const comp = {}; (u.composition||[]).forEach(c=>comp[c.model]=c.count);
   const n = comp[sub.miniature] || 0;
-  const multi = (g.minis||[]).length>1;
-  // No per-bundle points: the cost is a delta from the loadout it replaces, so an
-  // absolute figure would mislead. The points bar reflects the true total.
-  const optTags = cur => sub.bundles.map(b=>
-    `<option value="${b.idx}" ${b.idx===cur?'selected':''}>${esc(b.label)}</option>`).join('');
-  let rows = '';
-  for(let i=0;i<n;i++){
-    const bk = '@b|'+g.spec_idx+'|'+sub.miniature+'|'+i;
-    const cur = parseInt(sel[bk],10)||0;
-    rows += `<div class="wg-model-row"><span class="wg-model-lbl">${esc(sub.miniature)} ${i+1}</span>`+
-      `<select class="wg-slot" data-key="${esc(bk)}" data-mode="models" onchange="setWargearSlot('${u.id}',this)">${optTags(cur)}</select></div>`;
+  const defIdx = sub.default_idx;
+  const bk = i => '@b|'+g.spec_idx+'|'+sub.miniature+'|'+i;
+  const curs = []; for(let i=0;i<n;i++){ const v = parseInt(sel[bk(i)],10); curs.push(isNaN(v)?defIdx:v); }
+  const counts = {}; curs.forEach(c=>counts[c]=(counts[c]||0)+1);
+  const keepable = sub.bundles.filter(b=>!b.redundant || (counts[b.idx]||0)>0);
+  if(keepable.length<=1) return '';
+  const idxList = esc(JSON.stringify(keepable.map(b=>b.idx)));
+  const label = (g.minis||[]).length>1 ? `<div class="wg-array-mini">${esc(sub.miniature)}</div>` : '';
+  const rows = keepable.map(b=>
+    `<div class="wg-stepper"><span>${esc(wgCap(b.label))}</span>`+
+    `<input type="number" class="wg-bundle-step" min="0" max="${n}" value="${counts[b.idx]||0}" `+
+    `data-spec="${esc(g.spec_idx)}" data-mini="${esc(sub.miniature)}" data-idx="${b.idx}" `+
+    `data-default-idx="${defIdx}" data-n="${n}" data-siblings='${idxList}' `+
+    `onchange="setWargearBundleCount('${u.id}',this)"></div>`).join('');
+  return `<div class="wg-array-sub">${label}${rows}</div>`;
+}
+
+// A stepper's value is "how many models have bundle X"; the underlying data is
+// still one bundle-index key per model, so a count change resolves to picking
+// *which* models flip. Increases pull from the default bundle first (the
+// flexible pool), falling back to any other non-target bundle if the default
+// runs out; decreases return freed models to the default (or, when the
+// default itself is the one being decreased, to the first sibling bundle).
+export function setWargearBundleCount(auid, input){
+  const u = state.army.units.find(x=>x.id===auid);
+  if(!u) return;
+  const sel = u.loadout || {};
+  const specIdx = input.dataset.spec, mini = input.dataset.mini;
+  const n = parseInt(input.dataset.n,10);
+  const defIdx = parseInt(input.dataset.defaultIdx,10);
+  const targetIdx = parseInt(input.dataset.idx,10);
+  const siblings = JSON.parse(input.dataset.siblings || '[]');
+  const bk = i => '@b|'+specIdx+'|'+mini+'|'+i;
+  const cur = []; for(let i=0;i<n;i++){ const v = parseInt(sel[bk(i)],10); cur.push(isNaN(v)?defIdx:v); }
+  const have = cur.filter(c=>c===targetIdx).length;
+  const want = Math.max(0, Math.min(n, parseInt(input.value,10)||0));
+  const patch = {};
+  if(want > have){
+    let need = want - have;
+    for(let i=0;i<n && need>0;i++){
+      if(cur[i]===defIdx && targetIdx!==defIdx){ cur[i]=targetIdx; patch[bk(i)]=targetIdx; need--; }
+    }
+    for(let i=0;i<n && need>0;i++){
+      if(cur[i]!==targetIdx){ cur[i]=targetIdx; patch[bk(i)]=targetIdx; need--; }
+    }
+  }else if(want < have){
+    let free = have - want;
+    const fallback = targetIdx===defIdx ? (siblings.find(idx=>idx!==defIdx) ?? defIdx) : defIdx;
+    for(let i=0;i<n && free>0;i++){
+      if(cur[i]===targetIdx){ cur[i]=fallback; patch[bk(i)]=fallback; free--; }
+    }
   }
-  return rows ? `<div class="wg-array-sub">${multi?`<div class="wg-array-mini">${esc(sub.miniature)}</div>`:''}${rows}</div>` : '';
+  if(Object.keys(patch).length) postLoadout(auid, patch);
 }
 
 function renderArrayGroup(u, g, sel){
@@ -1173,6 +1224,16 @@ function renderArrayGroup(u, g, sel){
 // boltgun replaced with..." -> "Boltgun". Falls back to the first item's name
 // so every card still gets a usable title.
 function wgCap(s){ s = (s||'').trim(); return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// Item names can repeat within one card when a shared cap spans several
+// miniatures (e.g. "Chaos Icon" once for the sergeant, once for the squad) --
+// disambiguate only the labels that actually collide, so single-miniature
+// groups (the common case) render unchanged.
+function wgItemLabels(items){
+  const counts = {};
+  items.forEach(i=>{ counts[i.item] = (counts[i.item]||0)+1; });
+  return items.map(i=> counts[i.item]>1 ? `${i.item} (${i.miniature})` : i.item);
+}
 function wgGroupTitle(g){
   const instr = g.instruction || '';
   let m = /['’]s\s+([a-z][a-z\s]*?)\s+can be replaced/i.exec(instr);
@@ -1184,28 +1245,26 @@ function wgGroupTitle(g){
   return 'Wargear Option';
 }
 
-const WG_MECH = {
-  replace_one:  { tag:'Either/Or Swap',  icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/></svg>' },
-  all_model:    { tag:'Unit-wide Swap',  icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/><rect x="3" y="14" width="7" height="7" rx="1.4"/><rect x="14" y="14" width="7" height="7" rx="1.4"/></svg>' },
-  limited_per_n:{ tag:'Capped Option',   icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="8.5" stroke-opacity=".3"/><circle cx="12" cy="12" r="8.5" stroke-dasharray="27 53" stroke-linecap="round" transform="rotate(-90 12 12)"/></svg>' },
-  array_mounts: { tag:'Weapon Array',    icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="3" y="9" width="4" height="12" rx="1"/><rect x="10" y="4" width="4" height="17" rx="1"/><rect x="17" y="12" width="4" height="9" rx="1"/></svg>' },
-  array_models: { tag:'Loadout Bundle',  icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg>' },
-  choice:       { tag:'Optional',        icon:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' },
-};
-function wgMechMeta(g){
-  if(g.type==='array') return WG_MECH[g.mode==='models' ? 'array_models' : 'array_mounts'];
-  return WG_MECH[g.type] || WG_MECH.choice;
-}
-function wgCard(g, title, badge, contentHtml){
+// Bold header + collapsible body, no per-mechanic icon/tag chrome -- matches
+// the reference app's flat list style (a card's *mechanic* is obvious from
+// its controls, not a decorative pill).
+function wgCard(title, badge, contentHtml){
   if(!contentHtml) return '';
-  const meta = wgMechMeta(g);
   return `<div class="wg-card">
     <button type="button" class="wg-card-toggle" onclick="toggleWgCard(this)" aria-expanded="true">
-      <span class="wg-card-title"><span class="wg-card-icon">${meta.icon}</span>${esc(title)}<span class="wg-card-tag">${esc(meta.tag)}</span>${badge?` <span class="wg-card-badge">${esc(badge)}</span>`:''}</span>
+      <span class="wg-card-title">${esc(title)}${badge?` <span class="wg-card-badge">${esc(badge)}</span>`:''}</span>
       <span class="wg-card-chev">▾</span>
     </button>
     <div class="wg-card-content">${contentHtml}</div>
   </div>`;
+}
+
+// English pluralization is unreliable in general, but the common 40k-name
+// shapes are covered: "Legionary" -> "Legionaries", "Termagant" -> "Termagants".
+function wgPlural(name){
+  if(/[^aeiou]y$/i.test(name)) return name.slice(0,-1)+'ies';
+  if(/(s|x|z|ch|sh)$/i.test(name)) return name+'es';
+  return name+'s';
 }
 
 export function toggleWgCard(btn){
@@ -1217,6 +1276,81 @@ export function toggleWgCard(btn){
   btn.setAttribute('aria-expanded', String(!content.hidden));
 }
 
+// The default-group's read-only "always equipped" rows, split into whichever
+// bucket (individual model vs. squad-wide) their miniature belongs to.
+function renderDefaultBucket(items, sel){
+  const singles = items.filter(i=>(sel[i.key]||0)===1 && (i.default_value||0)<=1);
+  const multi   = items.filter(i=>!singles.includes(i));
+  const singleHtml = singles.map(i=>`<label class="wg-fixed"><input type="checkbox" checked disabled><span>${esc(i.item)}</span></label>`).join('');
+  const multiText = multi.map(i=>`${(sel[i.key]||0)>1?(sel[i.key]+'× '):''}${esc(i.item)}`).join(', ');
+  const multiHtml = multiText ? `<div class="wg-group wg-default"><span class="wg-default-lbl">Default</span> ${multiText}</div>` : '';
+  return `${singleHtml}${multiHtml}`;
+}
+
+// How many "picks" a group currently accounts for, for the squad tally. A
+// models-mode array always accounts for exactly one bundle per model (that's
+// the whole squad, by construction); everything else is a sum of its own
+// item counts. Mounts-mode arrays (vehicle hardpoints, not squads-of-models)
+// are excluded -- their own mount-count readout is already self-consistent.
+function groupTally(g, sel, comp){
+  if(g.type==='array'){
+    if(g.mode!=='models') return 0;
+    return (g.minis||[]).reduce((s,m)=>s+(comp[m.miniature]||0), 0);
+  }
+  return (g.items||[]).reduce((s,i)=>s+(sel[i.key]||0), 0);
+}
+
+function renderGroupHtml(u, g, sel, comp, size){
+  if(g.type==='array'){
+    return wgCard(wgGroupTitle(g), '', renderArrayGroup(u, g, sel));
+  }
+  if(g.type==='replace_one' || g.type==='all_model'){
+    const nm = ('wg'+u.id+g.items[0].key).replace(/[^a-zA-Z0-9]/g,'');
+    // data-keys must also cover the Default-group item this swap displaces, or
+    // setWargearRadio's zero-out patch leaves it behind alongside the new pick.
+    const gk = esc(JSON.stringify(g.items.map(i=>i.key).concat(g.linked_default_keys||[])));
+    const chosen = g.items.find(i=>(sel[i.key]||0)>0);
+    const title = wgGroupTitle(g);
+    const defaultLabel = title.replace(/^Replace\s+/, '');
+    const labels = wgItemLabels(g.items);
+    // Fold the default option into the same alphabetically-sorted list as its
+    // alternatives -- matches the reference app -- instead of a separate
+    // "keep default" row sitting above them.
+    const rows = [{key:'', label:defaultLabel, points:0, checked:!chosen, val:null}]
+      .concat(g.items.map((i,idx)=>({key:i.key, label:labels[idx], points:i.points,
+        checked: !!(chosen && chosen.key===i.key),
+        val: g.type==='all_model' ? (comp[i.miniature]||size) : 1})))
+      .sort((a,b)=>a.label.localeCompare(b.label));
+    const html = rows.map(r=>wgRadio(u.id, nm, gk, r.key, r.checked, r.label, r.points, r.val)).join('');
+    return wgCard(title, '1/1', html);
+  }
+  if(g.type==='limited_per_n'){
+    const cap = limitedCap(g.limits, size);
+    const count = g.items.reduce((n,i)=>n+(sel[i.key]||0), 0);
+    const labels = wgItemLabels(g.items);
+    // A cap on a single named item (e.g. "up to 1 Balefire tome") is clearer
+    // titled by that item than by what it replaces -- several such cards can
+    // all replace the same base weapon, and would otherwise share one title.
+    const title = g.items.length===1 ? wgCap(labels[0]) : wgGroupTitle(g);
+    if(g.items.length===1 && cap<=1){
+      const i = g.items[0];
+      const html = `<label class="wg-check"><input type="checkbox" data-key="${esc(i.key)}" ${(sel[i.key]||0)>0?'checked':''} onchange="setWargearStep('${u.id}',this)"><span>${esc(labels[0])}${i.points?` <em>+${i.points}</em>`:''}</span></label>`;
+      return wgCard(title, '', html);
+    }
+    const its = g.items.map((i,idx)=>`<div class="wg-stepper"><span>${esc(labels[idx])}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${cap}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`).join('');
+    return wgCard(title, `${count}/${cap}`, `<div class="wg-cap">up to ${cap} at ${size} models</div>${its}`);
+  }
+  const fallbackLabels = wgItemLabels(g.items);
+  const its = g.items.map((i,idx)=>{
+    if(i.input_type==='checkbox'){
+      return `<label class="wg-check"><input type="checkbox" data-key="${esc(i.key)}" ${(sel[i.key]||0)>0?'checked':''} onchange="setWargearStep('${u.id}',this)"><span>${esc(fallbackLabels[idx])}${i.points?` <em>+${i.points}</em>`:''}</span></label>`;
+    }
+    const mc = comp[i.miniature] || size;
+    return `<div class="wg-stepper"><span>${esc(fallbackLabels[idx])}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${mc}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`;
+  }).join('');
+  return wgCard(wgGroupTitle(g), '', its);
+}
+
 function renderWargearEditor(u){
   const sel = u.loadout || {};
   const size = u.squad_size;
@@ -1225,8 +1359,8 @@ function renderWargearEditor(u){
   const defaultGroup = schema.find(g=>g.type==='default');
   const defaultItems = defaultGroup ? defaultGroup.items : [];
   // Replace-one/all-model groups fold their default item into the card itself
-  // (as the pre-checked option), so drop it from the plain "Default:" summary
-  // to avoid listing the same weapon twice.
+  // (as one of its own alphabetical options), so drop it from the plain
+  // "Default:" summary to avoid listing the same weapon twice.
   const coveredKeys = new Set();
   schema.forEach(g=>{
     if(g.type!=='replace_one' && g.type!=='all_model') return;
@@ -1235,52 +1369,55 @@ function renderWargearEditor(u){
     if(match) coveredKeys.add(match.key);
   });
 
-  const groups = schema.map(g=>{
+  // A miniature with more than one model in the unit (the 9 Legionaries, not
+  // the lone Aspiring Champion) gets every one of its cards folded under a
+  // single combined header with a live tally, instead of scattering
+  // look-alike cards across the panel with no indication they share a slot.
+  const squadMiniOf = g => g.type==='array' ? (g.minis||[])[0]?.miniature : g.miniature;
+  const isSquad = g => (comp[squadMiniOf(g)]||0) > 1;
+
+  let individualHtml = '';
+  const squadBuckets = {}; // miniature -> {html, tally, count}
+  const squadBucket = mini => squadBuckets[mini] || (squadBuckets[mini] = {html:'', tally:0, count:comp[mini]||0});
+
+  schema.forEach(g=>{
     if(g.type==='default'){
       const remaining = g.items.filter(i=>!coveredKeys.has(i.key) && (sel[i.key]||0)>0);
-      const singles = remaining.filter(i=>(sel[i.key]||0)===1 && (i.default_value||0)<=1);
-      const multi   = remaining.filter(i=>!singles.includes(i));
-      const singleHtml = singles.map(i=>`<label class="wg-fixed"><input type="checkbox" checked disabled><span>${esc(i.item)}</span></label>`).join('');
-      const multiText = multi.map(i=>`${(sel[i.key]||0)>1?(sel[i.key]+'× '):''}${esc(i.item)}`).join(', ');
-      const multiHtml = multiText ? `<div class="wg-group wg-default"><span class="wg-default-lbl">Default</span> ${multiText}</div>` : '';
-      return `${singleHtml}${multiHtml}`;
-    }
-    if(g.type==='array'){
-      return wgCard(g, wgGroupTitle(g), '', renderArrayGroup(u, g, sel));
-    }
-    if(g.type==='replace_one' || g.type==='all_model'){
-      const nm = ('wg'+u.id+g.items[0].key).replace(/[^a-zA-Z0-9]/g,'');
-      // data-keys must also cover the Default-group item this swap displaces, or
-      // setWargearRadio's zero-out patch leaves it behind alongside the new pick.
-      const gk = esc(JSON.stringify(g.items.map(i=>i.key).concat(g.linked_default_keys||[])));
-      const chosen = g.items.find(i=>(sel[i.key]||0)>0);
-      const title = wgGroupTitle(g);
-      const defaultLabel = title.replace(/^Replace\s+/, '');
-      let html = wgRadio(u.id, nm, gk, '', !chosen, defaultLabel, '');
-      g.items.forEach(i=>{
-        const val = g.type==='all_model' ? (comp[i.miniature]||size) : 1;
-        html += wgRadio(u.id, nm, gk, i.key, !!(chosen&&chosen.key===i.key), i.item, i.points, val);
+      const indItems = [], byMini = {};
+      remaining.forEach(i=>{
+        if((comp[i.miniature]||0)>1) (byMini[i.miniature] = byMini[i.miniature]||[]).push(i);
+        else indItems.push(i);
       });
-      return wgCard(g, title, '1/1', html);
+      individualHtml += renderDefaultBucket(indItems, sel);
+      Object.keys(byMini).forEach(mini=>{ squadBucket(mini).html += renderDefaultBucket(byMini[mini], sel); });
+      return;
     }
-    if(g.type==='limited_per_n'){
-      const cap = limitedCap(g.limits, size);
-      const count = g.items.reduce((n,i)=>n+(sel[i.key]||0), 0);
-      const its = g.items.map(i=>`<div class="wg-stepper"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${cap}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`).join('');
-      return wgCard(g, wgGroupTitle(g), `${count}/${cap}`, `<div class="wg-cap">up to ${cap} at ${size} models</div>${its}`);
+    const html = renderGroupHtml(u, g, sel, comp, size);
+    if(!html) return;
+    if(isSquad(g)){
+      const b = squadBucket(squadMiniOf(g));
+      b.html += html;
+      b.tally += groupTally(g, sel, comp);
+    } else {
+      individualHtml += html;
     }
-    const its = g.items.map(i=>{
-      if(i.input_type==='checkbox'){
-        return `<label class="wg-check"><input type="checkbox" data-key="${esc(i.key)}" ${(sel[i.key]||0)>0?'checked':''} onchange="setWargearStep('${u.id}',this)"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span></label>`;
-      }
-      const mc = comp[i.miniature] || size;
-      return `<div class="wg-stepper"><span>${esc(i.item)}${i.points?` <em>+${i.points}</em>`:''}</span><input type="number" min="0" max="${mc}" value="${sel[i.key]||0}" data-key="${esc(i.key)}" onchange="setWargearStep('${u.id}',this)"></div>`;
-    }).join('');
-    return wgCard(g, wgGroupTitle(g), '', its);
+  });
+
+  const squadHtml = Object.entries(squadBuckets).map(([mini,b])=>{
+    const over = b.tally > b.count;
+    const warn = over ? ` <span class="wg-squad-warn" title="More picks than models in the unit">!</span>` : '';
+    return `<div class="wg-card">
+      <button type="button" class="wg-card-toggle" onclick="toggleWgCard(this)" aria-expanded="true">
+        <span class="wg-card-title">${esc(wgPlural(mini))} <span class="wg-card-badge${over?' wg-card-badge-bad':''}">${b.tally}/${b.count}</span>${warn}</span>
+        <span class="wg-card-chev">▾</span>
+      </button>
+      <div class="wg-card-content">${b.html}</div>
+    </div>`;
   }).join('');
+
   const violHtml = (u.wargear_violations && u.wargear_violations.length)
     ? `<div class="wg-violation">${u.wargear_violations.map(v=>`<div>⚠ ${esc(v.message||'')}</div>`).join('')}</div>` : '';
-  return `<div class="wg-summary">${esc(u.loadout_summary||'')}</div>${violHtml}${groups}`;
+  return `<div class="wg-summary">${esc(u.loadout_summary||'')}</div>${violHtml}${individualHtml}${squadHtml}`;
 }
 
 function wgRadio(auid, name, keysAttr, key, checked, label, points, val){
@@ -1334,11 +1471,6 @@ export function setWargearRadio(auid, input){
 // and post absolute counts; for an alternative stepper we post just the changed
 // alternatives and let the server re-derive the pool weapon(s).
 export function setWargearSlot(auid, el){
-  // Multi-item model picker: each select owns one model's bundle index.
-  if(el.tagName === 'SELECT' && el.dataset.mode === 'models'){
-    postLoadout(auid, {[el.dataset.key]: parseInt(el.value,10)||0});
-    return;
-  }
   const sub = el.closest('.wg-array-sub');
   if(!sub) return;
   const patch = {};

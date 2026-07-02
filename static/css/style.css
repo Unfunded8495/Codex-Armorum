@@ -1198,7 +1198,11 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
   .nav-army-btn{padding:5px 9px;font-size:11px;letter-spacing:.75px}
   .ledger .stat{padding:4px 9px}
 }
-@media(max-width:860px){
+/* The full double-nav bar needs ~1240px; below that the secondary nav
+   collapses behind the Tools toggle and the address bar drops to its own row
+   (previously this only kicked in at 860px, leaving an 860-1240px band where
+   the buttons wrapped into a clipped jumble). */
+@media(max-width:1240px){
   .topbar{flex-wrap:wrap}
   .breadcrumb.addressbar{order:3;flex-basis:100%}
   .top-actions--primary{margin-left:auto}
@@ -1230,6 +1234,11 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
   .top-actions--secondary .nav-army-btn:last-child{border-bottom:none}
   .nav-army-btn{padding:5px 7px;letter-spacing:.5px}
   .ledger .stat{padding:4px 7px}
+}
+@media(max-width:1080px){
+  .ledger{display:none}
+}
+@media(max-width:860px){
   .brand-text p{display:none}
 }
 a.brand{text-decoration:none;color:inherit}

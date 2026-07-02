@@ -327,30 +327,36 @@
 .wg-fixed input { accent-color:var(--gold); flex-shrink:0; }
 .wg-radio { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); padding:3px 0; cursor:pointer; }
 .wg-radio .wg-box-input { position:absolute; opacity:0; width:14px; height:14px; margin:0; pointer-events:none; }
-.wg-radio .wg-box { width:14px; height:14px; border:1px solid var(--edge); border-radius:2px; background:var(--panel);
+/* Round, not square: a radio (choose exactly one) must not be visually
+   mistaken for a checkbox (.wg-check, toggle independently). */
+.wg-radio .wg-box { width:14px; height:14px; border:1px solid var(--edge); border-radius:50%; background:var(--panel);
   flex-shrink:0; position:relative; }
-.wg-radio .wg-box-input:checked + .wg-box { background:var(--gold); border-color:var(--gold); }
-.wg-radio .wg-box-input:checked + .wg-box::after { content:''; position:absolute; left:4px; top:1px; width:4px; height:8px;
-  border:solid var(--ink); border-width:0 2px 2px 0; transform:rotate(45deg); }
+.wg-radio .wg-box-input:checked + .wg-box { border-color:var(--gold); }
+.wg-radio .wg-box-input:checked + .wg-box::after { content:''; position:absolute; left:50%; top:50%; width:7px; height:7px;
+  border-radius:50%; background:var(--gold); transform:translate(-50%,-50%); }
 .wg-radio .wg-box-input:focus-visible + .wg-box { outline:2px solid var(--gold-bright); outline-offset:1px; }
 .wg-check { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); padding:3px 0; cursor:pointer; }
 .wg-check input { accent-color:var(--gold); flex-shrink:0; }
 @keyframes wgShimmer { 0%{background-position:220% 0;} 100%{background-position:-20% 0;} }
-.wg-card { border:1px solid var(--edge); background:radial-gradient(circle at 16% 0%,rgba(199,154,58,.08),transparent 55%),var(--panel); margin-bottom:10px; }
-.wg-card-icon { color:var(--gold); display:inline-flex; margin-right:7px; vertical-align:-2px; }
-.wg-card-tag { font-family:'Oswald',sans-serif; font-size:9.5px; letter-spacing:.5px; text-transform:uppercase; color:var(--gold); background:rgba(199,154,58,.12); border:1px solid rgba(199,154,58,.3); border-radius:8px; padding:1px 6px; margin-left:8px; }
+/* Flat, not boxed: a bold header + list of rows, no per-card border/icon/tag
+   chrome -- a group's mechanic is obvious from its controls (round radio dot
+   vs. square checkbox vs. a bounded stepper), matching the reference app's
+   plain list style instead of a wall of look-alike bordered cards. */
+.wg-card { border-top:1px solid rgba(44,42,53,.6); margin-top:10px; padding-top:8px; }
+.wg-card:first-child { border-top:none; margin-top:0; padding-top:0; }
 .wg-violation { display:flex; flex-direction:column; gap:3px; font-family:'EB Garamond',serif; font-size:13px; color:#c89a3a; background:rgba(199,154,58,.07); border:1px solid rgba(199,154,58,.35); border-left:3px solid var(--gold); border-radius:4px; padding:8px 10px; margin-bottom:10px; }
 .au-wargear-editor.is-pending { position:relative; opacity:.85; pointer-events:none; }
 .au-wargear-editor.is-pending::after { content:''; position:absolute; inset:0; border-radius:6px; background:linear-gradient(110deg,transparent 30%,rgba(199,154,58,.18) 50%,transparent 70%); background-size:220% 100%; animation:wgShimmer 1s linear infinite; }
-.wg-card:last-child { margin-bottom:0; }
 .wg-card-toggle { width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
-  background:none; border:none; cursor:pointer; padding:9px 11px; text-align:left; }
+  background:none; border:none; cursor:pointer; padding:1px 0; text-align:left; }
 .wg-card-toggle:hover .wg-card-chev { color:var(--gold-bright); }
-.wg-card-title { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); }
+.wg-card-title { font-family:'Oswald',sans-serif; font-weight:600; font-size:12px; letter-spacing:.75px; text-transform:uppercase; color:var(--gold); }
 .wg-card-badge { font-family:'Oswald',sans-serif; font-size:10px; color:var(--parch-dim); border:1px solid var(--edge);
   border-radius:3px; padding:0 5px; margin-left:2px; }
+.wg-card-badge-bad { border-color:#c89a3a; color:#c89a3a; }
+.wg-squad-warn { color:#c89a3a; font-weight:700; }
 .wg-card-chev { color:var(--gold); font-size:11px; flex-shrink:0; }
-.wg-card-content { padding:0 11px 10px; border-top:1px solid rgba(44,42,53,.6); padding-top:8px; }
+.wg-card-content { padding-top:6px; }
 .wg-radio em, .wg-stepper em { color:var(--gold-bright); font-style:normal; font-size:12px; }
 .wg-stepper { display:flex; align-items:center; justify-content:space-between; gap:12px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); padding:3px 0; }
 .wg-stepper input { width:58px; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'Oswald',sans-serif; font-size:14px; padding:3px 6px; text-align:center; }
@@ -363,10 +369,6 @@
 .wg-slot { background:var(--panel); border:1px solid var(--edge); color:var(--parch);
   font-family:'EB Garamond',serif; font-size:13px; padding:5px 8px; max-width:100%; }
 .wg-slot:focus { outline:none; border-color:rgba(199,154,58,.5); }
-.wg-model-row { display:flex; align-items:center; gap:10px; padding:2px 0; }
-.wg-model-lbl { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.3px; color:var(--parch-dim);
-  min-width:120px; flex-shrink:0; }
-.wg-model-row .wg-slot { flex:1; min-width:0; }
 .au-enh-editor { grid-column:1/-1; background:var(--ink-2); border:1px solid rgba(44,42,53,.7); padding:10px; margin-top:6px; }
 .au-enh-editor select { width:100%; background:var(--panel); border:1px solid var(--edge); color:var(--parch);
   font-family:'EB Garamond',serif; font-size:15px; padding:7px 10px; }
@@ -501,7 +503,9 @@
 .hud-pill {
   position:sticky; bottom:14px; z-index:8; display:inline-flex; align-items:stretch;
   margin-top:10px; box-shadow:0 8px 24px rgba(0,0,0,.5); font-family:'Oswald',sans-serif;
+  cursor:pointer;
 }
+.hud-pill:hover { box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 0 1px var(--gold); }
 .hud-warn {
   display:flex; align-items:center; justify-content:center; gap:4px; background:var(--warn-amber);
   color:#1a1604; font-size:15px; font-weight:700; padding:8px 12px;
@@ -639,28 +643,38 @@
 }
 .uo-accordion-head:hover { background:#9a9381; }
 .uo-accordion-chev { font-size:11px; }
+/* The body is the light surface the .opt-theme ink colors below assume --
+   without it the editor renders dark-ink-on-dark-panel and is unreadable. */
+.uo-accordion-body { background:var(--card-light); border:1px solid var(--card-light-2); border-top:none; padding:10px 12px; }
 .uo-accordion-body[hidden] { display:none; }
+.uo-accordion-body .ab-rp-hint { color:var(--card-ink-dim); }
+.uo-accordion-body .opt-row, .uo-accordion-body .opt-body { border-left:none; border-right:none; }
 .uo-warlord-row input.opt-check { margin-left:auto; }
 
 /* Re-theme the existing wargear-editor primitives (wg-card/wg-radio/wg-stepper/
    wg-check/wg-slot, all proven/working) to the light-card look when they
    render inside the unit-options panel -- CSS only, markup/JS untouched. */
 .opt-theme .wg-summary { color:var(--card-ink-dim); }
-.opt-theme .wg-card { background:var(--card-light); border-color:var(--card-light-2); }
+.opt-theme .wg-card { border-top-color:var(--card-light-2); }
 .opt-theme .wg-card-title { color:var(--card-ink); }
 .opt-theme .wg-card-chev { color:var(--card-ink-dim); }
 .opt-theme .wg-card-toggle:hover .wg-card-chev { color:var(--card-ink); }
-.opt-theme .wg-card-content { border-top-color:var(--card-light-2); }
 .opt-theme .wg-card-badge { border-color:var(--card-light-2); color:var(--card-ink-dim); }
-.opt-theme .wg-card-tag { color:var(--steel-blue); background:rgba(63,109,130,.12); border-color:rgba(63,109,130,.3); }
-.opt-theme .wg-card-icon { color:var(--steel-blue); }
 .opt-theme .wg-radio, .opt-theme .wg-stepper, .opt-theme .wg-check, .opt-theme .wg-fixed,
 .opt-theme .wg-group.wg-default, .opt-theme .wg-default-lbl, .opt-theme .wg-cap,
-.opt-theme .wg-array-mini, .opt-theme .wg-model-lbl { color:var(--card-ink); }
+.opt-theme .wg-array-mini { color:var(--card-ink); }
 .opt-theme .wg-radio .wg-box { background:var(--parch); border-color:var(--card-ink-dim); }
-.opt-theme .wg-radio .wg-box-input:checked + .wg-box { background:var(--steel-blue); border-color:var(--steel-blue); }
-.opt-theme .wg-stepper input, .opt-theme .wg-slot { background:var(--parch); border-color:var(--card-light-2); color:var(--card-ink); }
-.opt-theme .wg-violation { background:rgba(200,154,58,.15); }
+.opt-theme .wg-radio .wg-box-input:checked + .wg-box { border-color:var(--steel-blue); }
+.opt-theme .wg-radio .wg-box-input:checked + .wg-box::after { background:var(--steel-blue); }
+.opt-theme .wg-stepper input, .opt-theme .wg-slot { background:var(--parch); border-color:var(--card-ink-dim); color:var(--card-ink); }
+.opt-theme .wg-violation { background:rgba(200,154,58,.15); color:#7a5b16; border-left-color:#a97f24; }
+.opt-theme .wg-radio em, .opt-theme .wg-stepper em, .opt-theme .wg-check em { color:var(--steel-blue); }
+.opt-theme .wg-fixed { color:var(--card-ink-dim); }
+.opt-theme .wg-group-head { color:var(--card-ink-dim); opacity:1; }
+.opt-theme .wg-card-badge-bad { border-color:#a97f24; color:#7a5b16; }
+.opt-theme .wg-squad-warn { color:#a9531f; }
+.opt-theme .wg-check input, .opt-theme .wg-fixed input { accent-color:var(--steel-blue); }
+.opt-theme .wg-array-sub + .wg-array-sub { border-top-color:var(--card-light-2); }
 
 /* ---- Two-panel layout (centre + right rail) once the unit picker stops
    being a persistent third column and becomes the full overlay below. ---- */

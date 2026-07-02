@@ -4,7 +4,7 @@ import { showArmy, saveArmyMeta, updateSquadSize, updateAssigned,
          toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord,
          attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
          toggleDetachmentCard, removeDetachment, toggleDpExpand, selectUnit, clearRight, toggleUnitProfiles,
-         toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard, exportArmy,
+         toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, toggleWgCard, exportArmy,
          openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleCbDatasheet,
          openEditRoster, closeEditRoster, editRosterShow, duplicateRoster } from './army-detail.js';
 import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy } from './unit-picker.js';
@@ -37,7 +37,7 @@ Object.assign(window, {
   saveArmyMeta, updateSquadSize, updateAssigned,
   toggleEnhEditor, saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
   toggleDetachmentCard, removeDetachment, toggleDpExpand, selectUnit, clearRight, toggleUnitProfiles,
-  toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, toggleWgCard,
+  toggleWargear, setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, toggleWgCard,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy,
   openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleCbDatasheet,
   openEditRoster, closeEditRoster, editRosterShow, duplicateRoster,
