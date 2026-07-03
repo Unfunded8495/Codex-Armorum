@@ -7,6 +7,13 @@
       "runtimeArgs": ["app.py"],
       "port": 5050,
       "autoPort": false
+    },
+    {
+      "name": "flask-app-alt",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["app.py", "5051"],
+      "port": 5051,
+      "autoPort": false
     }
   ]
 }

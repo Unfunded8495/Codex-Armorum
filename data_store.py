@@ -122,6 +122,11 @@ class DataStore:
         self.ds_by_faction = {}
         # Full membership set per datasheet (UUIDs) for parent-aware queries.
         self._ds_factions = {}
+        # Explicit faction exclusions (official-app parity): faction UUID ->
+        # {datasheet UUID}. Most rows bar a parent-faction generic from a
+        # chapter (e.g. Librarians from Black Templars), which parent-aware
+        # membership would otherwise admit.
+        self._ds_faction_excluded = {}
 
         self.cost = {}
         self.composition = {}
@@ -140,6 +145,10 @@ class DataStore:
         # detachment_id -> Force Disposition English name (1:1 read-only label).
         self.disposition_by_detachment = {}
         self.enhancements_by_detachment = {}
+        self.enhancement_by_id = {}     # str(enhancement id) -> enhancement dict
+        # Datasheets whose model rows bar Enhancements outright (e.g. Ogryn
+        # Bodyguard) even though keyword matching alone would admit them.
+        self.enhancement_excluded_ds = set()
         # Detachment stratagems (keyed by detachment id) plus the universal Core
         # stratagems (Phase 6 surfaces both to the army-builder panels).
         self.stratagems_by_detachment = {}
@@ -147,6 +156,12 @@ class DataStore:
         self.leaders_for = {}
         self.led_by = {}
         self.leads = {}
+        # Structured leader-attachment groups (official-app enforcement data):
+        # leader datasheet id -> [{type: 'leader'|'support', required/excluded
+        # detachment, requires_all_units_keyword, member_ids}]. The flat
+        # leads/led_by name lists above stay for datasheet display; army
+        # building enforces from these groups.
+        self.leader_groups = {}
         self.allied_by_host = {}        # host_faction_id -> [ally config dict] (Phase 5b)
         self.army_rules_by_faction = {} # faction_id -> [{id,name,body_text,body_html}] (Phase 6)
         self.missions = {}              # Phase 6 mission reference (Combat Patrol pack excluded)
@@ -177,6 +192,7 @@ class DataStore:
             self._load_factions(conn)
             self._load_datasheets(conn)
             self._load_detachment_data(conn)
+            self._load_leader_groups(conn)
             self._load_battle_sizes(conn)
             self._load_army_rules(conn)
             self._load_missions(conn)
@@ -318,6 +334,15 @@ class DataStore:
                 "SELECT datasheet_id, faction_id FROM datasheet_faction").fetchall():
             ds_factions.setdefault(r["datasheet_id"], []).append(r["faction_id"])
         self._ds_factions = ds_factions
+
+        # Explicit exclusions (tolerate an older export without the table).
+        try:
+            for r in conn.execute(
+                    "SELECT datasheet_id, faction_id FROM datasheet_faction_excluded").fetchall():
+                self._ds_faction_excluded.setdefault(
+                    r["faction_id"], set()).add(r["datasheet_id"])
+        except sqlite3.OperationalError:
+            pass
 
         # datasheet -> [model row, ...]
         models_by_ds = {}
@@ -800,6 +825,82 @@ class DataStore:
                 "Leader resolver: %d unresolved name(s); first 10: %s",
                 len(unresolved), unresolved[:10])
 
+    def _resolve_group_members(self, ids, keywords, leader_did=None):
+        """Datasheet-id set for a leader-attachment group's membership: the
+        explicit id list (filtered to loaded datasheets) plus keyword-based
+        membership - every datasheet carrying ALL of the group's keywords
+        (e.g. Inquisitor Draxus leads any Imperium + Battleline + Infantry
+        unit). The leader itself never qualifies as its own bodyguard."""
+        members = {i for i in (ids or []) if i in self.ds_by_id}
+        kws = {k for k in (keywords or []) if k}
+        if kws:
+            for u in self.datasheets:
+                if u["id"] != leader_did and kws <= set(u.get("_keywords") or []):
+                    members.add(u["id"])
+        return members
+
+    def _load_leader_groups(self, conn):
+        """Leader-attachment groups from the `leader_group` table (exporter v3),
+        which keep the enforcement conditions the flat leads/led_by name lists
+        lose: bodyguard_type ('leader' fills the unit's single Leader slot,
+        'support' attaches alongside it), required/excluded detachment, the
+        "all units in the party share keyword X" gate, and keyword-based
+        membership. Also stitches each enhancement's grants_leader_attachment
+        onto its dict as `leader_grants` (same group shape, no conditions).
+        Tolerates an older export without the table/column."""
+        try:
+            rows = conn.execute(
+                "SELECT id, datasheet_id, bodyguard_type, required_detachment_id, "
+                "excluded_detachment_id, requires_all_units_keyword, "
+                "member_datasheet_ids, member_keywords FROM leader_group").fetchall()
+        except sqlite3.OperationalError:
+            return
+        for r in rows:
+            if r["datasheet_id"] not in self.ds_by_id:
+                continue
+            try:
+                ids = json.loads(r["member_datasheet_ids"] or "[]")
+            except (TypeError, ValueError):
+                ids = []
+            try:
+                kws = json.loads(r["member_keywords"] or "[]")
+            except (TypeError, ValueError):
+                kws = []
+            self.leader_groups.setdefault(r["datasheet_id"], []).append({
+                "id": r["id"],
+                "type": r["bodyguard_type"] or "leader",
+                "required_detachment_id": r["required_detachment_id"],
+                "excluded_detachment_id": r["excluded_detachment_id"],
+                "requires_all_units_keyword": r["requires_all_units_keyword"],
+                "member_ids": self._resolve_group_members(ids, kws, r["datasheet_id"]),
+            })
+        try:
+            grant_rows = conn.execute(
+                "SELECT id, grants_leader_attachment FROM enhancement "
+                "WHERE grants_leader_attachment IS NOT NULL "
+                "AND grants_leader_attachment != '[]'").fetchall()
+        except sqlite3.OperationalError:
+            return
+        for r in grant_rows:
+            enh = self.enhancement_by_id.get(str(r["id"]))
+            if not enh:
+                continue
+            try:
+                raw = json.loads(r["grants_leader_attachment"] or "[]")
+            except (TypeError, ValueError):
+                continue
+            grants = [{
+                "id": None,
+                "type": g.get("type") or "leader",
+                "required_detachment_id": None,
+                "excluded_detachment_id": None,
+                "requires_all_units_keyword": None,
+                "member_ids": self._resolve_group_members(
+                    g.get("datasheet_ids"), g.get("keywords")),
+            } for g in raw if isinstance(g, dict)]
+            if grants:
+                enh["leader_grants"] = grants
+
     def _tree_root(self, fid):
         """Walk up parent_faction until the top. Used to scope leader-name
         resolution to a faction tree."""
@@ -887,23 +988,49 @@ class DataStore:
             self.disposition_by_detachment[r["detachment_id"]] = r["name"]
 
         for r in conn.execute("""SELECT id, detachment_id, name, points, type,
-                                        rules_text, eligibility_text, eligibility
+                                        rules_text, eligibility_text, eligibility,
+                                        take_limit, counts_toward_limit,
+                                        epic_hero_eligible, non_character_eligible,
+                                        cannot_be_warlord
                                  FROM enhancement""").fetchall():
             try:
                 eligibility_struct = json.loads(r["eligibility"] or "{}")
             except (TypeError, ValueError):
                 eligibility_struct = {}
+            enh = {
+                "id":            r["id"],
+                "name":          r["name"],
+                "cost":          r["points"] or 0,
+                "detachment_id": r["detachment_id"],
+                "description":   r["rules_text"] or "",
+                "type":          r["type"] or "",
+                "eligibility":   r["eligibility_text"] or "",
+                "eligibility_struct": eligibility_struct,
+                # Per-enhancement rule flags (exporter v3). take_limit is how
+                # many copies one army may field (1 = unique, 3 for some
+                # Upgrade-type enhancements); counts_toward_limit=False rows
+                # are free with respect to the battle-size enhancement cap.
+                "take_limit":    r["take_limit"] or 1,
+                "counts_toward_limit": bool(r["counts_toward_limit"]
+                                            if r["counts_toward_limit"] is not None else 1),
+                "epic_hero_eligible":   bool(r["epic_hero_eligible"]),
+                "non_character_eligible": bool(r["non_character_eligible"]),
+                "cannot_be_warlord":    bool(r["cannot_be_warlord"]),
+            }
             self.enhancements_by_detachment.setdefault(
-                r["detachment_id"], []).append({
-                    "id":            r["id"],
-                    "name":          r["name"],
-                    "cost":          r["points"] or 0,
-                    "detachment_id": r["detachment_id"],
-                    "description":   r["rules_text"] or "",
-                    "type":          r["type"] or "",
-                    "eligibility":   r["eligibility_text"] or "",
-                    "eligibility_struct": eligibility_struct,
-                })
+                r["detachment_id"], []).append(enh)
+            self.enhancement_by_id[str(r["id"])] = enh
+
+        # Model-level Enhancement bans (exporter v3): a flagged model bars its
+        # whole datasheet from every Enhancement (all four flagged models are
+        # their datasheet's only model). Restricted to loaded datasheets - a
+        # sheet the datasheet loader skipped (e.g. Sir Hekhtur, no faction
+        # membership) can never be picked, so its ban is moot.
+        self.enhancement_excluded_ds = {
+            r["datasheet_id"] for r in conn.execute(
+                "SELECT DISTINCT datasheet_id FROM model "
+                "WHERE excluded_from_enhancements=1").fetchall()
+            if r["datasheet_id"] in self.ds_by_id}
 
         for r in conn.execute("""SELECT id, detachment_id, name, cp_cost,
                                         category, used_when, phases, when_text,
@@ -1045,11 +1172,14 @@ class DataStore:
         parent = self._faction_parent.get(fid)
         if parent:
             units += self.units_for_faction(parent)
-        # Dedupe by id while preserving sort.
+        # Dedupe by id while preserving sort, and drop explicit exclusions
+        # (official-app parity: e.g. Black Templars are barred from Librarians
+        # even though the parent tree would offer them).
+        excluded = self._ds_faction_excluded.get(fid, ())
         seen = set()
         deduped = []
         for u in units:
-            if u["id"] in seen:
+            if u["id"] in seen or u["id"] in excluded:
                 continue
             seen.add(u["id"])
             deduped.append(u)
@@ -1060,7 +1190,10 @@ class DataStore:
         """True when the unit is a member of fid, or fid is the parent of the
         unit's primary faction. Driven by datasheet_faction membership so a
         Blood Angels unit returns True for both Blood Angels and Adeptus
-        Astartes."""
+        Astartes. Explicit exclusions veto everything: a datasheet barred from
+        fid is never in it, however the tree would resolve."""
+        if did in self._ds_faction_excluded.get(fid, ()):
+            return False
         memberships = self._ds_factions.get(did, [])
         if fid in memberships:
             return True

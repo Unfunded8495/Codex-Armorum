@@ -215,33 +215,293 @@ def run():
     r.check("wargear: limited×array corrections converge (re-validation is legal and stable)",
             not unconverged, f"{len(unconverged)} unstable e.g. {unconverged[:3]}")
 
-    # 5) Enhancement eligibility: classify every enhancement without error; no Epic
-    #    Hero ever passes; every datasheet-specific group resolves to a real name.
+    # 4d) Multi-item option bundles ("1 plasma pistol and 1 Astartes chainsword"
+    #     is ONE option): a bundle pick posted the way the UI posts it must
+    #     survive validation intact and legally. limited_per_n: anchors set to 1
+    #     -> every member key >= its qty, no violations, and the pick counts
+    #     once against the cap. replace_one/all_model: the group zeroed + the
+    #     bundle's keys set -> all keys stay active, no "choose only one".
+    lb_bad, rb_bad, lb_n, rb_n = [], [], 0, 0
+    for did in dsids:
+        schema = wargear.wargear_schema(did)
+        if not any(g.get("option_bundles") for g in schema):
+            continue
+        size = army._squad_bounds(did)["default"]
+        nm = s.ds_by_id[did].get("name")
+        mcs = wargear._miniature_counts(did, size)
+        for g in schema:
+            for bd in (g.get("option_bundles") or ()):
+                if g["type"] == "limited_per_n":
+                    if wargear.limited_cap(g["limits"], size) < 1:
+                        continue
+                    lb_n += 1
+                    sel = dict(wargear.default_selection(did, size))
+                    for a in bd["anchors"]:
+                        sel[a] = 1
+                    res = wargear.validate_selection(did, size, sel)
+                    f = res["selection"]
+                    if (any(_int(f.get(k)) < q for k, q in bd["keys"].items())
+                            or res["violations"]):
+                        lb_bad.append((nm, bd["label"], res["violations"][:1]))
+                else:  # replace_one / all_model
+                    rb_n += 1
+                    mc = (mcs.get(g.get("miniature"), 0) or size) \
+                        if g["type"] == "all_model" else 1
+                    sel = dict(wargear.default_selection(did, size))
+                    for i in g["items"]:
+                        sel[i["key"]] = 0
+                    for k in (g.get("linked_default_keys") or ()):
+                        sel[k] = 0
+                    for k, q in bd["keys"].items():
+                        sel[k] = q * mc
+                    res = wargear.validate_selection(did, size, sel)
+                    f = res["selection"]
+                    if (any(_int(f.get(k)) <= 0 for k in bd["keys"])
+                            or any("choose only one" in (v.get("message") or "")
+                                   for v in res["violations"])):
+                        rb_bad.append((nm, bd["label"], res["violations"][:1]))
+    r.check(f"wargear: limited_per_n bundle picks are one legal pick ({lb_n} bundles)",
+            lb_n > 0 and not lb_bad, f"{len(lb_bad)} bad e.g. {lb_bad[:3]}")
+    r.check(f"wargear: replace_one/all_model bundle picks keep every member ({rb_n} bundles)",
+            rb_n > 0 and not rb_bad, f"{len(rb_bad)} bad e.g. {rb_bad[:3]}")
+
+    # 5) Enhancement eligibility: classify every enhancement without error; the
+    #    Epic Hero and Character gates hold exactly per the exported rule flags
+    #    (epic_hero_eligible / non_character_eligible waive them for a handful);
+    #    every datasheet-specific group resolves to a real name. Bearers are
+    #    given the first required group's own keywords so the gate under test -
+    #    not an unmatched group - is what decides.
     names = set(v["name"] for v in s.ds_by_id.values())
-    elig_err, epic_pass, ds_unresolved = [], [], []
-    seen = 0
-    char_kw = {"Character"}
-    epic_kw = {"Character", "Epic Hero"}
+    elig_err, epic_bad, nonchar_bad, ds_unresolved = [], [], [], []
+    seen = epic_ok = nonchar_ok = 0
     for dtid, enhs in s.enhancements_by_detachment.items():
         for e in enhs:
             seen += 1
             struct = e.get("eligibility_struct") or {}
+            g = (struct.get("required_groups") or [{}])[0]
+            base = set(g.get("keywords") or []) \
+                | {"Faction: " + fk for fk in (g.get("faction_keywords") or [])}
+            nm = g.get("datasheet") or ""
             try:
-                eligibility.enhancement_eligible(char_kw, "Character", struct)
-                if eligibility.enhancement_eligible(epic_kw, "Epic Hero", struct):
-                    epic_pass.append(e.get("name"))
+                eligibility.enhancement_eligible(base | {"Character"}, "Character", e, nm)
+                epic = eligibility.enhancement_eligible(
+                    base | {"Character", "Epic Hero"}, "Epic Hero", e, nm)
+                nonchar = eligibility.enhancement_eligible(base - {"Character"}, "", e, nm)
             except Exception as ex:
                 elig_err.append((e.get("name"), repr(ex)))
+                continue
+            if epic and not e.get("epic_hero_eligible"):
+                epic_bad.append(e.get("name"))
+            epic_ok += 1 if (epic and e.get("epic_hero_eligible")) else 0
+            if nonchar and not e.get("non_character_eligible"):
+                nonchar_bad.append(e.get("name"))
+            nonchar_ok += 1 if (nonchar and e.get("non_character_eligible")) else 0
             for grp in struct.get("required_groups", []):
                 d = grp.get("datasheet")
                 if d and d not in names:
                     ds_unresolved.append((e.get("name"), d))
     r.check(f"eligibility: all {seen} enhancements classify without exception",
             not elig_err, f"{len(elig_err)} errored e.g. {elig_err[:2]}")
-    r.check("eligibility: no Epic Hero passes any enhancement (core rule)",
-            not epic_pass, f"{len(epic_pass)} admitted e.g. {epic_pass[:3]}")
+    r.check("eligibility: an Epic Hero passes only epic_hero_eligible enhancements",
+            not epic_bad, f"{len(epic_bad)} admitted e.g. {epic_bad[:3]}")
+    r.check(f"eligibility: epic_hero_eligible enhancements admit an Epic Hero ({epic_ok})",
+            epic_ok > 0, "none admitted - flag loaded but inert?")
+    r.check("eligibility: a non-Character passes only non_character_eligible enhancements",
+            not nonchar_bad, f"{len(nonchar_bad)} admitted e.g. {nonchar_bad[:3]}")
+    r.check(f"eligibility: non_character_eligible enhancements admit a non-Character ({nonchar_ok})",
+            nonchar_ok > 0, "none admitted - flag loaded but inert?")
     r.check("eligibility: every datasheet-specific group resolves to a real datasheet name",
             not ds_unresolved, f"{len(ds_unresolved)} unresolved e.g. {ds_unresolved[:3]}")
+
+    # 5b) Model-level Enhancement bans (excluded_from_enhancements): every banned
+    #     datasheet resolves, and is blocked from every enhancement in the game
+    #     even with its real (Character) keywords.
+    excl = getattr(s, "enhancement_excluded_ds", set())
+    excl_missing = [d for d in excl if d not in s.ds_by_id]
+    excl_pass = []
+    for did in excl:
+        u = s.ds_by_id.get(did) or {}
+        kw, role, nm = set(u.get("_keywords") or []), u.get("role") or "", u.get("name") or ""
+        for enhs in s.enhancements_by_detachment.values():
+            for e in enhs:
+                if eligibility.enhancement_eligible(kw, role, e, nm, did):
+                    excl_pass.append((nm, e.get("name")))
+    r.check(f"eligibility: model-level Enhancement bans loaded and resolve ({len(excl)} datasheets)",
+            len(excl) > 0 and not excl_missing,
+            f"missing {excl_missing}" if excl_missing else "no banned datasheets loaded")
+    r.check("eligibility: a banned datasheet is blocked from every enhancement",
+            not excl_pass, f"{len(excl_pass)} admitted e.g. {excl_pass[:3]}")
+
+    # 5c) Enhancement rule flags: take_limit is a positive int everywhere, the
+    #     multi-take / cap-free / warlord-barred populations exist, and the
+    #     enhancement_by_id index holds the same dict objects the pools do (the
+    #     validators key off it by str(id)).
+    flag_bad, unindexed = [], []
+    multi = free = cbw = 0
+    for dtid, enhs in s.enhancements_by_detachment.items():
+        for e in enhs:
+            tl = e.get("take_limit")
+            if not isinstance(tl, int) or tl < 1:
+                flag_bad.append((e.get("name"), "take_limit", tl))
+            elif tl > 1:
+                multi += 1
+            free += 0 if e.get("counts_toward_limit", True) else 1
+            cbw += 1 if e.get("cannot_be_warlord") else 0
+            if s.enhancement_by_id.get(str(e.get("id"))) is not e:
+                unindexed.append(e.get("name"))
+    r.check(f"flags: take_limit positive everywhere; multi-take ({multi}), cap-free ({free}) "
+            f"and cannot_be_warlord ({cbw}) populations all present",
+            not flag_bad and multi > 0 and free > 0 and cbw > 0,
+            f"bad {flag_bad[:3]}" if flag_bad else f"multi={multi} free={free} cbw={cbw}")
+    r.check("flags: enhancement_by_id indexes every enhancement (same object as the pool)",
+            not unindexed, f"{len(unindexed)} unindexed e.g. {unindexed[:3]}")
+
+    # 5d) Leader-attachment groups (leader_group): loaded and resolved, at
+    #     parity with the flat leads name lists, and the attach engine honours
+    #     Leader/support slots, detachment gates and mark-keyword parties.
+    if has(s, "leader_groups") and has(army, "attach_check"):
+        n_groups = sum(len(v) for v in s.leader_groups.values())
+        member_bad, pop = [], {"support": 0, "det_gated": 0, "kw_gated": 0, "kw_members": 0}
+        for ldid, lgroups in s.leader_groups.items():
+            for g in lgroups:
+                if g.get("type") == "support":
+                    pop["support"] += 1
+                if g.get("required_detachment_id") or g.get("excluded_detachment_id"):
+                    pop["det_gated"] += 1
+                if g.get("requires_all_units_keyword"):
+                    pop["kw_gated"] += 1
+                if not g["member_ids"]:
+                    pop["kw_members"] += 1  # a group with no resolved members is inert
+                for m in g["member_ids"]:
+                    if m not in s.ds_by_id:
+                        member_bad.append((s.ds_by_id[ldid].get("name"), m))
+        r.check(f"leaders: leader_group loaded ({len(s.leader_groups)} leaders, {n_groups} groups); "
+                f"support ({pop['support']}), detachment-gated ({pop['det_gated']}) and "
+                f"keyword-gated ({pop['kw_gated']}) populations all present",
+                n_groups > 0 and pop["support"] > 0 and pop["det_gated"] > 0 and pop["kw_gated"] > 0,
+                f"populations {pop}")
+        r.check("leaders: every group's membership resolves to loaded datasheets (none inert)",
+                not member_bad and pop["kw_members"] == 0,
+                f"{len(member_bad)} bad, {pop['kw_members']} empty e.g. {member_bad[:3]}")
+
+        # Parity: every target the flat leads_units list names is reachable
+        # through some leader_group (ignoring gates) - enforcement never bars a
+        # pairing the display layer advertises outright. By NAME: the flat
+        # resolver fans a shared name out to every datasheet carrying it (two
+        # Sternguard Veteran Squads exist), while leader_group pins the one
+        # the official app means.
+        parity_bad = []
+        for ldid, targets in s.leads.items():
+            union_names = set()
+            for g in s.leader_groups.get(ldid, []):
+                union_names |= {s.ds_by_id[m]["name"] for m in g["member_ids"]}
+            for t in targets:
+                if t.get("id") and t.get("name") not in union_names:
+                    parity_bad.append((s.ds_by_id[ldid].get("name"), t.get("name")))
+        r.check("leaders: every resolved leads_units target name appears in some leader_group",
+                not parity_bad, f"{len(parity_bad)} missing e.g. {parity_bad[:3]}")
+
+        # Behaviour: one Leader-slot character + any support alongside; a second
+        # Leader-slot character is blocked. Case found from the data (a bodyguard
+        # with >=2 pure-leader leaders and >=1 pure-support leader, no gates).
+        by_target = {}
+        for ldid, lgroups in s.leader_groups.items():
+            for g in lgroups:
+                if (g.get("required_detachment_id") or g.get("excluded_detachment_id")
+                        or g.get("requires_all_units_keyword")):
+                    continue
+                for m in g["member_ids"]:
+                    d = by_target.setdefault(m, {"leader": set(), "support": set()})
+                    d["support" if g.get("type") == "support" else "leader"].add(ldid)
+        case = next(((t, d) for t, d in by_target.items()
+                     if len(d["leader"] - d["support"]) >= 2 and (d["support"] - d["leader"])), None)
+        if case:
+            t, d = case
+            la, lb = sorted(d["leader"] - d["support"])[:2]
+            sp = sorted(d["support"] - d["leader"])[0]
+            mk = lambda i, dd, a="": {"id": i, "datasheet_id": dd, "enhancement_id": "", "attached_to": a}
+            rows_ = [mk("bg", t), mk("la", la), mk("lb", lb), mk("sp", sp)]
+            ok_leader = army.attach_check([], rows_, rows_[1], rows_[0]) is None
+            rows_[1]["attached_to"] = "bg"
+            ok_support = army.attach_check([], rows_, rows_[3], rows_[0]) is None
+            rows_[3]["attached_to"] = "bg"
+            second_blocked = army.attach_check([], rows_, rows_[2], rows_[0]) is not None
+            r.check("leaders: attach engine admits Leader + support and blocks a second Leader "
+                    f"({s.ds_by_id[t].get('name')}: {s.ds_by_id[la].get('name')} + {s.ds_by_id[sp].get('name')})",
+                    ok_leader and ok_support and second_blocked,
+                    f"leader={ok_leader} support={ok_support} second_blocked={second_blocked}")
+        else:
+            r.check("leaders: found a bodyguard with both Leader and support leaders", False,
+                    "no ungated leader+support case in data (population vanished?)")
+
+        # Behaviour: the detachment/mark pattern the data actually uses (CSM) -
+        # a base group carries excluded_detachment X and no keyword gate, its
+        # twins carry required_detachment X plus one mark each. Outside X the
+        # pairing is mark-free; inside X the party must share one mark.
+        marked = {}
+        for k in army.MARK_KEYWORDS:
+            marked[k] = next((dd for dd, u in s.ds_by_id.items()
+                              if k in set(u.get("_keywords") or [])), None)
+        k1, k2 = marked.get("Khorne"), marked.get("Nurgle")
+        combo = None
+        for ldid, lgroups in s.leader_groups.items():
+            for g in lgroups:
+                exc_id = g.get("excluded_detachment_id")
+                if not exc_id or g.get("requires_all_units_keyword"):
+                    continue
+                twins = [x for x in lgroups
+                         if x.get("required_detachment_id") == exc_id
+                         and x.get("requires_all_units_keyword")
+                         and x["member_ids"] & g["member_ids"]]
+                if not twins:
+                    continue
+                shared = twins[0]["member_ids"] & g["member_ids"]
+                # pick a member no third, unconditional group also covers, so
+                # the in-detachment mark gate is the only path
+                for m in sorted(shared):
+                    if not any(m in x["member_ids"] for x in lgroups
+                               if x is not g and x not in twins
+                               and not x.get("required_detachment_id")):
+                        combo = (ldid, m, exc_id)
+                        break
+                if combo:
+                    break
+            if combo:
+                break
+        if combo and k1 and k2:
+            ldid, m, x = combo
+            mixed = [m, ldid, k1, k2]
+            out_kinds = army._attach_kinds(army.leader_groups_for(ldid, "", []), m, mixed)
+            in_unmarked = army._attach_kinds(army.leader_groups_for(ldid, "", [x]), m, [m, ldid])
+            in_mixed = army._attach_kinds(army.leader_groups_for(ldid, "", [x]), m, mixed)
+            r.check("leaders: mark gate off outside its detachment, enforced inside "
+                    f"({s.ds_by_id[ldid].get('name')} -> {s.ds_by_id[m].get('name')})",
+                    bool(out_kinds) and bool(in_unmarked) and not in_mixed,
+                    f"outside={out_kinds} in_unmarked={in_unmarked} in_mixed={in_mixed}")
+        else:
+            r.check("leaders: found an excluded-base + mark-twin detachment pattern",
+                    False, f"combo={combo} k1={bool(k1)} k2={bool(k2)}")
+
+        # Enhancement grants (grants_leader_attachment): loaded, members resolve,
+        # and a grant gives its bearer attach targets through leader_groups_for.
+        grant_bad, grant_n = [], 0
+        granting = None
+        for e in s.enhancement_by_id.values():
+            for g in e.get("leader_grants") or []:
+                grant_n += 1
+                granting = granting or e
+                for m in g["member_ids"]:
+                    if m not in s.ds_by_id:
+                        grant_bad.append((e.get("name"), m))
+        r.check(f"leaders: enhancement grants_leader_attachment loaded ({grant_n} groups) and members resolve",
+                grant_n > 0 and not grant_bad, f"{len(grant_bad)} bad e.g. {grant_bad[:3]}")
+        if granting:
+            gs_ = army.leader_groups_for("no-such-datasheet", str(granting["id"]),
+                                         [granting["detachment_id"]])
+            r.check(f"leaders: an enhancement grant adds attach targets for its bearer ({granting['name']})",
+                    any(g["member_ids"] for g in gs_), "grant did not surface via leader_groups_for")
+    else:
+        r.skip("leaders: leader_group sweep", "store.leader_groups/army.attach_check absent")
 
     # 6) Picker well-formedness: everything the picker offers is a real datasheet,
     #    and every faction the data says has native units (unit_count > 0) offers a

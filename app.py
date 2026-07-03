@@ -20,7 +20,8 @@ import factions_theme as ft
 from army import (
     _army_unit_row, _enhancement_cost,
     _enhancement_for_ids, _normalise_squad_size, _points_for,
-    _squad_bounds, _valid_detachment_for_faction, battle_size_caps,
+    _squad_bounds, _valid_detachment_for_faction, attach_check,
+    battle_size_caps,
     parse_detachment_ids, detachment_set_cost, clear_orphaned_enhancements,
 )
 from army_validation import validation_payload
@@ -470,11 +471,13 @@ def api_faction_units(fid):
         # Squad-size span for the add-unit picker's "N models" line, plus the
         # min/max-size prices so the card can show the unit's real cost range
         # (u["points"] is the default-size price, which may be either end).
-        bounds = _squad_bounds(u["id"])
+        # Faction context filters tiers gated to another chapter (e.g. the
+        # Blood-Angels-only Assault Intercessor pricing) out of the ranges.
+        bounds = _squad_bounds(u["id"], fid)
         u["squad_min"], u["squad_max"] = bounds["min"], bounds["max"]
         if bounds["max"] > bounds["min"]:
-            u["points_min"] = _points_for(u["id"], bounds["min"])
-            u["points_max"] = _points_for(u["id"], bounds["max"])
+            u["points_min"] = _points_for(u["id"], bounds["min"], fid)
+            u["points_max"] = _points_for(u["id"], bounds["max"], fid)
         u["multikit_groups"] = [
             {"key": gkey,
              "pool": info["groups"].get(gkey, {}).get("pool", 0),
@@ -536,8 +539,9 @@ def api_detachment_enhancements(dtid):
 def api_army_unit_enhancements(auid):
     """Enhancements a specific army-unit may take: eligible for the unit, drawn
     from ANY of the army's selected detachments (their pools are unioned), and not
-    already assigned to a sibling unit (uniqueness). The unit's own current pick is
-    always included so it stays visible and clearable."""
+    already at their take limit among sibling units (1 for most - unique - or the
+    enhancement's take_limit for multi-take Upgrades). The unit's own current pick
+    is always included so it stays visible and clearable."""
     from db import db
     from eligibility import eligible_enhancements
     with db() as c:
@@ -547,14 +551,19 @@ def api_army_unit_enhancements(auid):
         army = c.execute("SELECT * FROM army_lists WHERE id=?", (row["army_list_id"],)).fetchone()
         dt_ids = parse_detachment_ids(army) if army else []
         own = str(row["enhancement_id"] or "")
-        taken = {str(r["enhancement_id"]) for r in c.execute(
-            "SELECT enhancement_id FROM army_units WHERE army_list_id=? AND id!=? AND enhancement_id!=''",
-            (row["army_list_id"], auid)).fetchall()}
+        taken = {}
+        for r in c.execute(
+                "SELECT enhancement_id, COUNT(*) n FROM army_units "
+                "WHERE army_list_id=? AND id!=? AND enhancement_id!='' "
+                "GROUP BY enhancement_id",
+                (row["army_list_id"], auid)).fetchall():
+            taken[str(r["enhancement_id"])] = r["n"]
     did = store.ds_by_id.get(row["datasheet_id"], {}).get("id") or row["datasheet_id"]
     out, seen = [], set()
     for dtid in dt_ids:
         for e in eligible_enhancements(did, dtid):
-            if str(e["id"]) in taken or str(e["id"]) in seen:
+            if (taken.get(str(e["id"]), 0) >= (e.get("take_limit") or 1)
+                    or str(e["id"]) in seen):
                 continue
             out.append({"id": e["id"], "name": e["name"], "cost": _int(e.get("cost", 0)),
                         "description": e.get("description", "")})
@@ -701,6 +710,112 @@ def _minis_from_box(box, quantity):
             multikit_group=gkey,
         )
     return total
+
+
+def _box_mini_spec(box):
+    """Per-single-box mini counts, keyed the same way _minis_from_box creates rows.
+
+    Multikit groups collapse to one pooled entry keyed by group name; standalone
+    items key on (datasheet_id, catalogue_model_id). Returns
+    {key: {"count": n, "item": content item, "gkey": minis.multikit_group value}}.
+    """
+    spec = {}
+    for item in (box or {}).get("contents", []):
+        mg = item.get("multikit_group")
+        if mg:
+            key = ("mk", mg)
+            if key in spec:
+                continue
+            count = item["physical_miniatures"]
+            gkey = f"{box['id']}::{mg}"
+        else:
+            key = ("ds", item["datasheet_id"], item.get("catalogue_model_id"))
+            count = item["datasheet_count"]
+            gkey = None
+        if count <= 0:
+            continue
+        if key in spec:
+            spec[key]["count"] += count
+        else:
+            spec[key] = {"count": count, "item": item, "gkey": gkey}
+    return spec
+
+
+def _remove_untouched_minis(c, item, gkey, limit):
+    """Delete up to `limit` untouched minis matching a removed box content item.
+
+    Untouched = still unbuilt with no notes, no wargear and no photos. Anything
+    the user has worked on is kept, even if the box no longer accounts for it.
+    Returns the number deleted.
+    """
+    did = item["datasheet_id"]
+    sql = ("SELECT id FROM minis WHERE (datasheet_id=? OR unit_bsdata_id=?) "
+           "AND stage='unbuilt' AND COALESCE(notes,'')='' "
+           "AND COALESCE(wargear,'[]') IN ('[]','') "
+           "AND id NOT IN (SELECT mini_id FROM photos) ")
+    params = [did, did]
+    if gkey:
+        sql += "AND multikit_group=? "
+        params.append(gkey)
+    else:
+        sql += "AND multikit_group IS NULL "
+        cid = item.get("catalogue_model_id")
+        if cid:
+            sql += "AND catalogue_model_id=? "
+            params.append(cid)
+    sql += "ORDER BY created_at DESC LIMIT ?"
+    params.append(limit)
+    ids = [r["id"] for r in c.execute(sql, params).fetchall()]
+    for mid in ids:
+        c.execute("DELETE FROM minis WHERE id=?", (mid,))
+    return len(ids)
+
+
+def _reconcile_purchased_minis(old_box, new_box):
+    """Bring mini rows for existing purchases in line with an edited box.
+
+    Purchase payloads derive their contents live from the box definition, but
+    mini rows are only created at purchase time — so editing an
+    already-purchased box would bump the bought totals while the minis (and the
+    collection built from them) never changed. Creates unbuilt minis for added
+    counts and removes untouched minis for reduced counts.
+
+    Returns {"created": n, "removed": n, "kept": n} where "kept" counts minis a
+    reduction should have removed but that were left because the user had
+    already worked on them.
+    """
+    from db import db
+    old_spec = _box_mini_spec(old_box)
+    new_spec = _box_mini_spec(new_box)
+    to_create = []
+    removed = kept = 0
+    with db() as c:
+        if not _table_exists(c, "purchases"):
+            return {"created": 0, "removed": 0, "kept": 0}
+        row = c.execute("SELECT COALESCE(SUM(quantity),0) q FROM purchases WHERE box_set_id=?",
+                        (new_box["id"],)).fetchone()
+        qty = _as_int(row["q"], 0, minimum=0)
+        if qty <= 0:
+            return {"created": 0, "removed": 0, "kept": 0}
+        for key, entry in new_spec.items():
+            delta = (entry["count"] - old_spec.get(key, {}).get("count", 0)) * qty
+            if delta > 0:
+                to_create.append((entry, delta))
+        for key, entry in old_spec.items():
+            delta = (entry["count"] - new_spec.get(key, {}).get("count", 0)) * qty
+            if delta > 0:
+                done = _remove_untouched_minis(c, entry["item"], entry["gkey"], delta)
+                removed += done
+                kept += delta - done
+    # _create_minis opens its own connection — run after the write above commits.
+    created = 0
+    for entry, delta in to_create:
+        item = entry["item"]
+        _create_minis(item["datasheet_id"], item.get("catalogue_model_id"),
+                      item.get("catalogue_label", ""), [], delta,
+                      multikit_group=entry["gkey"])
+        created += delta
+    return {"created": created, "removed": removed, "kept": kept}
 
 
 @app.route("/api/minis/<mid>", methods=["POST"])
@@ -1205,7 +1320,8 @@ def api_list_armies():
                 "SELECT squad_size, datasheet_id, enhancement_id, wargear_points FROM army_units WHERE army_list_id=?",
                 (r["id"],)).fetchall()
             total_pts = sum(
-                _points_for(u["datasheet_id"], u["squad_size"]) +
+                _points_for(u["datasheet_id"], u["squad_size"],
+                            r["faction_id"], parse_detachment_ids(r)) +
                 # Enhancement ids are globally unique, so resolve cost without a
                 # detachment hint — the unit's enhancement may belong to any of
                 # the army's selected detachments.
@@ -1309,7 +1425,8 @@ def api_import_army():
             if did not in selectable and not store.ally_config_for(fid, did):
                 new_ids.append(None); continue
             auid = uuid.uuid4().hex
-            squad = _normalise_squad_size(did, u.get("squad_size"))
+            squad = _normalise_squad_size(did, u.get("squad_size"),
+                                          fid=fid, dt_ids=dt_ids)
             loadout = u.get("loadout") if isinstance(u.get("loadout"), dict) else {}
             eid = str(u.get("enhancement_id", "") or "")
             c.execute("""INSERT INTO army_units(id, army_list_id, datasheet_id, squad_size,
@@ -1482,8 +1599,10 @@ def api_add_army_unit(aid):
     if did not in selectable and not store.ally_config_for(fid, did):
         return jsonify({"ok": False, "error": "Unit does not belong to this army's faction"}), 400
     # _normalise_squad_size resolves the default (the unit's default composition
-    # size) from the structured tiers when no squad_size is posted.
-    squad_size = _normalise_squad_size(did, data.get("squad_size"))
+    # size) from the structured tiers when no squad_size is posted; the army
+    # context drops tiers gated to another faction/detachment.
+    squad_size = _normalise_squad_size(did, data.get("squad_size"),
+                                       fid=fid, dt_ids=parse_detachment_ids(army))
     auid = uuid.uuid4().hex
     with db() as c:
         max_order = c.execute(
@@ -1517,7 +1636,8 @@ def api_update_army_unit(auid):
             did = canonical_did
 
         squad_size = _normalise_squad_size(
-            did, data.get("squad_size", row["squad_size"]), row["squad_size"])
+            did, data.get("squad_size", row["squad_size"]), row["squad_size"],
+            fid=army["faction_id"], dt_ids=parse_detachment_ids(army))
         enhancement_id = str(data.get("enhancement_id", row["enhancement_id"] or ""))[:64]
         if enhancement_id:
             from eligibility import enhancement_eligible
@@ -1526,13 +1646,16 @@ def api_update_army_unit(auid):
                 return jsonify({"ok": False, "error": "Enhancement does not belong to any of this army's detachments"}), 400
             _u = store.ds_by_id.get(did, {})
             if not enhancement_eligible(set(_u.get("_keywords") or []), _u.get("role"),
-                                        e.get("eligibility_struct") or {}, _u.get("name")):
+                                        e, _u.get("name"), _u.get("id") or did):
                 return jsonify({"ok": False, "error": "This unit is not eligible for that enhancement"}), 400
-            dup = c.execute(
-                "SELECT 1 FROM army_units WHERE army_list_id=? AND id!=? AND enhancement_id=? LIMIT 1",
-                (row["army_list_id"], auid, enhancement_id)).fetchone()
-            if dup:
-                return jsonify({"ok": False, "error": "That enhancement is already taken in this army"}), 400
+            _cap = e.get("take_limit") or 1
+            taken = c.execute(
+                "SELECT COUNT(*) n FROM army_units WHERE army_list_id=? AND id!=? AND enhancement_id=?",
+                (row["army_list_id"], auid, enhancement_id)).fetchone()["n"]
+            if taken >= _cap:
+                msg = ("That enhancement is already taken in this army" if _cap == 1
+                       else f"That enhancement is already at its limit of {_cap} in this army")
+                return jsonify({"ok": False, "error": msg}), 400
         notes = str(data.get("notes", row["notes"] or ""))[:2000]
 
         # ---- Warlord: at most one per army; only a Character may hold it. Setting
@@ -1553,8 +1676,17 @@ def api_update_army_unit(auid):
         else:
             is_warlord = row["is_warlord"] if "is_warlord" in row.keys() else 0
 
-        # ---- Leader attachment (Phase 4b): attach this leader to an in-army
-        # Bodyguard it may lead (one leader per bodyguard), or '' to detach. ----
+        # The bearer of a cannot_be_warlord enhancement (e.g. Disciple of
+        # Khorne) may not be the Warlord - whichever of the two was set last.
+        if is_warlord and enhancement_id:
+            _e = store.enhancement_by_id.get(enhancement_id)
+            if _e and _e.get("cannot_be_warlord"):
+                return jsonify({"ok": False, "error": f"The bearer of {_e['name']} "
+                                                      "cannot be the Warlord"}), 400
+
+        # ---- Leader attachment: attach this leader to an in-army Bodyguard a
+        # leader_group admits (detachment gates, Leader vs support slots, mark
+        # keywords, enhancement grants - attach_check), or '' to detach. ----
         if "attached_to" in data:
             attached_to = str(data.get("attached_to") or "")[:64]
             if attached_to:
@@ -1562,12 +1694,18 @@ def api_update_army_unit(auid):
                                 (attached_to, row["army_list_id"])).fetchone()
                 if not tgt:
                     return jsonify({"ok": False, "error": "Bodyguard unit not found in this army"}), 400
-                tgt_did = store.ds_by_id.get(tgt["datasheet_id"], {}).get("id") or tgt["datasheet_id"]
-                if tgt_did not in {t["id"] for t in store.leads.get(did, [])}:
-                    return jsonify({"ok": False, "error": "This leader cannot join that unit"}), 400
-                if c.execute("SELECT 1 FROM army_units WHERE army_list_id=? AND id!=? AND attached_to=? LIMIT 1",
-                             (row["army_list_id"], auid, attached_to)).fetchone():
-                    return jsonify({"ok": False, "error": "That unit already has a leader"}), 400
+                all_rows = c.execute(
+                    "SELECT id, datasheet_id, enhancement_id, attached_to "
+                    "FROM army_units WHERE army_list_id=?",
+                    (row["army_list_id"],)).fetchall()
+                # The leader carries this request's (possibly changed)
+                # enhancement - grants_leader_attachment must see it.
+                leader_row = {"id": auid, "datasheet_id": did,
+                              "enhancement_id": enhancement_id,
+                              "attached_to": row["attached_to"] if "attached_to" in row.keys() else ""}
+                why = attach_check(parse_detachment_ids(army), all_rows, leader_row, tgt)
+                if why:
+                    return jsonify({"ok": False, "error": why[0].upper() + why[1:]}), 400
         else:
             attached_to = row["attached_to"] if "attached_to" in row.keys() else ""
 
@@ -1983,7 +2121,8 @@ def api_create_box_set():
 @app.route("/api/box-sets/<box_id>", methods=["POST"])
 def api_update_box_set(box_id):
     from db import db
-    if not box_set_by_id(box_id):
+    old_box = box_set_by_id(box_id)
+    if not old_box:
         abort(404)
     data = request.get_json(force=True)
     box, error = _clean_box_payload(data, existing_id=box_id)
@@ -1992,7 +2131,10 @@ def api_update_box_set(box_id):
     box["status"] = box["status"] if box["status"] != "seeded" else "manual"
     with db() as c:
         _save_custom_box(c, box)
-    return jsonify({"ok": True, "id": box_id})
+    # Keep already-purchased copies of this box in sync: their minis were
+    # created at purchase time from the old contents.
+    minis = _reconcile_purchased_minis(old_box, box_set_by_id(box_id))
+    return jsonify({"ok": True, "id": box_id, "minis": minis})
 
 
 @app.route("/api/box-sets/<box_id>", methods=["DELETE"])
@@ -2034,6 +2176,9 @@ def api_purchases_page_data():
         data["summary"] = _summary_payload(c, info, owned)
     data["box_options"] = [{"id": b["id"], "name": b["name"]} for b in boxes]
     data["factions"] = _factions_payload(info, owned)
+    # Covers parent factions (e.g. Aeldari) that _factions_payload drops for
+    # having no datasheets of their own but that box sets still reference.
+    data["faction_names"] = {f["id"]: f["name"] for f in store.factions}
     return jsonify(data)
 
 
@@ -2467,6 +2612,10 @@ def api_summary():
 
 
 if __name__ == "__main__":
+    import sys
+    # Optional port override (argv beats env): lets a second instance run
+    # beside the default 5050 one, e.g. `python app.py 5051`.
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else int(os.environ.get("PORT", "5050"))
     print("\n  Warhammer 40,000 Collection Cataloguer")
-    print("  Open http://127.0.0.1:5050 in your browser\n")
-    app.run(debug=False, host='0.0.0.0', port=5050)
+    print(f"  Open http://127.0.0.1:{port} in your browser\n")
+    app.run(debug=False, host='0.0.0.0', port=port)

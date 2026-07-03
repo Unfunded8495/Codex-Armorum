@@ -234,6 +234,27 @@ def run():
             except Exception as e:
                 r.check("journey: choosing a detachment shows its Force Disposition label", False, repr(e))
 
+            # Journey 4d: leader attachment. A Leader (Captain) nests under its
+            # bodyguard; a support character (Lieutenant) then joins ALONGSIDE
+            # him - the leader_group slot model - so the bodyguard ends up
+            # with two nested rows. Pre-leader_group builds 400'd the second
+            # attach and nested at most one row.
+            try:
+                add_unit(page, "Captain", "Characters")
+                add_unit(page, "Lieutenant", "Characters")
+                for i, who in enumerate(("Captain", "Lieutenant"), start=1):
+                    page.locator("[data-testid='unit-row']").filter(has_text=who).first.click()
+                    att = page.locator("[data-testid='unit-leader-attach']")
+                    att.wait_for(state="visible", timeout=4000)
+                    att.select_option(index=1)  # index 0 is the placeholder
+                    page.wait_for_function(
+                        "n => document.querySelectorAll('.au-nested').length >= n",
+                        arg=i, timeout=5000)
+                r.check("journey: a Leader and a support Lieutenant both nest under the bodyguard", True)
+            except Exception as e:
+                r.check("journey: a Leader and a support Lieutenant both nest under the bodyguard",
+                        False, repr(e))
+
             # Journey 5: missions reference renders (Phase 6).
             try:
                 page.goto(f"{BASE}/army-builder")

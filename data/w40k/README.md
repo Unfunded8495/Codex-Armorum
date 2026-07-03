@@ -38,7 +38,6 @@ Every dataset is written as both JSON (full nested fidelity) and CSV (flattened,
       core_rules.(json|csv)          the bundled core rulebook text
       missions.(json|csv)            primary and secondary missions, deployments, layouts
       faqs.(json|csv)                official FAQ and errata
-      allied_factions.(json|csv)     which factions may ally, the units they bring, and the limits
 ```
 
 ## What each datasheet record contains
@@ -75,7 +74,21 @@ If built, `w40k.db` holds the same resolved data in a relational schema designed
 
 Main tables: `faction`, `army_rule`, `publication`, `datasheet`, `datasheet_faction`, `allied_faction`, `allied_faction_host`, `allied_faction_datasheet`, `model`, `ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`, `detachment_rule`, `enhancement`, `stratagem`, plus reference tables `keyword`, `wargear_ability`, `battle_size`, `behaviour_type`, `mission_primary`, `mission_secondary`, `faq`. Deeply nested or list shaped fields (points compositions, the wargear loadout enforcement, enhancement eligibility, damage brackets, weapon ability lists, keyword lists) are stored as JSON text columns, so a top level value is queryable in SQL while the full structure is one `json.loads` away in Python.
 
-Faction membership in `datasheet_faction` respects explicit exclusions: a unit that carries a faction keyword but is barred from that faction (source `faction_keyword_excluded_datasheet`, for example Sir Hekhtur under Imperial Knights) is not listed under it.
+Faction membership in `datasheet_faction` respects explicit exclusions: a unit that carries a faction keyword but is barred from that faction (source `faction_keyword_excluded_datasheet`, for example Sir Hekhtur under Imperial Knights) is not listed under it. All exclusion rows are also exported verbatim to `datasheet_faction_excluded` because most of them bar a *parent-faction generic* from a chapter (for example Librarians from Black Templars) - those never appear in `datasheet_faction`, so a consumer that resolves membership through the faction tree must subtract this table.
+
+### Army-building enforcement tables
+
+`leader_group` is one row per leader-attachment group with its conditions: `bodyguard_type` (`leader` fills the unit's Leader slot, `support` attaches alongside an existing Leader), required/excluded detachment, the "all units must share keyword X" gate, and both id- and keyword-based membership. The flat `leads_units` / `can_be_led_by` name lists on `datasheet` remain for display; `leader_group` (also embedded as the `leader_groups` JSON column) is the enforceable form.
+
+`model` rows carry the Warlord flags (`cannot_be_warlord`, `can_be_non_character_warlord`, `is_supreme_commander` - a Supreme Commander must be the army's Warlord - and `excluded_from_enhancements`), plus split melee/ranged invulnerable saves where present.
+
+`enhancement` rows carry `take_limit` (most are unique, some Upgrade-type ones allow 3 copies), `counts_toward_limit` (a few do not count against the battle-size enhancement cap), `epic_hero_eligible`, `non_character_eligible`, `cannot_be_warlord`, and `grants_leader_attachment` (units the bearer may lead because of the enhancement).
+
+`detachment` rows add `linked_datasheets` (structured unlocks with the forced-Warlord flag and count), `unique_keywords`, and mandatory/granted Warlord miniatures. `detachment_faction_points_cost` holds the per-faction Detachment Points overrides.
+
+Per-composition points tiers inside `datasheet.points` carry `required_detachments` / `required_faction_keywords` keys when a tier is only offered in a specific detachment or roster faction (for example 10-model Assault Intercessor tiers are Blood Angels only). `wargear_loadout` embeds each miniature's `default_loadout` with item counts, and each conditional keyword carries a structured `requires` object alongside the prose condition.
+
+`keyword_limit_group` (+ `keyword_limit_group_detachment`) holds roster-wide keyword limits ("max 1 Death Jester", "min 3 War Dogs in this detachment"), and `keyword_ally_restriction` the ally-restricting Chaos mark keywords. `allied_faction` adds the Warlord conditions (`required_warlord_miniature`, `allowed_warlord_miniatures`) and its `keyword_limits` entries carry slotless-group and required-Warlord details.
 
 The allied faction system is captured in three tables. `allied_faction` is one row per allowance (a host faction bringing a slice of another faction), with `ally_factions` and `host_factions` as JSON name lists, the boolean flags (`can_take_enhancements`, `is_sibling_faction`, `replaces_roster_keyword`, `mutually_exclusive_keyword_limit`), and JSON columns for `datasheets`, `keyword_limits`, `points_limits` and `required_detachments`. `allied_faction_host` and `allied_faction_datasheet` are junctions keyed on faction id and datasheet id, so an app can answer 'what can faction X ally, and which units does it bring' with a join rather than parsing JSON.
 

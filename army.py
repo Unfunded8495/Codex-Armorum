@@ -13,11 +13,40 @@ def _tier_span(tier):
             sum(_int(m.get("max")) for m in models))
 
 
-def _squad_bounds(did):
+def eligible_tiers(did, fid=None, dt_ids=None):
+    """Composition tiers offered to an army. A tier can be gated to a roster
+    faction (e.g. the 80-pt Assault Intercessor tier is Blood Angels only) or
+    to a detachment (e.g. the 380-pt C'tan tiers of Pantheon of Woe). Gated
+    tiers that match the context REPLACE the ungated list — the data mirrors
+    every gated set span-for-span against the ungated one, so e.g. a Blood
+    Angels army prices Outriders entirely off the Blood Angels tiers while an
+    Ultramarines army never sees them. With no context at all (both ``fid``
+    and ``dt_ids`` None) every tier is returned — the legacy behaviour for
+    callers without an army, e.g. the wargear engine's default counts."""
+    store = get_store()
+    tiers = store.composition_tiers.get(did) or []
+    if fid is None and dt_ids is None:
+        return tiers
+    matching_gated, ungated = [], []
+    for t in tiers:
+        req_fac = t.get("required_faction_keyword_ids")
+        req_det = t.get("required_detachment_ids")
+        if not req_fac and not req_det:
+            ungated.append(t)
+            continue
+        fac_ok = not req_fac or (fid and any(
+            fid == r or store.faction_parent(fid) == r for r in req_fac))
+        det_ok = not req_det or (dt_ids and any(d in req_det for d in dt_ids))
+        if fac_ok and det_ok:
+            matching_gated.append(t)
+    return matching_gated or ungated or tiers
+
+
+def _squad_bounds(did, fid=None, dt_ids=None):
     """{min, max, default} model counts for a unit, from its composition tiers.
     Default mirrors the official app: the first ``is_default`` tier's max size.
     A unit with no tiers (rare) locks to a single model."""
-    tiers = get_store().composition_tiers.get(did) or []
+    tiers = eligible_tiers(did, fid, dt_ids)
     spans = [(lo, hi) for lo, hi in (_tier_span(t) for t in tiers) if hi > 0]
     if not spans:
         return {"min": 1, "max": 1, "default": 1}
@@ -45,15 +74,16 @@ def _tier_for_size(tiers, size):
     return next((t for t in covering if t.get("is_default")), covering[0])
 
 
-def _points_for(did, squad_size):
+def _points_for(did, squad_size, fid=None, dt_ids=None):
     """Points for a unit at ``squad_size`` from the covering composition tier
-    (flat per bracket). Falls back to ``default_points`` then 0 for the rare
+    (flat per bracket), honouring faction/detachment tier gates when the army
+    context is given. Falls back to ``default_points`` then 0 for the rare
     unit with no tiers."""
     store = get_store()
-    tiers = store.composition_tiers.get(did) or []
+    tiers = eligible_tiers(did, fid, dt_ids)
     if not tiers:
         return _int(store.ds_by_id.get(did, {}).get("default_points"))
-    bounds = _squad_bounds(did)
+    bounds = _squad_bounds(did, fid, dt_ids)
     size = max(bounds["min"], min(_as_int(squad_size, bounds["default"]), bounds["max"]))
     tier = _tier_for_size(tiers, size)
     if tier is None:
@@ -62,14 +92,14 @@ def _points_for(did, squad_size):
     return _int(tier.get("points"))
 
 
-def _composition_breakdown(did, squad_size):
+def _composition_breakdown(did, squad_size, fid=None, dt_ids=None):
     """``[{model, count}]`` at ``squad_size``: fixed models at their min, the
     single variable model absorbs the remainder. Tiers with >1 variable model
     (rare, all non-default) show each at its min, since the split is ambiguous."""
-    tiers = get_store().composition_tiers.get(did) or []
+    tiers = eligible_tiers(did, fid, dt_ids)
     if not tiers:
         return []
-    bounds = _squad_bounds(did)
+    bounds = _squad_bounds(did, fid, dt_ids)
     size = max(bounds["min"], min(_as_int(squad_size, bounds["default"]), bounds["max"]))
     tier = _tier_for_size(tiers, size) or tiers[0]
     models = tier.get("models") or []
@@ -83,8 +113,8 @@ def _composition_breakdown(did, squad_size):
     return out
 
 
-def _normalise_squad_size(did, value, default=None):
-    bounds = _squad_bounds(did)
+def _normalise_squad_size(did, value, default=None, fid=None, dt_ids=None):
+    bounds = _squad_bounds(did, fid, dt_ids)
     if default is None:
         default = bounds["default"]
     return min(_as_int(value, default, minimum=bounds["min"]), bounds["max"])
@@ -238,6 +268,121 @@ def _datasheet_in_faction(did, fid):
     return get_store().unit_in_faction(did, fid)
 
 
+# ---- leader attachment (leader_group enforcement) ---------------------------
+# Legality comes from store.leader_groups (the official app's structured
+# leader-attachment groups), not the flat leads/led_by name lists: a group can
+# be gated to a detachment, demand every unit in the attached party share a
+# keyword, and is typed - a 'leader' group fills the bodyguard's single Leader
+# slot while 'support' (Lieutenants, Dialogus, ...) attaches alongside it.
+
+# The five Chaos mark keywords used by requires_all_units_keyword gates (the
+# only values in v886 data). A mark is chosen at army-building time in the
+# official app and isn't modelled here, so a unit with no static mark keyword
+# counts as able to take the required one; a unit statically marked otherwise
+# (e.g. a Khorne unit against a Nurgle gate) can never match.
+MARK_KEYWORDS = frozenset(
+    {"Chaos Undivided", "Khorne", "Nurgle", "Tzeentch", "Slaanesh"})
+
+
+def _rk(row, key):
+    """Tolerant field access for sqlite3.Row / dict army-unit rows."""
+    try:
+        return row[key] or ""
+    except (KeyError, IndexError):
+        return ""
+
+
+def leader_groups_for(did, enhancement_id, dt_ids, ignore_detachments=False):
+    """Effective leader-attachment groups for a unit in an army context: the
+    datasheet's groups filtered by the army's selected detachments, plus any
+    granted by the unit's enhancement (grants_leader_attachment - resolved
+    within the selected detachments, so a grant from a de-selected detachment
+    stops applying together with its enhancement)."""
+    store = get_store()
+    out = []
+    for g in store.leader_groups.get(did, []):
+        if not ignore_detachments:
+            req = g.get("required_detachment_id")
+            exc = g.get("excluded_detachment_id")
+            if req and req not in dt_ids:
+                continue
+            if exc and exc in dt_ids:
+                continue
+        out.append(g)
+    e = _enhancement_for_ids(enhancement_id, dt_ids)
+    if e:
+        out += e.get("leader_grants") or []
+    return out
+
+
+def _satisfies_party_keyword(did, kw):
+    """Unit ``did`` passes a requires_all_units_keyword gate for ``kw``."""
+    kws = set(get_store().ds_by_id.get(did, {}).get("_keywords") or [])
+    if kw in kws:
+        return True
+    if kw in MARK_KEYWORDS:
+        return not (kws & MARK_KEYWORDS)
+    return False
+
+
+def _attach_kinds(groups, target_did, party_dids):
+    """Which bodyguard slots ({'leader', 'support'}) ``groups`` allow against
+    bodyguard ``target_did``. ``party_dids`` are the datasheets of the full
+    prospective party (bodyguard + every attached character) for the
+    requires_all_units_keyword gate."""
+    kinds = set()
+    for g in groups:
+        if target_did not in g["member_ids"]:
+            continue
+        kw = g.get("requires_all_units_keyword")
+        if kw and not all(_satisfies_party_keyword(d, kw) for d in party_dids):
+            continue
+        kinds.add("support" if g.get("type") == "support" else "leader")
+    return kinds
+
+
+def attach_check(dt_ids, rows, leader, target):
+    """``None`` when ``leader`` may attach to ``target``, else a user-facing
+    reason. ``rows`` are the army's unit rows (mappings with id, datasheet_id,
+    enhancement_id, attached_to), including ``leader`` and ``target``. A
+    'support' match always admits; a 'leader' match needs the bodyguard's
+    single Leader slot free - attached characters that could sit in a support
+    slot don't occupy it."""
+    store = get_store()
+
+    def canon(d):
+        return store.ds_by_id.get(d, {}).get("id") or d
+
+    lid, tid = _rk(leader, "id"), _rk(target, "id")
+    ldid = canon(_rk(leader, "datasheet_id"))
+    tdid = canon(_rk(target, "datasheet_id"))
+    if _rk(target, "attached_to"):
+        return "that unit is itself attached to another unit"
+    others = [r for r in rows
+              if _rk(r, "attached_to") == tid and _rk(r, "id") != lid]
+    party = [tdid] + [canon(_rk(r, "datasheet_id")) for r in others] + [ldid]
+    lenh = _rk(leader, "enhancement_id")
+    kinds = _attach_kinds(leader_groups_for(ldid, lenh, dt_ids), tdid, party)
+    if "support" in kinds:
+        return None
+    if "leader" in kinds:
+        for r in others:
+            okinds = _attach_kinds(
+                leader_groups_for(canon(_rk(r, "datasheet_id")),
+                                  _rk(r, "enhancement_id"), dt_ids),
+                tdid, party)
+            if "support" not in okinds:
+                return "that unit already has a Leader"
+        return None
+    # Nothing matched - say why.
+    raw = leader_groups_for(ldid, lenh, dt_ids, ignore_detachments=True)
+    if not any(tdid in g["member_ids"] for g in raw):
+        return "this leader cannot join that unit"
+    if _attach_kinds(raw, tdid, party):
+        return "not available with this army's detachment(s)"
+    return "every unit in the attached party must share a required keyword"
+
+
 def _army_unit_row(c, au):
     store = get_store()
     did = au["datasheet_id"]
@@ -247,8 +392,17 @@ def _army_unit_row(c, au):
     if canonical_did != did:
         c.execute("UPDATE army_units SET datasheet_id=? WHERE id=?", (canonical_did, au["id"]))
         did = canonical_did
-    bounds = _squad_bounds(did)
-    squad_size = _normalise_squad_size(did, au["squad_size"])
+
+    # Army context up front: faction + selected detachments gate which
+    # composition tiers (sizes and prices) this unit is offered.
+    army_row = c.execute(
+        "SELECT faction_id, detachment_id, detachment_ids FROM army_lists WHERE id=?",
+        (au["army_list_id"],)).fetchone()
+    army_fid = (army_row["faction_id"] if army_row else "") or ""
+    army_dtids = parse_detachment_ids(army_row) if army_row else []
+
+    bounds = _squad_bounds(did, army_fid, army_dtids)
+    squad_size = _normalise_squad_size(did, au["squad_size"], fid=army_fid, dt_ids=army_dtids)
     if squad_size != au["squad_size"]:
         c.execute("UPDATE army_units SET squad_size=? WHERE id=?", (squad_size, au["id"]))
     assigned = au["assigned_count"]
@@ -265,7 +419,7 @@ def _army_unit_row(c, au):
         assigned = max_current_assignment
         c.execute("UPDATE army_units SET assigned_count=? WHERE id=?", (assigned, au["id"]))
 
-    base_pts = _points_for(did, squad_size)
+    base_pts = _points_for(did, squad_size, army_fid, army_dtids)
 
     # ---- wargear loadout: reconcile the stored selection to the current squad
     # size, price the delta, and persist it. The denormalized wargear_points lets
@@ -284,6 +438,7 @@ def _army_unit_row(c, au):
     wargear_pts = _wg["points_delta"]
     wargear_violations = _wg["violations"]
     loadout_summary = _wg["loadout_summary"]
+    loadout_setups = _wg["loadout_setups"]
     # Persist the normalized sparse overrides ("" when default) + points delta.
     _loadout_json = json.dumps(_wg["overrides"], separators=(",", ":")) if _wg["overrides"] else ""
     _prev_loadout = (au["loadout"] if "loadout" in _keys else "") or ""
@@ -292,12 +447,6 @@ def _army_unit_row(c, au):
         c.execute("UPDATE army_units SET loadout=?, wargear_points=? WHERE id=?",
                   (_loadout_json, wargear_pts, au["id"]))
     pts = base_pts + wargear_pts
-
-    army_row = c.execute(
-        "SELECT faction_id, detachment_id, detachment_ids FROM army_lists WHERE id=?",
-        (au["army_list_id"],)).fetchone()
-    army_fid = (army_row["faction_id"] if army_row else "") or ""
-    army_dtids = parse_detachment_ids(army_row) if army_row else []
 
     enh_name = ""
     enh_cost = 0
@@ -323,25 +472,31 @@ def _army_unit_row(c, au):
     is_ally = ally_cfg is not None
     ally_faction = " / ".join(ally_cfg["ally_faction_names"]) if ally_cfg else ""
 
-    # ---- Leader attachment (Phase 4b). A leader (datasheet in store.leads) can
-    # attach to an in-army Bodyguard it may lead, capped at one leader per bodyguard.
-    leads_targets = {t["id"] for t in store.leads.get(did, [])}
+    # ---- Leader attachment: legality from the structured leader_group data
+    # (detachment gates, leader vs support slots, party keyword matching,
+    # enhancement-granted targets) via attach_check.
     attach_targets = []
-    attached_leader_name = ""
     siblings = c.execute(
-        "SELECT id, datasheet_id, attached_to FROM army_units WHERE army_list_id=? AND id!=?",
+        "SELECT id, datasheet_id, enhancement_id, attached_to FROM army_units "
+        "WHERE army_list_id=? AND id!=?",
         (au["army_list_id"], au["id"])).fetchall()
-    if leads_targets:  # this unit is a leader → list bodyguards it can still join
-        taken = {s["attached_to"] for s in siblings if s["attached_to"]}
+    self_row = {"id": au["id"], "datasheet_id": did,
+                "enhancement_id": enhancement_id, "attached_to": attached_to}
+    all_rows = [self_row] + list(siblings)
+    if leader_groups_for(did, enhancement_id, army_dtids):
         for sib in siblings:
-            sdid = store.ds_by_id.get(sib["datasheet_id"], {}).get("id") or sib["datasheet_id"]
-            if sdid in leads_targets and (sib["id"] not in taken or sib["id"] == attached_to):
+            if sib["attached_to"]:
+                continue  # an attached character is not a bodyguard candidate
+            if (sib["id"] == attached_to
+                    or attach_check(army_dtids, all_rows, self_row, sib) is None):
+                sdid = store.ds_by_id.get(sib["datasheet_id"], {}).get("id") or sib["datasheet_id"]
                 attach_targets.append({"id": sib["id"],
                                        "name": store.ds_by_id.get(sdid, {}).get("name", "")})
-    for sib in siblings:  # is a leader attached to THIS unit (bodyguard)?
-        if sib["attached_to"] == au["id"]:
-            attached_leader_name = store.ds_by_id.get(sib["datasheet_id"], {}).get("name", "")
-            break
+    # Characters attached to THIS unit (bodyguard) - a Leader plus any number
+    # of support characters, so this can be several names.
+    attached_leader_name = ", ".join(
+        n for n in (store.ds_by_id.get(s["datasheet_id"], {}).get("name", "")
+                    for s in siblings if s["attached_to"] == au["id"]) if n)
 
     return {
         "id": au["id"],
@@ -352,7 +507,7 @@ def _army_unit_row(c, au):
         "squad_size": squad_size,
         "squad_min": bounds["min"],
         "squad_max": bounds["max"],
-        "composition": _composition_breakdown(did, squad_size),
+        "composition": _composition_breakdown(did, squad_size, army_fid, army_dtids),
         "assigned_count": assigned,
         "owned_count": owned,
         "available_count": available,
@@ -360,6 +515,7 @@ def _army_unit_row(c, au):
         "wargear_points": wargear_pts,
         "loadout": loadout,
         "loadout_summary": loadout_summary,
+        "loadout_setups": loadout_setups,
         "wargear_schema": wargear.wargear_schema(did),
         "wargear_violations": wargear_violations,
         "enhancement_id": enhancement_id,
@@ -415,7 +571,7 @@ def roster_json(c, aid):
     }
 
 
-def _roster_unit_lines(u, leader):
+def _roster_unit_lines(u, leaders):
     sz = (" x%d" % u["squad_size"]) if u["squad_size"] > 1 else ""
     star = " [Warlord]" if u["is_warlord"] else ""
     ally = (" [Ally: %s]" % u["ally_faction"]) if u.get("is_ally") and u.get("ally_faction") else ""
@@ -424,7 +580,7 @@ def _roster_unit_lines(u, leader):
         out.append("    Enhancement: %s" % u["enhancement_name"])
     if u.get("loadout_summary"):
         out.append("    %s" % u["loadout_summary"])
-    if leader:
+    for leader in leaders or []:
         lstar = " [Warlord]" if leader["is_warlord"] else ""
         out.append("    + %s - %d pts%s" % (leader["name"], leader["points"], lstar))
         if leader.get("enhancement_name"):
@@ -455,7 +611,10 @@ def roster_text(c, aid):
     if det_names:
         sub += " - " + ", ".join(det_names)
     lines = ["%s (%s) - %d/%s pts" % (army["name"], bs, total, army["points_limit"]), sub]
-    leader_for = {u["attached_to"]: u for u in units if u["attached_to"]}
+    leaders_for = {}
+    for u in units:
+        if u["attached_to"]:
+            leaders_for.setdefault(u["attached_to"], []).append(u)
     standalone = [u for u in units if not u["attached_to"]]
     by_role = {}
     for u in standalone:
@@ -466,5 +625,5 @@ def roster_text(c, aid):
         lines.append("")
         lines.append(role.upper())
         for u in by_role[role]:
-            lines += _roster_unit_lines(u, leader_for.get(u["id"]))
+            lines += _roster_unit_lines(u, leaders_for.get(u["id"]))
     return "\n".join(lines)

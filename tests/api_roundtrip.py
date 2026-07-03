@@ -187,6 +187,56 @@ def run():
             r.check("text export is non-empty", txt.status_code == 200 and txt.get_data(as_text=True).strip())
         else:
             r.skip("export/import idempotence", "export route absent (pre-Phase 6)")
+
+        # --- 5) Leader attachment (leader_group enforcement) -----------------------
+        # One Leader-slot character attaches, a support character joins alongside
+        # (a 400 pre-leader_group), a second Leader-slot character is rejected.
+        if H.has(S, "leader_groups"):
+            ints = H.did("Intercessor Squad")
+            pure = {"leader": [], "support": []}
+            for ldid, lgroups in S.leader_groups.items():
+                if ldid not in offered_ids:
+                    continue
+                kinds = {"support" if g.get("type") == "support" else "leader"
+                         for g in lgroups
+                         if ints in g["member_ids"] and not g.get("required_detachment_id")}
+                if len(kinds) == 1:
+                    pure[next(iter(kinds))].append(ldid)
+            if len(pure["leader"]) >= 2 and pure["support"]:
+                aid5, _ = create_army(ult)
+                created.append(aid5)
+
+                def added(did_):
+                    return ((H.json_of(add_unit(aid5, did_)) or {}).get("unit") or {}).get("id")
+
+                bg = added(ints)
+                la, lb = added(pure["leader"][0]), added(pure["leader"][1])
+                sp = added(pure["support"][0])
+                if all([bg, la, lb, sp]):
+                    s1 = C.post(f"/api/army-units/{la}", json={"attached_to": bg}).status_code
+                    s2 = C.post(f"/api/army-units/{sp}", json={"attached_to": bg}).status_code
+                    s3 = C.post(f"/api/army-units/{lb}", json={"attached_to": bg}).status_code
+                    r.check("attach: a Leader joins its bodyguard", s1 == 200, f"status {s1}")
+                    r.check("attach: a support character joins alongside the Leader",
+                            s2 == 200, f"status {s2}")
+                    r.check("attach: a second Leader is rejected", s3 == 400, f"status {s3}")
+                    a5 = get_army(aid5) or {}
+                    row5 = next((u for u in a5.get("units", []) if u.get("id") == bg), {})
+                    names = row5.get("attached_leader_name") or ""
+                    r.check("attach: bodyguard row reports both attached characters",
+                            S.ds_by_id[pure["leader"][0]]["name"] in names
+                            and S.ds_by_id[pure["support"][0]]["name"] in names,
+                            f"attached_leader_name={names!r}")
+                    codes = validation_codes(aid5)
+                    r.check("attach: legal attachments raise no illegal_attachment",
+                            "illegal_attachment" not in codes, f"codes={codes}")
+                else:
+                    r.check("attach: test units added", False, "add-unit failed")
+            else:
+                r.skip("attach journey",
+                       "no 2 pure-Leader + 1 support characters for Intercessors in the picker")
+        else:
+            r.skip("attach journey", "store.leader_groups absent")
     finally:
         for aid in created:
             C.delete(f"/api/armies/{aid}")

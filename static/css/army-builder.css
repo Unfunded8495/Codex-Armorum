@@ -168,10 +168,6 @@
 .wg-summary { font-family:'EB Garamond',serif; font-size:13px; color:var(--parch); margin-bottom:12px; font-style:italic; line-height:1.4; }
 .wg-group { margin-bottom:12px; }
 .wg-group:last-child { margin-bottom:0; }
-.wg-group.wg-default { font-family:'EB Garamond',serif; font-size:13px; color:var(--parch-dim); }
-.wg-default-lbl { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.6; margin-right:5px; }
-.wg-fixed { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch-dim); padding:3px 0; }
-.wg-fixed input { accent-color:var(--gold); flex-shrink:0; }
 .wg-radio { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); padding:3px 0; cursor:pointer; }
 .wg-radio .wg-box-input { position:absolute; opacity:0; width:14px; height:14px; margin:0; pointer-events:none; }
 /* Round, not square: a radio (choose exactly one) must not be visually
@@ -454,8 +450,7 @@
 .opt-theme .wg-card-chev { color:var(--card-ink-dim); }
 .opt-theme .wg-card-toggle:hover .wg-card-chev { color:var(--card-ink); }
 .opt-theme .wg-card-badge { border-color:var(--card-light-2); color:var(--card-ink-dim); }
-.opt-theme .wg-radio, .opt-theme .wg-stepper, .opt-theme .wg-check, .opt-theme .wg-fixed,
-.opt-theme .wg-group.wg-default, .opt-theme .wg-default-lbl, .opt-theme .wg-cap,
+.opt-theme .wg-radio, .opt-theme .wg-stepper, .opt-theme .wg-check, .opt-theme .wg-cap,
 .opt-theme .wg-array-mini { color:var(--card-ink); }
 .opt-theme .wg-radio .wg-box { background:var(--parch); border-color:var(--card-ink-dim); }
 .opt-theme .wg-radio .wg-box-input:checked + .wg-box { border-color:var(--steel-blue); }
@@ -463,10 +458,9 @@
 .opt-theme .wg-stepper input, .opt-theme .wg-slot { background:var(--parch); border-color:var(--card-ink-dim); color:var(--card-ink); }
 .opt-theme .wg-violation { background:rgba(200,154,58,.15); color:#7a5b16; border-left-color:#a97f24; }
 .opt-theme .wg-radio em, .opt-theme .wg-stepper em, .opt-theme .wg-check em { color:var(--steel-blue); }
-.opt-theme .wg-fixed { color:var(--card-ink-dim); }
 .opt-theme .wg-card-badge-bad { border-color:#a97f24; color:#7a5b16; }
 .opt-theme .wg-squad-warn { color:#a9531f; }
-.opt-theme .wg-check input, .opt-theme .wg-fixed input { accent-color:var(--steel-blue); }
+.opt-theme .wg-check input { accent-color:var(--steel-blue); }
 .opt-theme .wg-array-sub + .wg-array-sub { border-top-color:var(--card-light-2); }
 
 /* ---- Two-panel layout (centre + right rail) once the unit picker stops
@@ -544,23 +538,24 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 /* Detachment chooser: full rule text inside a card's expand. */
 .dp-rule-text { white-space:pre-wrap; }
 
-/* ---- Wargear editor v2: rule-sentence subtitles, per-option stat lines,
+/* ---- Wargear editor v2: rule-sentence subtitles, boxed miniature groups,
    and −/N/+ count controls replacing the bare number-spinner inputs. ---- */
 .wg-card-sub { font-family:'EB Garamond',serif; font-size:12.5px; font-style:italic;
   color:var(--parch-dim); line-height:1.45; margin:2px 0 8px; }
 .opt-theme .wg-card-sub { color:var(--card-ink-dim); }
 
-/* Option label: weapon name + points delta on the first line, compact
-   profile stats underneath, so a choice is readable in place. */
+/* Option label: weapon name + points delta. */
 .wg-opt-label { display:flex; flex-direction:column; gap:1px; min-width:0; flex:1; }
-.wg-statline { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.4px; color:var(--parch-dim); }
-.opt-theme .wg-statline { color:var(--card-ink-dim); }
-.wg-statline b { font-weight:600; }
 
-/* Two-line labels: pin the radio dot / checkbox to the first line. */
-.wg-radio, .wg-check { align-items:flex-start; }
-.wg-radio .wg-box { margin-top:3px; }
-.wg-check input { margin-top:3px; }
+/* Miniature-group box: each model type's options (Aspiring Champion vs.
+   Legionaries) sit in their own outlined block with a tinted header bar. */
+.wg-mini-group { border:1px solid rgba(44,42,53,.7); margin-top:14px; }
+.wg-mini-group:first-child { margin-top:0; }
+.wg-mini-head { padding:8px 10px; background:rgba(44,42,53,.45); }
+.wg-mini-body { padding:2px 10px 10px; }
+.wg-mini-body > .wg-card:first-child { border-top:none; margin-top:0; padding-top:4px; }
+.opt-theme .wg-mini-group { border-color:#c6bb9e; background:rgba(255,255,255,.25); }
+.opt-theme .wg-mini-head { background:var(--card-light-2); }
 .opt-theme .wg-radio:hover, .opt-theme .wg-check:hover { background:rgba(63,109,130,.07); }
 
 /* −/N/+ count control: big tap targets; the number stays typeable but loses
@@ -577,9 +572,16 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .opt-theme .wg-nudge { background:var(--parch); border-color:var(--card-ink-dim); color:var(--card-ink); }
 .opt-theme .wg-nudge:hover { background:var(--steel-blue); border-color:var(--steel-blue); color:#eef5f8; }
 
-/* "Current loadout" summary block (was a run-on italic sentence). */
+/* "Current loadout" summary block: one line per distinct model setup. */
 .wg-summary-lbl { display:block; font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px;
   text-transform:uppercase; font-style:normal; color:var(--gold); opacity:.75; margin-bottom:3px; }
 .opt-theme .wg-summary-lbl { color:var(--card-ink-dim); opacity:1; }
 .wg-summary ul { list-style:none; margin:0; padding:0; }
 .wg-summary li { padding:1px 0; }
+.wg-summary li b { font-weight:600; }
+
+/* "Always equipped" footnote: fixed kit no option can change, once per
+   miniature, at the bottom of the editor instead of a row per weapon. */
+.wg-fixed-note { border-top:1px dashed rgba(44,42,53,.6); margin-top:14px; padding-top:8px;
+  font-family:'EB Garamond',serif; font-size:13px; font-style:italic; color:var(--parch-dim); line-height:1.5; }
+.opt-theme .wg-fixed-note { border-top-color:var(--card-light-2); color:var(--card-ink-dim); }

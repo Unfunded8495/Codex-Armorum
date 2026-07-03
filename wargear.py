@@ -80,11 +80,19 @@ def _all_model_index(did):
     res = []
     for am in _wl(did).get("all_model_choices") or []:
         items = set()
+        choice_sets = []
         for ch in am.get("choices") or []:
+            cs = []
             for it in ch.get("items") or []:
                 if it.get("item"):
                     items.add(it["item"])
-        res.append({"miniature": am.get("miniature"), "items": items})
+                    cs.append((it["item"], max(1, _int(it.get("count", 1)))))
+            if cs:
+                choice_sets.append(tuple(cs))
+        # ``choice_sets`` keeps the per-choice structure: a choice granting two
+        # items ("hyperphase sword and dispersion shield") is ONE pick, not two.
+        res.append({"miniature": am.get("miniature"), "items": items,
+                    "choice_sets": tuple(choice_sets)})
     return tuple(res)
 
 
@@ -260,6 +268,39 @@ def _multi_item_keys(did):
 
 def _bundle_key(spec_idx, miniature, model_idx):
     return "@b|%d|%s|%d" % (spec_idx, miniature or "", model_idx)
+
+
+_BULLET_SPLIT = re.compile(r"[◦•]")
+
+
+def _bullet_bundles(instr, items):
+    """Parse an instruction's '◦' bullet list against the group's item names.
+    Returns ``(bundles, singles)``: bundles are bullets granting SEVERAL of the
+    group's items at once ("1 plasma pistol and 1 Astartes chainsword" is ONE
+    option) as ordered ``[(item, count), ...]`` lists; singles is the set of
+    item names that appear alone in some bullet. Conservative: an item only
+    counts when the bullet names it with a leading quantity."""
+    parts = _BULLET_SPLIT.split(instr or "")
+    if len(parts) < 2:
+        return [], set()
+    names = {i["item"] for i in items}
+    bundles, singles = [], set()
+    for seg in parts[1:]:
+        seg_l = " " + seg.lower()
+        found = {}
+        for nm in names:
+            m = re.search(r"(\d+)\s+" + re.escape(nm.lower()) + r"s?\b", seg_l)
+            if m:
+                found[nm] = (m.start(), max(1, _int(m.group(1))))
+        for nm in list(found):   # "power fist" inside "relic power fist" etc.
+            if any(nm != o and nm.lower() in o.lower() for o in found):
+                del found[nm]
+        if len(found) == 1:
+            singles.add(next(iter(found)))
+        elif len(found) > 1 and " and " in seg_l:
+            bundles.append([(nm, q) for nm, (pos, q) in
+                            sorted(found.items(), key=lambda kv: kv[1][0])])
+    return bundles, singles
 
 
 def _instruction_type(instruction):
@@ -439,6 +480,70 @@ def wargear_schema(did):
         if linked:
             grp["linked_default_keys"] = tuple(linked)
 
+    # ---- multi-item option bundles ---------------------------------------
+    # A bullet like "1 plasma pistol and 1 Astartes chainsword" is ONE option
+    # granting both weapons; the flat options list models it as two independent
+    # items, which double-counts the cap, eats two pool weapons per pick, and
+    # makes replace_one radios strip a legally-chosen pair to one weapon.
+    # ``option_bundles`` carries the true grouping: {label, keys{key: qty},
+    # anchors(keys unique to the bundle, qty 1 -- the pick counters)}.
+    # Sources: instruction bullets for limited_per_n / replace_one; the
+    # structured all_model choice_sets for all_model. Conservative guards --
+    # an ambiguous parse keeps today's flat behaviour.
+    for grp in groups:
+        if grp["type"] == "limited_per_n" and grp["duplicate_limit"] is None and \
+                re.search(r"duplicates are not allowed", grp["instruction"] or "",
+                          re.IGNORECASE):
+            grp["duplicate_limit"] = 1   # stated in the rule text, absent in the data
+        if grp["type"] not in ("limited_per_n", "replace_one", "all_model"):
+            continue
+        if grp["type"] == "all_model":
+            gitems = {i["item"] for i in grp["items"]}
+            am = next((a for a in allmodel
+                       if (a["miniature"] == grp["miniature"] or a["miniature"] is None)
+                       and (gitems & a["items"])), None)
+            raw = [list(cs) for cs in (am["choice_sets"] if am else ()) if len(cs) > 1]
+            singles = set()
+        else:
+            raw, singles = _bullet_bundles(grp["instruction"], grp["items"])
+        if not raw:
+            continue
+        if any(nm in singles for b in raw for nm, _q in b):
+            continue   # an item both standalone and bundled -- ambiguous
+        by_name = {}
+        for it in grp["items"]:
+            by_name.setdefault(it["item"], []).append(it)
+        if not all(nm in by_name and len(by_name[nm]) == 1 for b in raw for nm, _q in b):
+            continue   # same item on several miniatures in one group
+        if any(len({by_name[nm][0]["miniature"] for nm, _q in b}) != 1 for b in raw):
+            continue   # a bundle must equip ONE model type
+        bundles = []
+        for b in raw:
+            keys = {by_name[nm][0]["key"]: q for nm, q in b}
+            label = " + ".join(("%d× %s" % (q, nm)) if q > 1 else nm for nm, q in b)
+            bundles.append({"label": label, "keys": keys})
+        usage = {}
+        for bd in bundles:
+            for k in bd["keys"]:
+                usage[k] = usage.get(k, 0) + 1
+        key_order = [i["key"] for i in grp["items"]]
+        # First anchor = the pick's representative (it alone consumes the
+        # displaced pool weapon), so prefer one that is NOT itself a weapon-
+        # array member -- an array-owned representative would be skipped by
+        # the pool-settlement pass and the pick would consume nothing.
+        member_canon = {m["key"] for sp in specs for m in sp["members"]}
+        item_of = {i["key"]: i for i in grp["items"]}
+        def _is_member(k):
+            it = item_of[k]
+            return canon.get((it["miniature"], it["item"]), k) in member_canon
+        for bd in bundles:
+            bd["anchors"] = tuple(sorted(
+                (k for k, q in bd["keys"].items() if usage[k] == 1 and q == 1),
+                key=lambda k: (_is_member(k), key_order.index(k))))
+        if grp["type"] == "limited_per_n" and any(not bd["anchors"] for bd in bundles):
+            continue   # cross-product bullets (pistol × melee) -- keep flat UI
+        grp["option_bundles"] = tuple(bundles)
+
     spec_by_instr = {s["instruction"]: (idx, s) for idx, s in enumerate(specs)}
     meta = _multi_meta(did)
     suppressed = {(m["miniature"], m["item"])
@@ -475,12 +580,21 @@ def wargear_schema(did):
                             "minis": [{"miniature": mm, "options": per[mm]} for mm in order]})
             else:
                 md = meta.get(idx)
+                pool_keys = {m["key"] for m in s["members"] if m["is_pool"]}
                 minis = []
                 for mm in (md["miniatures"] if md else []):
                     if mm not in md["per_mini"]:
                         continue
                     pm = md["per_mini"][mm]
+                    # ``pool_uses`` = the pool-weapon share of each bundle's
+                    # key_counts. The client compares the pool count the raw
+                    # ``@b`` picks imply against the settled selection to see
+                    # how many models a linked capped card has consumed (the
+                    # server decrements the pool weapon during settlement, but
+                    # the ``@b`` picks themselves stay on the default bundle).
                     bundles = [{"idx": j, "label": b["label"], "points": b["points"],
+                                "pool_uses": {k: c for k, c in b["key_counts"].items()
+                                              if k in pool_keys},
                                 "redundant": j != pm["default_idx"]
                                              and bool(set(b["key_counts"]) & standalone_keys)}
                                for j, b in enumerate(pm["bundles"])]
@@ -613,6 +727,12 @@ def validate_selection(did, squad_size, selection):
     specs = _array_specs(did)
     canon = _canonical_keys(did)
     meta = _multi_meta(did)
+    # Keys belonging to a multi-item option bundle: their counts ride with the
+    # bundle's pick (set together, priced together) and must never be folded
+    # into a weapon array's mount tally -- the bundled chainsword is part of
+    # the capped pick, not an extra mount swap.
+    bundle_member_keys = {k for g in schema if g.get("option_bundles")
+                          for bd in g["option_bundles"] for k in bd["keys"]}
     linked_groups = [g for g in schema
                      if g["type"] == "limited_per_n" and g.get("linked_default_keys")]
     rel_spec = {}
@@ -645,17 +765,31 @@ def validate_selection(did, squad_size, selection):
             # alternatives is the conflict this guards (a stale pre-swap default
             # left behind by an incomplete patch); its own members never conflict
             # with *each other* -- they're meant to coexist as the un-replaced
-            # baseline.
+            # baseline. Alternatives themselves group into PICK UNITS: a
+            # multi-item bundle ("1 lascannon and 1 twin heavy bolter") is one
+            # choice whose keys stay active together.
             own_keys = [i["key"] for i in items]
+            bundles = grp.get("option_bundles") or ()
+            bundled_keys = {k for bd in bundles for k in bd["keys"]}
+            units_ = [dict(bd["keys"]) for bd in bundles] \
+                + [{k: 1} for k in own_keys if k not in bundled_keys]
             linked = list(grp.get("linked_default_keys") or ())
-            own_active = [k for k in own_keys if _int(sel.get(k)) > 0]
+            active = [u for u in units_ if any(_int(sel.get(k)) > 0 for k in u)]
             default_active = any(_int(sel.get(k)) > 0 for k in linked)
-            if len(own_active) > 1 or (own_active and default_active):
+            # a fully-active bundle beats a unit that's only active via a key
+            # it shares with the winner (partial overlap after a patch)
+            active.sort(key=lambda u: -sum(1 for k in u if _int(sel.get(k)) > 0))
+            distinct = []
+            for u in active:
+                act = {k for k in u if _int(sel.get(k)) > 0}
+                if not any(act <= set(v) for v in distinct):
+                    distinct.append(u)
+            if len(distinct) > 1 or (distinct and default_active):
                 flag("%s: choose only one" % instr)
-            if own_active:
-                chosen_key = own_active[0]
+            if distinct:
+                chosen = distinct[0]
                 for k in own_keys:
-                    sel[k] = 1 if k == chosen_key else 0
+                    sel[k] = chosen.get(k, 0)
                 for k in linked:
                     sel[k] = 0
             else:
@@ -669,18 +803,51 @@ def validate_selection(did, squad_size, selection):
             cap = limited_cap(grp["limits"], squad_size)
             dup = grp["duplicate_limit"]
             clamped = False
+            # Pick units in item order: a multi-item bundle ("plasma pistol AND
+            # chainsword") is ONE pick counted by its anchor keys; shared
+            # partner keys (Boyz' close combat weapon riding with either heavy
+            # pick) are derived afterwards, never counted or clamped directly.
+            bundles = grp.get("option_bundles") or ()
+            bundled_keys = {k for bd in bundles for k in bd["keys"]}
+            units_, seen_b = [], set()
             for i in items:
-                v = _int(sel.get(i["key"]))
-                if dup is not None and v > dup:
-                    sel[i["key"]] = v = dup
-                    clamped = True
+                k = i["key"]
+                if k in bundled_keys:
+                    bd = next(b for b in bundles if k in b["keys"])
+                    if id(bd) not in seen_b and k in bd["anchors"]:
+                        seen_b.add(id(bd))
+                        units_.append(("bundle", bd))
+                else:
+                    units_.append(("item", k))
             running = 0
-            for i in items:
-                v = _int(sel.get(i["key"]))
-                if running + v > cap:
-                    sel[i["key"]] = max(0, cap - running)
+            for kind, ref in units_:
+                if kind == "bundle":
+                    v = max(_int(sel.get(a)) for a in ref["anchors"])
+                else:
+                    v = _int(sel.get(ref))
+                if dup is not None and v > dup:
+                    v = dup
                     clamped = True
-                running += _int(sel.get(i["key"]))
+                if running + v > cap:
+                    v = max(0, cap - running)
+                    clamped = True
+                if kind == "bundle":
+                    for a in ref["anchors"]:
+                        sel[a] = v   # anchors move in lockstep (one pick)
+                else:
+                    sel[ref] = v
+                running += v
+            # Derive partner keys from the bundle picks they belong to.
+            partner = {}
+            for bd in bundles:
+                n = _int(sel.get(bd["anchors"][0]))
+                for k, q in bd["keys"].items():
+                    if k not in bd["anchors"]:
+                        partner[k] = partner.get(k, 0) + n * q
+            for k, v in partner.items():
+                if _int(sel.get(k)) > v:
+                    clamped = True   # a partner count with no matching pick
+                sel[k] = v
             if clamped:
                 flag("%s: max %d at this size" % (instr, cap))
         else:  # default / replace_any / choice — bound *additive* steppers only
@@ -692,20 +859,44 @@ def validate_selection(did, squad_size, selection):
                         sel[i["key"]] = mc
                         flag("%s: at most %d" % (instr, mc))
 
-    # all_model: each unit-wide choice equips exactly one weapon on every model
-    # (the alternatives live in different option groups, so link them by key).
+    # all_model: each unit-wide choice equips every model with exactly one
+    # CHOICE -- which may grant several items at once ("hyperphase sword and
+    # dispersion shield" is one loadout, both carried). The alternatives live
+    # in different option groups, so link them by key.
     item_keys = _item_keys(did)
     for am in _all_model_index(did):
         keys = [k for it in am["items"] for k in item_keys.get((am["miniature"], it), [])]
         if not keys:
             continue
+        # {key: qty} per choice; falls back to one single-key choice per item
+        # when the structured choice_sets are missing.
+        choice_units = []
+        for cs in am.get("choice_sets") or ():
+            u = {}
+            for it, q in cs:
+                ks = item_keys.get((am["miniature"], it), [])
+                if ks:
+                    u[ks[0]] = q
+            if u:
+                choice_units.append(u)
+        if not choice_units:
+            choice_units = [{k: 1} for k in keys]
         mc = counts.get(am["miniature"], 0)
-        active = [k for k in keys if _int(sel.get(k)) > 0 and default.get(k, 0) == 0]
-        if len(active) > 1:
+        active = [u for u in choice_units
+                  if any(_int(sel.get(k)) > 0 and default.get(k, 0) == 0 for k in u)]
+        active.sort(key=lambda u: -sum(1 for k in u if _int(sel.get(k)) > 0))
+        distinct = []
+        for u in active:
+            act = {k for k in u if _int(sel.get(k)) > 0}
+            if not any(act <= set(v) for v in distinct):
+                distinct.append(u)
+        if len(distinct) > 1:
             flag("Unit weapon: choose only one")
-        chosen = active[0] if active else next((k for k in keys if default.get(k, 0) > 0), keys[0])
+        chosen = distinct[0] if distinct else next(
+            (u for u in choice_units if all(default.get(k, 0) > 0 for k in u)),
+            choice_units[0])
         for k in keys:
-            sel[k] = mc if k == chosen else 0
+            sel[k] = mc * chosen[k] if k in chosen else 0
 
     # weapon arrays: per miniature, the counts over a spec's members must sum to the
     # number of weapon mounts (Σ pool defaults). The choose_from `limit` is *not*
@@ -719,10 +910,12 @@ def validate_selection(did, squad_size, selection):
         for m in spec["members"]:
             by_mini.setdefault(m["miniature"], []).append(m)
         for mini, mems in by_mini.items():
-            # fold any stray counts onto each item's canonical key
+            # fold any stray counts onto each item's canonical key (bundle
+            # member keys excluded -- their counts belong to a capped pick,
+            # not to this array's mounts)
             for m in mems:
                 for k in item_keys.get((m["miniature"], m["item"]), []):
-                    if k != m["key"] and _int(sel.get(k)):
+                    if k != m["key"] and k not in bundle_member_keys and _int(sel.get(k)):
                         sel[m["key"]] = _int(sel.get(m["key"])) + _int(sel.get(k))
                         sel[k] = 0
             for m in mems:
@@ -899,40 +1092,62 @@ def validate_selection(did, squad_size, selection):
         # the derived share is never double-added); each stepper-extra unit is
         # one more replaced model, so it consumes the cap budget the picks
         # didn't use and takes the displaced pool weapon(s) off the array.
+        # Multi-item bundles are ONE pick: only the bundle's representative
+        # anchor consumes budget/pool; its partner keys ride along at
+        # ``extra × qty`` (the chainsword granted with the plasma pistol is
+        # part of the same replacement, not a second one).
+        def _resolve(it):
+            """(write_key, base, dx, stepper_count, ck) for a card item,
+            folding legacy stray keys; None when the array alone owns it."""
+            gk = it["key"]
+            M = it["miniature"]
+            ck = canon.get((M, it["item"]), gk)
+            c = ctx.get(M)
+            array_owned = c is not None and ck in c["item_keys"]
+            if (array_owned or ck in settled_keys) and gk == ck:
+                return None  # nothing but the array / an earlier card sets it
+            if array_owned or ck in settled_keys:
+                key, base, dx = gk, _int(default.get(gk, 0)), 0
+                st = max(0, _int(sel.get(gk)) - base)
+            else:
+                key, base = ck, _int(default.get(ck, 0))
+                dx = max(0, (c["derived"].get(ck, 0) if c else 0))
+                st = max(0, _int(sel.get(ck)) - base)
+                if gk != ck:
+                    st += max(0, _int(sel.get(gk)))  # fold the card's own key
+                    sel[gk] = 0
+                settled_keys.add(ck)
+            settled_keys.add(gk)
+            return key, base, dx, st, ck
+
         for grp in relevant:
             cap = limited_cap(grp["limits"], squad_size)
             dup = grp["duplicate_limit"]
             capped = grp["instruction"] in flagged
             short = False
             budget = cap - picks_using(ext_keys_of(grp))
+            bundles_g = grp.get("option_bundles") or ()
+            rep_of = {bd["anchors"][0]: bd for bd in bundles_g}
+            riders = {k for bd in bundles_g for k in bd["keys"]
+                      if k != bd["anchors"][0]}
+            item_of_g = {i["key"]: i for i in grp["items"]}
+            rider_add = {}   # rider key -> Σ extra × qty over its bundles
             for it in grp["items"]:
                 gk = it["key"]
                 M = it["miniature"]
-                ck = canon.get((M, it["item"]), gk)
-                c = ctx.get(M)
-                if gk in settled_keys:
+                if gk in settled_keys or gk in riders:
+                    continue  # riders are written once, after all reps below
+                r = _resolve(it)
+                if r is None:
                     continue
-                array_owned = c is not None and ck in c["item_keys"]
-                if (array_owned or ck in settled_keys) and gk == ck:
-                    continue  # nothing but the array / an earlier card sets it
-                if array_owned or ck in settled_keys:
-                    key, base, dx = gk, _int(default.get(gk, 0)), 0
-                    st = max(0, _int(sel.get(gk)) - base)
-                else:
-                    key, base = ck, _int(default.get(ck, 0))
-                    dx = max(0, (c["derived"].get(ck, 0) if c else 0))
-                    st = max(0, _int(sel.get(ck)) - base)
-                    if gk != ck:
-                        st += max(0, _int(sel.get(gk)))  # fold the card's own key
-                        sel[gk] = 0
-                    settled_keys.add(ck)
-                settled_keys.add(gk)
+                key, base, dx, st, ck = r
                 extra_want = max(0, st - dx)
                 extra = min(extra_want, max(0, budget))
                 if dup is not None:
                     extra = min(extra, max(0, dup - dx))
                 if extra < extra_want:
                     capped = True
+                c = ctx.get(M)
                 if c is not None:
                     pool = displaced_pool(c, ck)
                 else:  # miniature outside this spec -- use the card's own link
@@ -944,6 +1159,22 @@ def validate_selection(did, squad_size, selection):
                     extra -= rem
                 sel[key] = base + dx + extra
                 budget -= extra
+                bd = rep_of.get(gk)
+                if bd:
+                    for pk, q in bd["keys"].items():
+                        if pk != gk:
+                            rider_add[pk] = rider_add.get(pk, 0) + extra * q
+            # riders (shared partners like Boyz' close combat weapon) sum the
+            # contributions of every bundle that grants them
+            for pk, add in rider_add.items():
+                r2 = _resolve(item_of_g[pk])
+                if r2 is None:
+                    settled_keys.add(pk)
+                    continue
+                key2, base2, dx2, st2, _ck2 = r2
+                if st2 > dx2 + add:
+                    capped = True   # a rider count with no matching pick is trimmed
+                sel[key2] = base2 + dx2 + add
             if capped:
                 flag("%s: max %d at this size" % (clip(grp["instruction"]), cap))
             if short:
@@ -961,9 +1192,18 @@ def validate_selection(did, squad_size, selection):
             continue
         if not member_keys:
             member_keys = {m["key"] for s in specs for m in s["members"]}
+        # A multi-item bundle is ONE pick: only its first anchor consumes a
+        # pool weapon; the other member keys ride along (skipped here).
+        ride_along = set()
+        for bd in (grp.get("option_bundles") or ()):
+            rep = bd["anchors"][0]
+            ride_along |= {k for k in bd["keys"] if k != rep}
         short = False
         for it in grp["items"]:
             gk = it["key"]
+            if gk in ride_along:
+                settled_keys.add(gk)
+                continue
             ck = canon.get((it["miniature"], it["item"]), gk)
             if gk in member_keys or ck in member_keys or gk in settled_keys:
                 continue
@@ -978,6 +1218,12 @@ def validate_selection(did, squad_size, selection):
                 sel[pk] = _int(sel.get(pk)) - rows
             if rows < n:
                 sel[gk] = rows  # not enough pool weapons left to replace
+                bd = next((b for b in (grp.get("option_bundles") or ())
+                           if b["anchors"][0] == gk), None)
+                if bd:   # a trimmed bundle pick scales its partners with it
+                    for k2, q2 in bd["keys"].items():
+                        if k2 != gk:
+                            sel[k2] = rows * q2
                 short = True
         if short:
             flag("%s: more replacements than weapons to replace"
@@ -987,7 +1233,231 @@ def validate_selection(did, squad_size, selection):
             "overrides": overrides_of(did, squad_size, sel),
             "violations": violations,
             "points_delta": points_delta(did, squad_size, sel),
-            "loadout_summary": resolved_loadout(did, squad_size, sel)}
+            "loadout_summary": resolved_loadout(did, squad_size, sel),
+            "loadout_setups": loadout_setups(did, squad_size, sel)}
+
+
+def _touched_items(did):
+    """``{(miniature, item)}`` some option can change: offered by a non-default
+    group, displaced via ``linked_default_keys``, or managed by a weapon array.
+    Everything else in the Default group is *fixed* -- the model always carries
+    it no matter what the user picks."""
+    key_item = {key: (o.get("miniature") or "", o.get("item") or "")
+                for o, key in _keyed_options(did)}
+    touched = set()
+    for g in wargear_schema(did):
+        if g["type"] == "default":
+            continue
+        for i in (g.get("items") or []):
+            touched.add((i.get("miniature") or "", i.get("item") or ""))
+        for k in (g.get("linked_default_keys") or ()):
+            if k in key_item:
+                touched.add(key_item[k])
+    for s in _array_specs(did):
+        for m in s["members"]:
+            touched.add((m["miniature"] or "", m["item"] or ""))
+    return touched
+
+
+def loadout_setups(did, squad_size, selection):
+    """Structured per-model view of a resolved selection for the UI's "Current
+    loadout" block: ``{"setups": [{miniature, count, items}, ...],
+    "fixed": [{miniature, items}, ...]}``.
+
+    ``setups`` groups a miniature's models by identical *changeable* kit ("5×
+    Legionary — Boltgun", "1× Legionary — Plasma gun"), reconstructed by
+    seeding every model with its default kit (per-model ``@b`` bundle picks
+    where a models-mode array applies), then reconciling against the final
+    counts: an item short of its seeded count frees that many models, and the
+    surplus items (replacements / additive extras) land on freed models first.
+    ``fixed`` holds the items no option can ever change, reported once per
+    miniature instead of on every line. A miniature whose attribution can't be
+    reconciled cleanly falls back to a single aggregate row."""
+    sel = selection or {}
+    key_item = {key: (o.get("miniature") or "", o.get("item") or "")
+                for o, key in _keyed_options(did)}
+    touched = _touched_items(did)
+    mcounts = _miniature_counts(did, squad_size)
+    default_sel = default_selection(did, squad_size)
+
+    # Final + default counts per (miniature, item); stable item order per mini.
+    # Minis ordered smallest contingent first (leader before troops, matching
+    # the roster row's composition line).
+    final, ddef, item_order = {}, {}, {}
+    mini_order = sorted(mcounts, key=lambda M: mcounts.get(M, 0))
+    for o, key in _keyed_options(did):
+        M = o.get("miniature") or ""
+        it = o.get("item") or ""
+        if M not in mini_order:
+            mini_order.append(M)
+        rank = item_order.setdefault(M, {})
+        if it not in rank:
+            rank[it] = len(rank)
+        c = _int(sel.get(key, 0))
+        if c > 0:
+            final.setdefault(M, {})
+            final[M][it] = final[M].get(it, 0) + c
+        if _is_default_group(o.get("group")):
+            d = _int(default_sel.get(key, 0))
+            if d > 0:
+                ddef.setdefault(M, {})
+                ddef[M][it] = ddef[M].get(it, 0) + d
+
+    multi = _multi_meta(did)
+    # Items that REPLACE something (their group displaces a default / is a
+    # swap) take a freed model during reconciliation; additive extras (a Chaos
+    # Icon "can be equipped with") ride on an armed model instead -- otherwise
+    # the icon eats the freed slot and a weaponless "Legionary — Chaos Icon"
+    # row appears while the flamer lands on the wrong model.
+    displacing = set()
+    for g in wargear_schema(did):
+        if g["type"] in ("default", "array"):
+            continue
+        if g.get("linked_default_keys") or g["type"] in ("replace_one", "all_model") \
+                or re.search(r"replac", g.get("instruction") or "", re.IGNORECASE):
+            for i in (g.get("items") or []):
+                displacing.add((i.get("miniature") or "", i.get("item") or ""))
+    # Multi-item option bundles: a pick grants ALL its items to one model, so
+    # place them on the same freed model during reconciliation below.
+    bundle_units = {}   # miniature -> [({item: qty}, picks), ...]
+    for g in wargear_schema(did):
+        for bd in (g.get("option_bundles") or ()):
+            ks = bd["keys"]
+            M0 = key_item.get(next(iter(ks)), ("", ""))[0]
+            if bd.get("anchors"):
+                nb = min(_int(sel.get(a)) for a in bd["anchors"])
+            else:
+                nb = min(_int(sel.get(k)) // q for k, q in ks.items())
+            if nb > 0:
+                bundle_units.setdefault(M0, []).append(
+                    ({key_item[k][1]: q for k, q in ks.items()}, nb))
+    setups, fixed = [], []
+    fmt = lambda it, c: ("%d× %s" % (c, it)) if c > 1 else it
+
+    for M in mini_order:
+        counts = final.get(M)
+        if not counts:
+            continue
+        n = mcounts.get(M, 0)
+        rank = item_order.get(M, {})
+        ordered = sorted(counts, key=lambda it: rank.get(it, 999))
+
+        # Split fixed (untouchable, evenly carried) from variable items.
+        fx, var = [], {}
+        for it in ordered:
+            c = counts[it]
+            if (M, it) not in touched and n and c % n == 0:
+                fx.append(fmt(it, c // n))
+            else:
+                var[it] = c
+        if fx:
+            fixed.append({"miniature": M, "items": fx})
+        if not var:
+            continue
+        if n <= 1:
+            setups.append({"miniature": M, "count": max(n, 1),
+                           "items": [fmt(it, c) for it, c in var.items()]})
+            continue
+
+        # Seed every model with its default variable kit...
+        kits = [dict() for _ in range(n)]
+        for it, c in (ddef.get(M) or {}).items():
+            if it not in var and counts.get(it, 0) == c and (M, it) not in touched:
+                continue  # fixed, already reported
+            per, rem = divmod(c, n)
+            for i in range(n):
+                q = per + (1 if i < rem else 0)
+                if q:
+                    kits[i][it] = q
+        # ...overridden by the model's actual bundle pick where a models-mode
+        # array applies (the only genuinely per-model data in a selection).
+        for spec_idx, md in multi.items():
+            pm = md["per_mini"].get(M)
+            if not pm:
+                continue
+            domain = {key_item[k][1] for k in pm["item_keys"] if k in key_item}
+            for i in range(n):
+                b = _int(sel.get(_bundle_key(spec_idx, M, i), pm["default_idx"]))
+                if not (0 <= b < len(pm["bundles"])):
+                    b = pm["default_idx"]
+                for it in domain:
+                    kits[i].pop(it, None)
+                for k, c in pm["bundles"][b]["key_counts"].items():
+                    it = key_item.get(k, ("", ""))[1]
+                    kits[i][it] = kits[i].get(it, 0) + c
+
+        # Reconcile seeded kits against the final counts: an item seeded above
+        # its final count frees that many models; surplus items (replacements,
+        # additive extras) land on freed models first, then untouched ones.
+        recon = {}
+        for kit in kits:
+            for it, c in kit.items():
+                recon[it] = recon.get(it, 0) + c
+        freed, ok = [], True   # kit indices awaiting a replacement item
+        for it in ordered:            # removals: seeded > final
+            need = recon.get(it, 0) - var.get(it, 0)
+            # prefer already-freed kits: a pick that displaces TWO defaults
+            # ("choppa and slugga") strips both from the same model
+            for i in sorted(range(n), key=lambda i: i not in freed):
+                if need <= 0:
+                    break
+                if kits[i].get(it, 0) > 0:
+                    kits[i][it] -= 1
+                    if not kits[i][it]:
+                        del kits[i][it]
+                    if i not in freed:
+                        freed.append(i)
+                    need -= 1
+            if need > 0:
+                ok = False
+                break
+        if ok:
+            need = {it: var.get(it, 0) - recon.get(it, 0) for it in ordered}
+            rr = [0]
+
+            def take_slot():
+                if freed:
+                    return freed.pop(0)
+                i = rr[0] % n          # no freed model left: round-robin
+                rr[0] += 1
+                return i
+
+            # bundle picks first: all of a pick's items land on ONE model
+            for bitems, nb in bundle_units.get(M, []):
+                place = min([nb] + [need.get(it, 0) // q for it, q in bitems.items()])
+                for _ in range(max(0, place)):
+                    i = take_slot()
+                    for it, q in bitems.items():
+                        kits[i][it] = kits[i].get(it, 0) + q
+                        need[it] = need.get(it, 0) - q
+            # additions: final > seeded. Replacements first (they pair with the
+            # models their removals freed), additive extras after (round-robin
+            # onto armed models once the freed slots are spent).
+            for it in sorted(ordered, key=lambda it: (M, it) not in displacing):
+                while need.get(it, 0) > 0:
+                    i = take_slot()
+                    kits[i][it] = kits[i].get(it, 0) + 1
+                    need[it] -= 1
+        if not ok:
+            # Attribution failed -- one honest aggregate row beats a wrong split.
+            setups.append({"miniature": M, "count": n,
+                           "items": [fmt(it, c) for it, c in var.items()]})
+            continue
+
+        # Group models with identical kits, largest group first.
+        grouped, order = {}, []
+        for kit in kits:
+            sig = tuple(sorted(kit.items()))
+            if sig not in grouped:
+                grouped[sig] = 0
+                order.append(sig)
+            grouped[sig] += 1
+        for sig in sorted(order, key=lambda s: -grouped[s]):
+            setups.append({"miniature": M, "count": grouped[sig],
+                           "items": [fmt(it, c) for it, c in
+                                     sorted(sig, key=lambda p: rank.get(p[0], 999))]})
+
+    return {"setups": setups, "fixed": fixed}
 
 
 def resolved_loadout(did, squad_size, selection):

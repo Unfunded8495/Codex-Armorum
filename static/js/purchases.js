@@ -14,6 +14,7 @@ let purchSortMode = 'name';
 let selectedPurchaseId = null;
 let boxCatalogueLoading = null;
 let pageFactions = [];
+let pageFactionNames = {};
 const CARD_CHUNK_SIZE = 12;
 
 // ══════════════════════════════════════════════════════════════
@@ -34,6 +35,7 @@ export async function showPurchases(){
     boxes = boxSetCache || data.box_options || data.boxes || [];
     factions = data.factions || [];
     pageFactions = factions;
+    pageFactionNames = data.faction_names || {};
   }catch(e){
     view.innerHTML = `<div class="loading load-error">Failed to load purchases.<br><small>${esc(e.message)}</small></div>`;
     return;
@@ -218,7 +220,7 @@ function _renderMiniList(contents, limit=5){
 function _boxBadges(box, purchase=null){
   return `
     ${purchase?`<span class="al-cbadge bought">&times; ${purchase.quantity}</span>`:''}
-    ${box.faction_id?`<span class="al-cbadge faction">${esc(box.faction_id)}</span>`:'<span class="al-cbadge mixed">Mixed</span>'}
+    ${box.faction_id?`<span class="al-cbadge faction">${esc(_factionName(box.faction_id))}</span>`:'<span class="al-cbadge mixed">Mixed</span>'}
     <span class="al-cbadge ${box.source==='local'?'local':'gw'}">${box.source==='local'?'Custom':'GW'}</span>
   `;
 }
@@ -228,7 +230,7 @@ function _factionData(fid){
 }
 
 function _factionName(fid){
-  return _factionData(fid)?.name || fid;
+  return _factionData(fid)?.name || pageFactionNames[fid] || fid;
 }
 
 function _boxSurface(box){
@@ -1475,6 +1477,14 @@ export async function saveBoxSet(forceConflict=false){
     return;
   }
   if(!res.ok){ alert(res.error || 'Could not save box set.'); return; }
+  const sync = res.minis;
+  if(sync && (sync.created || sync.removed || sync.kept)){
+    const parts = [];
+    if(sync.created) parts.push(`${sync.created} new mini${sync.created===1?'':'s'} added to your collection`);
+    if(sync.removed) parts.push(`${sync.removed} unbuilt mini${sync.removed===1?'':'s'} removed`);
+    if(sync.kept) parts.push(`${sync.kept} kept because you have already worked on them`);
+    alert(`This box has purchases, so they were updated too: ${parts.join('; ')}.`);
+  }
   const savedBoxId = res.id || (boxEditor.editing ? boxEditor.id : _boxSlug(name));
   boxSetCache = null; boxCatalogueLoading = null;
   activeTab = 'catalogue';

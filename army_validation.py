@@ -10,8 +10,8 @@ to the offending unit.
 Phase 1 codes: points_over / points_ok, enhancement_over / enhancement_ok,
 no_detachment, under_assigned, over_assigned, wishlist_units.
 """
-from army import (_army_unit_row, battle_size_caps, duplicate_cap,
-                  parse_detachment_ids, detachment_set_cost)
+from army import (_army_unit_row, attach_check, battle_size_caps,
+                  duplicate_cap, parse_detachment_ids, detachment_set_cost)
 from data_store import get_store
 
 
@@ -47,9 +47,14 @@ def _rows(army, units, store):
                          "message": "Within points limit"})
 
     # Enhancement count vs the battle-size cap (skipped for Custom / null cap).
+    # counts_toward_limit=False enhancements (e.g. Canoptek Court cryptek
+    # upgrades) are free with respect to the cap; unknown ids count.
     enh_limit = caps["enhancement_limit"]
     if enh_limit is not None:
-        enh_count = sum(1 for u in units if u.get("enhancement_id"))
+        enh_count = sum(
+            1 for u in units if u.get("enhancement_id")
+            and store.enhancement_by_id.get(str(u["enhancement_id"]),
+                                            {}).get("counts_toward_limit", True))
         if enh_count > enh_limit:
             rows.append({"level": "err", "code": "enhancement_over",
                          "message": f"{enh_count} enhancements - limit is {enh_limit}"})
@@ -99,7 +104,7 @@ def _rows(army, units, store):
                          "auid": u["id"],
                          "message": f"{u['name']}: {v.get('message', '')}"})
 
-    # Enhancement eligibility + uniqueness, and the single-Warlord rule (Phase 4).
+    # Enhancement eligibility + take limits, and the single-Warlord rule (Phase 4).
     from eligibility import enhancement_eligible
     # Enhancements come from the union of every selected detachment's pool.
     enh_pool = [e for d in dt_ids for e in store.enhancements_by_detachment.get(d, [])]
@@ -112,18 +117,29 @@ def _rows(army, units, store):
         ds = store.ds_by_id.get(u.get("datasheet_id"), {})
         e = next((x for x in enh_pool if str(x.get("id")) == eid), None)
         if e and not enhancement_eligible(set(ds.get("_keywords") or []), ds.get("role"),
-                                          e.get("eligibility_struct") or {}, ds.get("name")):
+                                          e, ds.get("name"),
+                                          ds.get("id") or u.get("datasheet_id")):
             rows.append({"level": "err", "code": "enhancement_ineligible",
                          "auid": u["id"],
                          "message": f"{u['name']}: not eligible for "
                                     f"{u.get('enhancement_name') or 'that enhancement'}"})
+    # Most enhancements are unique; some Upgrade-type ones allow take_limit copies.
     for eid, us in by_enh.items():
-        if len(us) > 1:
+        cap = (store.enhancement_by_id.get(eid) or {}).get("take_limit") or 1
+        if len(us) > cap:
+            nm = us[0].get("enhancement_name") or "Enhancement"
+            why = "each is unique" if cap == 1 else f"max {cap} per army"
             rows.append({"level": "err", "code": "enhancement_duplicate",
-                         "message": f"{us[0].get('enhancement_name') or 'Enhancement'} "
-                                    f"taken by {len(us)} units - each is unique"})
+                         "message": f"{nm} taken by {len(us)} units - {why}"})
 
     warlords = [u for u in units if u.get("is_warlord")]
+    for u in warlords:
+        e = store.enhancement_by_id.get(str(u.get("enhancement_id") or ""))
+        if e and e.get("cannot_be_warlord"):
+            rows.append({"level": "err", "code": "warlord_enhancement",
+                         "auid": u["id"],
+                         "message": f"{u['name']}: the bearer of {e['name']} "
+                                    f"cannot be the Warlord"})
     if len(warlords) > 1:
         rows.append({"level": "err", "code": "warlord_multiple",
                      "message": f"{len(warlords)} Warlords - choose exactly one"})
@@ -131,18 +147,27 @@ def _rows(army, units, store):
         rows.append({"level": "warn", "code": "warlord_missing",
                      "message": "No Warlord selected"})
 
-    # Leader attachment legality (Phase 4b) — defensive; the save path enforces it.
+    # Leader attachment legality — leader_group conditions (detachment gates,
+    # leader vs support slots, mark-keyword parties, enhancement grants).
+    # Defensive; the save path enforces the same via attach_check, but a
+    # roster can go stale under it (detachment de-selected, enhancement
+    # cleared, or rows written by an older build).
     by_id = {u["id"]: u for u in units}
     for u in units:
         att = u.get("attached_to") or ""
         if not att:
             continue
         tgt = by_id.get(att)
-        leads = {t["id"] for t in store.leads.get(u.get("datasheet_id"), [])}
-        if not tgt or tgt.get("datasheet_id") not in leads:
+        if not tgt:
             rows.append({"level": "err", "code": "illegal_attachment",
                          "auid": u["id"],
                          "message": f"{u['name']}: invalid leader attachment"})
+            continue
+        why = attach_check(dt_ids, units, u, tgt)
+        if why:
+            rows.append({"level": "err", "code": "illegal_attachment",
+                         "auid": u["id"],
+                         "message": f"{u['name']}: {why}"})
 
     # Duplicate-datasheet limit (Phase 5a): Rule of N, Battleline/Transport x2,
     # Epic Heroes 1. Custom / Combat Patrol have no cap (Epic Heroes still 1).
@@ -160,6 +185,19 @@ def _rows(army, units, store):
             at = f" at {bs}" if bs and bs != "Custom" else ""
             rows.append({"level": "err", "code": "duplicate_over", "auid": u["id"],
                          "message": f"{counts[did]}x {u['name']}, max {cap}{at}"})
+
+    # Faction membership: a unit must be one the picker would offer this army
+    # (own units + parent generics, explicit exclusions vetoing — e.g.
+    # Librarians are barred from Black Templars) or be admitted by an ally
+    # config. The add-guard enforces the same set on write; this row catches
+    # rosters built before an exclusion existed.
+    afid_m = army["faction_id"]
+    offerable = {x["id"] for x in store.selectable_units_for_army(afid_m)}
+    for u in units:
+        did = u.get("datasheet_id")
+        if did not in offerable and not store.ally_config_for(afid_m, did):
+            rows.append({"level": "err", "code": "faction_excluded", "auid": u["id"],
+                         "message": f"{u['name']} is not available to this faction"})
 
     # Detachment excludes (Phase 5a): excludes_datasheets holds datasheet NAMES.
     # Union the excludes of every selected detachment.

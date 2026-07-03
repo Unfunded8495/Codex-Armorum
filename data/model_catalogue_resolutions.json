@@ -4705,11 +4705,13 @@
     },
     {
       "catalogue_model_id": "MD-50708",
-      "action": "no_current_datasheet",
-      "catalogue_type": "model_release",
-      "datasheet_ids": [],
-      "notes": "No current 10th-edition datasheet (remediation auto-mark).",
-      "updated_at": 1782664262.3641407
+      "action": "link_datasheet",
+      "catalogue_type": "",
+      "datasheet_ids": [
+        "2151c904-7486-4787-97ee-1fa9208981d4"
+      ],
+      "notes": "",
+      "updated_at": 1783027852.2725534
     },
     {
       "catalogue_model_id": "MD-50711",

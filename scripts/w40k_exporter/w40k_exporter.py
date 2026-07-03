@@ -204,6 +204,19 @@ def build_index(parsed):
                 led_by[member].add(leader)
     idx["leads"] = leads
     idx["led_by"] = led_by
+    # Structured leader groups: the raw bodyguard groups keep the conditions the
+    # flat leads/led_by name lists lose - bodyguardType ('leader' occupies the
+    # unit's Leader slot, 'support' attaches alongside an existing Leader),
+    # required/excluded detachment, the "every unit must share keyword X" gate,
+    # and keyword-based membership (15 groups match members by keyword, not id).
+    idx["bg_groups_by_ds"] = group("datasheet_bodyguard_group", "datasheetId")
+    idx["bg_members"] = bg_members
+    bg_kw = defaultdict(list)
+    for r in data["datasheet_bodyguard_group_keyword"]:
+        bg_kw[r["datasheetBodyguardGroupId"]].append(r["keywordId"])
+    idx["bg_keywords"] = bg_kw
+    idx["mini_by_id"] = by_id("miniature")
+    idx["det_by_id"] = by_id("detachment")
 
     # ----- wargear loadout enforcement -----
     idx["wog_by_ds"] = group_sorted("wargear_option_group", "datasheetId")
@@ -213,12 +226,14 @@ def build_index(parsed):
             wo_by_group[r["wargearOptionGroupId"]].append(r)
     idx["wo_by_group"] = wo_by_group
 
-    # default loadout (equipped with)
+    # default loadout (equipped with) - (option id, count) pairs; 153 rows carry
+    # a count above 1 (e.g. a model equipped with 2 of the same weapon).
     bml_by_ds = group("base_miniature_loadout", "datasheetId")
     idx["bml_by_ds"] = bml_by_ds
     bml_opts = defaultdict(list)
     for r in data["base_miniature_loadout_wargear_option"]:
-        bml_opts[r["baseMiniatureLoadoutId"]].append(r["wargearOptionId"])
+        bml_opts[r["baseMiniatureLoadoutId"]].append(
+            (r["wargearOptionId"], r.get("count") or 1))
     idx["bml_opts"] = bml_opts
 
     # choose from sets
@@ -238,6 +253,12 @@ def build_index(parsed):
     idx["amci_by_choice"] = group("all_model_wargear_choice_wargear_item", "allModelWargearChoiceId")
 
     idx["wargear_rule_by_ds"] = group_sorted("wargear_rule", "datasheetId")
+
+    # composition gating: a points/size tier can be restricted to a detachment
+    # (8 rows) or a roster faction keyword (51 rows, e.g. 10-model Assault
+    # Intercessor tiers are Blood Angels only).
+    idx["uc_req_det"] = group("unit_composition_required_detachment", "unitCompositionId")
+    idx["uc_req_fac"] = group("unit_composition_required_faction_keyword", "unitCompositionId")
 
     # ----- detachment -----
     det_fac = defaultdict(list)
@@ -266,6 +287,9 @@ def build_index(parsed):
         idx["phases_by_strat"][r["stratagemId"]].append(r["phase"])
     idx["det_linked_ds"] = group("detachment_linked_datasheet", "detachmentId")
     idx["det_excluded_ds"] = group("detachment_excluded_datasheet", "detachmentId")
+    idx["det_unique_kw"] = group("detachment_unique_keyword", "detachmentId")
+    idx["det_granted_warlord"] = group("detachment_granted_warlord_miniature", "detachmentId")
+    idx["det_mandatory_warlord"] = group("detachment_mandatory_warlord_miniature", "detachmentId")
 
     # enhancement eligibility
     grp_fac = defaultdict(list)
@@ -278,6 +302,11 @@ def build_index(parsed):
     idx["enh_grp_fac"] = grp_fac
     idx["enh_grp_kw"] = grp_kw
     idx["enh_excluded"] = group("enhancement_excluded_keyword", "enhancementId")
+    # enhancement leader-attachment grants (e.g. "Slippery Git" lets the bearer
+    # lead Kommandos) - same bodyguard-group shape as datasheets.
+    idx["enh_bg_groups"] = group("enhancement_bodyguard_group", "enhancementId")
+    idx["enh_bg_ds"] = group("enhancement_bodyguard_group_datasheet", "enhancementBodyguardGroupId")
+    idx["enh_bg_kw"] = group("enhancement_bodyguard_group_keyword", "enhancementBodyguardGroupId")
 
     # army rules and allegiance abilities
     idx["army_rule_by_id"] = by_id("army_rule")
@@ -334,8 +363,15 @@ def resolve_models(dsid, idx):
             "id": m["id"], "name": en(m), "statline_hidden": bool(m.get("statlineHidden")),
             "M": m.get("movement"), "T": m.get("toughness"), "Sv": m.get("save"),
             "Inv": (inv or {}).get("save") if inv else None,
+            "Inv_melee": (inv or {}).get("meleeSave") if inv else None,
+            "Inv_ranged": (inv or {}).get("rangedSave") if inv else None,
             "W": m.get("wounds"), "Ld": m.get("leadership"), "OC": m.get("objectiveControl"),
             "keywords": [k for k in kws if k],
+            "cannot_be_warlord": bool(m.get("cannotBeWarlord")),
+            "can_be_non_character_warlord": bool(m.get("canBeNonCharacterWarlord")),
+            "is_supreme_commander": bool(m.get("isSupremeCommander")),
+            "excluded_from_enhancements": bool(m.get("excludedFromEnhancements")),
+            "is_individual_models": bool(m.get("isIndividualModels")),
         })
     return models
 
@@ -360,7 +396,7 @@ def resolve_abilities(dsid, idx):
 def resolve_weapons(dsid, idx):
     seen, out = set(), []
     for loadout_id in [b["id"] for b in idx["bml_by_ds"].get(dsid, [])]:
-        for opt_id in idx["bml_opts"].get(loadout_id, []):
+        for opt_id, _count in idx["bml_opts"].get(loadout_id, []):
             opt = idx["wargear_option_by_id"].get(opt_id)
             if opt and opt.get("wargearItemId") and opt["wargearItemId"] not in seen:
                 seen.add(opt["wargearItemId"])
@@ -378,6 +414,19 @@ def resolve_weapons(dsid, idx):
 
 def resolve_wargear_loadout(dsid, idx):
     mini_name = {m["id"]: en(m) for m in idx["minis_by_ds"].get(dsid, [])}
+
+    # 0. the base loadout each miniature is equipped with, item counts included
+    default_loadout = []
+    for b in idx["bml_by_ds"].get(dsid, []):
+        items = []
+        for opt_id, count in idx["bml_opts"].get(b["id"], []):
+            opt = idx["wargear_option_by_id"].get(opt_id)
+            nm = item_name(opt.get("wargearItemId"), idx) if opt else None
+            if nm:
+                items.append({"item": nm, "count": count})
+        if items:
+            default_loadout.append({"miniature": mini_name.get(b.get("miniatureId")),
+                                    "items": items})
 
     # 1. options with points and input behaviour
     options = []
@@ -439,6 +488,7 @@ def resolve_wargear_loadout(dsid, idx):
 
     return {
         "rules_text": rules_text,
+        "default_loadout": default_loadout,
         "priced_options": [o for o in options if o.get("points")],
         "options": options,
         "choose_from": choose_from,
@@ -451,19 +501,58 @@ def resolve_conditional_keywords(dsid, idx):
     out = []
     for r in idx["cond_kw_by_ds"].get(dsid, []):
         cond = []
+        requires = {}
         if r.get("requiredDetachmentId"):
-            cond.append("in a specific detachment")
+            det_name = en(idx["det_by_id"].get(r["requiredDetachmentId"]))
+            cond.append("in the %s detachment" % det_name if det_name
+                        else "in a specific detachment")
+            requires["detachment_id"] = r["requiredDetachmentId"]
+            requires["detachment"] = det_name
         if r.get("requiredAllegianceAbilityId"):
             cond.append("with a specific allegiance ability")
+            requires["allegiance_ability_id"] = r["requiredAllegianceAbilityId"]
         if r.get("requiredWarlordMiniatureId"):
-            cond.append("when a specific warlord is present")
+            wl_name = en(idx["mini_by_id"].get(r["requiredWarlordMiniatureId"]))
+            cond.append("when %s is the warlord" % wl_name if wl_name
+                        else "when a specific warlord is present")
+            requires["warlord_miniature_id"] = r["requiredWarlordMiniatureId"]
+            requires["warlord_miniature"] = wl_name
         if r.get("requiredRosterFactionKeywordId"):
             fk = en(idx["faction_by_id"].get(r["requiredRosterFactionKeywordId"]))
             if fk:
                 cond.append("in a %s army" % fk)
+            requires["roster_faction_id"] = r["requiredRosterFactionKeywordId"]
+            requires["roster_faction"] = fk
         out.append({"keyword": en(idx["keyword_by_id"].get(r["keywordId"])),
-                    "condition": ", ".join(cond) or "conditional"})
+                    "condition": ", ".join(cond) or "conditional",
+                    "requires": requires})
     return [c for c in out if c["keyword"]]
+
+
+def resolve_leader_groups(dsid, idx):
+    """Structured leader-attachment groups for a leader datasheet. Unlike the
+    flat leads/led_by name lists these keep the enforcement conditions: type
+    ('leader' fills the unit's Leader slot; 'support' attaches alongside an
+    existing Leader), required/excluded detachment, the "all units must share
+    keyword X" gate, and keyword-based membership."""
+    out = []
+    for g in idx["bg_groups_by_ds"].get(dsid, []):
+        members = idx["bg_members"].get(g["id"], [])
+        kws = [en(idx["keyword_by_id"].get(k)) for k in idx["bg_keywords"].get(g["id"], [])]
+        out.append({
+            "id": g["id"],
+            "type": g.get("bodyguardType"),
+            "required_detachment_id": g.get("requiredDetachmentId"),
+            "required_detachment": en(idx["det_by_id"].get(g.get("requiredDetachmentId"))),
+            "excluded_detachment_id": g.get("excludedDetachmentId"),
+            "excluded_detachment": en(idx["det_by_id"].get(g.get("excludedDetachmentId"))),
+            "requires_all_units_keyword": en(idx["keyword_by_id"].get(
+                g.get("requiresAllUnitsHaveKeywordId"))),
+            "member_datasheet_ids": members,
+            "member_datasheets": [en(idx["datasheet_by_id"].get(m)) for m in members],
+            "member_keywords": [k for k in kws if k],
+        })
+    return out
 
 
 def resolve_datasheet(dsid, idx):
@@ -476,8 +565,23 @@ def resolve_datasheet(dsid, idx):
         for cm in idx["comp_mini"].get(c["id"], []):
             mn = next((m["name"] for m in models if m["id"] == cm["miniatureId"]), None)
             members.append({"model": mn, "min": cm.get("min"), "max": cm.get("max")})
-        comps.append({"points": c.get("points"), "is_default": bool(c.get("isDefault")),
-                      "models": members})
+        comp = {"points": c.get("points"), "is_default": bool(c.get("isDefault")),
+                "models": members}
+        # Gated tiers: only offered in a specific detachment or roster faction
+        # (e.g. 10-model Assault Intercessor tiers are Blood Angels only).
+        # Keys are added only when a gate exists, so ungated tiers keep their
+        # existing shape.
+        req_det = idx["uc_req_det"].get(c["id"], [])
+        if req_det:
+            comp["required_detachment_ids"] = [r["detachmentId"] for r in req_det]
+            comp["required_detachments"] = [
+                n for n in (en(idx["det_by_id"].get(r["detachmentId"])) for r in req_det) if n]
+        req_fac = idx["uc_req_fac"].get(c["id"], [])
+        if req_fac:
+            comp["required_faction_keyword_ids"] = [r["factionKeywordId"] for r in req_fac]
+            comp["required_faction_keywords"] = [
+                n for n in (en(idx["faction_by_id"].get(r["factionKeywordId"])) for r in req_fac) if n]
+        comps.append(comp)
     steps = [{"step_at": s.get("stepAt"), "step_points": s.get("stepPoints")}
              for s in idx["steps_by_ds"].get(dsid, [])]
 
@@ -513,6 +617,8 @@ def resolve_datasheet(dsid, idx):
         "wargear_loadout": resolve_wargear_loadout(dsid, idx),
         "leads_units": [x for x in leads if x],
         "can_be_led_by": [x for x in led_by if x],
+        "leader_groups": resolve_leader_groups(dsid, idx),
+        "allegiance_ability_group_id": ds.get("allegianceAbilityGroupId"),
         "damage_brackets": [{"name": en(r), "rules": en(r, "rules")}
                             for r in idx["damage_by_ds"].get(dsid, [])],
     }
@@ -568,9 +674,32 @@ def resolve_enhancement(e, idx):
     text = ("Bearer must be: " + " OR ".join(group_strs)) if group_strs else ""
     if excluded:
         text += ("; " if text else "") + "excluding: " + ", ".join(excluded)
+    # Leader-attachment grants: units the bearer may lead *because of* this
+    # enhancement (same group shape as datasheet bodyguard groups).
+    grants = []
+    for g in idx["enh_bg_groups"].get(e["id"], []):
+        ds_ids = [r["datasheetId"] for r in idx["enh_bg_ds"].get(g["id"], [])]
+        grants.append({
+            "type": g.get("bodyguardType"),
+            "faction_keyword": en(idx["faction_by_id"].get(g.get("factionKeywordId"))),
+            "datasheet_ids": ds_ids,
+            "datasheets": [n for n in (en(idx["datasheet_by_id"].get(x)) for x in ds_ids) if n],
+            "keywords": [n for n in (en(idx["keyword_by_id"].get(r["keywordId"]))
+                                     for r in idx["enh_bg_kw"].get(g["id"], [])) if n],
+        })
     return {"name": en(e), "points": e.get("basePointsCost"), "type": e.get("enhancementType"),
             "is_combat_patrol": bool(e.get("isCombatPatrol")),
+            "is_combat_patrol_default": bool(e.get("isCombatPatrolDefault")),
             "cannot_be_warlord": bool(e.get("cannotBeWarlord")),
+            # How many copies an army may include (871 enhancements are unique,
+            # 71 Upgrade-type ones allow 3), and whether it counts against the
+            # battle-size enhancement cap (9 do not).
+            "take_limit": e.get("limit"),
+            "counts_toward_limit": bool(e.get("isIncludedInEnhancementLimit")),
+            # Bearer-eligibility overrides of the core Character/Epic-Hero rules.
+            "epic_hero_eligible": bool(e.get("isEquipableByEpicHero")),
+            "non_character_eligible": bool(e.get("isEquipableByNonCharacterUnit")),
+            "grants_leader_attachment": grants,
             "lore": to_plain_text(en(e, "lore")),
             "rules_html": en(e, "rules"), "rules_text": to_plain_text(en(e, "rules")),
             "eligibility": {"required_groups": groups, "excluded_keywords": excluded},
@@ -586,7 +715,9 @@ def resolve_stratagem(s, idx):
             "target_text": to_plain_text(en(s, "targetRules")),
             "effect_html": en(s, "effectRules"), "effect_text": to_plain_text(en(s, "effectRules")),
             "restriction_text": to_plain_text(en(s, "restrictionRules")),
-            "secondary_effect_text": to_plain_text(en(s, "secondaryEffect"))}
+            "secondary_effect_text": to_plain_text(en(s, "secondaryEffect")),
+            "secondary_effect_cp_cost": s.get("secondaryEffectAdditionalCPCost"),
+            "secondary_effect_mutually_exclusive": bool(s.get("secondaryEffectIsMutuallyExclusive"))}
 
 
 def resolve_detachment(det, idx):
@@ -599,6 +730,19 @@ def resolve_detachment(det, idx):
                     for r in idx["det_linked_ds"].get(did, []))
     excluded = sorted(en(idx["datasheet_by_id"].get(r["datasheetId"]))
                       for r in idx["det_excluded_ds"].get(did, []))
+    # Structured unlock rows keep the is_warlord flag (24 linked datasheets are
+    # forced to be the Warlord) and the per-datasheet count cap.
+    linked_full = [{"datasheet_id": r["datasheetId"],
+                    "datasheet": en(idx["datasheet_by_id"].get(r["datasheetId"])),
+                    "is_warlord": bool(r.get("isWarlord")),
+                    "count": r.get("count")}
+                   for r in idx["det_linked_ds"].get(did, [])]
+    unique_kws = [n for n in (en(idx["keyword_by_id"].get(r["keywordId"]))
+                              for r in idx["det_unique_kw"].get(did, [])) if n]
+    def _warlord_minis(rows):
+        return [{"miniature_id": r["miniatureId"],
+                 "miniature": en(idx["mini_by_id"].get(r["miniatureId"]))}
+                for r in rows]
     pub = idx["publication_by_id"].get(det.get("publicationId"))
     return {"id": did, "name": en(det), "is_combat_patrol": bool(det.get("isCombatPatrol")),
             "is_free_from_entitlements": bool(det.get("isFreeFromEntitlements")),
@@ -607,6 +751,10 @@ def resolve_detachment(det, idx):
             "restrictions": restr,
             "unlocks_datasheets": [x for x in linked if x],
             "excludes_datasheets": [x for x in excluded if x],
+            "linked_datasheets": linked_full,
+            "unique_keywords": unique_kws,
+            "mandatory_warlord_miniatures": _warlord_minis(idx["det_mandatory_warlord"].get(did, [])),
+            "granted_warlord_miniatures": _warlord_minis(idx["det_granted_warlord"].get(did, [])),
             "rules": [resolve_detachment_rule(r, idx) for r in idx["rules_by_det"].get(did, [])],
             "enhancements": [resolve_enhancement(e, idx) for e in idx["enh_by_det"].get(did, [])],
             "stratagems": [resolve_stratagem(s, idx) for s in idx["strat_by_det"].get(did, [])]}
@@ -695,12 +843,42 @@ def resolve_allied_factions(data, idx):
         nm = det_name.get(r.get("detachmentId"))
         if nm:
             reqdet[r["alliedFactionId"]].append(nm)
+    # slotless keyword groups: units with a receiver keyword (e.g. Retinue
+    # Voidsmen-At-Arms) don't consume an ally keyword slot while a donor-keyword
+    # unit (their Rogue Trader) is in the army. Keyed on the allied_faction_keyword
+    # row they relax.
+    slotless = defaultdict(list)
+    sl_donor = defaultdict(list)
+    sl_recv = defaultdict(list)
+    for r in data.get("allied_faction_keyword_slotless_keyword_group_donor_keyword", []):
+        sl_donor[r["alliedFactionKeywordSlotlessKeywordGroupId"]].append(
+            en(idx["keyword_by_id"].get(r.get("keywordId"))))
+    for r in data.get("allied_faction_keyword_slotless_keyword_group_receiver_keyword", []):
+        sl_recv[r["alliedFactionKeywordSlotlessKeywordGroupId"]].append(
+            en(idx["keyword_by_id"].get(r.get("keywordId"))))
+    for g in data.get("allied_faction_keyword_slotless_keyword_group", []):
+        slotless[g["alliedFactionKeywordId"]].append({
+            "donor_keywords": [k for k in sl_donor.get(g["id"], []) if k],
+            "receiver_keywords": [k for k in sl_recv.get(g["id"], []) if k]})
     kwlim = defaultdict(list)
     for r in data.get("allied_faction_keyword", []):
-        kwlim[r["alliedFactionId"]].append({
+        entry = {
             "keyword": en(idx["keyword_by_id"].get(r.get("keywordId"))),
             "limit": r.get("limitCount"),
-            "battle_size": bs_name.get(r.get("battleSizeId"))})
+            "battle_size": bs_name.get(r.get("battleSizeId"))}
+        if r.get("requiredWarlordMiniatureId"):
+            entry["required_warlord_miniature_id"] = r["requiredWarlordMiniatureId"]
+            entry["required_warlord_miniature"] = en(
+                idx["mini_by_id"].get(r["requiredWarlordMiniatureId"]))
+        if slotless.get(r.get("id")):
+            entry["slotless_groups"] = slotless[r["id"]]
+        kwlim[r["alliedFactionId"]].append(entry)
+    # ally miniatures allowed to be the army's Warlord (normally allies can't).
+    warlord_ok = defaultdict(list)
+    for r in data.get("allied_faction_allowed_warlord_miniature", []):
+        warlord_ok[r["alliedFactionId"]].append({
+            "miniature_id": r["miniatureId"],
+            "miniature": en(idx["mini_by_id"].get(r["miniatureId"]))})
 
     out = []
     for af in data.get("allied_faction", []):
@@ -716,6 +894,10 @@ def resolve_allied_factions(data, idx):
             "is_sibling_faction": bool(af.get("isSiblingFaction")),
             "replaces_roster_keyword": bool(af.get("replacesRosterFactionKeyword")),
             "mutually_exclusive_keyword_limit": bool(af.get("isMutuallyExclusiveKeywordLimit")),
+            "required_warlord_miniature_id": af.get("requiredWarlordMiniatureId"),
+            "required_warlord_miniature": en(
+                idx["mini_by_id"].get(af.get("requiredWarlordMiniatureId"))),
+            "allowed_warlord_miniatures": warlord_ok.get(aid, []),
             "datasheets": [en(idx["datasheet_by_id"].get(d)) for d in ds_ids],
             "datasheet_ids": ds_ids,
             "keyword_limits": kwlim.get(aid, []),
@@ -1021,7 +1203,9 @@ def export(apk_path, out_dir, write_json=True, csv_on=True, sqlite_on=False, log
     faction_ids = set(ds_by_fac) | set(det_by_fac)
     os.makedirs(out_dir, exist_ok=True)
     factions_root = os.path.join(out_dir, "factions")
-    os.makedirs(factions_root, exist_ok=True)
+    writing_faction_files = write_json or csv_on
+    if writing_faction_files:
+        os.makedirs(factions_root, exist_ok=True)
 
     manifest = {"data_version": idx["data_version"], "source_apk": os.path.basename(apk_path),
                 "factions": {}, "reference": {}}
@@ -1031,7 +1215,8 @@ def export(apk_path, out_dir, write_json=True, csv_on=True, sqlite_on=False, log
         fname = en(idx["faction_by_id"].get(fid)) or "Unaligned"
         stem = sanitise(fname)
         fdir = os.path.join(factions_root, stem)
-        os.makedirs(fdir, exist_ok=True)
+        if writing_faction_files:
+            os.makedirs(fdir, exist_ok=True)
 
         units = [r for _, r in sorted(ds_by_fac.get(fid, []), key=lambda x: (x[1]["name"] or "").lower())]
         dets = [r for _, r in sorted(det_by_fac.get(fid, []), key=lambda x: (x[1]["name"] or "").lower())]
@@ -1285,7 +1470,21 @@ def write_readme(out_dir, manifest, ref):
     A("")
     A("Main tables: `faction`, `army_rule`, `publication`, `datasheet`, `datasheet_faction`, `allied_faction`, `allied_faction_host`, `allied_faction_datasheet`, `model`, `ability`, `extra_rule`, `weapon`, `weapon_profile`, `detachment`, `detachment_faction`, `detachment_rule`, `enhancement`, `stratagem`, plus reference tables `keyword`, `wargear_ability`, `battle_size`, `behaviour_type`, `mission_primary`, `mission_secondary`, `faq`. Deeply nested or list shaped fields (points compositions, the wargear loadout enforcement, enhancement eligibility, damage brackets, weapon ability lists, keyword lists) are stored as JSON text columns, so a top level value is queryable in SQL while the full structure is one `json.loads` away in Python.")
     A("")
-    A("Faction membership in `datasheet_faction` respects explicit exclusions: a unit that carries a faction keyword but is barred from that faction (source `faction_keyword_excluded_datasheet`, for example Sir Hekhtur under Imperial Knights) is not listed under it.")
+    A("Faction membership in `datasheet_faction` respects explicit exclusions: a unit that carries a faction keyword but is barred from that faction (source `faction_keyword_excluded_datasheet`, for example Sir Hekhtur under Imperial Knights) is not listed under it. All exclusion rows are also exported verbatim to `datasheet_faction_excluded` because most of them bar a *parent-faction generic* from a chapter (for example Librarians from Black Templars) - those never appear in `datasheet_faction`, so a consumer that resolves membership through the faction tree must subtract this table.")
+    A("")
+    A("### Army-building enforcement tables")
+    A("")
+    A("`leader_group` is one row per leader-attachment group with its conditions: `bodyguard_type` (`leader` fills the unit's Leader slot, `support` attaches alongside an existing Leader), required/excluded detachment, the \"all units must share keyword X\" gate, and both id- and keyword-based membership. The flat `leads_units` / `can_be_led_by` name lists on `datasheet` remain for display; `leader_group` (also embedded as the `leader_groups` JSON column) is the enforceable form.")
+    A("")
+    A("`model` rows carry the Warlord flags (`cannot_be_warlord`, `can_be_non_character_warlord`, `is_supreme_commander` - a Supreme Commander must be the army's Warlord - and `excluded_from_enhancements`), plus split melee/ranged invulnerable saves where present.")
+    A("")
+    A("`enhancement` rows carry `take_limit` (most are unique, some Upgrade-type ones allow 3 copies), `counts_toward_limit` (a few do not count against the battle-size enhancement cap), `epic_hero_eligible`, `non_character_eligible`, `cannot_be_warlord`, and `grants_leader_attachment` (units the bearer may lead because of the enhancement).")
+    A("")
+    A("`detachment` rows add `linked_datasheets` (structured unlocks with the forced-Warlord flag and count), `unique_keywords`, and mandatory/granted Warlord miniatures. `detachment_faction_points_cost` holds the per-faction Detachment Points overrides.")
+    A("")
+    A("Per-composition points tiers inside `datasheet.points` carry `required_detachments` / `required_faction_keywords` keys when a tier is only offered in a specific detachment or roster faction (for example 10-model Assault Intercessor tiers are Blood Angels only). `wargear_loadout` embeds each miniature's `default_loadout` with item counts, and each conditional keyword carries a structured `requires` object alongside the prose condition.")
+    A("")
+    A("`keyword_limit_group` (+ `keyword_limit_group_detachment`) holds roster-wide keyword limits (\"max 1 Death Jester\", \"min 3 War Dogs in this detachment\"), and `keyword_ally_restriction` the ally-restricting Chaos mark keywords. `allied_faction` adds the Warlord conditions (`required_warlord_miniature`, `allowed_warlord_miniatures`) and its `keyword_limits` entries carry slotless-group and required-Warlord details.")
     A("")
     A("The allied faction system is captured in three tables. `allied_faction` is one row per allowance (a host faction bringing a slice of another faction), with `ally_factions` and `host_factions` as JSON name lists, the boolean flags (`can_take_enhancements`, `is_sibling_faction`, `replaces_roster_keyword`, `mutually_exclusive_keyword_limit`), and JSON columns for `datasheets`, `keyword_limits`, `points_limits` and `required_detachments`. `allied_faction_host` and `allied_faction_datasheet` are junctions keyed on faction id and datasheet id, so an app can answer 'what can faction X ally, and which units does it bring' with a join rather than parsing JSON.")
     A("")
@@ -1350,7 +1549,8 @@ CREATE TABLE datasheet (
     unit_composition_text TEXT, keywords TEXT, conditional_keywords TEXT,
     points TEXT, points_steps TEXT, wargear_loadout TEXT,
     leads_units TEXT, can_be_led_by TEXT, damage_brackets TEXT,
-    default_points INTEGER
+    default_points INTEGER,
+    leader_groups TEXT, allegiance_ability_group_id TEXT
 );
 
 CREATE TABLE datasheet_faction (
@@ -1360,12 +1560,35 @@ CREATE TABLE datasheet_faction (
     FOREIGN KEY (faction_id) REFERENCES faction(id)
 );
 
+-- Explicit faction exclusions (faction_keyword_excluded_datasheet). Most bar a
+-- *parent-faction generic* from a chapter (e.g. Librarian from Black Templars),
+-- so they never appear in datasheet_faction and need their own table for a
+-- consumer resolving membership through the faction tree.
+CREATE TABLE datasheet_faction_excluded (
+    datasheet_id TEXT, faction_id TEXT, datasheet TEXT, faction TEXT,
+    PRIMARY KEY (datasheet_id, faction_id)
+);
+
+-- Leader-attachment groups with their enforcement conditions. bodyguard_type
+-- 'leader' fills the unit's Leader slot; 'support' attaches alongside an
+-- existing Leader. member_keywords lists keyword-based membership (matched by
+-- unit keyword instead of datasheet id).
+CREATE TABLE leader_group (
+    id TEXT PRIMARY KEY, datasheet_id TEXT, bodyguard_type TEXT,
+    required_detachment_id TEXT, required_detachment TEXT,
+    excluded_detachment_id TEXT, excluded_detachment TEXT,
+    requires_all_units_keyword TEXT,
+    member_datasheet_ids TEXT, member_datasheets TEXT, member_keywords TEXT,
+    FOREIGN KEY (datasheet_id) REFERENCES datasheet(id)
+);
+
 CREATE TABLE allied_faction (
     id TEXT PRIMARY KEY, ally_factions TEXT, host_factions TEXT,
     can_take_enhancements INTEGER, is_sibling_faction INTEGER,
     replaces_roster_keyword INTEGER, mutually_exclusive_keyword_limit INTEGER,
     datasheets TEXT, keyword_limits TEXT, points_limits TEXT,
-    required_detachments TEXT
+    required_detachments TEXT,
+    required_warlord_miniature TEXT, allowed_warlord_miniatures TEXT
 );
 
 CREATE TABLE allied_faction_host (
@@ -1386,6 +1609,10 @@ CREATE TABLE model (
     id INTEGER PRIMARY KEY AUTOINCREMENT, datasheet_id TEXT, name TEXT,
     statline_hidden INTEGER, m TEXT, t TEXT, sv TEXT, inv TEXT, w TEXT,
     ld TEXT, oc TEXT, keywords TEXT,
+    inv_melee TEXT, inv_ranged TEXT,
+    cannot_be_warlord INTEGER, can_be_non_character_warlord INTEGER,
+    is_supreme_commander INTEGER, excluded_from_enhancements INTEGER,
+    is_individual_models INTEGER,
     FOREIGN KEY (datasheet_id) REFERENCES datasheet(id)
 );
 
@@ -1417,7 +1644,16 @@ CREATE TABLE weapon_profile (
 CREATE TABLE detachment (
     id TEXT PRIMARY KEY, name TEXT, is_combat_patrol INTEGER,
     source_publication TEXT, detachment_points_cost INTEGER,
-    restrictions TEXT, unlocks_datasheets TEXT, excludes_datasheets TEXT
+    restrictions TEXT, unlocks_datasheets TEXT, excludes_datasheets TEXT,
+    linked_datasheets TEXT, unique_keywords TEXT,
+    mandatory_warlord_miniatures TEXT, granted_warlord_miniatures TEXT
+);
+
+-- Per-faction Detachment Points overrides (4 rows in v886): the detachment
+-- costs a different number of DP for these roster factions.
+CREATE TABLE detachment_faction_points_cost (
+    detachment_id TEXT, faction_id TEXT, faction TEXT, points_cost INTEGER,
+    PRIMARY KEY (detachment_id, faction_id)
 );
 
 CREATE TABLE detachment_faction (
@@ -1438,6 +1674,10 @@ CREATE TABLE enhancement (
     points INTEGER, type TEXT, is_combat_patrol INTEGER,
     rules_text TEXT, rules_html TEXT, lore TEXT,
     eligibility_text TEXT, eligibility TEXT,
+    take_limit INTEGER, counts_toward_limit INTEGER,
+    epic_hero_eligible INTEGER, non_character_eligible INTEGER,
+    cannot_be_warlord INTEGER, is_combat_patrol_default INTEGER,
+    grants_leader_attachment TEXT,
     FOREIGN KEY (detachment_id) REFERENCES detachment(id)
 );
 
@@ -1446,7 +1686,31 @@ CREATE TABLE stratagem (
     cp_cost TEXT, category TEXT, used_when TEXT, phases TEXT,
     when_text TEXT, target_text TEXT, effect_text TEXT,
     restriction_text TEXT, secondary_effect_text TEXT, lore TEXT,
+    secondary_effect_cp_cost INTEGER, secondary_effect_mutually_exclusive INTEGER,
     FOREIGN KEY (detachment_id) REFERENCES detachment(id)
+);
+
+-- Roster-wide keyword limits (keyword_restriction_group): at most/least N units
+-- carrying ALL the listed keywords in a roster of the given faction.
+-- excluded_faction voids the limit for that roster faction (e.g. Yvraine is
+-- limit-0 in Asuryani armies unless the army is Ynnari). Per-detachment min/max
+-- rows live in keyword_limit_group_detachment.
+CREATE TABLE keyword_limit_group (
+    id TEXT PRIMARY KEY, faction_id TEXT, faction TEXT,
+    excluded_faction_id TEXT, excluded_faction TEXT,
+    requires_warlord_miniature_id TEXT, requires_warlord_miniature TEXT,
+    limit_count INTEGER, keywords TEXT
+);
+CREATE TABLE keyword_limit_group_detachment (
+    keyword_limit_group_id TEXT, detachment_id TEXT, detachment TEXT,
+    min_roster INTEGER, max_roster INTEGER
+);
+
+-- Keywords that restrict ally selection (e.g. a Khorne-marked army may only
+-- ally Battleline Legiones Daemonica units sharing the mark).
+CREATE TABLE keyword_ally_restriction (
+    keyword TEXT, restricting_faction_id TEXT, restricting_faction TEXT,
+    restricting_keyword TEXT
 );
 
 CREATE TABLE keyword (name TEXT PRIMARY KEY);
@@ -1517,6 +1781,8 @@ CREATE TABLE faq (
 INDEX_SQL = """
 CREATE INDEX idx_ds_name ON datasheet(name);
 CREATE INDEX idx_dsfac_faction ON datasheet_faction(faction_id);
+CREATE INDEX idx_dsfacex_faction ON datasheet_faction_excluded(faction_id);
+CREATE INDEX idx_leadergrp_ds ON leader_group(datasheet_id);
 CREATE INDEX idx_afhost_host ON allied_faction_host(host_faction_id);
 CREATE INDEX idx_afds_ds ON allied_faction_datasheet(datasheet_id);
 CREATE INDEX idx_model_ds ON model(datasheet_id);
@@ -1582,7 +1848,7 @@ def build_sqlite(data, idx, ref, db_path, log=print):
                 break
         if default_pts is None and u["points"]:
             default_pts = u["points"][0].get("points")
-        cur.execute("INSERT INTO datasheet VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (
+        cur.execute("INSERT INTO datasheet VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (
             u["id"], u["name"], u.get("source_publication"),
             _b(u["is_legends"]), _b(u["is_free_from_entitlements"]),
             u.get("base_size"), u.get("max_model_count"), u.get("lore"),
@@ -1595,15 +1861,32 @@ def build_sqlite(data, idx, ref, db_path, log=print):
             json.dumps(u["leads_units"], ensure_ascii=False),
             json.dumps(u["can_be_led_by"], ensure_ascii=False),
             json.dumps(u["damage_brackets"], ensure_ascii=False),
-            default_pts))
+            default_pts,
+            json.dumps(u["leader_groups"], ensure_ascii=False),
+            u.get("allegiance_ability_group_id")))
         for fid in idx["ds_faction_ids"].get(dsid, []):
             cur.execute("INSERT OR IGNORE INTO datasheet_faction VALUES (?,?)", (dsid, fid))
+        for g in u["leader_groups"]:
+            cur.execute("INSERT OR IGNORE INTO leader_group VALUES (?,?,?,?,?,?,?,?,?,?,?)", (
+                g["id"], dsid, g["type"],
+                g["required_detachment_id"], g["required_detachment"],
+                g["excluded_detachment_id"], g["excluded_detachment"],
+                g["requires_all_units_keyword"],
+                json.dumps(g["member_datasheet_ids"], ensure_ascii=False),
+                json.dumps([x for x in g["member_datasheets"] if x], ensure_ascii=False),
+                json.dumps(g["member_keywords"], ensure_ascii=False)))
         for m in u["models"]:
-            cur.execute("INSERT INTO model (datasheet_id,name,statline_hidden,m,t,sv,inv,w,ld,oc,keywords)"
-                        " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            cur.execute("INSERT INTO model (datasheet_id,name,statline_hidden,m,t,sv,inv,w,ld,oc,keywords,"
+                        "inv_melee,inv_ranged,cannot_be_warlord,can_be_non_character_warlord,"
+                        "is_supreme_commander,excluded_from_enhancements,is_individual_models)"
+                        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         (dsid, m["name"], _b(m["statline_hidden"]), m["M"], m["T"], m["Sv"],
                          m["Inv"], m["W"], m["Ld"], m["OC"],
-                         json.dumps(m["keywords"], ensure_ascii=False)))
+                         json.dumps(m["keywords"], ensure_ascii=False),
+                         m["Inv_melee"], m["Inv_ranged"],
+                         _b(m["cannot_be_warlord"]), _b(m["can_be_non_character_warlord"]),
+                         _b(m["is_supreme_commander"]), _b(m["excluded_from_enhancements"]),
+                         _b(m["is_individual_models"])))
         for a in u["abilities"]:
             cur.execute("INSERT INTO ability (datasheet_id,name,type,is_aura,is_psychic,rules,restriction,sub_abilities)"
                         " VALUES (?,?,?,?,?,?,?,?)",
@@ -1627,12 +1910,16 @@ def build_sqlite(data, idx, ref, db_path, log=print):
     # detachments (each stored once)
     for det in data["detachment"]:
         d = resolve_detachment(det, idx)
-        cur.execute("INSERT INTO detachment VALUES (?,?,?,?,?,?,?,?)", (
+        cur.execute("INSERT INTO detachment VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (
             d["id"], d["name"], _b(d["is_combat_patrol"]), d.get("source_publication"),
             d.get("detachment_points_cost"),
             json.dumps(d["restrictions"], ensure_ascii=False),
             json.dumps(d["unlocks_datasheets"], ensure_ascii=False),
-            json.dumps(d["excludes_datasheets"], ensure_ascii=False)))
+            json.dumps(d["excludes_datasheets"], ensure_ascii=False),
+            json.dumps(d["linked_datasheets"], ensure_ascii=False),
+            json.dumps(d["unique_keywords"], ensure_ascii=False),
+            json.dumps(d["mandatory_warlord_miniatures"], ensure_ascii=False),
+            json.dumps(d["granted_warlord_miniatures"], ensure_ascii=False)))
         for fid in idx["det_faction_ids"].get(det["id"], []):
             cur.execute("INSERT OR IGNORE INTO detachment_faction VALUES (?,?)", (det["id"], fid))
         for r in d["rules"]:
@@ -1640,18 +1927,25 @@ def build_sqlite(data, idx, ref, db_path, log=print):
                         " VALUES (?,?,?,?,?)",
                         (d["id"], r["name"], r["body_text"], r["body_html"], r["lore_text"]))
         for e in d["enhancements"]:
-            cur.execute("INSERT INTO enhancement (detachment_id,name,points,type,is_combat_patrol,rules_text,rules_html,lore,eligibility_text,eligibility)"
-                        " VALUES (?,?,?,?,?,?,?,?,?,?)",
+            cur.execute("INSERT INTO enhancement (detachment_id,name,points,type,is_combat_patrol,rules_text,rules_html,lore,eligibility_text,eligibility,"
+                        "take_limit,counts_toward_limit,epic_hero_eligible,non_character_eligible,cannot_be_warlord,is_combat_patrol_default,grants_leader_attachment)"
+                        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         (d["id"], e["name"], e["points"], e["type"], _b(e["is_combat_patrol"]),
                          e["rules_text"], e["rules_html"], e["lore"], e["eligibility_text"],
-                         json.dumps(e["eligibility"], ensure_ascii=False)))
+                         json.dumps(e["eligibility"], ensure_ascii=False),
+                         e["take_limit"], _b(e["counts_toward_limit"]),
+                         _b(e["epic_hero_eligible"]), _b(e["non_character_eligible"]),
+                         _b(e["cannot_be_warlord"]), _b(e["is_combat_patrol_default"]),
+                         json.dumps(e["grants_leader_attachment"], ensure_ascii=False)))
         for s in d["stratagems"]:
-            cur.execute("INSERT INTO stratagem (detachment_id,name,cp_cost,category,used_when,phases,when_text,target_text,effect_text,restriction_text,secondary_effect_text,lore)"
-                        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            cur.execute("INSERT INTO stratagem (detachment_id,name,cp_cost,category,used_when,phases,when_text,target_text,effect_text,restriction_text,secondary_effect_text,lore,"
+                        "secondary_effect_cp_cost,secondary_effect_mutually_exclusive)"
+                        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         (d["id"], s["name"], s["cp_cost"], s["category"], s["used_when"],
                          json.dumps(s["phases"], ensure_ascii=False),
                          s["when_text"], s["target_text"], s["effect_text"],
-                         s["restriction_text"], s["secondary_effect_text"], s["lore"]))
+                         s["restriction_text"], s["secondary_effect_text"], s["lore"],
+                         s["secondary_effect_cp_cost"], _b(s["secondary_effect_mutually_exclusive"])))
 
     # Core (universal) stratagems carry no detachmentId in the source, so the
     # detachment loop above skipped them. Insert them last (resolved via en(), same
@@ -1661,17 +1955,19 @@ def build_sqlite(data, idx, ref, db_path, log=print):
         if s.get("detachmentId"):
             continue
         cs = resolve_stratagem(s, idx)
-        cur.execute("INSERT INTO stratagem (detachment_id,name,cp_cost,category,used_when,phases,when_text,target_text,effect_text,restriction_text,secondary_effect_text,lore)"
-                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        cur.execute("INSERT INTO stratagem (detachment_id,name,cp_cost,category,used_when,phases,when_text,target_text,effect_text,restriction_text,secondary_effect_text,lore,"
+                    "secondary_effect_cp_cost,secondary_effect_mutually_exclusive)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (None, cs["name"], cs["cp_cost"], cs["category"], cs["used_when"],
                      json.dumps(cs["phases"], ensure_ascii=False),
                      cs["when_text"], cs["target_text"], cs["effect_text"],
-                     cs["restriction_text"], cs["secondary_effect_text"], cs["lore"]))
+                     cs["restriction_text"], cs["secondary_effect_text"], cs["lore"],
+                     cs["secondary_effect_cp_cost"], _b(cs["secondary_effect_mutually_exclusive"])))
 
     # reference tables
     cur.executemany("INSERT OR IGNORE INTO keyword VALUES (?)", [(k["name"],) for k in ref["keywords"]])
     for a in ref.get("allied_factions", []):
-        cur.execute("INSERT INTO allied_faction VALUES (?,?,?,?,?,?,?,?,?,?,?)", (
+        cur.execute("INSERT INTO allied_faction VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (
             a["id"],
             json.dumps([x for x in a["ally_factions"] if x], ensure_ascii=False),
             json.dumps([x for x in a["host_factions"] if x], ensure_ascii=False),
@@ -1680,7 +1976,9 @@ def build_sqlite(data, idx, ref, db_path, log=print):
             json.dumps([x for x in a["datasheets"] if x], ensure_ascii=False),
             json.dumps(a["keyword_limits"], ensure_ascii=False),
             json.dumps(a["points_limits"], ensure_ascii=False),
-            json.dumps(a["required_detachments"], ensure_ascii=False)))
+            json.dumps(a["required_detachments"], ensure_ascii=False),
+            a.get("required_warlord_miniature"),
+            json.dumps(a.get("allowed_warlord_miniatures", []), ensure_ascii=False)))
         for hid, hname in zip(a["host_faction_ids"], a["host_factions"]):
             cur.execute("INSERT OR IGNORE INTO allied_faction_host VALUES (?,?,?)",
                         (a["id"], hid, hname))
@@ -1715,6 +2013,52 @@ def build_sqlite(data, idx, ref, db_path, log=print):
     cur.executemany("INSERT INTO mission_twist VALUES (?,?,?,?,?)",
                     [(m["id"], m["pack"], m["name"], m["lore"], m["rules"])
                      for m in ref["missions"]["twists"]])
+    # Explicit faction exclusions, id- and name-resolved. Most rows bar a
+    # parent-faction generic from a chapter, so the datasheet_faction junction
+    # (direct memberships only) cannot express them.
+    for dsid_x, fid_x in sorted(idx["excluded_ds_faction"]):
+        cur.execute("INSERT OR IGNORE INTO datasheet_faction_excluded VALUES (?,?,?,?)", (
+            dsid_x, fid_x,
+            en(idx["datasheet_by_id"].get(dsid_x)),
+            en(idx["faction_by_id"].get(fid_x))))
+
+    # Per-faction Detachment Points overrides.
+    for r in data.get("detachment_faction_detachment_points_cost", []):
+        cur.execute("INSERT OR IGNORE INTO detachment_faction_points_cost VALUES (?,?,?,?)", (
+            r["detachmentId"], r["factionKeywordId"],
+            en(idx["faction_by_id"].get(r["factionKeywordId"])),
+            r.get("detachmentPointsCost")))
+
+    # Roster-wide keyword limits and their per-detachment min/max rows.
+    krg_kw = defaultdict(list)
+    for r in data.get("keyword_restriction_group_keyword", []):
+        nm = en(idx["keyword_by_id"].get(r["keywordId"]))
+        if nm:
+            krg_kw[r["keywordRestrictionGroupId"]].append(nm)
+    for g in data.get("keyword_restriction_group", []):
+        cur.execute("INSERT OR IGNORE INTO keyword_limit_group VALUES (?,?,?,?,?,?,?,?,?)", (
+            g["id"], g.get("factionKeywordId"),
+            en(idx["faction_by_id"].get(g.get("factionKeywordId"))),
+            g.get("excludedFactionKeywordId"),
+            en(idx["faction_by_id"].get(g.get("excludedFactionKeywordId"))),
+            g.get("requiresWarlordMiniatureId"),
+            en(idx["mini_by_id"].get(g.get("requiresWarlordMiniatureId"))),
+            g.get("limit"),
+            json.dumps(krg_kw.get(g["id"], []), ensure_ascii=False)))
+    for r in data.get("restriction_group_detachment_limit", []):
+        cur.execute("INSERT INTO keyword_limit_group_detachment VALUES (?,?,?,?,?)", (
+            r.get("restrictionGroupId"), r.get("detachmentId"),
+            en(idx["det_by_id"].get(r.get("detachmentId"))),
+            r.get("minRosterLimit"), r.get("maxRosterLimit")))
+
+    # Ally-restricting keywords (Chaos god marks vs Legiones Daemonica).
+    for k in data.get("keyword", []):
+        if k.get("allyRestrictingFactionKeywordId") or k.get("allyRestrictingKeywordId"):
+            cur.execute("INSERT INTO keyword_ally_restriction VALUES (?,?,?,?)", (
+                en(k), k.get("allyRestrictingFactionKeywordId"),
+                en(idx["faction_by_id"].get(k.get("allyRestrictingFactionKeywordId"))),
+                en(idx["keyword_by_id"].get(k.get("allyRestrictingKeywordId")))))
+
     # Force dispositions and the 1:1 detachment -> disposition link. Read straight
     # from the dump (camelCase ids), name resolved via en() like every other
     # localised table. 5 dispositions, 290 link rows.

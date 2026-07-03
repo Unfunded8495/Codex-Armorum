@@ -2,13 +2,13 @@
   "battle_size": "Strike Force",
   "detachment": "Pantheon of Woe",
   "faction": "Necrons",
-  "total_points": 1035,
+  "total_points": 1160,
   "units": [
     {
       "datasheet_id": "65f56806-cf8c-47ef-8470-13e3ac1fc66e",
       "loadout_summary": "C\u2019tan Shard of the Deceiver \u2014 Cosmic insanity, Golden fists",
       "name": "C\u2019tan Shard of the Deceiver",
-      "points": 330,
+      "points": 375,
       "role": "Epic Hero",
       "squad_size": 1
     },
@@ -16,7 +16,7 @@
       "datasheet_id": "e95c1c74-6709-4575-b96c-fb2ad7133faa",
       "loadout_summary": "C\u2019tan Shard of the Nightbringer \u2014 Gaze of death, Scythe of the Nightbringer",
       "name": "C\u2019tan Shard of the Nightbringer",
-      "points": 360,
+      "points": 405,
       "role": "Epic Hero",
       "squad_size": 1
     },
@@ -24,7 +24,7 @@
       "datasheet_id": "bc0cfdf6-6607-447e-b1eb-94a4e23511ea",
       "loadout_summary": "C\u2019tan Shard of the Void Dragon \u2014 Spear of the Void Dragon, Voltaic storm, Canoptek tail blades",
       "name": "C\u2019tan Shard of the Void Dragon",
-      "points": 345,
+      "points": 380,
       "role": "Epic Hero",
       "squad_size": 1
     }

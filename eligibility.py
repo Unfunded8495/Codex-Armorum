@@ -1,28 +1,43 @@
-"""Enhancement eligibility — which Characters may bear a given Enhancement.
+"""Enhancement eligibility — which units may bear a given Enhancement.
 
-An Enhancement's ``eligibility_struct`` is ``{required_groups, excluded_keywords}``.
-A bearer is eligible when it:
+``enhancement_eligible`` takes the store's enhancement dict, which carries both
+the structured ``eligibility_struct`` (``{required_groups, excluded_keywords}``)
+and the per-enhancement rule flags exported from the official app. A bearer is
+eligible when it:
 
-* has the ``Character`` keyword,
-* is **not** an Epic Hero — a core-rules restriction that is *not* encoded in the
-  struct (so matching alone would wrongly admit e.g. Belisarius Cawl),
+* is not on a datasheet whose models bar Enhancements outright
+  (``store.enhancement_excluded_ds``, e.g. Ogryn Bodyguard),
+* has the ``Character`` keyword — waived when the enhancement is flagged
+  ``non_character_eligible`` (e.g. Combat Patrol squad upgrades),
+* is **not** an Epic Hero — a core-rules restriction that is *not* encoded in
+  the struct (so matching alone would wrongly admit e.g. Belisarius Cawl) —
+  waived when the enhancement is flagged ``epic_hero_eligible``,
 * matches **at least one** ``required_group``, and
 * carries **none** of ``excluded_keywords``.
 
-A ``required_group`` matches when every one of its ``keywords`` is on the unit, every
-``faction_keywords`` entry is present as ``"Faction: <name>"`` (datasheets store the
-prefixed form; the struct holds the bare name), and its ``datasheet`` — a **name
-string**, not a UUID — equals the unit's name when set.
+A ``required_group`` matches when every one of its ``keywords`` is on the unit,
+every ``faction_keywords`` entry is present as ``"Faction: <name>"`` (datasheets
+store the prefixed form; the struct holds the bare name), and its ``datasheet``
+— a **name string**, not a UUID — equals the unit's name when set.
 """
 from data_store import get_store
 
 
-def enhancement_eligible(unit_keywords, role, struct, unit_name=None):
-    """True if a unit with these keywords / role / name may take the enhancement."""
+def enhancement_eligible(unit_keywords, role, enh, unit_name=None, datasheet_id=None):
+    """True if a unit with these keywords / role / name may take ``enh``.
+
+    ``enh`` is the store's enhancement dict (rule flags + eligibility_struct).
+    ``datasheet_id`` enables the model-level Enhancement ban when supplied.
+    """
     kw = unit_keywords if isinstance(unit_keywords, set) else set(unit_keywords or [])
-    if "Character" not in kw or role == "Epic Hero":
+    enh = enh or {}
+    if datasheet_id and datasheet_id in get_store().enhancement_excluded_ds:
         return False
-    struct = struct or {}
+    if "Character" not in kw and not enh.get("non_character_eligible"):
+        return False
+    if role == "Epic Hero" and not enh.get("epic_hero_eligible"):
+        return False
+    struct = enh.get("eligibility_struct") or {}
     if any(x in kw for x in (struct.get("excluded_keywords") or [])):
         return False
     groups = struct.get("required_groups") or []
@@ -47,5 +62,6 @@ def eligible_enhancements(did, detachment_id):
     kw = set(unit.get("_keywords") or [])
     role = unit.get("role") or ""
     name = unit.get("name") or ""
+    canonical = unit.get("id") or did
     return [e for e in store.enhancements_by_detachment.get(detachment_id, [])
-            if enhancement_eligible(kw, role, e.get("eligibility_struct") or {}, name)]
+            if enhancement_eligible(kw, role, e, name, canonical)]
