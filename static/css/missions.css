@@ -1,0 +1,146 @@
+/* =====================================================================
+   missions.css — /missions "Mission Deck" manual page
+   Page-specific styles; shared shell/tokens live in manual.css.
+   ===================================================================== */
+
+.mz-grid{
+  position:relative;z-index:1;display:grid;
+  grid-template-columns:280px minmax(0,1fr);gap:38px;
+  max-width:1400px;margin:0 auto;padding:26px 34px 90px;align-items:start;
+}
+.mz-main{min-width:0;max-width:960px}
+
+/* --------------------------------------------------------- sidebar toc */
+.mz-toc-group{border-left:3px solid transparent;margin:1px 0}
+.mz-toc-group.is-active{border-left-color:var(--rl-green);background:var(--rl-green-soft)}
+.mz-toc-head{
+  display:flex;align-items:baseline;gap:8px;padding:6px 14px 3px;text-decoration:none;
+  font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--rl-ink);transition:color .15s;
+}
+.mz-toc-head:hover{color:var(--rl-green)}
+.mz-toc-group.is-active .mz-toc-head{color:var(--rl-green)}
+.mz-toc-num{font-size:10px;color:var(--rl-mute);min-width:20px}
+.mz-toc-group.is-active .mz-toc-num{color:var(--rl-green)}
+.mz-toc-title{flex:1}
+.mz-toc-count{font-size:10px;color:var(--rl-mute);letter-spacing:.5px}
+.mz-toc-items{padding:0 0 7px}
+.mz-toc-item{
+  display:flex;gap:8px;align-items:baseline;padding:3px 14px 3px 42px;
+  font-family:'PT Sans',sans-serif;font-size:12.5px;color:var(--rl-ink-soft);
+  text-decoration:none;line-height:1.35;
+}
+.mz-toc-item:hover{color:var(--rl-green)}
+.rl-toc.is-searching > .mz-toc-group{display:none}
+.mz-toc-hits{padding:4px 0}
+.mz-toc-hit{
+  display:flex;gap:8px;align-items:baseline;padding:5px 14px;
+  font-family:'PT Sans',sans-serif;font-size:13px;color:var(--rl-ink-soft);
+  text-decoration:none;line-height:1.35;
+}
+.mz-toc-hit:hover{background:var(--rl-green-soft);color:var(--rl-ink)}
+.mz-toc-hit-title{flex:1}
+.mz-toc-hit-cat{font-family:'Oswald',sans-serif;font-size:10px;color:var(--rl-mute);letter-spacing:.3px;white-space:nowrap}
+
+/* -------------------------------------------------------------- states */
+.mz-shimmer{padding:30px 0 80px;max-width:740px}
+.mz-shimmer div{background:var(--rl-paper-3);animation:rl-shimmer 1.4s ease infinite}
+.mz-shimmer .s1{height:44px;width:38%}
+.mz-shimmer .s2{height:13px;width:60%;margin-top:14px}
+.mz-shimmer .s3{height:120px;width:100%;margin-top:34px;animation-delay:.2s}
+.mz-shimmer .s4{height:120px;width:100%;margin-top:14px;animation-delay:.35s}
+.mz-shimmer p{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:var(--rl-mute);margin-top:40px}
+.mz-loaded{animation:rl-fade-in .3s ease both}
+
+/* -------------------------------------------------- primary mission cards */
+.mz-pri-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:16px}
+.mz-pri{background:var(--rl-paper-2);border:1px solid var(--rl-edge);display:flex;flex-direction:column;scroll-margin-top:130px}
+.mz-pri-band{
+  display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--rl-olive);
+  color:var(--rl-cream);font-family:'Oswald',sans-serif;font-size:13.5px;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.mz-pri-chip{margin-left:auto;font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:.6px;color:#fff;background:var(--rl-green);padding:2px 8px}
+.mz-pri-body{padding:12px 16px 14px;flex:1;display:flex;flex-direction:column}
+.mz-lore{margin:0 0 9px;font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:14px;line-height:1.5;color:var(--rl-mute)}
+.mz-brief{margin:0 0 10px;font-family:'PT Sans',sans-serif;font-size:13.5px;line-height:1.58;color:var(--rl-ink-soft)}
+.mz-brief b,.mz-obj-when b{color:var(--rl-ink);font-weight:700}
+.mz-objs{border-top:1px solid var(--rl-edge-soft);padding-top:9px;display:flex;flex-direction:column;gap:6px}
+.mz-obj{display:flex;gap:9px;align-items:baseline}
+.mz-obj-name{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--rl-green);white-space:nowrap}
+.mz-obj-when{font-family:'PT Sans',sans-serif;font-size:12.5px;line-height:1.5;color:var(--rl-ink-soft)}
+
+/* ------------------------------------------------ secondary / twist cards */
+.mz-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+.mz-card{background:var(--rl-paper-2);border:1px solid var(--rl-edge);border-top:3px solid var(--rl-olive);padding:12px 15px 13px;scroll-margin-top:130px}
+.mz-card-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.mz-card-name{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--rl-ink)}
+.mz-badges{margin-left:auto;display:inline-flex;gap:5px}
+.mz-badge{font-family:'Oswald',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 7px}
+.mz-badge--fixed{color:var(--rl-cream);background:var(--rl-black)}
+.mz-badge--tactical{color:var(--rl-mute);border:1px solid var(--rl-edge);font-weight:500}
+.mz-badge--turn1{color:#fff;background:var(--rl-green)}
+.mz-badge--twist{color:var(--rl-mute);border:1px solid var(--rl-edge);font-weight:500}
+
+/* ---------------------------------------------- deployment / layout figures */
+.mz-fig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;align-items:start}
+.mz-fig{margin:0;border:1px solid var(--rl-edge);background:var(--rl-paper-2);padding:0 0 12px;scroll-margin-top:130px}
+.mz-fig-cap{
+  display:inline-flex;align-items:center;gap:9px;background:var(--rl-black);color:#fff;
+  font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:1.8px;
+  text-transform:uppercase;padding:8px 26px 8px 13px;margin:0;
+  clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%);
+}
+.mz-fig-kind{background:var(--rl-green);color:#fff;font-size:10px;font-weight:600;letter-spacing:1.2px;padding:2px 7px}
+.mz-board{
+  margin:12px 14px 0;border:1px solid var(--rl-edge-soft);background:var(--rl-paper-3);
+  position:relative;aspect-ratio:60/44;overflow:hidden;
+}
+.mz-zone{position:absolute;inset:0}
+.mz-zone--you{background:var(--rl-green-soft);box-shadow:inset 0 0 0 2px var(--rl-green)}
+.mz-zone--enemy{background:var(--rl-enemy);box-shadow:inset 0 0 0 2px var(--rl-rust)}
+.mz-centre{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--rl-mute);opacity:.55}
+.mz-zone-label{
+  position:absolute;transform:translate(-50%,-50%);font-family:'Oswald',sans-serif;
+  font-size:9px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;pointer-events:none;
+}
+.mz-zone-label--you{color:var(--rl-green)}
+.mz-zone-label--enemy{color:var(--rl-rust)}
+.mz-dot{
+  position:absolute;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;
+  background:var(--rl-green);box-shadow:0 0 0 2px var(--rl-paper-3),0 0 0 3px var(--rl-green);
+}
+.mz-fig-note{margin:10px 14px 0;font-family:'PT Sans',sans-serif;font-size:12.5px;line-height:1.55;color:var(--rl-ink-soft)}
+.mz-fig-plain{margin:12px 14px 0;font-family:'EB Garamond',serif;font-style:italic;font-size:12.5px;color:var(--rl-mute)}
+
+/* layout family grouping (45 layouts, no geometry — grouped compact list) */
+.mz-lay-fam{margin:0 0 22px}
+.mz-lay-fam-head{
+  display:flex;align-items:center;gap:10px;margin:0 0 10px;
+  font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--rl-green);
+}
+.mz-lay-fam-head::after{content:"";flex:1;height:1px;background:var(--rl-edge-soft)}
+.mz-lay-fam-count{color:var(--rl-mute);font-size:10px;letter-spacing:1px}
+
+/* --------------------------------------------------------- maps table */
+.mz-table{border-collapse:collapse;width:100%;max-width:740px;font-family:'PT Sans',sans-serif;font-size:13.5px}
+.mz-table th{
+  font-family:'Oswald',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--rl-cream);background:var(--rl-olive);text-align:left;padding:7px 12px;
+}
+.mz-table td{border-bottom:1px solid var(--rl-edge-soft);padding:8px 12px;vertical-align:top}
+.mz-table tbody tr:nth-child(even) td{background:var(--rl-paper-2)}
+.mz-map-name{font-family:'Oswald',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--rl-ink)}
+.mz-link{
+  color:var(--rl-green);text-decoration:none;border-bottom:1px dotted var(--rl-green);
+  font-family:'Oswald',sans-serif;font-size:12.5px;letter-spacing:.5px;cursor:pointer;
+}
+.mz-link:hover{background:var(--rl-green-soft)}
+.mz-none{color:var(--rl-mute);font-style:italic;font-size:12.5px}
+
+/* --------------------------------------------------------- responsive */
+@media (max-width:1020px){
+  .mz-grid{grid-template-columns:1fr;padding:20px 18px 70px}
+  .mz-main{max-width:none}
+}
