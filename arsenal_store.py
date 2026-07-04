@@ -665,23 +665,42 @@ def sync_datasheets(store=None):
 
 
 def loadouts_index():
+    """Faction -> unit tiles with weapon/link coverage. A weapon row counts as
+    "linked" once its Arsenal entry carries real spotting content (notes,
+    distinguishing text or a photo) — a bare auto-generated entry does not."""
     store = get_store()
     with db() as c:
-        counts = {
-            row["datasheet_id"]: row["n"]
-            for row in c.execute(
-                "SELECT datasheet_id, COUNT(DISTINCT weapon_id) n FROM arsenal_weapon_datasheet GROUP BY datasheet_id"
-            ).fetchall()
-        }
+        counts = {}
+        for row in c.execute(
+            """SELECT wd.datasheet_id,
+                      COUNT(DISTINCT wd.weapon_id) n,
+                      COUNT(DISTINCT CASE WHEN COALESCE(w.spotting_notes,'')<>''
+                                            OR COALESCE(w.distinguishing,'')<>''
+                                            OR ph.weapon_id IS NOT NULL
+                                          THEN wd.weapon_id END) linked
+               FROM arsenal_weapon_datasheet wd
+               JOIN arsenal_weapon w ON w.id=wd.weapon_id
+               LEFT JOIN (SELECT DISTINCT weapon_id FROM arsenal_weapon_photo) ph
+                      ON ph.weapon_id=w.id
+               GROUP BY wd.datasheet_id"""
+        ).fetchall():
+            counts[row["datasheet_id"]] = (row["n"], row["linked"])
     groups = []
     for faction in store.faction_list():
         units = []
         for unit in store.units_for_faction(faction["id"]):
+            n, linked = counts.get(unit["id"], (0, 0))
             units.append({
                 **unit,
-                "weapon_count": counts.get(unit["id"], 0),
+                "weapon_count": n,
+                "linked_count": linked,
             })
-        groups.append({"faction": faction, "units": units})
+        groups.append({
+            "faction": faction,
+            "units": units,
+            "weapon_count": sum(u["weapon_count"] for u in units),
+            "linked_count": sum(u["linked_count"] for u in units),
+        })
     return groups
 
 
@@ -693,19 +712,42 @@ def unit_loadout(datasheet_id):
     faction = store.faction_by_id.get(ds.get("faction_id", ""), {})
     with db() as c:
         rows = rowsdict(c.execute("""SELECT wd.*, w.name, w.category, w.faction_name,
-                              w.spotting_notes, p.file_name AS primary_file
+                              w.spotting_notes, w.distinguishing, p.file_name AS primary_file
                               FROM arsenal_weapon_datasheet wd
                               JOIN arsenal_weapon w ON w.id=wd.weapon_id
                               LEFT JOIN arsenal_weapon_photo p ON p.weapon_id=w.id AND p.is_primary=1
                               WHERE wd.datasheet_id=?
                               ORDER BY CASE w.category WHEN 'ranged' THEN 0 WHEN 'melee' THEN 1 ELSE 2 END,
                                   w.name, wd.raw_name""", (datasheet_id,)).fetchall())
+
+    # Datasheet weapon profiles for the stat strip. raw_name is the profile
+    # display name emitted by data_store._build_weapons, so this is 1:1.
+    detail = store.unit_detail(datasheet_id) or {}
+    profile_by_name = {}
+    for bucket in ("ranged", "melee"):
+        for p in detail.get(bucket) or []:
+            profile_by_name.setdefault((p.get("name") or "").lower(), p)
+
     for row in rows:
         row["primary_url"] = photo_url(row.get("primary_file"))
+        row["linked"] = bool(
+            (row.get("spotting_notes") or "").strip()
+            or (row.get("distinguishing") or "").strip()
+            or row.get("primary_file")
+        )
+        profile = profile_by_name.get((row.get("raw_name") or "").lower())
+        row["profile"] = profile
+        row["profile_keywords"] = [
+            kw.strip() for kw in (profile.get("keywords") or "").split(",")
+            if kw.strip()
+        ] if profile else []
+    groups = _group_by_category(rows)
     return {
         "datasheet": ds,
         "faction": {"id": ds.get("faction_id", ""), "name": faction.get("name", ds.get("faction_id", ""))},
-        "groups": _group_by_category(rows),
+        "groups": groups,
+        "weapon_count": len(rows),
+        "linked_count": sum(1 for row in rows if row["linked"]),
     }
 
 

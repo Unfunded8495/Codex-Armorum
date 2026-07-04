@@ -1,32 +1,97 @@
-{% extends "arsenal/base.html" %}
+{% extends "arsenal/manual_base.html" %}
 {% block title %}{{ data.datasheet.name }} Loadout - The Arsenal{% endblock %}
+
+{% block strip %}
+  <span class="rl-strip-chips">
+    {% for group in data.groups %}
+      <a class="rl-chip" href="#role-{{ group.role }}">{{ group.role }}<b>{{ group.rows|length }}</b></a>
+    {% endfor %}
+  </span>
+{% endblock %}
+
+{% block strip_right %}
+  <span class="rl-strip-note"><b>{{ data.linked_count }}</b> of {{ data.weapon_count }} weapons linked</span>
+{% endblock %}
+
 {% block content %}
-<a class="btn-back" href="{{ url_for('arsenal.loadouts') }}">Back to Weapon Loadouts</a>
-<section class="arsenal-head">
+<a class="ars-back" href="{{ url_for('arsenal.loadouts') }}">&larr; All Loadouts</a>
+
+<header class="rl-mast">
   <div>
-    <h2 class="view-title">{{ data.datasheet.name }}</h2>
-    <p class="view-sub">{{ data.faction.name }} &middot; Datasheet weapons</p>
+    <div class="rl-mast-plate rl-mast-plate--sm">{{ data.datasheet.name }}</div>
+    <div class="rl-mast-meta">{{ data.faction.name }} &middot; Datasheet weapons</div>
   </div>
-</section>
+  <div class="rl-mast-ep ars-mast-stat">
+    <div>{{ data.weapon_count }} weapons &middot; {{ data.linked_count }} linked {{ 'entry' if data.linked_count == 1 else 'entries' }}</div>
+  </div>
+</header>
 
 {% for group in data.groups %}
-  <section class="arsenal-section">
-    <h3>{{ group.role|title }}</h3>
-    <div class="arsenal-loadout-rows">
-      {% for row in group.rows %}
-        <article class="arsenal-loadout-row">
-          <div class="arsenal-mini-thumb">
-            {% if row.primary_url %}<img src="{{ row.primary_url }}" alt="{{ row.name }}">{% else %}<span>No photo</span>{% endif %}
-          </div>
-          <div>
-            <strong>{{ row.name }}</strong>
-            <small>{{ row.raw_name }}</small>
-            <p>{{ row.spotting_notes or "No description yet." }}</p>
-          </div>
-          <a class="link-btn" href="{{ url_for('arsenal.weapon_detail', weapon_id=row.weapon_id) }}">Entry</a>
-        </article>
-      {% endfor %}
+<section class="ars-role" id="role-{{ group.role }}">
+  <div class="ars-role-head">
+    <span class="ars-role-title">{{ group.role }} weapons</span>
+    <span class="ars-role-rule" aria-hidden="true"></span>
+    <span class="ars-role-count">{{ group.rows|length }}</span>
+  </div>
+
+  {% for row in group.rows %}
+  <article class="ars-weapon">
+    <div class="ars-thumb{% if not row.primary_url %} ars-thumb--empty{% endif %}">
+      {% if row.primary_url %}
+        <img src="{{ row.primary_url }}" alt="{{ row.name }}" loading="lazy">
+      {% else %}
+        <span>mini photo</span>
+      {% endif %}
     </div>
-  </section>
+
+    <div class="ars-weapon-mid">
+      <div class="ars-weapon-head">
+        <span class="ars-weapon-name">{{ row.name }}</span>
+        <span class="ars-weapon-raw">{{ row.raw_name }}</span>
+        {% for kw in row.profile_keywords %}
+          <span class="ars-kw">{{ kw }}</span>
+        {% endfor %}
+      </div>
+      {% if row.spotting_notes %}
+        <p class="ars-notes">{{ row.spotting_notes }}</p>
+      {% else %}
+        <p class="ars-notes ars-notes--empty">No spotting notes yet.</p>
+      {% endif %}
+      {% if row.profile %}
+      <table class="ars-stats">
+        <thead>
+          <tr>
+            <th>Range</th><th>A</th>
+            <th>{% if group.role == 'melee' %}WS{% elif group.role == 'ranged' %}BS{% else %}BS/WS{% endif %}</th>
+            <th>S</th><th>AP</th><th>D</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ row.profile.range or '—' }}</td>
+            <td>{{ row.profile.A or '—' }}</td>
+            <td>{{ row.profile.BS_WS or '—' }}</td>
+            <td>{{ row.profile.S or '—' }}</td>
+            <td>{{ row.profile.AP or '—' }}</td>
+            <td>{{ row.profile.D or '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+
+    <div class="ars-weapon-side">
+      {% if row.weapon_id %}
+        <a class="ars-entry-btn" href="{{ url_for('arsenal.weapon_detail', weapon_id=row.weapon_id) }}">Entry &rarr;</a>
+      {% else %}
+        <span class="ars-no-entry">No entry yet</span>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</section>
 {% endfor %}
+
+<div class="rl-colophon"><hr>
+  <p>&#10016; &nbsp;The Arsenal &middot; {{ data.datasheet.name }}&nbsp; &#10016;</p></div>
 {% endblock %}

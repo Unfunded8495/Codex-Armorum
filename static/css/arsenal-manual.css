@@ -1,0 +1,135 @@
+/* =====================================================================
+   arsenal-manual.css — /arsenal/loadouts (index + unit detail)
+   "The Arsenal" register on the PDF-manual surface.
+   Page-specific styles; shared shell/tokens live in manual.css.
+   The audit and weapon-detail pages keep their dark styling (base.html).
+   ===================================================================== */
+
+.ars-wrap{
+  position:relative;z-index:1;max-width:1060px;margin:0 auto;
+  padding:26px 34px 90px;min-width:0;
+}
+
+.ars-flashes{
+  border:1px solid var(--rl-green);border-left:3px solid var(--rl-green);
+  background:var(--rl-green-soft);padding:10px 14px;margin:0 0 20px;
+}
+.ars-flashes p{
+  margin:0;font-family:'PT Sans',sans-serif;font-size:13.5px;color:var(--rl-ink);
+}
+
+.ars-mast-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;padding-bottom:6px}
+.ars-mast-actions form{margin:0;display:inline-flex}
+
+/* ----------------------------------------------------------- index cards */
+.ars-unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.ars-unit-card{
+  display:flex;flex-direction:column;gap:9px;text-decoration:none;
+  background:var(--rl-paper-2);border:1px solid var(--rl-edge);padding:11px 14px 12px;
+  transition:border-color .15s,box-shadow .15s;
+}
+.ars-unit-card:hover{border-color:var(--rl-green);box-shadow:0 4px 14px rgba(20,24,12,.14)}
+.ars-unit-row{display:flex;align-items:baseline;gap:9px}
+.ars-unit-name{
+  flex:1;font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;
+  letter-spacing:.6px;text-transform:uppercase;color:var(--rl-ink);line-height:1.25;
+}
+.ars-unit-count{font-family:'Oswald',sans-serif;font-size:11px;color:var(--rl-mute);letter-spacing:.5px;white-space:nowrap}
+.ars-unit-arrow{color:var(--rl-green);font-size:14px;line-height:1}
+.ars-unit-row--bar{align-items:center}
+.ars-bar{flex:1;height:5px;background:var(--rl-paper-3);overflow:hidden}
+.ars-bar-fill{display:block;height:100%;background:var(--rl-olive)}
+.ars-bar-fill.is-complete{background:var(--rl-green)}
+.ars-unit-status{
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;color:var(--rl-mute);white-space:nowrap;
+}
+.ars-unit-status.is-complete{color:var(--rl-green)}
+.ars-unit-status.is-none{color:var(--rl-rust)}
+
+/* ------------------------------------------------------------ unit detail */
+.ars-back{
+  display:inline-block;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:1.6px;text-transform:uppercase;color:var(--rl-green);
+  text-decoration:none;margin:2px 0 14px;
+}
+.ars-back:hover{background:var(--rl-green-soft)}
+.ars-mast-stat div{
+  font-family:'Oswald',sans-serif;font-style:normal;font-size:11.5px;font-weight:500;
+  letter-spacing:1.8px;text-transform:uppercase;color:var(--rl-mute);
+}
+
+.ars-role{margin:0 0 44px;scroll-margin-top:130px}
+.ars-role-head{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+.ars-role-title{
+  font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;color:var(--rl-green);white-space:nowrap;
+}
+.ars-role-rule{flex:1;height:1px;background:var(--rl-edge)}
+.ars-role-count{font-family:'Oswald',sans-serif;font-size:10.5px;font-weight:500;letter-spacing:1px;color:var(--rl-mute)}
+
+.ars-weapon{
+  display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:14px;
+  background:var(--rl-paper-2);border:1px solid var(--rl-edge);
+  padding:12px 14px;margin:0 0 12px;align-items:start;scroll-margin-top:130px;
+}
+.ars-thumb{
+  width:86px;height:86px;overflow:hidden;border:1px solid var(--rl-edge-soft);
+  background:var(--rl-paper-3);display:flex;align-items:center;justify-content:center;
+}
+.ars-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ars-thumb--empty{
+  background:repeating-linear-gradient(45deg,var(--rl-paper-3) 0 8px,var(--rl-paper-2) 8px 16px);
+}
+.ars-thumb--empty span{font-family:monospace;font-size:9.5px;color:var(--rl-mute);letter-spacing:.5px}
+
+.ars-weapon-mid{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ars-weapon-head{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.ars-weapon-name{
+  font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;
+  letter-spacing:.6px;text-transform:uppercase;color:var(--rl-ink);
+}
+.ars-weapon-raw{font-family:monospace;font-size:10.5px;color:var(--rl-mute)}
+.ars-kw{
+  font-family:'Oswald',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--rl-mute);border:1px solid var(--rl-edge);padding:1px 6px;
+}
+.ars-notes{margin:0;font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:13px;line-height:1.5;color:var(--rl-ink-soft)}
+.ars-notes--empty{color:var(--rl-mute)}
+
+.ars-stats{border-collapse:collapse;width:auto;min-width:340px;max-width:520px}
+.ars-stats th{
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--rl-cream);background:var(--rl-olive);
+  padding:3px 12px;text-align:center;border:1px solid var(--rl-edge-soft);
+}
+.ars-stats td{
+  font-family:'Oswald',sans-serif;font-size:12.5px;color:var(--rl-ink);
+  padding:4px 12px;text-align:center;border:1px solid var(--rl-edge-soft);
+}
+
+.ars-weapon-side{display:flex;flex-direction:column;align-items:flex-end}
+.ars-entry-btn{
+  font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--rl-green);background:var(--rl-green-soft);
+  border:1px solid var(--rl-green);padding:6px 13px;text-decoration:none;white-space:nowrap;
+  transition:background .15s,color .15s;
+}
+.ars-entry-btn:hover{background:var(--rl-green);color:#fff}
+.ars-no-entry{
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--rl-rust);border:1px dashed var(--rl-rust);
+  padding:6px 11px;white-space:nowrap;
+}
+
+/* --------------------------------------------------------- responsive */
+@media (max-width:1020px){
+  .ars-wrap{padding:20px 18px 70px}
+  .ars-mast-actions{padding:14px 0 0}
+}
+@media (max-width:760px){
+  .ars-weapon{grid-template-columns:66px minmax(0,1fr)}
+  .ars-thumb{width:66px;height:66px}
+  .ars-weapon-side{grid-column:1 / -1;flex-direction:row;justify-content:flex-end}
+  .ars-stats{min-width:0;width:100%}
+}

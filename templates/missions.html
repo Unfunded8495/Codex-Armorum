@@ -6,43 +6,46 @@
   <title>Missions · Codex Armorum</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <style>
-    /* ---- Missions reference styles ---- */
-    .mz-wrap { max-width:1100px; margin:0 auto; padding:28px 24px 60px; }
-    .mz-pack { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase;
-      color:var(--gold); margin:0 0 4px; }
-    .mz-intro { font-family:'EB Garamond',serif; color:var(--parch-dim); font-size:14px; margin:0 0 24px; }
-    .mz-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--edge); padding-bottom:14px; }
-    .mz-tab { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase;
-      color:var(--parch-dim); background:none; border:1px solid var(--edge); padding:7px 14px; cursor:pointer; transition:.15s; }
-    .mz-tab:hover { color:var(--gold); border-color:var(--gold); }
-    .mz-tab.is-active { color:#0a0a0c; background:var(--gold); border-color:var(--gold); }
-    .mz-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; align-items:start; }
-    .mz-card { border:1px solid var(--edge); border-left:3px solid var(--gold); padding:16px 18px; background:rgba(0,0,0,.15); }
-    .mz-card h3 { font-family:'Cinzel',serif; font-size:15px; color:var(--gold-bright); margin:0 0 6px; }
-    .mz-tag { display:inline-block; font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:1px; text-transform:uppercase;
-      color:var(--gold); border:1px solid var(--edge); border-radius:3px; padding:1px 7px; margin-bottom:8px; }
-    .mz-lore { font-family:'EB Garamond',serif; font-style:italic; font-size:13px; line-height:1.5; color:var(--parch-dim); margin:0 0 8px; }
-    .mz-body { font-family:'EB Garamond',serif; font-size:13px; line-height:1.5; color:var(--parch); white-space:pre-wrap; }
-    .mz-obj { margin:8px 0 0; padding:0; list-style:none; }
-    .mz-obj li { font-family:'EB Garamond',serif; font-size:13px; color:var(--parch); line-height:1.5; padding-left:14px; position:relative; }
-    .mz-obj li::before { content:"\25B8"; color:var(--gold); position:absolute; left:0; }
-    .mz-body b, .mz-obj b { color:var(--gold); font-weight:700; }
-    .mz-names { display:flex; flex-wrap:wrap; gap:8px; }
-    .mz-chip { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; color:var(--parch);
-      border:1px solid var(--edge); padding:7px 13px; }
-    .mz-sub { font-family:'EB Garamond',serif; font-size:12px; color:var(--parch-dim); }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/missions.css') }}">
 </head>
 <body>
-  <div class="scanlines" aria-hidden="true"></div>
+  <!-- apply saved reading mode before first paint (shared across all manual pages) -->
+  <script>try{if(localStorage.getItem('caRules.theme')==='dark')document.body.setAttribute('data-rl-theme','dark');}catch(e){}</script>
+  <!-- NOTE: no .scanlines overlay on this page — it would darken the light paper -->
 
+  <div class="rl-chrome">
     {% include "_topbar.html" %}
 
-  <main id="view" class="mz-wrap"></main>
+    <nav class="rl-strip" id="mzStrip" aria-label="Mission deck quick reference">
+      <span class="rl-strip-label">Mission Deck</span>
+      <span class="rl-strip-chips" id="mzStripChips"></span>
+      <span class="rl-strip-spacer"></span>
+      <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="mzThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="mzThemeLabel">Dark</span></button>
+    </nav>
+  </div>
+
+  <div class="rl-shell" id="mzShell">
+    <div class="mz-grid">
+      <aside class="rl-side" aria-label="Mission contents">
+        <div class="rl-search-wrap">
+          <input type="search" id="mzSearch" class="rl-search" placeholder="Search missions&hellip;  ( / )"
+                 autocomplete="off" spellcheck="false" aria-label="Search missions">
+        </div>
+        <div class="rl-side-head"><span>Mission Deck</span><span id="mzDeckCount"></span></div>
+        <nav class="rl-toc" id="mzToc"></nav>
+      </aside>
+
+      <main class="rl-main mz-main" id="view">
+        <div class="rl-loading">Shuffling the mission deck&hellip;</div>
+      </main>
+    </div>
+  </div>
+
+  <button class="rl-top-btn" id="mzTopBtn" title="Back to top" aria-label="Back to top">&#8679;</button>
 
   <footer class="footer">
     <p>For the Emperor. Mission data from the official Warhammer 40,000 app.</p>

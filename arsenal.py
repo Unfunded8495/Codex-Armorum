@@ -239,7 +239,6 @@ def unit_loadout(datasheet_id):
         active_page="arsenal_loadouts",
         breadcrumb=_loadouts_breadcrumb({"label": data["datasheet"]["name"]}),
         data=data,
-        weapons=store.list_weapons(),
     )
 
 

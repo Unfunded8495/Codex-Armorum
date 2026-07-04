@@ -1,30 +1,68 @@
-{% extends "arsenal/base.html" %}
+{% extends "arsenal/manual_base.html" %}
 {% block title %}Weapon Loadouts - Codex Armorum{% endblock %}
+
+{% set total_weapons = groups|sum(attribute='weapon_count') %}
+{% set total_linked = groups|sum(attribute='linked_count') %}
+
+{% block strip %}
+  <span class="rl-strip-chips">
+    {% for group in groups if group.units %}
+      <a class="rl-chip" href="#fac-{{ group.faction.id }}">{{ group.faction.name }}<b>{{ group.units|length }}</b></a>
+    {% endfor %}
+  </span>
+{% endblock %}
+
+{% block strip_right %}
+  <span class="rl-strip-note"><b>{{ total_linked }}</b> of {{ total_weapons }} weapons linked</span>
+{% endblock %}
+
 {% block content %}
-<section class="arsenal-head">
+<header class="rl-mast">
   <div>
-    <h2 class="view-title">Weapon Loadouts</h2>
-    <p class="view-sub">Datasheet weapon tables linked to Arsenal entries</p>
+    <div class="rl-mast-plate">Weapon Loadouts</div>
+    <div class="rl-mast-meta">The Arsenal &middot; Datasheet weapons linked to spotting entries</div>
+    <div class="rl-mast-sub">Every weapon a datasheet can carry, with your notes on how to spot it on the model.</div>
   </div>
-  <div class="arsenal-actions">
-    <a class="btn-secondary" href="{{ url_for('arsenal.audit') }}">Audit</a>
+  <div class="ars-mast-actions">
+    <a class="rl-btn" href="{{ url_for('arsenal.audit') }}">Audit</a>
     <form method="post" action="{{ url_for('arsenal.sync') }}">
-      <button class="btn-primary" type="submit">Rebuild Catalogue</button>
+      <button class="rl-btn" type="submit">Rebuild Catalogue</button>
     </form>
   </div>
-</section>
+</header>
 
-{% for group in groups %}
-  <details class="arsenal-collapse">
-    <summary>{{ group.faction.name }} <span>{{ group.units|length }} units</span></summary>
-    <div class="arsenal-unit-list">
-      {% for unit in group.units %}
-        <a href="{{ url_for('arsenal.unit_loadout', datasheet_id=unit.id) }}">
-          <strong>{{ unit.name }}</strong>
-          <span>{{ unit.weapon_count }} weapons</span>
-        </a>
-      {% endfor %}
-    </div>
-  </details>
+{% for group in groups if group.units %}
+<section class="rl-section" id="fac-{{ group.faction.id }}">
+  <div class="rl-shead">
+    <span class="rl-snum">{{ '%02d' % loop.index }}</span>
+    <span class="rl-stitle">{{ group.faction.name }}</span>
+    <span class="rl-stag">{{ group.units|length }} datasheets</span>
+  </div>
+  <div class="ars-unit-grid">
+    {% for unit in group.units %}
+      {% set pct = (unit.linked_count / unit.weapon_count * 100)|round if unit.weapon_count else 0 %}
+      <a class="ars-unit-card" href="{{ url_for('arsenal.unit_loadout', datasheet_id=unit.id) }}">
+        <span class="ars-unit-row">
+          <span class="ars-unit-name">{{ unit.name }}</span>
+          <span class="ars-unit-count">{{ unit.weapon_count }} weapons</span>
+          <span class="ars-unit-arrow" aria-hidden="true">&rarr;</span>
+        </span>
+        <span class="ars-unit-row ars-unit-row--bar">
+          <span class="ars-bar"><span class="ars-bar-fill{% if unit.weapon_count and unit.linked_count == unit.weapon_count %} is-complete{% endif %}" style="width:{{ pct }}%"></span></span>
+          {% if unit.weapon_count and unit.linked_count == unit.weapon_count %}
+            <span class="ars-unit-status is-complete">Complete</span>
+          {% elif unit.linked_count %}
+            <span class="ars-unit-status">{{ unit.linked_count }} / {{ unit.weapon_count }} linked</span>
+          {% else %}
+            <span class="ars-unit-status is-none">0 / {{ unit.weapon_count }} linked</span>
+          {% endif %}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
 {% endfor %}
+
+<div class="rl-colophon"><hr>
+  <p>&#10016; &nbsp;The Arsenal &middot; Weapon Loadout Register&nbsp; &#10016;</p></div>
 {% endblock %}

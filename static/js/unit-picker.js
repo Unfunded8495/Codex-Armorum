@@ -25,6 +25,8 @@ export async function openUnitPicker(category){
   const body  = document.getElementById('pickerBody');
   const title = document.getElementById('pickerTitle');
   if(title) title.textContent = category || 'Add Unit';
+  const facTag = document.getElementById('pickerFaction');
+  if(facTag) facTag.textContent = state.army.faction_display_name || state.army.faction_name || '';
   body.innerHTML = `<p class="po-empty">Loading&hellip;</p>`;
   modal.hidden = false;
   syncOverlayScrim();
@@ -77,8 +79,8 @@ export function renderPicker(units){
           ${used?`<div class="po-owned">${used}&times; Unit In Army</div>`:''}
         </div>
         <div class="po-side">
-          <button class="po-add" type="button" aria-label="Add ${esc(u.name)}" onclick="addUnitToArmy('${u.id}')">+</button>
           ${pts?`<span class="po-pts">${pts}</span>`:''}
+          <button class="po-add" type="button" aria-label="Add ${esc(u.name)}" onclick="addUnitToArmy('${u.id}')">+ Add</button>
         </div>
       </div>
       <div class="po-profile" id="poProf-${u.id}" hidden></div>`;

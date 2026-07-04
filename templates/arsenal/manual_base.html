@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}The Arsenal - Codex Armorum{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/arsenal-manual.css') }}">
+</head>
+<body>
+  <!-- apply saved reading mode before first paint (shared across all manual pages) -->
+  <script>try{if(localStorage.getItem('caRules.theme')==='dark')document.body.setAttribute('data-rl-theme','dark');}catch(e){}</script>
+  <!-- NOTE: no .scanlines overlay on the manual pages — it would darken the light paper -->
+
+  <div class="rl-chrome">
+    {% include "_topbar.html" %}
+
+    <nav class="rl-strip" id="arsStrip" aria-label="Arsenal quick reference">
+      <span class="rl-strip-label">The Arsenal</span>
+      {% block strip %}{% endblock %}
+      <span class="rl-strip-spacer"></span>
+      {% block strip_right %}{% endblock %}
+      <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="arsThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="arsThemeLabel">Dark</span></button>
+    </nav>
+  </div>
+
+  <div class="rl-shell">
+    <main class="ars-wrap">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="ars-flashes">
+            {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <button class="rl-top-btn" id="arsTopBtn" title="Back to top" aria-label="Back to top">&#8679;</button>
+
+  <footer class="footer">
+    <p>For the Emperor &mdash; and for everyone else too. A local tool for cataloguing your miniatures.</p>
+  </footer>
+
+  <script type="module" src="{{ url_for('static', filename='js/arsenal-loadouts.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

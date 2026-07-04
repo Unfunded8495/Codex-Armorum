@@ -44,12 +44,18 @@ export async function showArmy(aid){
       <aside class="ab-leftrail" id="leftRail">${renderLeftRail(army)}</aside>
       <section class="ab-centre" id="centrePanel">
         <div id="rosterBody">${renderRoster(army.units, army.accent)}</div>
+        <div class="ab-colophon" id="abColophon">${renderColophon(army)}</div>
       </section>
       <aside class="ab-rightpanel" id="rightPanel" data-testid="detail-panel">${renderRightPlaceholder()}</aside>
     </div>`;
 
+  renderAbStrip(army);      // quick-strip FOC chips + live points readout
   wireCentreInputs(army);
   restoreRight();           // re-open a prior right-panel selection after a refetch
+}
+
+function renderColophon(army){
+  return `<hr><p>&#10016; &nbsp;${esc(army.name)} &middot; <span id="abColoPts">${army.total_points} / ${army.points_limit}</span> points&nbsp; &#10016;</p>`;
 }
 
 function renderRightPlaceholder(){
@@ -59,34 +65,47 @@ function renderRightPlaceholder(){
     </div>`;
 }
 
-/* ---- left rail (points + config + validation) --------------------------- */
+/* ---- left rail (points + config + validation + quick list) -------------- */
 
 // Everything about the LIST (as opposed to a unit) lives in the sticky left
-// rail: the points HUD, the config chips, and the validation card -- always
-// visible beside the roster instead of stacked above/below it.
+// rail: the points HUD, the configuration card, the validation card, the
+// add-unit button and the roster quick list -- always visible beside the
+// roster instead of stacked above/below it.
 function renderLeftRail(army){
   return `
     ${renderPointsHud(army)}
     ${renderContextStrip(army)}
-    <div class="ab-card ab-validation" id="validationCard" data-testid="validation-card">
-      <p class="ab-card-title">Validation</p>
-      <div id="validationBody">${renderValidation(army)}</div>
+    ${renderValidationCard(army)}
+    <button class="ab-adds-btn" type="button" onclick="openUnitPicker()">+ Add Unit</button>
+    ${renderQuickList(army)}`;
+}
+
+// Points HUD: black plate with the big used total, a progress bar and a
+// remaining/over status line. id="ptsUsed"/data-testid="army-points" are kept
+// stable so the live-points wiring (updatePointsBar) and the UI test suite
+// keep working unchanged. Click jumps to the validation card (scroll math,
+// not scrollIntoView -- that breaks the host app).
+function renderPointsHud(army){
+  const over = army.points_limit>0 && army.total_points>army.points_limit;
+  const pct = hudPct(army);
+  return `
+    <div class="hud-pill ${over?'is-over':''}" id="hudPill" data-testid="points-hud" role="button" tabindex="0" title="Jump to validation"
+         onclick="jumpToValidation()">
+      <div class="hud-kicker">Points <span class="hud-warn" id="hudWarn" ${hudHasIssues(army)?'':'hidden'}>&#9888;</span></div>
+      <div class="hud-line"><b id="ptsUsed" data-testid="army-points">${army.total_points}</b><small>/ <span id="ptsLimit">${army.points_limit}</span> pts</small></div>
+      <div class="hud-bar"><span class="hud-bar-fill" id="hudBarFill" style="width:${pct}%"></span></div>
+      <div class="hud-note" id="hudNote">${hudNote(army)}</div>
     </div>`;
 }
 
-// Points/validity HUD block at the top of the left rail; shows a warning half
-// whenever the list has ANY validation issue (not just over points), matching
-// the reference app. id="ptsUsed"/data-testid="army-points" are kept stable so
-// existing live-points-update wiring (updatePointsBar) and the UI test suite
-// keep working unchanged.
-function renderPointsHud(army){
-  const hasIssues = hudHasIssues(army);
-  return `
-    <div class="hud-pill" data-testid="points-hud" role="button" tabindex="0" title="Jump to validation"
-         onclick="document.getElementById('validationCard')?.scrollIntoView({behavior:'smooth',block:'nearest'})">
-      <span class="hud-warn" id="hudWarn" ${hasIssues?'':'hidden'}>&#9888;</span>
-      <span class="hud-pts"><b id="ptsUsed" data-testid="army-points">${army.total_points}</b><small>/ <span id="ptsLimit">${army.points_limit}</span> Points</small></span>
-    </div>`;
+function hudPct(army){
+  if(!(army.points_limit>0)) return 0;
+  return Math.min(100, Math.round(army.total_points / army.points_limit * 100));
+}
+function hudNote(army){
+  if(!(army.points_limit>0)) return 'No points limit set';
+  const d = army.points_limit - army.total_points;
+  return d >= 0 ? `${d} pts remaining` : `${-d} pts over the limit`;
 }
 
 function hudHasIssues(army){
@@ -94,59 +113,204 @@ function hudHasIssues(army){
   return over || (army.validation||[]).some(v=>v.level==='err'||v.level==='warn');
 }
 
-function renderRosterHeader(army){
+// Jump the sticky left rail to the validation card (container scrollTop math;
+// never scrollIntoView) and flash it.
+export function jumpToValidation(){
+  const card = document.getElementById('validationCard');
+  const rail = document.getElementById('leftRail');
+  if(!card || !rail) return;
+  const cr = card.getBoundingClientRect(), rr = rail.getBoundingClientRect();
+  rail.scrollTop += cr.top - rr.top - 12;
+  card.classList.remove('rl-flash');
+  requestAnimationFrame(()=>card.classList.add('rl-flash'));
+  setTimeout(()=>card.classList.remove('rl-flash'), 1700);
+}
+
+// Validation card: green (battle-ready) or rust (muster issues) left bar +
+// header, with the server validation rows beneath. Keeps the validation-card
+// testid and the jump-to-unit row buttons.
+function renderValidationCard(army){
+  const rows = army.validation || [];
+  const issues = rows.filter(v=>v.level==='err'||v.level==='warn').length
+    + ((army.points_limit>0 && army.total_points>army.points_limit) ? 0 : 0);
+  const clean = !hudHasIssues(army);
   return `
-    <div class="ab-centre-head">
-      <h2 class="ab-army-title" data-testid="army-title">${esc(army.name)}</h2>
-      <button class="cb-open-btn" type="button" data-testid="open-command-bunker" onclick="openCommandBunker()" title="Command Bunker">${army.icon_url?`<img src="${esc(army.icon_url)}" alt="">`:'&#9879;'}</button>
-      <div class="uc-kebab-wrap" onclick="event.stopPropagation()">
-        <button class="uc-kebab rh-kebab" type="button" title="More actions" data-testid="roster-kebab" onclick="toggleKebabMenu(this)">&#8942;</button>
-        <div class="uc-kebab-menu" hidden>
-          <button type="button" data-testid="menu-edit-roster" onclick="openEditRoster()">Edit Roster</button>
-          <button type="button" data-testid="menu-duplicate-roster" onclick="duplicateRoster()">Duplicate Roster</button>
-        </div>
+    <div class="ab-validation ${clean?'is-ok':'is-bad'}" id="validationCard" data-testid="validation-card">
+      <div class="ab-val-head">
+        <span class="ab-val-dot" aria-hidden="true"></span>
+        <span class="ab-val-title">${clean?'Battle-Ready':`Muster Issues${issues?` · ${issues}`:''}`}</span>
       </div>
-      <div class="ab-export-btns">
-        <button class="ab-export-btn" type="button" data-testid="export-button" onclick="exportArmy('copy', this)">Copy list</button>
-        <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">.txt</button>
-        <button class="ab-export-btn" type="button" onclick="exportArmy('json', this)">.json</button>
-        <button class="ab-export-btn" type="button" data-testid="export-cards-pdf" onclick="exportDatasheetsPdf(this)">Cards PDF</button>
+      <div id="validationBody">${renderValidation(army)}</div>
+    </div>`;
+}
+
+// Roster quick list: every unit as a jump link (name + Warlord star + pts).
+function renderQuickList(army){
+  const units = army.units || [];
+  const models = units.reduce((s,u)=>s+(u.squad_size||0), 0);
+  const rows = units.map(u=>{
+    const pts = (u.points||0)+(u.enhancement_cost||0);
+    return `<a class="ab-ql-row" href="#" onclick="event.preventDefault();jumpToUnit('${u.id}')">
+        <span class="ab-ql-name">${esc(u.name)}${u.is_warlord?' <span class="ab-ql-star" title="Warlord">★</span>':''}</span>
+        <span class="ab-ql-pts">${pts}</span>
+      </a>`;
+  }).join('');
+  return `<div class="ab-card ab-quicklist" id="abQuickList">
+      <div class="ab-card-head"><span>Roster</span><span id="abQlModels">${models} models</span></div>
+      <nav class="ab-ql-list">${rows || '<p class="ab-ql-empty">No units mustered yet.</p>'}</nav>
+    </div>`;
+}
+
+export function refreshQuickList(){
+  const el = document.getElementById('abQuickList');
+  if(el && state.army) el.outerHTML = renderQuickList(state.army);
+}
+
+/* ---- quick strip (Battle Roster chrome) ----------------------------------
+   FOC-section jump chips with live counts + the points readout, rendered into
+   the sticky strip in the template (outside #view, so it survives roster
+   re-renders only via explicit calls). */
+
+function renderAbStrip(army){
+  const chipsEl = document.getElementById('abStripChips');
+  if(!chipsEl) return;
+  const counts = {};
+  FOC_ORDER.forEach(c=>counts[c]=0);
+  (army.units||[]).forEach(u=>{
+    const cat = counts[u.foc_category] != null ? u.foc_category : 'Other Datasheets';
+    counts[cat]++;
+  });
+  const label = {Characters:'Characters', Battleline:'Battleline',
+    'Dedicated Transports':'Transports', 'Other Datasheets':'Other'};
+  chipsEl.innerHTML = FOC_ORDER.map(cat=>
+    `<a class="rl-chip" href="#foc-${focSlug(cat)}" onclick="event.preventDefault();jumpToFoc('${focSlug(cat)}')">${esc(label[cat]||cat)}<b id="abChip-${focSlug(cat)}">${counts[cat]}</b></a>`).join('');
+  updateStripPts(army);
+}
+
+function updateStripPts(army){
+  const el = document.getElementById('abStripPts');
+  if(!el) return;
+  const over = army.points_limit>0 && army.total_points>army.points_limit;
+  el.classList.toggle('is-over', over);
+  el.innerHTML = `<b>${army.total_points}</b> / ${army.points_limit} pts`;
+}
+
+function refreshStripChips(){
+  if(state.army) renderAbStrip(state.army);
+}
+
+// Jump the window to a Force-Org section, offset below the sticky chrome.
+export function jumpToFoc(slug){
+  const el = document.getElementById('foc-'+slug);
+  if(!el) return;
+  const chrome = document.querySelector('.rl-chrome');
+  const y = el.getBoundingClientRect().top + window.scrollY - ((chrome?chrome.offsetHeight:122) + 8);
+  window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
+  el.classList.remove('rl-flash');
+  requestAnimationFrame(()=>el.classList.add('rl-flash'));
+  setTimeout(()=>el.classList.remove('rl-flash'), 1700);
+}
+
+// Masthead: small BATTLE ROSTER plate + faction/detachment meta, the army
+// name as an editable input styled as the page title (wired to the existing
+// saveArmyMeta flow), a stats sub-line, and the existing action cluster
+// (Command Bunker badge, kebab menu, exports) -- all behaviors unchanged.
+function renderRosterHeader(army){
+  const dets = (army.detachments||[]).map(d=>esc(d.name)).join(' + ') || 'No detachment';
+  return `
+    <div class="ab-mast">
+      <div class="ab-mast-top">
+        <span class="ab-mast-plate">Battle Roster</span>
+        <span class="ab-mast-meta" id="abMastMeta">${esc(army.faction_display_name||army.faction_name||'')} &middot; ${dets}</span>
+        <span class="ab-mast-actions">
+          <button class="cb-open-btn" type="button" data-testid="open-command-bunker" onclick="openCommandBunker()" title="Command Bunker">${army.icon_url?`<img src="${esc(army.icon_url)}" alt="">`:'&#9879;'}</button>
+          <div class="uc-kebab-wrap" onclick="event.stopPropagation()">
+            <button class="uc-kebab rh-kebab" type="button" title="More actions" data-testid="roster-kebab" onclick="toggleKebabMenu(this)">&#8942;</button>
+            <div class="uc-kebab-menu" hidden>
+              <button type="button" data-testid="menu-edit-roster" onclick="openEditRoster()">Edit Roster</button>
+              <button type="button" data-testid="menu-duplicate-roster" onclick="duplicateRoster()">Duplicate Roster</button>
+            </div>
+          </div>
+          <div class="ab-export-btns">
+            <button class="ab-export-btn" type="button" data-testid="export-button" onclick="exportArmy('copy', this)">Copy list</button>
+            <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">.txt</button>
+            <button class="ab-export-btn" type="button" onclick="exportArmy('json', this)">.json</button>
+            <button class="ab-export-btn" type="button" data-testid="export-cards-pdf" onclick="exportDatasheetsPdf(this)">Cards PDF</button>
+          </div>
+        </span>
+      </div>
+      <input class="ab-army-title" data-testid="army-title" value="${esc(army.name)}"
+             aria-label="Army name" spellcheck="false" placeholder="Army name" onchange="saveArmyMeta()">
+      <div class="ab-mast-sub">
+        <span id="abMastStats">${esc(army.battle_size||'Custom')} &middot; ${army.points_limit} pts &nbsp;&middot;&nbsp; ${mastStats(army)}</span>
+        <span class="ab-mast-hint">Click a unit name for its datasheet</span>
       </div>
     </div>`;
 }
 
-/* ---- context strip -------------------------------------------------------
+function mastStats(army){
+  const units = army.units || [];
+  const models = units.reduce((s,u)=>s+(u.squad_size||0), 0);
+  return `${units.length} unit${units.length===1?'':'s'} &middot; ${models} model${models===1?'':'s'}`;
+}
+
+function refreshMastStats(){
+  const el = document.getElementById('abMastStats');
+  if(el && state.army) el.innerHTML =
+    `${esc(state.army.battle_size||'Custom')} &middot; ${state.army.points_limit} pts &nbsp;&middot;&nbsp; ${mastStats(state.army)}`;
+}
+
+/* ---- configuration card ---------------------------------------------------
    Always-visible summary of the list's configuration (faction / battle size /
-   detachments / enhancement budget), each chip a shortcut to where it's
-   changed. Previously all of this lived 2-3 taps deep behind the unlabeled
-   kebab -> Edit Roster sub-screens, with nothing on the roster itself. */
+   detachments / enhancement budget), each row a shortcut to where it's
+   changed. All the ctx-* testids and their click behaviors are unchanged --
+   this is the same context strip, reskinned as the rail's Configuration card
+   (battle-size editing itself stays in the Edit Roster sub-screen: the rail
+   row deep-links there, avoiding a duplicate #abBattleSize select). */
 
 function renderContextStrip(army){
   const dets     = army.detachments || [];
   const dpBudget = army.detachment_points_limit;   // null = Custom, no cap
   const dpUsed   = army.detachment_points_used || 0;
-  const dpTag    = dpBudget != null ? ` · ${dpUsed}/${dpBudget} DP` : '';
-  const detValue = dets.length
-    ? `${dets.map(d=>esc(d.name)).join(' + ')}${dpTag}`
-    : '⚠ Choose a detachment';
+  const dpOver   = dpBudget != null && dpUsed > dpBudget;
+  const dpBadge  = dpBudget != null ? `${dpUsed} / ${dpBudget} DP` : `${dpUsed} DP`;
   const enhLimit = army.enhancement_limit;
   const enhUsed  = (army.units||[]).filter(u=>u.enhancement_id).length;
-  const chip = (testid, cls, onclick, label, value)=>`
-    <button class="ab-ctx-chip ${cls}" type="button" data-testid="${testid}" onclick="${onclick}">
-      <span class="ab-ctx-label">${label}</span>
-      <span class="ab-ctx-value">${value}</span>
-    </button>`;
-  return `<div class="ab-ctx-strip" id="ctxStrip" data-testid="context-strip">
-      ${chip('ctx-faction', '', 'openCommandBunker()',
-             'Faction', `${esc(army.faction_display_name||army.faction_name||'')} <span class="ab-ctx-hint">rules ▸</span>`)}
-      ${chip('ctx-battlesize', '', "openEditRoster('battlesize')",
-             'Battle Size', `${esc(army.battle_size||'Custom')} · ${army.points_limit} pts`)}
-      ${chip('ctx-detachment', dets.length?'':'is-missing', "openEditRoster('detachment')",
-             `Detachment${dets.length>1?'s':''}`, detValue)}
-      ${enhLimit != null ? `<span class="ab-ctx-chip ab-ctx-static" data-testid="ctx-enhancements">
-          <span class="ab-ctx-label">Enhancements</span>
-          <span class="ab-ctx-value ${enhUsed>enhLimit?'is-over':''}">${enhUsed}/${enhLimit}</span>
-        </span>` : ''}
+  const detRows = dets.length ? dets.map(d=>`
+      <div class="ab-cfg-det">
+        <span class="ab-cfg-det-name">${esc(d.name)}</span>
+        <span class="ab-cfg-det-dp">${d.points_cost||0} DP</span>
+        <button type="button" class="ab-cfg-det-x" title="Remove detachment" onclick="removeDetachment('${esc(d.id)}')">&#10005;</button>
+      </div>`).join('')
+    : `<div class="ab-cfg-none">None selected</div>`;
+  return `<div class="ab-card ab-cfg" id="ctxStrip" data-testid="context-strip">
+      <div class="ab-card-head"><span>Configuration</span></div>
+      <div class="ab-cfg-body">
+        <button class="ab-cfg-row" type="button" data-testid="ctx-faction" onclick="openCommandBunker()">
+          <span class="ab-cfg-label">Faction</span>
+          <span class="ab-cfg-value">${esc(army.faction_display_name||army.faction_name||'')} <span class="ab-cfg-hint">rules &#9656;</span></span>
+        </button>
+        <button class="ab-cfg-row" type="button" data-testid="ctx-battlesize" onclick="openEditRoster('battlesize')">
+          <span class="ab-cfg-label">Battle size</span>
+          <span class="ab-cfg-value">${esc(army.battle_size||'Custom')} &middot; ${army.points_limit} pts</span>
+        </button>
+        <div class="ab-cfg-block">
+          <div class="ab-cfg-block-head">
+            <span class="ab-cfg-label">Detachments</span>
+            <span class="ab-cfg-dp ${dpOver?'is-over':''}" title="Detachment Points">${dpBadge}</span>
+          </div>
+          ${detRows}
+          <button class="ab-cfg-choose ${dets.length?'':'is-missing'}" type="button" data-testid="ctx-detachment" onclick="openEditRoster('detachment')">${dets.length?'Choose Detachments':'⚠ Choose a Detachment'}</button>
+        </div>
+        ${enhLimit != null ? `<div class="ab-cfg-line" data-testid="ctx-enhancements">
+            <span class="ab-cfg-label">Enhancements</span>
+            <span class="ab-cfg-count ${enhUsed>enhLimit?'is-over':''}">${enhUsed} / ${enhLimit}</span>
+          </div>` : ''}
+        <div class="ab-cfg-line">
+          <span class="ab-cfg-label">Units</span>
+          <span class="ab-cfg-count">${(army.units||[]).length}</span>
+        </div>
+      </div>
     </div>`;
 }
 
@@ -204,11 +368,6 @@ function renderDetachmentPanel(army){
     const hasDetails = restrictions.length || rules.length;
     const expandId = `dpExpand-${esc(d.id)}`;
     const disposition = dispositionFor[d.id];
-    // No per-detachment art exists -- the faction banner is the documented
-    // substitute, same image bled into every card per the reference app's look.
-    const artStyle = army.banner_url
-      ? `style="background-image:url('${esc(army.banner_url)}')${affordable?'':';opacity:.45'}"`
-      : (affordable?'':'style="opacity:.45"');
     // Expand = the detachment's rule text (what taking it actually does) +
     // any restrictions -- readable before committing the pick, not only from
     // the Command Bunker after the fact.
@@ -216,11 +375,16 @@ function renderDetachmentPanel(army){
       rules.map(r=>`${r.name?`<h4>${esc(r.name)}</h4>`:''}<p class="dp-rule-text">${mdBold(esc(r.description||''))}</p>`).join(''),
       restrictions.map(r=>`${r.title?`<h4>${esc(r.title)}</h4>`:''}${(r.bullets||[]).map(b=>`<p>${mdBold(esc(b))}</p>`).join('')}`).join(''),
     ].join('');
-    return `<div class="dp-card ${selected?'is-selected':''}" ${artStyle}>
-        ${hasDetails?`<button type="button" class="dp-card-chev" onclick="event.stopPropagation();toggleDpExpand('${expandId}')" title="Show rules">&#9662;</button>`:'<span class="dp-card-chev"></span>'}
+    // The affordability contract the UI tests read: an affordable card's name
+    // carries onclick + style="cursor:pointer"; an unaffordable one has no
+    // style attribute at all (and a rust "not enough DP" line instead).
+    return `<div class="dp-card ${selected?'is-selected':''} ${affordable?'':'is-locked'}">
+        <span class="dp-tick" aria-hidden="true">${selected?'&#10003;':''}</span>
         <span class="dp-card-name" data-testid="detachment-chip" ${affordable?`onclick="toggleDetachmentCard('${esc(d.id)}')" style="cursor:pointer"`:''}>${esc(d.name)}${selected&&disposition?` <span class="ab-detach-chip-disp" data-testid="detachment-disposition" title="Force Disposition">&#11043; ${esc(disposition)}</span>`:''}</span>
         <span class="dp-card-cost">${d.points_cost||0} DP</span>
+        ${hasDetails?`<button type="button" class="dp-card-chev" onclick="event.stopPropagation();toggleDpExpand('${expandId}')" title="Show rules">&#9656;</button>`:'<span class="dp-card-chev"></span>'}
       </div>
+      ${!affordable && !selected?`<div class="dp-need">Not enough DP remaining</div>`:''}
       ${hasDetails?`<div class="dp-card-expand" id="${expandId}" hidden>${detailHtml}</div>`:''}`;
   }).join('') : `<p class="po-empty">No detachments available for this faction.</p>`;
 
@@ -229,6 +393,7 @@ function renderDetachmentPanel(army){
       <span class="dp-budget-label">Available Detachment Points (DP)</span>
       <span class="dp-budget-pill ${over?'is-over':''}" id="abDpBudget" data-testid="dp-budget">${budgetLabel}</span>
     </div>
+    <p class="dp-intro">Each detachment costs DP from your battle-size budget &mdash; stack as many as you can afford. Every detachment brings its own rules, enhancements and stratagems.</p>
     <div id="abDetachList">${cards}</div>`;
 }
 
@@ -265,6 +430,9 @@ export function editRosterShow(view){
 function renderEditRosterInto(army){
   const overlay = document.getElementById('editRosterModal');
   if(!overlay) return;
+  // The Detachments sub-screen is a manual (paper) drawer; the main screen
+  // and the Battle Size sub-screen keep the dark overlay styling.
+  overlay.classList.toggle('po-manual', state.editRosterView === 'detachment');
   overlay.innerHTML = renderEditRoster(army);
   if(state.editRosterView === 'battlesize') fillBattleSizeSelect(army);
 }
@@ -272,15 +440,18 @@ function renderEditRosterInto(army){
 function renderEditRoster(army){
   const view = state.editRosterView || 'main';
   if(view === 'battlesize') return erSubScreen('Battle Size', renderBattleSizePanel(army));
-  if(view === 'detachment') return erSubScreen('Choose Detachments', renderDetachmentPanel(army));
+  if(view === 'detachment')
+    return erSubScreen('Choose Detachments', renderDetachmentPanel(army),
+                       army.faction_display_name || army.faction_name || '');
   return renderEditRosterMain(army);
 }
 
-function erSubScreen(title, bodyHtml){
+function erSubScreen(title, bodyHtml, factionTag){
   return `
     <div class="po-overlay-head">
       <button class="cb-back" type="button" onclick="editRosterShow('main')" aria-label="Back" title="Back">&#10094;</button>
       <h2 class="po-overlay-title">${esc(title)}</h2>
+      ${factionTag?`<span class="po-head-tag">${esc(factionTag)}</span>`:''}
     </div>
     <div class="po-body">${bodyHtml}</div>`;
 }
@@ -296,7 +467,7 @@ function renderEditRosterMain(army){
   return `
     <div class="po-overlay-head">
       <h2 class="po-overlay-title">Edit Roster</h2>
-      <button class="po-close" type="button" onclick="closeEditRoster()" aria-label="Close" title="Close">&times;</button>
+      <button class="po-close cb-back" type="button" onclick="closeEditRoster()" aria-label="Close" title="Close">&times;</button>
     </div>
     <div class="po-body er-body">
       <p class="er-label">Name</p>
@@ -336,7 +507,10 @@ const DRAWER_IDS = ['unitPickerModal', 'commandBunker', 'editRosterModal'];
 export function syncOverlayScrim(){
   const scrim = document.getElementById('poScrim');
   if(!scrim) return;
-  scrim.hidden = DRAWER_IDS.every(id=>document.getElementById(id)?.hidden !== false);
+  const noneOpen = DRAWER_IDS.every(id=>document.getElementById(id)?.hidden !== false);
+  scrim.hidden = noneOpen;
+  // Drawers lock body scroll while open (released when the last one closes).
+  document.body.style.overflow = noneOpen ? '' : 'hidden';
 }
 
 export function closeAllOverlays(){
@@ -868,10 +1042,22 @@ function refreshUnitDetailIfSelected(auid){
   }
 }
 
+// The army name is editable in two places: the masthead title input (always
+// on screen) and the Edit Roster overlay's name field. The overlay wins while
+// it's open (the masthead is behind the scrim then); note the overlay's
+// content persists hidden after close, so visibility must be checked --
+// reading #erName unconditionally would resurrect a stale name.
+function currentArmyName(){
+  const erOpen = document.getElementById('editRosterModal')?.hidden === false;
+  const src = (erOpen && document.getElementById('erName'))
+    || document.querySelector('input[data-testid="army-title"]');
+  return (src?.value || '').trim();
+}
+
 export async function saveArmyMeta(){
   if(!state.army) return;
   const prevBs = state.army.battle_size || 'Custom';
-  const name  = (document.getElementById('erName')?.value||'').trim() || state.army.name;
+  const name  = currentArmyName() || state.army.name;
   const bs    = document.getElementById('abBattleSize')?.value || state.army.battle_size || 'Custom';
   const pts   = intOr(document.getElementById('abPtsLimit')?.value, state.army.points_limit);
   const dtids = state.army.detachment_ids || [];
@@ -909,11 +1095,15 @@ export async function saveArmyMeta(){
     return;
   }
   const titleEl = document.querySelector('[data-testid="army-title"]');
-  if(titleEl) titleEl.textContent = name;
+  if(titleEl){ if('value' in titleEl) titleEl.value = name; else titleEl.textContent = name; }
+  const coloEl = document.getElementById('abColophon');
+  if(coloEl) coloEl.innerHTML = renderColophon(state.army);
   const limEl = document.getElementById('ptsLimit');
   if(limEl) limEl.textContent = state.army.points_limit;
   updatePointsBar();
   refreshValidation();
+  refreshContextStrip();   // battle-size row + pts limit live in the config card
+  refreshMastStats();
 }
 
 // Sidebar battle-size change: reveal the points input only for Custom, then
@@ -983,7 +1173,7 @@ const VAL_META = {
 // so a problem at the bottom of the page navigates to the row that caused it.
 export function renderValidation(army){
   const rows = army.validation || [];
-  if(!rows.length) return `<div class="ab-val-row ab-val-ok">✓ No issues found</div>`;
+  if(!rows.length) return `<div class="ab-val-clean">This roster is legal for matched play.</div>`;
   return rows.map(r=>{
     const m = VAL_META[r.level] || VAL_META.info;
     const inner = `${m.icon?m.icon+' ':''}${esc(r.message)}`;
@@ -993,15 +1183,25 @@ export function renderValidation(army){
   }).join('');
 }
 
-// Select the unit in the right panel and scroll its roster row into view.
+// Select the unit in the right panel and scroll the window to its roster row
+// (scroll math offset below the sticky chrome; never scrollIntoView).
 export function jumpToUnit(auid){
   selectUnit(auid);
-  document.getElementById('au-'+auid)?.scrollIntoView({behavior:'smooth', block:'center'});
+  const el = document.getElementById('au-'+auid);
+  if(!el) return;
+  const chrome = document.querySelector('.rl-chrome');
+  const y = el.getBoundingClientRect().top + window.scrollY - ((chrome?chrome.offsetHeight:122) + 8);
+  window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
+  el.classList.remove('rl-flash');
+  requestAnimationFrame(()=>el.classList.add('rl-flash'));
+  setTimeout(()=>el.classList.remove('rl-flash'), 1700);
 }
 
 export function refreshValidation(){
-  const el = document.getElementById('validationBody');
-  if(el&&state.army) el.innerHTML = renderValidation(state.army);
+  // Re-render the whole card (not just the rows): the Battle-Ready / Muster
+  // Issues header and its green/rust state track the row levels.
+  const card = document.getElementById('validationCard');
+  if(card && state.army) card.outerHTML = renderValidationCard(state.army);
 }
 
 /* ---- points helpers ----------------------------------------------------- */
@@ -1015,12 +1215,24 @@ export function refreshPointsTotal(){
 
 export function updatePointsBar(){
   if(!state.army) return;
+  const army = state.army;
   const usedEl = document.getElementById('ptsUsed');
-  if(usedEl) usedEl.textContent = state.army.total_points;
+  if(usedEl) usedEl.textContent = army.total_points;
   const limEl = document.getElementById('ptsLimit');
-  if(limEl) limEl.textContent = state.army.points_limit;
+  if(limEl) limEl.textContent = army.points_limit;
   const warnEl = document.getElementById('hudWarn');
-  if(warnEl) warnEl.hidden = !hudHasIssues(state.army);
+  if(warnEl) warnEl.hidden = !hudHasIssues(army);
+  // Manual HUD extras: over-limit tint, progress-bar width, status line, the
+  // strip readout and the roster colophon all track the same totals live.
+  const over = army.points_limit>0 && army.total_points>army.points_limit;
+  document.getElementById('hudPill')?.classList.toggle('is-over', over);
+  const fillEl = document.getElementById('hudBarFill');
+  if(fillEl) fillEl.style.width = hudPct(army) + '%';
+  const noteEl = document.getElementById('hudNote');
+  if(noteEl) noteEl.textContent = hudNote(army);
+  updateStripPts(army);
+  const coloEl = document.getElementById('abColoPts');
+  if(coloEl) coloEl.textContent = `${army.total_points} / ${army.points_limit}`;
 }
 
 // Apply the {total_points, validation} a mutation endpoint returns, then repaint
@@ -1033,6 +1245,9 @@ export function applyServerState(res){
   updatePointsBar();
   refreshValidation();
   refreshContextStrip();   // live budgets (enhancements used, detachment DP)
+  refreshQuickList();      // rail quick list tracks add/remove/size/warlord
+  refreshStripChips();     // FOC chip counts in the sticky strip
+  refreshMastStats();      // masthead "N units · M models" sub-line
 }
 
 /* ---- roster rendering --------------------------------------------------- */
@@ -1053,16 +1268,20 @@ export function renderRoster(units, accent){
   const groups = {};
   FOC_ORDER.forEach(cat=>groups[cat]=[]);
   standalone.forEach(u=>{ const cat=u.foc_category||'Other Datasheets'; (groups[cat]=groups[cat]||groups['Other Datasheets']).push(u); });
-  return FOC_ORDER.map(cat=>{
+  return FOC_ORDER.map((cat, i)=>{
     const list = groups[cat];
     const pts = list.reduce((s,u)=>s+(u.points||0)+(u.enhancement_cost||0), 0);
+    const empty = !list.length
+      ? `<div class="foc-empty">Nothing mustered here yet &mdash; <a href="#" onclick="event.preventDefault();openUnitPicker('${esc(cat)}')">add a unit</a>.</div>` : '';
     return `
-    <div class="foc-section" data-testid="foc-section-${focSlug(cat)}">
+    <div class="foc-section" id="foc-${focSlug(cat)}" data-testid="foc-section-${focSlug(cat)}">
       <div class="foc-section-head">
+        <span class="foc-section-num">0${i+1}</span>
         <span class="foc-section-name">${esc(cat)}</span>
-        ${pts?`<span class="foc-section-pts">${pts} Points</span>`:''}
+        <span class="foc-section-pts">${pts?`${pts} points`:''}</span>
         <button class="foc-add-btn" type="button" data-testid="foc-add-${focSlug(cat)}" title="Add to ${esc(cat)}" onclick="openUnitPicker('${esc(cat)}')">+</button>
       </div>
+      ${empty}
       ${list.map(u=>armyUnitRow(u,accent)
         + (leaderFor[u.id]||[]).map(l=>`<div class="au-nested">${armyUnitRow(l,accent)}</div>`).join('')).join('')}
     </div>`;
@@ -1140,27 +1359,35 @@ document.addEventListener('click', closeAllKebabMenus);
 // (renderStatControls) now, reached via this row's body click -- the row
 // itself only needs a lightweight ownership indicator (the dot), not the
 // full controls.
+// Manual "roster sheet" unit card: an olive header band (name button -> the
+// datasheet-card overlay, warlord/leader/ally chips, green pts pill) over a
+// paper body (thumb + role/composition + wargear bullets). Every id the
+// mergeUnit updater targets (au-, au-pts-, au-warn-, au-comp-, au-role-,
+// au-enh-line-) and the unit-row/ally-badge testids are unchanged; the body
+// click still opens the unit in the right options panel.
 export function armyUnitRow(u, accent){
   const auid = u.id;
   const pts  = u.points + (u.enhancement_cost||0);
   const bodyguard = u.attached_to && state.army?.units.find(x=>x.id===u.attached_to);
 
-  return `<div class="uc-row" data-testid="unit-row" id="au-${auid}" style="--cardarmy:${state.army?.primary||'var(--panel)'};--cardaccent:${accent||'var(--gold)'};--cardglow:${accent||'var(--gold)'}">
-    <img class="uc-thumb" src="/api/units/${u.datasheet_id}/image" alt="" loading="lazy" onclick="selectUnit('${auid}')">
-    <div class="uc-body" onclick="selectUnit('${auid}')">
-      <div class="uc-name">
-        <span class="uc-owned-dot ${ownershipDot(u)}" title="${esc(ownershipText(u).replace(/<[^>]+>/g,''))}"></span>
-        <span class="uc-name-link" title="View datasheet card" onclick="event.stopPropagation();openDatasheetCard('${u.datasheet_id}')">${esc(u.name)}</span>${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}
+  return `<div class="uc-row" data-testid="unit-row" id="au-${auid}">
+    <div class="uc-band">
+      <span class="uc-owned-dot ${ownershipDot(u)}" title="${esc(ownershipText(u).replace(/<[^>]+>/g,''))}"></span>
+      <span class="uc-name">
+        <span class="uc-name-link" title="View datasheet card" onclick="event.stopPropagation();openDatasheetCard('${u.datasheet_id}')">${esc(u.name)}</span>${u.is_warlord?' <span class="au-warlord" title="Warlord">★ Warlord</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ Led by ${esc(u.attached_leader_name)}</span>`:''}
         <span id="au-warn-${auid}">${unitWarnBadge(u)}</span>
-      </div>
-      <div class="au-role" id="au-role-${auid}">${esc(u.role)}${u.composition&&u.composition.length>1?` · ${compLine(u.composition)}`:''}</div>
-      <ul class="uc-bullets" id="au-comp-${auid}">${summaryBullets(u.loadout_summary).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
-      ${bodyguard?`<div class="uc-attached-tag">Attached to <b>${esc(bodyguard.name)}</b></div>`:''}
-      <div id="au-enh-line-${auid}">${u.enhancement_name?`<div class="uc-attached-tag">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>`:''}</div>
-    </div>
-    <div class="uc-side">
-      <span class="uc-pts-pill" id="au-pts-${auid}">${pts} Points</span>
+      </span>
+      <span class="uc-pts-pill" id="au-pts-${auid}">${pts} pts</span>
       ${kebabMenu(u)}
+    </div>
+    <div class="uc-body" onclick="selectUnit('${auid}')" title="Edit this unit's options">
+      <img class="uc-thumb" src="/api/units/${u.datasheet_id}/image" alt="" loading="lazy">
+      <div class="uc-body-text">
+        <div class="au-role" id="au-role-${auid}">${esc(u.role)}${u.composition&&u.composition.length>1?` · ${compLine(u.composition)}`:''}</div>
+        <ul class="uc-bullets" id="au-comp-${auid}">${summaryBullets(u.loadout_summary).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
+        ${bodyguard?`<div class="uc-attached-tag">Attached to <b>${esc(bodyguard.name)}</b></div>`:''}
+        <div id="au-enh-line-${auid}">${u.enhancement_name?`<div class="uc-attached-tag">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>`:''}</div>
+      </div>
     </div>
   </div>`;
 }

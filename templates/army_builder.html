@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,28 +6,48 @@
   <title>Army Builder · Codex Armorum</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/army-builder.css') }}">
 </head>
 <body>
+  <!-- apply saved reading mode before first paint (shared across all manual pages) -->
+  <script>try{if(localStorage.getItem('caRules.theme')==='dark')document.body.setAttribute('data-rl-theme','dark');}catch(e){}</script>
+  <!-- The scanlines overlay stays for the (still dark) army list/create screen;
+       CSS hides it on the manual roster view (body.ab-roster). -->
   <div class="scanlines" aria-hidden="true"></div>
 
+  <div class="rl-chrome">
     {% include "_topbar.html" %}
 
-  <main id="view"></main>
+    <!-- Battle Roster quick strip: only shown on the roster detail view
+         (body.ab-roster); the army list keeps its dark chrome without it. -->
+    <nav class="rl-strip" id="abStrip" aria-label="Battle roster quick reference">
+      <span class="rl-strip-label">Battle Roster</span>
+      <span class="rl-strip-chips" id="abStripChips"></span>
+      <span class="rl-strip-spacer"></span>
+      <span class="rl-strip-note" id="abStripPts"></span>
+      <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="abThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="abThemeLabel">Dark</span></button>
+    </nav>
+  </div>
+
+  <div class="rl-shell ab-shell" id="abShell">
+    <main id="view"></main>
+  </div>
 
   <!-- Shared scrim behind the drawer overlays below: the roster stays visible
        (dimmed) beside an open drawer; clicking the dimmed area closes it. -->
   <div class="po-scrim" id="poScrim" hidden onclick="closeAllOverlays()"></div>
 
-  <!-- Add-unit picker: right-docked drawer (~half the viewport), matching the
-       reference app's dedicated add-unit screen (title + search + cards). -->
-  <div class="po-overlay" id="unitPickerModal" data-testid="unit-picker-panel" hidden>
+  <!-- Add-unit picker: right-docked drawer on the manual (paper) surface,
+       matching the reference app's dedicated add-unit screen. -->
+  <div class="po-overlay po-manual" id="unitPickerModal" data-testid="unit-picker-panel" hidden>
     <div class="po-overlay-head">
       <h2 class="po-overlay-title" id="pickerTitle">Add Unit</h2>
-      <button class="po-close" type="button" onclick="closeUnitPicker()" aria-label="Close" title="Close">&times;</button>
+      <span class="po-head-tag" id="pickerFaction"></span>
+      <button class="po-close cb-back" type="button" onclick="closeUnitPicker()" aria-label="Close" title="Close">&times;</button>
     </div>
     <div class="po-search-wrap">
       <input class="po-search" id="pickerSearch" placeholder="Search units&hellip;" oninput="filterPicker(this.value)" autocomplete="off">
@@ -36,11 +56,14 @@
   </div>
 
   <!-- Command Bunker: faction/army reference drawer (Datasheets, Stratagems,
-       Detachment Rules, Army Rules). Content is rendered fresh on each open. -->
+       Detachment Rules, Army Rules). Content is rendered fresh on each open.
+       Keeps its dark styling (out of the manual reskin's scope). -->
   <div class="po-overlay" id="commandBunker" hidden></div>
 
   <!-- Edit Roster: name + Battle Size + Detachments, with the latter two as
-       tap-through sub-screens. Content is rendered fresh on each open. -->
+       tap-through sub-screens. Content is rendered fresh on each open. The
+       Detachments sub-screen gets the manual (paper) treatment via .po-manual,
+       toggled by renderEditRosterInto; the rest stays dark. -->
   <div class="po-overlay" id="editRosterModal" data-testid="edit-roster-modal" hidden></div>
 
   <!-- Full datasheet card, overlaid like an image lightbox (click a unit's
@@ -64,4 +87,3 @@
   <script type="module" src="{{ url_for('static', filename='js/army_builder.js') }}"></script>
 </body>
 </html>
-

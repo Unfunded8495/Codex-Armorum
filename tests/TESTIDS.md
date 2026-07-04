@@ -26,14 +26,14 @@ overlay.
 
 | testid | element |
 |---|---|
-| `army-detail` | the army-builder detail container (2-panel grid) |
-| `army-title` | the army name heading (centre header; editing moved to Edit Roster) |
+| `army-detail` | the army-builder detail container (3-column grid on the manual "Battle Roster sheet") |
+| `army-title` | the army name — now an editable `<input>` styled as the page title (wired to `saveArmyMeta`; also still editable from Edit Roster) |
 | `open-command-bunker` | the faction-badge button that opens Command Bunker |
-| `context-strip` | the always-visible config summary strip under the title |
-| `ctx-faction` | context-strip chip -> opens Command Bunker |
-| `ctx-battlesize` | context-strip chip -> opens Edit Roster on the Battle Size sub-screen |
-| `ctx-detachment` | context-strip chip -> opens Edit Roster on the Detachments sub-screen; warning-styled (`.is-missing`) when none is selected |
-| `ctx-enhancements` | static context-strip chip: enhancements used / battle-size limit |
+| `context-strip` | the left rail's Configuration card (same hooks as the old context strip, reskinned) |
+| `ctx-faction` | configuration row -> opens Command Bunker |
+| `ctx-battlesize` | configuration row -> opens Edit Roster on the Battle Size sub-screen |
+| `ctx-detachment` | the "Choose Detachments" button -> opens Edit Roster on the Detachments sub-screen; warning-styled (`.is-missing`) when none is selected |
+| `ctx-enhancements` | static configuration line: enhancements used / battle-size limit |
 | `roster-kebab` | the overflow (⋮) button next to the army name -> opens the Edit Roster / Duplicate Roster menu |
 | `foc-section-<characters\|battleline\|dedicated-transports\|other-datasheets>` | each Force-Org section wrapper |
 | `foc-add-<slug>` | a section's "+" -- opens the add-unit picker pre-scoped to that category (same slug format as `foc-section-`) |

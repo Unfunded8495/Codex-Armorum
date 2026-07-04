@@ -22,6 +22,17 @@ if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
 
+def _safe_print(line):
+    """Print without dying on a cp1252 console: failure details can quote page
+    markup with characters (e.g. the kebab's U+22EE) Windows' default console
+    encoding can't represent, and a reporter crash masks the real result."""
+    try:
+        print(line)
+    except UnicodeEncodeError:
+        enc = sys.stdout.encoding or "ascii"
+        print(line.encode(enc, errors="replace").decode(enc))
+
+
 class Reporter:
     """Collects ok / fail / skip lines and prints a summary."""
 
@@ -35,15 +46,15 @@ class Reporter:
     def check(self, label, cond, detail=""):
         if cond:
             self.passed += 1
-            print(f"ok   {label}")
+            _safe_print(f"ok   {label}")
         else:
             self.fail += 1
-            print(f"XX   {label}" + (f"  --  {detail}" if detail else ""))
+            _safe_print(f"XX   {label}" + (f"  --  {detail}" if detail else ""))
         return cond
 
     def skip(self, label, reason):
         self.skipped += 1
-        print(f"--   {label}  (skipped: {reason})")
+        _safe_print(f"--   {label}  (skipped: {reason})")
 
     def summary(self):
         tail = f"  [{self.skipped} skipped]" if self.skipped else ""
