@@ -31,7 +31,7 @@
   <div class="ars-role-head">
     <span class="ars-role-title">{{ group.role }} weapons</span>
     <span class="ars-role-rule" aria-hidden="true"></span>
-    <span class="ars-role-count">{{ group.rows|length }}</span>
+    <span class="ars-role-count">{{ group.rows|length }} weapon{{ '' if group.rows|length == 1 else 's' }}</span>
   </div>
 
   {% for row in group.rows %}

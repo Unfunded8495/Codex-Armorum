@@ -225,6 +225,13 @@ body.ab-roster .loading { color:var(--rl-mute); }
 }
 .ab-cfg-value { font-family:'Oswald',sans-serif; font-size:12.5px; letter-spacing:.5px; color:var(--rl-ink); line-height:1.35; }
 .ab-cfg-hint { font-size:10px; letter-spacing:.8px; text-transform:uppercase; color:var(--rl-green); }
+.ab-cfg-select-wrap { display:flex; flex-direction:column; gap:4px; }
+.ab-cfg-select {
+  font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:.5px; color:var(--rl-ink);
+  background:var(--rl-paper); border:1px solid var(--rl-edge); padding:7px 9px;
+  outline:none; cursor:pointer; width:100%;
+}
+.ab-cfg-select:focus { border-color:var(--rl-green); box-shadow:0 0 0 3px var(--rl-green-soft); }
 .ab-cfg-block { display:flex; flex-direction:column; gap:5px; }
 .ab-cfg-block-head { display:flex; align-items:baseline; justify-content:space-between; }
 .ab-cfg-dp {
@@ -370,6 +377,10 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .au-role {
   font-family:'Oswald',sans-serif; font-size:10px; font-weight:600; letter-spacing:1.4px;
   text-transform:uppercase; color:var(--rl-green); margin:0 0 5px;
+}
+.uc-wg-kicker {
+  font-family:'Oswald',sans-serif; font-size:10px; font-weight:600; letter-spacing:1.4px;
+  text-transform:uppercase; color:var(--rl-green); display:block; margin:2px 0 1px;
 }
 .uc-bullets { list-style:none; margin:0; padding:0; font-family:'PT Sans',sans-serif; font-size:12.5px; color:var(--rl-ink-soft); line-height:1.5; }
 .uc-bullets li { padding-left:0; }
@@ -700,9 +711,9 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .dp-card.is-locked { opacity:.55; }
 .dp-tick {
   width:16px; height:16px; flex-shrink:0; border:1px solid var(--rl-edge);
-  background:var(--rl-paper); color:var(--rl-green); font-size:11px; line-height:16px; text-align:center;
+  background:var(--rl-paper); color:#fff; font-size:11px; line-height:16px; text-align:center;
 }
-.dp-card.is-selected .dp-tick { border-color:var(--rl-green); }
+.dp-card.is-selected .dp-tick { border-color:var(--rl-green); background:var(--rl-green); }
 .dp-card-name {
   flex:1; min-width:0; font-family:'Oswald',sans-serif; font-weight:600; font-size:13px;
   letter-spacing:.75px; text-transform:uppercase; color:var(--rl-ink);

@@ -182,7 +182,10 @@ function renderAbStrip(army){
   });
   const label = {Characters:'Characters', Battleline:'Battleline',
     'Dedicated Transports':'Transports', 'Other Datasheets':'Other'};
-  chipsEl.innerHTML = FOC_ORDER.map(cat=>
+  // Strip chip order per the design: Characters / Battleline / Other /
+  // Transports (the roster sections themselves keep FOC_ORDER).
+  const stripOrder = ['Characters', 'Battleline', 'Other Datasheets', 'Dedicated Transports'];
+  chipsEl.innerHTML = stripOrder.map(cat=>
     `<a class="rl-chip" href="#foc-${focSlug(cat)}" onclick="event.preventDefault();jumpToFoc('${focSlug(cat)}')">${esc(label[cat]||cat)}<b id="abChip-${focSlug(cat)}">${counts[cat]}</b></a>`).join('');
   updateStripPts(army);
 }
@@ -276,10 +279,15 @@ function renderContextStrip(army){
   const dpBadge  = dpBudget != null ? `${dpUsed} / ${dpBudget} DP` : `${dpUsed} DP`;
   const enhLimit = army.enhancement_limit;
   const enhUsed  = (army.units||[]).filter(u=>u.enhancement_id).length;
+  // army.detachments rows don't carry points_cost -- read it from the
+  // faction's detachment cache (warmed by wireCentreInputs).
+  const costOf = d => d.points_cost
+    ?? (state.detachCache[army.faction_id]||[]).find(x=>x.id===d.id)?.points_cost
+    ?? 0;
   const detRows = dets.length ? dets.map(d=>`
       <div class="ab-cfg-det">
         <span class="ab-cfg-det-name">${esc(d.name)}</span>
-        <span class="ab-cfg-det-dp">${d.points_cost||0} DP</span>
+        <span class="ab-cfg-det-dp">${costOf(d)} DP</span>
         <button type="button" class="ab-cfg-det-x" title="Remove detachment" onclick="removeDetachment('${esc(d.id)}')">&#10005;</button>
       </div>`).join('')
     : `<div class="ab-cfg-none">None selected</div>`;
@@ -290,10 +298,10 @@ function renderContextStrip(army){
           <span class="ab-cfg-label">Faction</span>
           <span class="ab-cfg-value">${esc(army.faction_display_name||army.faction_name||'')} <span class="ab-cfg-hint">rules &#9656;</span></span>
         </button>
-        <button class="ab-cfg-row" type="button" data-testid="ctx-battlesize" onclick="openEditRoster('battlesize')">
+        <label class="ab-cfg-select-wrap">
           <span class="ab-cfg-label">Battle size</span>
-          <span class="ab-cfg-value">${esc(army.battle_size||'Custom')} &middot; ${army.points_limit} pts</span>
-        </button>
+          <select class="ab-cfg-select" id="abBattleSizeRail" data-testid="ctx-battlesize" onchange="onRailBattleSize()">${railBattleSizeOptions(army)}</select>
+        </label>
         <div class="ab-cfg-block">
           <div class="ab-cfg-block-head">
             <span class="ab-cfg-label">Detachments</span>
@@ -317,6 +325,25 @@ function renderContextStrip(army){
 export function refreshContextStrip(){
   const el = document.getElementById('ctxStrip');
   if(el && state.army) el.outerHTML = renderContextStrip(state.army);
+}
+
+// Options for the rail's Battle Size select. state.battleSizes is fetched
+// async (wireCentreInputs warms it, then refreshes the config card); until
+// it lands, render just the current value so the select is never empty.
+function railBattleSizeOptions(army){
+  const cur = army.battle_size || 'Custom';
+  const sizes = state.battleSizes || [];
+  if(!sizes.length) return `<option value="${esc(cur)}" selected>${esc(cur)}${cur!=='Custom'?` · ${army.points_limit} pts`:''}</option>`;
+  return sizes.map(b=>
+      `<option value="${esc(b.name)}" ${b.name===cur?'selected':''}>${esc(b.name)} · ${b.points_limit} pts</option>`).join('')
+    + `<option value="Custom" ${cur==='Custom'?'selected':''}>Custom</option>`;
+}
+
+// Rail battle-size change: same save path as the Edit Roster sub-screen's
+// select (the server re-derives the points limit + DP budget and may trim
+// detachments; saveArmyMeta refetches when that happens).
+export function onRailBattleSize(){
+  saveArmyMeta();
 }
 
 /* ---- sidebar ------------------------------------------------------------ */
@@ -358,8 +385,11 @@ function renderDetachmentPanel(army){
   const dispositionFor = {};
   (army.detachments||[]).forEach(d=>{ dispositionFor[d.id] = d.disposition; });
 
+  // Selected detachments float to the top of the list (per the design
+  // captures), alphabetical within each group.
   const all = (state.detachCache[army.faction_id] || []).slice()
-    .sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    .sort((a,b)=>(have.has(b.id)?1:0)-(have.has(a.id)?1:0)
+      || (a.name||'').localeCompare(b.name||''));
   const cards = all.length ? all.map(d=>{
     const selected = have.has(d.id);
     const affordable = selected || (d.points_cost||0) <= remaining;
@@ -817,6 +847,9 @@ async function wireCentreInputs(army){
     dts = d;
   }catch(e){ dts = dts || []; }
   state.detachCache[army.faction_id] = dts;
+  // The rail's Battle Size select rendered before the sizes were cached --
+  // re-render the config card so it carries the full option list.
+  refreshContextStrip();
 }
 
 // Fill the battle-size <select> in the right panel when its config row opens.
@@ -1054,11 +1087,23 @@ function currentArmyName(){
   return (src?.value || '').trim();
 }
 
+// Battle size is editable in two places too: the rail's Configuration select
+// and the Edit Roster sub-screen's select. The overlay wins while it's open;
+// note #abBattleSize persists hidden after the overlay closes (same overlay-
+// persistence caveat as the name field), so visibility must be checked.
+function currentBattleSize(){
+  const erOpen = document.getElementById('editRosterModal')?.hidden === false;
+  const src = (erOpen && document.getElementById('abBattleSize'))
+    || document.getElementById('abBattleSizeRail')
+    || document.getElementById('abBattleSize');
+  return src?.value || '';
+}
+
 export async function saveArmyMeta(){
   if(!state.army) return;
   const prevBs = state.army.battle_size || 'Custom';
   const name  = currentArmyName() || state.army.name;
-  const bs    = document.getElementById('abBattleSize')?.value || state.army.battle_size || 'Custom';
+  const bs    = currentBattleSize() || state.army.battle_size || 'Custom';
   const pts   = intOr(document.getElementById('abPtsLimit')?.value, state.army.points_limit);
   const dtids = state.army.detachment_ids || [];
   let res;
@@ -1384,6 +1429,7 @@ export function armyUnitRow(u, accent){
       <img class="uc-thumb" src="/api/units/${u.datasheet_id}/image" alt="" loading="lazy">
       <div class="uc-body-text">
         <div class="au-role" id="au-role-${auid}">${esc(u.role)}${u.composition&&u.composition.length>1?` · ${compLine(u.composition)}`:''}</div>
+        <span class="uc-wg-kicker">Wargear</span>
         <ul class="uc-bullets" id="au-comp-${auid}">${summaryBullets(u.loadout_summary).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
         ${bodyguard?`<div class="uc-attached-tag">Attached to <b>${esc(bodyguard.name)}</b></div>`:''}
         <div id="au-enh-line-${auid}">${u.enhancement_name?`<div class="uc-attached-tag">Enhancement: ${esc(u.enhancement_name)} (+${u.enhancement_cost||0} pts)</div>`:''}</div>

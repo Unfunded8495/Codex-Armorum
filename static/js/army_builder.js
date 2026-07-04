@@ -2,7 +2,7 @@ import { showArmyList, deleteArmy, toggleCreateForm, importArmyList,
          submitCreateArmy, onCafBattleSize } from './army-list.js';
 import { showArmy, saveArmyMeta, updateSquadSize,
          saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord,
-         attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
+         attachLeader, detachLeader, onAbBattleSize, onRailBattleSize, toggleAccordion, toggleOptBody,
          toggleDetachmentCard, removeDetachment, toggleDpExpand, selectUnit, clearRight, toggleUnitProfiles,
          setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, setWargearPlace,
          toggleWgCard, wgNudge, exportArmy, exportDatasheetsPdf,
@@ -54,7 +54,7 @@ refreshLedger();
 Object.assign(window, {
   deleteArmy, toggleCreateForm, submitCreateArmy, onCafBattleSize,
   saveArmyMeta, updateSquadSize,
-  saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, toggleAccordion, toggleOptBody,
+  saveEnhancement, chooseEnhancement, removeArmyUnit, duplicateArmyUnit, toggleKebabMenu, toggleWarlord, attachLeader, detachLeader, onAbBattleSize, onRailBattleSize, toggleAccordion, toggleOptBody,
   toggleDetachmentCard, removeDetachment, toggleDpExpand, selectUnit, clearRight, toggleUnitProfiles,
   setWargearStep, setWargearRadio, setWargearSlot, setWargearBundleCount, setWargearPlace, toggleWgCard, wgNudge,
   openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy, togglePickerProfile,

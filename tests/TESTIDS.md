@@ -31,7 +31,7 @@ overlay.
 | `open-command-bunker` | the faction-badge button that opens Command Bunker |
 | `context-strip` | the left rail's Configuration card (same hooks as the old context strip, reskinned) |
 | `ctx-faction` | configuration row -> opens Command Bunker |
-| `ctx-battlesize` | configuration row -> opens Edit Roster on the Battle Size sub-screen |
+| `ctx-battlesize` | the Configuration card's Battle Size `<select>` (edits directly via `saveArmyMeta`; the Edit Roster sub-screen path `er-row-battlesize` still exists) |
 | `ctx-detachment` | the "Choose Detachments" button -> opens Edit Roster on the Detachments sub-screen; warning-styled (`.is-missing`) when none is selected |
 | `ctx-enhancements` | static configuration line: enhancements used / battle-size limit |
 | `roster-kebab` | the overflow (⋮) button next to the army name -> opens the Edit Roster / Duplicate Roster menu |
