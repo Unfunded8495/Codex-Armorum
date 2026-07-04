@@ -484,6 +484,8 @@ a.rt-term:hover,a.rt-ref:hover,a.rt-ability:hover{background:var(--rl-green-soft
 .rl-pin-open:hover{color:#fff;background:var(--rl-green)}
 
 /* --------------------------------------------------------- index overlay */
+/* display:flex on these panels would otherwise defeat the HTML hidden attribute */
+.rl-glossary[hidden],.rl-pins[hidden],.rl-tooltip[hidden]{display:none}
 @keyframes rl-fade-in{from{opacity:0}to{opacity:1}}
 .rl-glossary{
   position:fixed;inset:0;z-index:100;background:rgba(14,16,9,.55);
