@@ -1,0 +1,230 @@
+{
+  "9b2c8442-170e-4634-a699-d3df3dd87c5c": {
+    "ref": "13.03",
+    "title": "Exposed Terrain",
+    "source": "pdf-core-rules",
+    "flavour": "Exposed terrain offers only scant protection to the most desperate troops, and can be traversed without hindrance."
+  },
+  "de395c91-7b43-4f62-921a-2fa59be9e8bc": {
+    "ref": "13.04",
+    "title": "Light Terrain",
+    "source": "pdf-core-rules",
+    "flavour": "Light terrain can provide cover from incoming attacks, but will not slow an enemy's advance or offer lasting defence."
+  },
+  "672458a4-6dc0-4c0f-979f-726b7e3ac47d": {
+    "ref": "13.05",
+    "title": "Dense Terrain",
+    "source": "pdf-core-rules",
+    "flavour": "Dense terrain is an obstacle to even the largest war machines, and can shelter entire squads from enemy sight."
+  },
+  "6c9ddc5c-2bb2-49f2-918e-91ac2484e786": {
+    "ref": "24.03",
+    "title": "[ANTI]",
+    "source": "pdf-core-rules",
+    "flavour": "Certain weapons are the bane of particular foes."
+  },
+  "0fa205b8-bdfc-40aa-b3e4-06517ac7b5ac": {
+    "ref": "24.04",
+    "title": "[ASSAULT]",
+    "source": "pdf-core-rules",
+    "flavour": "Folding stocks, shortened barrels or lightweight construction enable some weapons to be easily fired on the move."
+  },
+  "d750cf2a-6d46-4868-82e5-8b7d649ef614": {
+    "ref": "24.05",
+    "title": "[BLAST]",
+    "source": "pdf-core-rules",
+    "flavour": "High-explosive rounds can fell several warriors in a single blast, but firing them too close to comrades is unwise."
+  },
+  "a357a6bc-4391-470a-8fc2-d78576af522d": {
+    "ref": "24.06",
+    "title": "[CLEAVE]",
+    "source": "pdf-core-rules",
+    "flavour": "With sufficient might or skill, warriors may sweep blades or talons through their foes in long lethal arcs."
+  },
+  "88a8c99f-4742-421a-acd0-a5efd28a370e": {
+    "ref": "24.07",
+    "title": "[CLOSE-QUARTERS]",
+    "source": "pdf-core-rules",
+    "flavour": "Weapons designed for close-quarters fighting can be wielded effectively even in the press of melee combat."
+  },
+  "0cadfcd2-6beb-4b54-8848-295d5792556f": {
+    "ref": "24.08",
+    "title": "Deadly Demise",
+    "source": "pdf-core-rules",
+    "flavour": "From detonating ammo stores to corrosive innards or frenzied death throes, some targets are deadly even in defeat."
+  },
+  "3425f023-9e49-4ce3-857d-929b17277543": {
+    "ref": "24.09",
+    "title": "Deep Strike",
+    "source": "pdf-core-rules",
+    "flavour": "There are many ways by which to deploy troops to the field of battle including tunnels, teleportation devices and other esoteric means of transportation."
+  },
+  "cb51e767-6f77-4048-a89b-1ad835a77ad2": {
+    "ref": "24.10",
+    "title": "[DEVASTATING WOUNDS]",
+    "source": "pdf-core-rules",
+    "flavour": "The most potent weapons strike with such power that they make a mockery of armour and can cleave through several foes."
+  },
+  "96b84d7b-0157-4add-9575-88862c61e320": {
+    "ref": "24.11",
+    "title": "[EXTRA ATTACKS]",
+    "source": "pdf-core-rules",
+    "flavour": "Some warriors ride to battle atop trusty mounts that gore and trample nearby foes. Others wield combat weapons that deliver a frenzy of additional blows."
+  },
+  "c7bb733f-04ce-4347-9eb8-a604f162d355": {
+    "ref": "24.12",
+    "title": "Feel No Pain",
+    "source": "pdf-core-rules",
+    "flavour": "The hardiest warriors refuse to be laid low, even by wounds that should by all rights prove lethal."
+  },
+  "8d81a38e-efbc-415a-bc04-bb9ce2de4840": {
+    "ref": "24.13",
+    "title": "Fights First",
+    "source": "pdf-core-rules",
+    "flavour": "Those possessed of lightning-fast reactions may strike before the opponent can react."
+  },
+  "c5847d30-3573-4073-b7ff-932677aa7dfa": {
+    "ref": "24.14",
+    "title": "Firing Deck",
+    "source": "pdf-core-rules",
+    "flavour": "Some transports have dedicated platforms or firing ports from which embarked passengers can lay down a withering hail of munitions."
+  },
+  "3b63d458-3c92-4f12-9933-260401ee325b": {
+    "ref": "24.15",
+    "title": "[HAZARDOUS]",
+    "source": "pdf-core-rules",
+    "flavour": "Weapons powered by unstable and dangerous energy sources pose a substantial risk to the wielder and those that stand beside them."
+  },
+  "9fbc1011-3c3b-4c51-9453-152514301b5b": {
+    "ref": "24.16",
+    "title": "[HEAVY]",
+    "source": "pdf-core-rules",
+    "flavour": "Heavy weapons are amongst the biggest guns on the battlefield, but require bracing to fire at full effect."
+  },
+  "67cab5db-4aa2-4bd3-953b-99a1017236b5": {
+    "ref": "24.17",
+    "title": "Hover",
+    "source": "pdf-core-rules",
+    "flavour": "Some airborne vehicles can use vectored thrusters or anti-gravity technology to hover and skim over the battlefield, the better to hunt their prey or deploy embarked troops."
+  },
+  "7ec0adf2-adc4-429c-be51-4f72d475b83d": {
+    "ref": "24.18",
+    "title": "[IGNORES COVER]",
+    "source": "pdf-core-rules",
+    "flavour": "Some weapons are designed to root enemy formations out of entrenched positions."
+  },
+  "dc6fdbe5-ae32-4b61-acad-34301b371fd4": {
+    "ref": "24.19",
+    "title": "[INDIRECT FIRE]",
+    "source": "pdf-core-rules",
+    "flavour": "Indirect fire weapons launch munitions over or around intervening obstacles (nowhere is safe from their fury)."
+  },
+  "89d74ed3-397d-405f-bbaf-c5e36fbd462b": {
+    "ref": "24.20",
+    "title": "Infiltrators",
+    "source": "pdf-core-rules",
+    "flavour": "Many armies employ reconnaissance units who can sit concealed, waiting for the right moment to strike."
+  },
+  "f75595af-40c7-4380-b463-9eaf0c304c6d": {
+    "ref": "24.21",
+    "title": "[LANCE]",
+    "source": "pdf-core-rules",
+    "flavour": "With the momentum of a warrior at full-tilt, lance weapons are deadly on the charge."
+  },
+  "3a0ef3a0-992f-4606-ad80-781d09764b34": {
+    "ref": "24.22",
+    "title": "Leader",
+    "source": "pdf-core-rules",
+    "flavour": "Mighty heroes fight at the forefront of battle."
+  },
+  "6bce17ba-2379-43ee-9456-01e978f347d9": {
+    "ref": "24.23",
+    "title": "[LETHAL HITS]",
+    "source": "pdf-core-rules",
+    "flavour": "Many deadly weapons can inflict fatal injuries on any foe, no matter their resilience."
+  },
+  "ac5982fa-4aa9-438d-a2f2-5e4aab4e5076": {
+    "ref": "24.24",
+    "title": "Lone Operative",
+    "source": "pdf-core-rules",
+    "flavour": "Assassins and other covert agents are difficult to pinpoint in the storm of battle."
+  },
+  "89f011f4-2955-467d-8f46-a6c65f7e4cbc": {
+    "ref": "24.25",
+    "title": "[MELTA]",
+    "source": "pdf-core-rules",
+    "flavour": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  "a644aeeb-afa7-4963-857a-4cafc593faad": {
+    "ref": "24.26",
+    "title": "[ONE SHOT]",
+    "source": "pdf-core-rules",
+    "flavour": "Some weapons are so rare, or so complex and slow to reload, that they can only be used once."
+  },
+  "06b34fd4-f95e-487d-b848-a13a2eeef77e": {
+    "ref": "24.27",
+    "title": "[PISTOL]",
+    "source": "pdf-core-rules",
+    "flavour": "Pistols can be wielded even at point-blank range."
+  },
+  "3cd6ba94-589b-40b3-aee3-168de89eee4d": {
+    "ref": "24.28",
+    "title": "[PRECISION]",
+    "source": "pdf-core-rules",
+    "flavour": "Precision attacks can pick high-value targets out in a crowd."
+  },
+  "92a9a303-c98c-446e-91de-e7ee6698f01c": {
+    "ref": "24.29",
+    "title": "[PSYCHIC]",
+    "source": "pdf-core-rules",
+    "flavour": "Some weapons can channel the bearer's psychic might to empower their blows."
+  },
+  "a8a7f368-b988-4d0a-ae91-48043f7ca0fc": {
+    "ref": "24.30",
+    "title": "[RAPID FIRE]",
+    "source": "pdf-core-rules",
+    "flavour": "Rapid fire weapons are capable of long-ranged precision shots or controlled bursts at nearby targets."
+  },
+  "f5a5c2d7-08e1-420d-b7cd-0f5060513f65": {
+    "ref": "24.31",
+    "title": "Scouts",
+    "source": "pdf-core-rules",
+    "flavour": "Scouts form the vanguard of many armies. Unnoticed by the enemy, they range ahead of the main force."
+  },
+  "eecde9e9-b9c5-437e-8c3d-498cd72499c7": {
+    "ref": "24.33",
+    "title": "Stealth",
+    "source": "pdf-core-rules",
+    "flavour": "The stealthiest warriors can evade the attentions, and the bullets, of their foes."
+  },
+  "1ba15993-f06a-40cb-8b3c-3c273ddbdc7f": {
+    "ref": "24.34",
+    "title": "Support",
+    "source": "pdf-core-rules",
+    "flavour": "Specialist combatants may be assigned to front-line squads to bolster their fighting effectiveness."
+  },
+  "2f50e10f-7c44-4a96-a147-7bbaabb0f5ba": {
+    "ref": "24.35",
+    "title": "Super-Heavy Walker",
+    "source": "pdf-core-rules",
+    "flavour": "Monstrous creatures and gigantic engines of war loom over the battlefield like gods given form, striding over combatants and smashing through almost any obstacle that bars their passage."
+  },
+  "86cd31da-f914-409c-9b12-20d9604465c5": {
+    "ref": "24.36",
+    "title": "[SUSTAINED HITS]",
+    "source": "pdf-core-rules",
+    "flavour": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  "0f4d5f92-8ac7-4d05-8b75-4338d7e10a2c": {
+    "ref": "24.37",
+    "title": "[TORRENT]",
+    "source": "pdf-core-rules",
+    "flavour": "Torrent weapons project clouds of fire, gas or other lethal substances that few foes can hope to evade."
+  },
+  "dc5e9efd-0366-49b2-83cf-0e4d7b4dedd9": {
+    "ref": "24.38",
+    "title": "[TWIN-LINKED]",
+    "source": "pdf-core-rules",
+    "flavour": "Dual weapons are often grafted to the same targeting system for greater lethality."
+  }
+}

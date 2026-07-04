@@ -1,6 +1,7 @@
 import { esc, api, intOr } from './utils.js';
 import { state, ensureBattleSizes } from './army-state.js';
 import { setBreadcrumb } from './header.js';
+import { renderDatasheetCard } from './datasheet-card.js';
 
 const view       = document.getElementById('view');
 const breadcrumb = document.getElementById('breadcrumb');
@@ -33,16 +34,19 @@ export async function showArmy(aid){
     {label:army.name},
   ]);
 
-  // Two-panel layout: roster + config (centre), context-sensitive unit-options
-  // detail (right). The unit picker is no longer a persistent third column --
-  // it's the full-screen overlay in #unitPickerModal (unit-picker.js), opened
-  // on demand from a Force-Org section's "+".
+  // Three-column desktop layout: army config + validation (left rail), roster
+  // (centre), context-sensitive unit-options detail (right). The unit picker
+  // is the right-docked drawer in #unitPickerModal (unit-picker.js), opened on
+  // demand from a Force-Org section's "+".
   view.innerHTML = `
-    <div class="ab-detail ab-2panel" data-testid="army-detail">
-      <section class="ab-centre" id="centrePanel">${renderCentre(army)}</section>
+    ${renderRosterHeader(army)}
+    <div class="ab-detail ab-3col" data-testid="army-detail">
+      <aside class="ab-leftrail" id="leftRail">${renderLeftRail(army)}</aside>
+      <section class="ab-centre" id="centrePanel">
+        <div id="rosterBody">${renderRoster(army.units, army.accent)}</div>
+      </section>
       <aside class="ab-rightpanel" id="rightPanel" data-testid="detail-panel">${renderRightPlaceholder()}</aside>
-    </div>
-    <div class="ab-rp-scrim" id="rpScrim" onclick="clearRight()"></div>`;
+    </div>`;
 
   wireCentreInputs(army);
   restoreRight();           // re-open a prior right-panel selection after a refetch
@@ -55,24 +59,24 @@ function renderRightPlaceholder(){
     </div>`;
 }
 
-/* ---- centre panel (roster + config) ------------------------------------- */
+/* ---- left rail (points + config + validation) --------------------------- */
 
-function renderCentre(army){
+// Everything about the LIST (as opposed to a unit) lives in the sticky left
+// rail: the points HUD, the config chips, and the validation card -- always
+// visible beside the roster instead of stacked above/below it.
+function renderLeftRail(army){
   return `
-    ${renderRosterHeader(army)}
-    ${renderContextStrip(army)}
-    <div id="rosterBody">${renderRoster(army.units, army.accent)}</div>
     ${renderPointsHud(army)}
+    ${renderContextStrip(army)}
     <div class="ab-card ab-validation" id="validationCard" data-testid="validation-card">
       <p class="ab-card-title">Validation</p>
       <div id="validationBody">${renderValidation(army)}</div>
     </div>`;
 }
 
-// Persistent points/validity HUD pill: sticks to the bottom of the viewport
-// while the roster above it scrolls, and shows a warning half whenever the
-// list has ANY validation issue (not just over points), matching the
-// reference app. id="ptsUsed"/data-testid="army-points" are kept stable so
+// Points/validity HUD block at the top of the left rail; shows a warning half
+// whenever the list has ANY validation issue (not just over points), matching
+// the reference app. id="ptsUsed"/data-testid="army-points" are kept stable so
 // existing live-points-update wiring (updatePointsBar) and the UI test suite
 // keep working unchanged.
 function renderPointsHud(army){
@@ -81,7 +85,7 @@ function renderPointsHud(army){
     <div class="hud-pill" data-testid="points-hud" role="button" tabindex="0" title="Jump to validation"
          onclick="document.getElementById('validationCard')?.scrollIntoView({behavior:'smooth',block:'nearest'})">
       <span class="hud-warn" id="hudWarn" ${hasIssues?'':'hidden'}>&#9888;</span>
-      <span class="hud-pts"><b id="ptsUsed" data-testid="army-points">${army.total_points}</b><small>/ <span id="ptsLimit">${army.points_limit}</span> POINTS</small></span>
+      <span class="hud-pts"><b id="ptsUsed" data-testid="army-points">${army.total_points}</b><small>/ <span id="ptsLimit">${army.points_limit}</span> Points</small></span>
     </div>`;
 }
 
@@ -106,6 +110,7 @@ function renderRosterHeader(army){
         <button class="ab-export-btn" type="button" data-testid="export-button" onclick="exportArmy('copy', this)">Copy list</button>
         <button class="ab-export-btn" type="button" onclick="exportArmy('txt', this)">.txt</button>
         <button class="ab-export-btn" type="button" onclick="exportArmy('json', this)">.json</button>
+        <button class="ab-export-btn" type="button" data-testid="export-cards-pdf" onclick="exportDatasheetsPdf(this)">Cards PDF</button>
       </div>
     </div>`;
 }
@@ -243,11 +248,13 @@ export function openEditRoster(view){
   renderEditRosterInto(state.army);
   const overlay = document.getElementById('editRosterModal');
   if(overlay) overlay.hidden = false;
+  syncOverlayScrim();
 }
 
 export function closeEditRoster(){
   const overlay = document.getElementById('editRosterModal');
   if(overlay) overlay.hidden = true;
+  syncOverlayScrim();
 }
 
 export function editRosterShow(view){
@@ -288,8 +295,8 @@ function renderEditRosterMain(army){
     ? dets.map(d=>esc(d.name)).join(', ') + dpTag : 'None selected';
   return `
     <div class="po-overlay-head">
-      <button class="cb-back" type="button" onclick="closeEditRoster()" aria-label="Back" title="Back">&#10094;</button>
       <h2 class="po-overlay-title">Edit Roster</h2>
+      <button class="po-close" type="button" onclick="closeEditRoster()" aria-label="Close" title="Close">&times;</button>
     </div>
     <div class="po-body er-body">
       <p class="er-label">Name</p>
@@ -320,6 +327,49 @@ export async function duplicateRoster(){
   if(res && res.ok && res.id) location.hash = '/army/' + res.id;
 }
 
+/* ---- drawer scrim + datasheet card overlay ------------------------------- */
+
+// The three drawers (unit picker / Command Bunker / Edit Roster) share one
+// scrim: visible while any of them is open, click closes everything.
+const DRAWER_IDS = ['unitPickerModal', 'commandBunker', 'editRosterModal'];
+
+export function syncOverlayScrim(){
+  const scrim = document.getElementById('poScrim');
+  if(!scrim) return;
+  scrim.hidden = DRAWER_IDS.every(id=>document.getElementById(id)?.hidden !== false);
+}
+
+export function closeAllOverlays(){
+  DRAWER_IDS.concat('dsCardOverlay').forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.hidden = true;
+  });
+  syncOverlayScrim();
+}
+
+// Full datasheet card overlaid like an image lightbox -- reached by clicking a
+// unit's name in the roster or a Command Bunker datasheet row. Same cached
+// /api/units/<did> payload the profiles sections use.
+export async function openDatasheetCard(did){
+  const overlay = document.getElementById('dsCardOverlay');
+  const body = document.getElementById('dsCardBody');
+  if(!overlay || !body) return;
+  body.innerHTML = `<p class="dsc-overlay-loading">Loading datasheet&hellip;</p>`;
+  overlay.hidden = false;
+  let detail = state.unitDetailCache[did];
+  if(!detail){
+    try{ detail = await api(`/api/units/${did}`); state.unitDetailCache[did] = detail; }
+    catch(e){ body.innerHTML = `<p class="dsc-overlay-loading">Could not load the datasheet.</p>`; return; }
+  }
+  body.innerHTML = renderDatasheetCard(detail);
+  body.scrollTop = 0;
+}
+
+export function closeDatasheetCard(){
+  const overlay = document.getElementById('dsCardOverlay');
+  if(overlay) overlay.hidden = true;
+}
+
 const STRAT_CAT = {battleTactic:'Battle Tactic', strategicPloy:'Strategic Ploy',
   epicDeed:'Epic Deed', wargear:'Wargear'};
 const STRAT_PILL_CLASS = {battleTactic:'strat-pill-battleTactic', strategicPloy:'strat-pill-strategicPloy',
@@ -336,12 +386,14 @@ export async function openCommandBunker(){
   if(!overlay) return;
   overlay.innerHTML = renderCommandBunker(state.army);
   overlay.hidden = false;
+  syncOverlayScrim();
   loadCbDatasheets(state.army);
 }
 
 export function closeCommandBunker(){
   const overlay = document.getElementById('commandBunker');
   if(overlay) overlay.hidden = true;
+  syncOverlayScrim();
 }
 
 function renderCommandBunker(army){
@@ -353,8 +405,8 @@ function renderCommandBunker(army){
     + ((unlocks.length||excludes.length) ? `<div class="ab-detrule-meta">${list('Unlocks',unlocks)}${list('Excludes',excludes)}</div>` : '');
   return `
     <div class="po-overlay-head">
-      <button class="cb-back" type="button" onclick="closeCommandBunker()" aria-label="Back" title="Back">&#10094;</button>
       <h2 class="po-overlay-title">Command Bunker</h2>
+      <button class="po-close" type="button" onclick="closeCommandBunker()" aria-label="Close" title="Close">&times;</button>
     </div>
     <div class="po-body">
       ${cbSection('Datasheets', 'cbDatasheets', `<div id="cbDatasheetsBody"><p class="ab-rp-hint">Loading&hellip;</p></div>`, true)}
@@ -450,33 +502,14 @@ async function loadCbDatasheets(army){
   box.innerHTML = native.length ? native.map(cbDatasheetRow).join('') : `<p class="ab-rp-hint">No datasheets found.</p>`;
 }
 
+// Clicking a datasheet row opens the full card overlay (same one the roster's
+// unit names open), not an inline profile expand.
 function cbDatasheetRow(u){
-  return `<div class="cb-ds-row" onclick="toggleCbDatasheet('${esc(u.id)}')">
+  return `<div class="cb-ds-row" onclick="openDatasheetCard('${esc(u.id)}')" title="View datasheet card">
       <img class="uc-thumb" src="/api/units/${esc(u.id)}/image" alt="" loading="lazy">
       <span class="cb-ds-name">${esc(u.name)}</span>
       <span class="cb-ds-chev">&#9656;</span>
-    </div>
-    <div class="cb-section" id="cbDs-${esc(u.id)}" hidden></div>`;
-}
-
-// Lazy-load the datasheet statline + weapon profiles on first expand
-// (reuses the same cache + renderProfiles() the unit-options panel's
-// Profiles section uses).
-export async function toggleCbDatasheet(did){
-  const box = document.getElementById(`cbDs-${did}`);
-  if(!box) return;
-  const opening = box.hidden;
-  box.hidden = !opening;
-  if(opening && !box.dataset.loaded){
-    box.innerHTML = `<p class="ab-rp-hint">Loading&hellip;</p>`;
-    let detail = state.unitDetailCache[did];
-    if(!detail){
-      try{ detail = await api(`/api/units/${did}`); state.unitDetailCache[did] = detail; }
-      catch(e){ box.innerHTML = `<p class="ab-rp-hint">Could not load profiles.</p>`; return; }
-    }
-    box.innerHTML = renderProfiles(detail);
-    box.dataset.loaded = '1';
-  }
+    </div>`;
 }
 
 export async function exportArmy(mode, btn){
@@ -495,6 +528,106 @@ export async function exportArmy(mode, btn){
   a.href = `/api/armies/${id}/export?fmt=${fmt}`;
   a.download = '';
   document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---- datasheet cards PDF --------------------------------------------------
+   "Cards PDF" renders every distinct datasheet in the roster with the same
+   renderDatasheetCard markup the lightbox uses, lays them out one-per-A4-page
+   in a hidden same-origin iframe, and opens the browser's print dialog --
+   "Save as PDF" there produces the card pack with crisp vector text, reusing
+   style.css's .dsc-* rules rather than a second card renderer. */
+
+export async function exportDatasheetsPdf(btn){
+  if(!state.army) return;
+  const units = state.army.units || [];
+  if(!units.length){ alert('Add some units first — there are no datasheets to print.'); return; }
+  // Distinct datasheets in roster reading order (the Force-Org section order),
+  // so the printed pack matches the on-screen list top to bottom.
+  const buckets = {}; FOC_ORDER.forEach(c=>buckets[c]=[]);
+  units.forEach(u=>{ (buckets[u.foc_category] || buckets['Other Datasheets']).push(u); });
+  const seen = new Set(), dids = [];
+  FOC_ORDER.flatMap(c=>buckets[c]).forEach(u=>{
+    if(u.datasheet_id && !seen.has(u.datasheet_id)){ seen.add(u.datasheet_id); dids.push(u.datasheet_id); }
+  });
+  const orig = btn && btn.textContent;
+  if(btn){ btn.disabled = true; btn.textContent = 'Preparing…'; }
+  try{
+    const details = await Promise.all(dids.map(async did=>{
+      if(!state.unitDetailCache[did]) state.unitDetailCache[did] = await api(`/api/units/${did}`);
+      return state.unitDetailCache[did];
+    }));
+    await printDatasheetCards(details, state.army.name);
+  }catch(e){
+    alert('Could not prepare the datasheet cards: ' + (e && e.message || e));
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = orig; }
+  }
+}
+
+// The print document pins the card's DESKTOP layout: style.css's
+// @media(max-width:760px) rules would otherwise kick in during print
+// relayout (an A4 page box is ~718 CSS px wide) and reflow the card to one
+// column after the fit-to-page scale was measured against two.
+const PDF_DESKTOP_PIN = `
+  .dsc-body{grid-template-columns:1.45fr 1fr;}
+  .dsc-col-left{border-right:2px solid color-mix(in srgb,var(--dsc-primary) 58%,#8f8f8f);border-bottom:none;}
+  .dsc-stat-val{width:42px;height:42px;}
+  .dsc-stat-in{width:38px;height:38px;font-size:21px;}
+  .dsc-name{font-size:28px;}
+  .dsc-hdr{flex-direction:row;}
+  .dsc-legend{position:absolute;top:68px;right:20px;transform:translateY(-50%);max-width:42%;margin-top:0;}`;
+
+async function printDatasheetCards(details, armyName){
+  document.getElementById('dsPdfFrame')?.remove();
+  const frame = document.createElement('iframe');
+  frame.id = 'dsPdfFrame';
+  // Off-screen but with a desktop-width viewport, so the on-screen layout the
+  // scale factors are measured from matches the pinned print layout.
+  frame.style.cssText = 'position:fixed;right:100%;bottom:100%;width:1400px;height:1000px;visibility:hidden;';
+  document.body.appendChild(frame);
+
+  const pages = details.map(d=>
+    `<div class="pdf-page"><div class="pdf-card">${renderDatasheetCard(d)}</div></div>`).join('');
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>${esc(armyName)} — Datasheets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+      @page{size:A4 portrait;margin:10mm;}
+      html,body{margin:0;padding:0;background:#fff;}
+      *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+      /* 1mm under the 277mm printable height: at exactly 277mm, sub-pixel
+         rounding overflows the page box and every card gains a blank page. */
+      .pdf-page{width:190mm;height:276mm;overflow:hidden;break-after:page;margin:0 auto;display:flex;align-items:center;justify-content:center;}
+      .pdf-page:last-child{break-after:auto;}
+      .pdf-card{width:1160px;flex:0 0 auto;}
+      .pdf-card .dsc-card{box-shadow:none;max-width:none;}
+      ${PDF_DESKTOP_PIN}
+    </style></head><body>${pages}</body></html>`;
+
+  await new Promise(resolve=>{
+    frame.onload = resolve;
+    setTimeout(resolve, 8000);   // never hang the button if a subresource stalls
+    frame.srcdoc = html;
+  });
+  const win = frame.contentWindow, doc = frame.contentDocument;
+  try{ await doc.fonts.ready; }catch(e){ /* fonts blocked: print with fallbacks */ }
+  await new Promise(r=>setTimeout(r, 300));   // let CSS masks/textures paint
+
+  // Fit each card to its page (never upscale), centred by the page's flexbox.
+  // Scaling uses `zoom` rather than transform:scale -- Chrome's print pipeline
+  // drops grid content (.dsc-body/.dsc-footer) inside transformed subtrees,
+  // whereas zoom participates in layout and prints faithfully.
+  doc.querySelectorAll('.pdf-card').forEach(el=>{
+    const pg = el.parentElement;
+    el.style.zoom = Math.min(pg.clientWidth/el.offsetWidth, pg.clientHeight/el.offsetHeight, 1);
+  });
+
+  win.addEventListener('afterprint', ()=>setTimeout(()=>frame.remove(), 500));
+  win.focus();
+  win.print();
 }
 
 async function wireCentreInputs(army){
@@ -535,8 +668,7 @@ export function selectUnit(auid){
   state.rightSel = {id:auid};
   markActiveSelection();
   const rp = document.getElementById('rightPanel');
-  if(rp){ rp.innerHTML = renderUnitDetail(u); wireUnitDetail(u); rp.classList.add('is-open'); }
-  document.getElementById('rpScrim')?.classList.add('is-open');
+  if(rp){ rp.innerHTML = renderUnitDetail(u); wireUnitDetail(u); }
 }
 
 export function clearRight(){
@@ -544,7 +676,6 @@ export function clearRight(){
   markActiveSelection();
   const rp = document.getElementById('rightPanel');
   if(rp) rp.innerHTML = renderRightPlaceholder();
-  rp?.classList.remove('is-open'); document.getElementById('rpScrim')?.classList.remove('is-open');
 }
 
 // Re-open whatever unit was selected before a full re-render (showArmy refetch).
@@ -606,26 +737,18 @@ export function toggleAccordion(btn){
   if(chev) chev.textContent = opening ? '▾' : '▸';
 }
 
-// Squad size + assigned-from-collection: this project's collection tracking,
-// which the reference app has no equivalent screen for, so it lives here
-// rather than mapping to one of the app's own sections.
+// Squad size + an owned-from-collection reference. Ownership is informational
+// only -- lists are not managed against the collection (no assignment).
 function renderStatControls(u){
   const squadMin = u.squad_min || 1;
   const squadMax = u.squad_max || '';
-  const owned = u.owned_count, avail = u.available_count, assigned = u.assigned_count;
   return `<div class="ab-rp-section">
-      <div class="ab-rp-sec-head">Squad &amp; Collection</div>
+      <div class="ab-rp-sec-head">Squad</div>
       <div class="uo-stat-row">
         <label>Squad Size</label>
         <input class="au-size-input" data-testid="unit-size-input" type="number" min="${squadMin}" ${squadMax?`max="${squadMax}"`:''} value="${u.squad_size}"
                onchange="updateSquadSize('${u.id}',this.value)" title="Squad size">
       </div>
-      ${owned>0?`<div class="uo-stat-row">
-        <label>Assigned</label>
-        <input class="au-assign-input" type="number" min="0" max="${avail+assigned}" value="${assigned}"
-               onchange="updateAssigned('${u.id}',this.value)" title="Assigned models from collection">
-        <span style="font-family:'Oswald',sans-serif;font-size:11px;color:var(--parch-dim)">/ ${owned} owned</span>
-      </div>`:''}
       <div class="au-ownership" id="au-own-${u.id}">${ownershipText(u)}</div>
     </div>`;
 }
@@ -961,17 +1084,18 @@ function summaryBullets(summary){
   return (summary||'').split(' · ').map(s=>s.trim()).filter(Boolean);
 }
 
+// Ownership is a reference, not an allocation: how many of this model are in
+// the collection vs. the squad size fielded here.
 function ownershipDot(u){
   if(u.owned_count===0) return 'is-none';
-  if(u.assigned_count<u.squad_size) return 'is-warn';
+  if(u.owned_count<u.squad_size) return 'is-warn';
   return '';
 }
 
 function ownershipText(u){
-  if(u.owned_count===0) return `<span class="own-none">Not owned — wishlist</span>`;
-  if(u.assigned_count>=u.squad_size) return `<span class="own-ok">✓ ${u.assigned_count} of ${u.squad_size} assigned</span>`;
-  const short = u.squad_size-u.assigned_count;
-  return `<span class="own-warn">⚠ ${u.assigned_count}/${u.squad_size} assigned — need ${short} more (${u.available_count} available)</span>`;
+  if(u.owned_count===0) return `<span class="own-none">None in collection</span>`;
+  if(u.owned_count>=u.squad_size) return `<span class="own-ok">✓ ${u.owned_count} in collection</span>`;
+  return `<span class="own-warn">⚠ ${u.owned_count} in collection — ${u.squad_size-u.owned_count} short of this squad</span>`;
 }
 
 // Inline ⚠ on a roster row whose wargear selection is currently illegal --
@@ -1026,7 +1150,7 @@ export function armyUnitRow(u, accent){
     <div class="uc-body" onclick="selectUnit('${auid}')">
       <div class="uc-name">
         <span class="uc-owned-dot ${ownershipDot(u)}" title="${esc(ownershipText(u).replace(/<[^>]+>/g,''))}"></span>
-        ${esc(u.name)}${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}
+        <span class="uc-name-link" title="View datasheet card" onclick="event.stopPropagation();openDatasheetCard('${u.datasheet_id}')">${esc(u.name)}</span>${u.is_warlord?' <span class="au-warlord" title="Warlord">★</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ ${esc(u.attached_leader_name)}</span>`:''}
         <span id="au-warn-${auid}">${unitWarnBadge(u)}</span>
       </div>
       <div class="au-role" id="au-role-${auid}">${esc(u.role)}${u.composition&&u.composition.length>1?` · ${compLine(u.composition)}`:''}</div>
@@ -1078,18 +1202,6 @@ export async function updateSquadSize(auid, val){
   mergeUnit(auid, res.unit);
   applyServerState(res);
   refreshUnitDetailIfSelected(auid);   // squad size rescales bulk wargear in the editor
-}
-
-export async function updateAssigned(auid, val){
-  const count = Math.max(0, intOr(val, 0));
-  let res;
-  try{ res = await api(`/api/army-units/${auid}`, {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({assigned_count:count})}); }
-  catch(e){ return; }
-  if(!res || !res.ok) return;
-  mergeUnit(auid, res.unit);
-  applyServerState(res);
-  refreshUnitDetailIfSelected(auid);   // assigned_count may be server-clamped
 }
 
 /* ---- enhancement editor ------------------------------------------------- */
@@ -1436,7 +1548,16 @@ function renderGroupHtml(u, g, sel, comp, size){
     const nm = ('wg'+u.id+g.items[0].key).replace(/[^a-zA-Z0-9]/g,'');
     // data-keys must also cover the Default-group item this swap displaces, or
     // setWargearRadio's zero-out patch leaves it behind alongside the new pick.
-    const gk = esc(JSON.stringify(g.items.map(i=>i.key).concat(g.linked_default_keys||[])));
+    // It also covers RIVAL groups' picks -- two swap cards can displace the
+    // same default (Boss Nob: power klaw vs the kombi-weapon bundle both take
+    // the big choppa), and without this the server keeps the OLD pick and
+    // bounces the new one. Any row click asserts the whole contested slot.
+    const linked = g.linked_default_keys||[];
+    const rivalKeys = (u.wargear_schema||[]).flatMap(o =>
+      o!==g && (o.type==='replace_one'||o.type==='all_model') &&
+      (o.linked_default_keys||[]).some(k=>linked.includes(k))
+        ? o.items.map(i=>i.key) : []);
+    const gk = esc(JSON.stringify(g.items.map(i=>i.key).concat(linked, rivalKeys)));
     const title = wgGroupTitle(g);
     const defaultLabel = title.replace(/^Replace\s+/, '');
     const labels = wgItemLabels(g.items);
@@ -1483,6 +1604,26 @@ function renderGroupHtml(u, g, sel, comp, size){
     // titled by that item than by what it replaces -- several such cards can
     // all replace the same base weapon, and would otherwise share one title.
     const title = g.items.length===1 ? wgCap(labels[0]) : wgGroupTitle(g);
+    // A single ADDITIVE item (a Chaos Icon), possibly offered to several
+    // miniature types at once ("1 model can be equipped with 1 Chaos icon"
+    // keys one option per miniature): instead of a bare count, list the
+    // unit's current model setups and tick the one that carries it, like the
+    // reference app. Needs the server's per-model kits (loadout_setups.kits)
+    // to know who's who; swaps linked to a default weapon keep their steppers
+    // (they change weapons, not carriers).
+    if(new Set(g.items.map(i=>i.item)).size===1 && !(g.linked_default_keys||[]).length){
+      const kitsMap = (u.loadout_setups||{}).kits||{};
+      const totalModels = g.items.reduce((s,i)=>s+(comp[i.miniature]||0), 0);
+      const kitsOk = g.items.every(i=>{
+        const k = kitsMap[i.miniature];
+        return Array.isArray(k) && k.length===(comp[i.miniature]||0);
+      });
+      if(totalModels>1 && kitsOk){
+        const have = g.items.reduce((s,i)=>s+(sel[i.key]||0), 0);
+        return wgCard(wgCap(g.items[0].item), `${have}/${cap}`,
+                      renderPlacementTicks(u, g, kitsMap, cap, dup, sel), g.instruction);
+      }
+    }
     if(g.items.length===1 && cap<=1){
       const i = g.items[0];
       const html = `<label class="wg-check"><input type="checkbox" data-key="${esc(i.key)}" ${(sel[i.key]||0)>0?'checked':''} onchange="setWargearStep('${u.id}',this)">${wgOptLabel(u.datasheet_id, labels[0], i.points)}</label>`;
@@ -1645,6 +1786,68 @@ export function setWargearRadio(auid, input){
     Object.entries(JSON.parse(input.dataset.set)).forEach(([k,v])=>{ patch[k] = v; });
   } else if(input.dataset.key){   // legacy shape
     patch[input.dataset.key] = parseInt(input.dataset.val||'1', 10);
+  }
+  postLoadout(auid, patch);
+}
+
+// One row per distinct current model setup across every miniature the item is
+// offered to ("Aspiring Champion", "Legionary — Boltgun", "Legionary — Plasma
+// gun"), tick = a model of that setup carries the item. Rows are built from
+// the server's per-model kits, so the ticks always show where the item
+// actually sits; a change posts the new count plus an
+// @on|<item key>|<model index> placement hint for the model it lands on
+// (or leaves).
+function renderPlacementTicks(u, g, kitsMap, cap, dup, sel){
+  const it = g.items[0].item;
+  const eff = dup!=null ? Math.min(cap, dup) : cap;
+  const total = g.items.reduce((s,i)=>{
+    return s + (kitsMap[i.miniature]||[]).reduce((n,k)=>n+(k[it]||0), 0);
+  }, 0);
+  const rows = [];
+  g.items.forEach(item=>{
+    const groups = [], bySig = {};
+    (kitsMap[item.miniature]||[]).forEach((kit, idx)=>{
+      const rest = Object.entries(kit).filter(([k])=>k!==it)
+        .map(([k,q])=>q>1?`${q}× ${k}`:k);
+      const sig = rest.join(', ');
+      let grp = bySig[sig];
+      if(!grp){ grp = {rest, idxs:[], carriers:[]}; bySig[sig]=grp; groups.push(grp); }
+      grp.idxs.push(idx);
+      if((kit[it]||0)>0) grp.carriers.push(idx);
+    });
+    groups.forEach(grp=>{
+      const ticked = grp.carriers.length>0;
+      const full = !ticked && total>=eff;   // cap reached: only carriers stay toggleable
+      const target = ticked ? grp.carriers[0] : grp.idxs.find(i=>!grp.carriers.includes(i));
+      const plural = grp.idxs.length>1 ? `${grp.idxs.length}× ` : '';
+      const kitTxt = grp.rest.length ? ` <span class="wg-place-kit">— ${esc(grp.rest.join(', '))}</span>` : '';
+      rows.push(`<label class="wg-check wg-place${full?' is-off':''}">
+        <input type="checkbox" ${ticked?'checked':''} ${full||target==null?'disabled':''}
+               data-key="${esc(item.key)}" data-on="${target!=null?target:''}"
+               onchange="setWargearPlace('${u.id}',this)">
+        <span class="wg-opt-label"><span>${plural}${esc(item.miniature)}${kitTxt}</span>${item.points?` <em>+${item.points} pts</em>`:''}</span>
+        ${grp.carriers.length>1?`<span class="wg-card-badge">×${grp.carriers.length}</span>`:''}
+      </label>`);
+    });
+  });
+  return rows.join('');
+}
+
+// Tick/untick a placement row: bump the item count and pin (or release) the
+// placement hint for the clicked row's model.
+export function setWargearPlace(auid, input){
+  const u = state.army.units.find(x=>x.id===auid);
+  if(!u) return;
+  const key = input.dataset.key;
+  const idx = input.dataset.on;
+  const cur = parseInt((u.loadout||{})[key], 10) || 0;
+  const patch = {};
+  if(input.checked){
+    patch[key] = cur + 1;
+    if(idx!=='') patch['@on|'+key+'|'+idx] = 1;
+  }else{
+    patch[key] = Math.max(0, cur - 1);
+    if(idx!=='') patch['@on|'+key+'|'+idx] = 0;
   }
   postLoadout(auid, patch);
 }

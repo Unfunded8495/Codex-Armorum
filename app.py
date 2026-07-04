@@ -362,6 +362,25 @@ def missions_page():
     )
 
 
+@app.route("/rules")
+def rules_page():
+    return render_template(
+        "rules.html",
+        active_page="rules",
+        breadcrumb=[{"label": "Core Rules"}],
+    )
+
+
+@app.route("/api/rules")
+def api_rules():
+    """Core Rules reference built by scripts/build_rules.py from the
+    combined 11th-edition app + PDF ruleset."""
+    path = os.path.join(app.root_path, "data", "rules", "core_rules.json")
+    if not os.path.exists(path):
+        abort(404, description="Run scripts/build_rules.py first")
+    return send_file(path, mimetype="application/json")
+
+
 @app.route("/api/missions")
 def api_missions():
     """Mission reference (Phase 6): packs, primary/secondary missions,

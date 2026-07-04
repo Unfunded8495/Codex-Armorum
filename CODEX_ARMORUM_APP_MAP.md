@@ -15,13 +15,14 @@ read that one to understand where the data lives.
 
 Codex Armorum is a **single-user, locally-run Flask web app** for cataloguing a
 Warhammer 40,000 miniature collection. There is **no build step** and **no frontend
-framework** - just vanilla ES modules talking to a Flask REST API, backed by one SQLite
-file (`collection.db`) plus a handful of CSV/JSON reference files in `data/`.
+framework** - just vanilla ES modules talking to a Flask REST API, backed by two SQLite
+files - `collection.db` (your data, read-write) and `data/w40k/w40k.db` (official rules
+data, read-only) - plus hand-curated JSON/markdown reference files in `data/`.
 
 | Layer | Technology | Entry point |
 |---|---|---|
 | Frontend (catalogue) | Vanilla JS ES modules + hash routing (SPA) | `templates/index.html` → `static/js/app.js` |
-| Frontend (tools) | Server-rendered Jinja pages + page-specific JS | `army_builder.html`, `collection.html`, `catalogue_review.html`, `arsenal/*` |
+| Frontend (tools) | Server-rendered Jinja pages + page-specific JS | `army_builder.html`, `collection.html`, `catalogue_review.html`, `missions.html`, `rules.html`, `arsenal/*` |
 | Backend | Flask (`app.py`) + one blueprint (`arsenal.py`) | `python app.py` → `http://127.0.0.1:5050` |
 | Data access | Python modules wrapping SQLite + reference files | `data_store.py`, `collection.py`, `box_sets.py`, … |
 | Storage | SQLite (`collection.db` user data) + `data/w40k/w40k.db` (rules, read-only) + `data/*.json` (model catalogue + editions) | `db.py` (user-data schema), `data_store.py` (rules loader) |
@@ -106,6 +107,8 @@ flowchart LR
         b2["Paint Progress<br/>collection.html"]
         b3["Model Catalogue<br/>catalogue_review.html"]
         b4["Arsenal / Loadouts<br/>arsenal/*.html"]
+        b5["Missions<br/>missions.html"]
+        b6["Core Rules<br/>rules.html"]
     end
     A -.shared top bar + ledger.- B
 ```
@@ -124,6 +127,8 @@ The top bar links bridge the two worlds (note hash vs. path):
 | **Codex Archive** | `/#/history` | SPA route |
 | **Paint Progress** | `/collection` | Server page |
 | **Army Builder** | `/army-builder` | Server page |
+| **Missions** | `/missions` | Server page |
+| **Core Rules** | `/rules` | Server page |
 | **Weapon Loadouts** | `/arsenal/loadouts` | Blueprint page |
 | **Model Catalogue** | `/catalogue-review` | Server page |
 | **Seal Vault** | `POST /api/shutdown` | Stops the server |
@@ -189,9 +194,15 @@ flowchart TD
     armylist --> astate["army-state.js"]
     armydetail --> astate
     picker --> astate
+    armylist --> dscard["datasheet-card.js"]
+    armydetail --> dscard
+    picker --> dscard
+    unit --> dscard
 
     creview["catalogue-review.js"] --> header
     collectionjs["collection.js"] --> header
+    missionsjs["missions.js (Missions page)"] --> utils
+    rulesjs["rules.js (Core Rules page)"] --> utils
 
     subgraph shared["shared leaf modules"]
         utils["utils.js (esc, api, …)"]
@@ -220,6 +231,11 @@ Key roles:
   wrap weapon keywords with glossary tooltips from `weapon_keywords.json`.
 - **`arsenal-hover.js`** - hover popovers on the unit page that pull weapon cards from the
   Arsenal blueprint.
+- **`datasheet-card.js`** - the shared full-datasheet profile card (statlines, weapons,
+  abilities) rendered by the unit page, the army-builder roster, and the picker preview.
+- **`missions.js` / `rules.js`** - standalone page scripts for the `/missions` reference
+  and the `/rules` Core Rules reader (fetches `/api/rules`, built by
+  `scripts/build_rules.py`).
 
 ---
 
@@ -249,7 +265,10 @@ flowchart LR
 | `data_store.py` | In-memory index of factions/units/weapons/detachments/enhancements read directly from `data/w40k/w40k.db` (UUID ids in `ds_by_id`); leaf-wins primary-faction picker; resolves leader / led-by names | `data/w40k/w40k.db` |
 | `collection.py` | Ownership counts, the minis for a datasheet, wargear-choice parsing | `minis` table |
 | `box_sets.py` | Box-set definitions, purchase logging that **creates mini rows**, multikit pools | `purchases`, `minis`, `custom_box_*` |
-| `army.py` | Army points maths, detachment/enhancement validation | `data_store` (detachments + enhancements) |
+| `army.py` | Army points maths (incl. detachment-gated points tiers), leader attachment, duplicate caps | `data_store` (detachments + enhancements), `wargear` |
+| `wargear.py` | Wargear/loadout engine: render schema, defaults, sparse-override persistence, points, legality | `data_store.wargear_loadout` |
+| `army_validation.py` | Roster legality engine — structured `{level, code, message}` rows the builder renders | `army`, `data_store` |
+| `eligibility.py` | Enhancement eligibility (keyword groups + exported rule flags, Epic Hero bar) | `data_store` |
 | `catalogue_review.py` | Builds the Model Catalogue payload, resolves datasheet links via `data_store.ds_by_id` | `data/model_catalogue_*.json` |
 | `editions.py` | Loads the hand-curated edition timeline for the Codex Archive | `data/editions_timeline.json` |
 | `arsenal.py` / `arsenal_store.py` | The Arsenal (wargear) feature as a self-contained blueprint + its own tables | `arsenal_weapon*` tables |
@@ -264,7 +283,7 @@ flowchart LR
 
 All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 
-**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /catalogue-review` · `GET /collection`
+**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /missions` · `GET /rules` · `GET /catalogue-review` · `GET /collection`
 
 **Factions & units**
 - `GET /api/factions` - faction grid with owned/bought/unlogged badges
@@ -292,6 +311,13 @@ All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 **Army builder**
 - `GET|POST /api/armies` · `GET|POST|DELETE /api/armies/<aid>`
 - `POST /api/armies/<aid>/units` · `POST|DELETE /api/army-units/<auid>`
+- `GET /api/army-units/<auid>/enhancements` - eligible enhancements for one roster unit
+- `GET /api/armies/<aid>/export` · `POST /api/armies/import` - roster round-trip
+- `GET /api/battle-sizes` - points / DP / enhancement / duplicate caps per game size
+
+**Reference pages**
+- `GET /api/missions` - mission packs, primary/secondary, deployments, layouts, twists
+- `GET /api/rules` - the built Core Rules dataset (`data/rules/core_rules.json`; 404s until `scripts/build_rules.py` has run)
 
 **Model catalogue**
 - `GET|POST /api/model-catalogue` · `GET|PATCH|DELETE /api/model-catalogue/<id>`
@@ -509,7 +535,13 @@ cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` a
 | How a datasheet renders | `unit.js` + `datasheet.js` + `ruletext.js` |
 | How a purchase becomes minis | `box_sets.py` + `purchases.js` |
 | Paint stages / progress stats | `collection.js`, `mini-page.js`, `/api/minis/:id/stage`, `/api/collection` |
-| Army building & points | `army.py` + `army-*.js` |
+| Army building & points | `army.py` + `army-*.js` + `unit-picker.js` |
+| Roster validation messages | `army_validation.py` (codes) + `army-detail.js` (rendering) |
+| Wargear options in the builder | `wargear.py` (engine) + `army-detail.js` (accordion UI) |
+| Enhancement eligibility | `eligibility.py` + `/api/army-units/<auid>/enhancements` |
+| The Missions reference page | `missions.js` + `/api/missions` -> `data_store._load_missions` |
+| The Core Rules page | `rules.js` + `/api/rules` <- `scripts/build_rules.py` <- `data/rules/*.md` |
+| Weapon-keyword tooltips | `static/weapon_keywords.json` (order-sensitive) + `ruletext.js` |
 | Wargear/weapons (Arsenal) | `arsenal.py` + `arsenal_store.py` + `templates/arsenal/` |
 | Unit stats/points source data | `data/w40k/w40k.db` -> `data_store.py` |
 | Detachments / enhancements | `data/w40k/w40k.db` (`detachment`, `enhancement`) -> `data_store.py` |
@@ -520,6 +552,9 @@ cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` a
 
 ---
 
-*Last reviewed: June 2026. Update this document when routes, frontend modules, or the
-request flow change. For data-source and migration details, see
-[`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md).*
+*Last reviewed: July 2026 (Missions + Core Rules pages, army-builder enforcement
+modules). Update this document when routes, frontend modules, or the request flow
+change. For data-source and migration details, see
+[`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md); for updating to
+a new official-app data version, see
+[`CODEX_ARMORUM_DATA_UPDATE.md`](CODEX_ARMORUM_DATA_UPDATE.md).*

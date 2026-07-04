@@ -18,12 +18,16 @@
 
   <main id="view"></main>
 
-  <!-- Add-unit picker: full-screen overlay, matching the reference app's
-       dedicated add-unit screen (back chevron + category title + search). -->
+  <!-- Shared scrim behind the drawer overlays below: the roster stays visible
+       (dimmed) beside an open drawer; clicking the dimmed area closes it. -->
+  <div class="po-scrim" id="poScrim" hidden onclick="closeAllOverlays()"></div>
+
+  <!-- Add-unit picker: right-docked drawer (~half the viewport), matching the
+       reference app's dedicated add-unit screen (title + search + cards). -->
   <div class="po-overlay" id="unitPickerModal" data-testid="unit-picker-panel" hidden>
     <div class="po-overlay-head">
-      <button class="cb-back" type="button" onclick="closeUnitPicker()" aria-label="Back" title="Back">&#10094;</button>
       <h2 class="po-overlay-title" id="pickerTitle">Add Unit</h2>
+      <button class="po-close" type="button" onclick="closeUnitPicker()" aria-label="Close" title="Close">&times;</button>
     </div>
     <div class="po-search-wrap">
       <input class="po-search" id="pickerSearch" placeholder="Search units&hellip;" oninput="filterPicker(this.value)" autocomplete="off">
@@ -31,13 +35,20 @@
     <div class="po-body" id="pickerBody"></div>
   </div>
 
-  <!-- Command Bunker: faction/army reference overlay (Datasheets, Stratagems,
+  <!-- Command Bunker: faction/army reference drawer (Datasheets, Stratagems,
        Detachment Rules, Army Rules). Content is rendered fresh on each open. -->
   <div class="po-overlay" id="commandBunker" hidden></div>
 
   <!-- Edit Roster: name + Battle Size + Detachments, with the latter two as
        tap-through sub-screens. Content is rendered fresh on each open. -->
   <div class="po-overlay" id="editRosterModal" data-testid="edit-roster-modal" hidden></div>
+
+  <!-- Full datasheet card, overlaid like an image lightbox (click a unit's
+       name in the roster / Command Bunker to open, X or backdrop to close). -->
+  <div class="dsc-overlay" id="dsCardOverlay" data-testid="datasheet-card-overlay" hidden onclick="closeDatasheetCard()">
+    <button class="dsc-overlay-close" type="button" onclick="closeDatasheetCard()" aria-label="Close" title="Close">&times;</button>
+    <div class="dsc-overlay-body" id="dsCardBody" onclick="event.stopPropagation()"></div>
+  </div>
 
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" hidden>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Rules · Codex Armorum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/rules.css') }}">
+</head>
+<body>
+  <!-- NOTE: no .scanlines overlay on this page — it would darken the light paper -->
+
+  <div class="rl-chrome">
+    {% include "_topbar.html" %}
+
+    <nav class="rl-strip" id="rlStrip" aria-label="Quick reference">
+      <a class="rl-strip-label" href="#s07" title="07 · The Battle Round">Battle Round</a>
+      <span class="rl-strip-chips" id="rlPhaseChips"></span>
+      <span class="rl-strip-div" aria-hidden="true"></span>
+      <a class="rl-strip-label" href="#s05" id="rlAttackLabel" title="05 · Attack Sequence">Attack</a>
+      <span class="rl-strip-chips" id="rlAttackChips"></span>
+      <span class="rl-strip-spacer"></span>
+      <button type="button" class="rl-strip-btn" id="rlIndexBtn" title="Index of rules &amp; terms (g)">Index <kbd>G</kbd></button>
+      <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="rlThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="rlThemeLabel">Dark</span></button>
+    </nav>
+  </div>
+
+  <div class="rl-shell" id="rlShell">
+    <div class="rl-grid">
+      <aside class="rl-side" aria-label="Rules contents">
+        <div class="rl-search-wrap">
+          <input type="search" id="rlSearch" class="rl-search" placeholder="Search rules…  ( / )"
+                 autocomplete="off" spellcheck="false" aria-label="Search rules">
+        </div>
+        <div class="rl-side-head"><span>Contents</span><span id="rlTocCount"></span></div>
+        <nav class="rl-toc" id="rlToc"></nav>
+      </aside>
+
+      <main class="rl-main" id="rlMain">
+        <div class="rl-loading">Consulting the archives&hellip;</div>
+      </main>
+    </div>
+  </div>
+
+  <div class="rl-tooltip" id="rlTooltip" role="tooltip" hidden></div>
+
+  <div class="rl-pins" id="rlPins" hidden>
+    <div class="rl-pins-head">
+      <span class="rl-pins-count" id="rlPinsCount">Pinned</span>
+      <button type="button" class="rl-pins-clear" id="rlPinsClear">Clear all</button>
+    </div>
+    <div class="rl-pins-stack" id="rlPinsStack"></div>
+  </div>
+
+  <div class="rl-glossary" id="rlGlossary" hidden>
+    <div class="rl-gloss-panel" role="dialog" aria-modal="true" aria-label="Index of rules and terms">
+      <div class="rl-gloss-head">
+        <span class="rl-gloss-title">Index of Rules &amp; Terms</span>
+        <span class="rl-gloss-count" id="rlGlossCount"></span>
+        <input type="search" id="rlGlossSearch" class="rl-gloss-search" placeholder="Filter terms…"
+               autocomplete="off" spellcheck="false" aria-label="Filter terms">
+        <button type="button" class="rl-gloss-close" id="rlGlossClose" title="Close (Esc)">&#10005;</button>
+      </div>
+      <div class="rl-gloss-letters" id="rlGlossLetters"></div>
+      <div class="rl-gloss-list" id="rlGlossList"></div>
+    </div>
+  </div>
+
+  <button class="rl-top-btn" id="rlTopBtn" title="Back to top" aria-label="Back to top">&#8679;</button>
+
+  <footer class="footer">
+    <p>Warhammer 40,000 Core Rules, 11th Edition &mdash; combined app + PDF ruleset, for personal reference.</p>
+  </footer>
+
+  <script type="module" src="{{ url_for('static', filename='js/rules.js') }}"></script>
+</body>
+</html>

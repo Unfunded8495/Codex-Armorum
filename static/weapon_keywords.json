@@ -1,33 +1,33 @@
 [
   {
     "name": "Rapid Fire",
-    "pattern": "\\brapid fire (\\d+)\\b",
-    "tip": "Within half range, makes $1 additional attack(s) when shooting."
+    "pattern": "\\brapid fire (D?\\d+(?:\\+\\d+)?)\\b",
+    "tip": "Add $1 additional attack dice if the target is within half range."
   },
   {
     "name": "Sustained Hits",
-    "pattern": "\\bsustained hits (\\d+)\\b",
-    "tip": "Each Critical Hit scores $1 extra hit(s)."
+    "pattern": "\\bsustained hits (D?\\d+)\\b",
+    "tip": "Each Critical Hit scores $1 additional hit(s) on the target."
   },
   {
     "name": "Melta",
-    "pattern": "\\bmelta (\\d+)\\b",
-    "tip": "Within half range, add $1 to the Damage characteristic."
+    "pattern": "\\bmelta (D?\\d+)\\b",
+    "tip": "Within half range, add $1 to this weapon's Damage characteristic."
   },
   {
     "name": "Anti-keyword",
-    "pattern": "\\banti-([\\w-]+) (\\d)\\+",
-    "tip": "Against $1 units, a Critical Wound is scored on an unmodified Wound roll of $2+."
+    "pattern": "\\banti-([\\w-]+(?:[ /][\\w-]+)?) (\\d)\\+",
+    "tip": "Against $1 units, an unmodified Wound roll of $2+ is a Critical Wound."
   },
   {
     "name": "Devastating Wounds",
     "pattern": "\\bdevastating wounds\\b",
-    "tip": "A Critical Wound inflicts mortal wounds equal to the Damage characteristic. The attack sequence ends — no saving throw is made."
+    "tip": "A Critical Wound ends the attack sequence and inflicts mortal wounds equal to the Damage characteristic — at most one model can be damaged per Critical Wound; excess is lost."
   },
   {
     "name": "Lethal Hits",
     "pattern": "\\blethal hits\\b",
-    "tip": "Each Critical Hit automatically wounds the target — no Wound roll is made."
+    "tip": "On a Critical Hit, you can choose to automatically wound the target — no Wound roll is made."
   },
   {
     "name": "Twin-linked",
@@ -37,12 +37,12 @@
   {
     "name": "Indirect Fire",
     "pattern": "\\bindirect fire\\b",
-    "tip": "Can target units not visible to the bearer, but those attacks suffer −1 to the Hit roll."
+    "tip": "Can shoot units not visible to the bearer (indirect shooting): the target has the benefit of cover, Hit rolls cannot be re-rolled, and an unmodified Hit roll of 1–5 fails (1–3 if the unit Remained Stationary and a friendly unit can see the target)."
   },
   {
     "name": "Ignores Cover",
     "pattern": "\\bignores cover\\b",
-    "tip": "The target cannot use Cover to improve its saving throw against attacks with this weapon."
+    "tip": "The target cannot have the benefit of cover against attacks with this weapon."
   },
   {
     "name": "Torrent",
@@ -52,41 +52,66 @@
   {
     "name": "Heavy",
     "pattern": "\\bheavy\\b",
-    "tip": "Add 1 to the Hit roll if the bearer's unit Remained Stationary this phase."
+    "tip": "In your Shooting phase, add 1 to the Hit roll if the bearer's unit is unengaged, was not set up this turn, and no model in it has moved more than 3\" this turn."
+  },
+  {
+    "name": "Blast X",
+    "pattern": "\\bblast (D?\\d+)\\b",
+    "tip": "Add $1 additional attack dice for every 5 models in the target unit (rounding down)."
   },
   {
     "name": "Blast",
-    "pattern": "\\bblast\\b",
-    "tip": "Add 1 attack for every 5 models in the target unit (before any dice are rolled)."
+    "pattern": "\\bblast\\b(?!\\s*\\d)",
+    "tip": "Add 1 additional attack dice for every 5 models in the target unit (rounding down)."
+  },
+  {
+    "name": "Cleave",
+    "pattern": "\\bcleave (D?\\d+)\\b",
+    "tip": "If all of this weapon's attacks target a single unit, add $1 additional attack dice for every 5 models in that unit (rounding down)."
   },
   {
     "name": "Hazardous",
     "pattern": "\\bhazardous\\b",
-    "tip": "After firing, roll one D6: on a 1, the bearer's unit suffers 1 mortal wound (D3 if the bearer is a Vehicle or Monster)."
+    "tip": "After the bearer's unit finishes its attacks, make one hazard roll per Hazardous weapon used: on a 1–2, the unit suffers 1 mortal wound (3 if every model is a Monster or Vehicle)."
+  },
+  {
+    "name": "Close-quarters",
+    "pattern": "\\bclose-quarters\\b",
+    "tip": "The bearer's unit can shoot this weapon while engaged (close-quarters shooting), targeting the units it is engaged with."
   },
   {
     "name": "Pistol",
     "pattern": "\\bpistol\\b",
-    "tip": "The bearer can make attacks with this weapon even while its unit is within Engagement Range of an enemy."
+    "tip": "Identical to [CLOSE-QUARTERS]: the bearer's unit can shoot this weapon while engaged, targeting the units it is engaged with."
   },
   {
     "name": "Assault",
     "pattern": "\\bassault\\b",
-    "tip": "The bearer can still shoot with this weapon after making an Advance move this phase."
+    "tip": "The bearer's unit can shoot after Advancing (assault shooting), but can then only attack with its Assault weapons."
   },
   {
     "name": "Lance",
     "pattern": "\\blance\\b",
-    "tip": "Add 1 to the Wound roll if the bearer made a Charge move this phase."
+    "tip": "Add 1 to the Wound roll if the bearer's unit made a Charge move this turn."
+  },
+  {
+    "name": "One Shot",
+    "pattern": "\\bone shot\\b",
+    "tip": "This weapon can only be selected to make attacks once per battle."
+  },
+  {
+    "name": "Extra Attacks",
+    "pattern": "\\bextra attacks\\b",
+    "tip": "The bearer makes attacks with this weapon in addition to one of its other melee weapons."
   },
   {
     "name": "Precision",
     "pattern": "\\bprecision\\b",
-    "tip": "When an attack wounds an Attached unit, you can bypass Look Out, Sir and allocate the attack to any model in that unit."
+    "tip": "If the target unit contains a Character visible to the attackers, these attacks can be allocated to that Character's allocation group."
   },
   {
     "name": "Psychic",
     "pattern": "\\bpsychic\\b",
-    "tip": "Invulnerable saving throws cannot be made against attacks with this weapon."
+    "tip": "You can ignore any or all modifiers to this attack's BS/WS and to the Hit roll. Counts as a psychic attack."
   }
 ]

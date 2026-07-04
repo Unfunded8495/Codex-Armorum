@@ -1,4 +1,12 @@
-/* ---- Army Builder specific styles ---- */
+/* ---- Army Builder specific styles ----
+   Desktop-only surface: the builder is used exclusively on a PC, so there is
+   no small-screen/mobile support here -- only large-screen breakpoints that
+   spend ultrawide width. Typography floor: nothing informational below 12px,
+   letter-spacing above 1.5px only at 13px+. */
+
+/* The builder spreads into three columns; let it use far more of an
+   ultrawide monitor than the site-wide 1280px column. */
+main:has(.ab-detail) { max-width: 2000px; }
 
 /* Army list grid */
 .army-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; margin-top:20px; }
@@ -11,9 +19,9 @@
 .army-tile:hover { border-color:var(--cardarmy,var(--gold)); transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.55),0 0 0 1px var(--at-accent,var(--gold)); }
 .army-tile-mark { left:82%; top:48%; width:220px; opacity:.16; }
 .army-tile:hover .army-tile-mark { opacity:.26; }
-.army-tile-name { font-family:'Cinzel',serif; font-weight:700; font-size:16px; color:#f3ead5; margin:0 0 4px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
-.army-tile-meta { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; color:var(--gold); margin:0 0 10px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
-.army-tile-pts { font-family:'Oswald',sans-serif; font-size:13px; color:var(--parch-dim); text-shadow:0 2px 8px rgba(0,0,0,.92); }
+.army-tile-name { font-family:'Cinzel',serif; font-weight:700; font-size:17px; color:#f3ead5; margin:0 0 4px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
+.army-tile-meta { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:.5px; color:var(--gold); margin:0 0 10px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
+.army-tile-pts { font-family:'Oswald',sans-serif; font-size:14px; color:var(--parch-dim); text-shadow:0 2px 8px rgba(0,0,0,.92); }
 .army-tile-pts b { color:var(--gold-bright); }
 .army-tile-del { position:absolute; top:10px; right:10px; background:none; border:none;
   color:var(--parch-dim); font-size:18px; cursor:pointer; line-height:1; opacity:.4; transition:opacity .2s,color .2s; }
@@ -29,94 +37,100 @@
 
 /* Create army form */
 .create-army-form { background:var(--ink-2); border:1px solid rgba(199,154,58,.4); padding:20px; margin-top:18px; }
-.create-army-form h3 { font-family:'Cinzel',serif; color:var(--gold-bright); margin:0 0 16px; font-size:15px; letter-spacing:1px; }
+.create-army-form h3 { font-family:'Cinzel',serif; color:var(--gold-bright); margin:0 0 16px; font-size:16px; letter-spacing:1px; }
 .caf-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-@media(max-width:600px){.caf-grid{grid-template-columns:1fr;}}
 .caf-field { display:flex; flex-direction:column; gap:5px; }
 .caf-field label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.85; }
 .caf-field select, .caf-field input[type=number], .caf-field input[type=text] {
   background:var(--panel); border:1px solid var(--edge); color:var(--parch);
-  font-family:'EB Garamond',serif; font-size:15px; padding:8px 12px; transition:border-color .2s;
+  font-family:'EB Garamond',serif; font-size:16px; padding:8px 12px; transition:border-color .2s;
 }
 .caf-field select:focus, .caf-field input:focus { outline:none; border-color:rgba(199,154,58,.6); }
 .caf-field select option { background:var(--panel); }
 
-/* Army detail layout */
-.ab-detail { display:grid; grid-template-columns:300px 1fr; gap:28px; align-items:start; }
-@media(max-width:900px){ .ab-detail { grid-template-columns:1fr; } }
-
-/* ---- Two-panel army builder layout ---- */
+/* ============================================================
+   Army detail: three-column desktop layout.
+   Left rail  = the LIST's own state (points HUD, config chips, validation).
+   Centre     = the roster.
+   Right rail = the selected unit's options editor.
+   ============================================================ */
+.ab-detail.ab-3col { display:grid; grid-template-columns:300px minmax(0,1fr) 500px; gap:20px; align-items:start; }
+@media(min-width:1900px){ .ab-detail.ab-3col { grid-template-columns:320px minmax(0,1fr) 540px; gap:24px; } }
+.ab-centre { min-width:0; }
+.ab-leftrail { position:sticky; top:80px; max-height:calc(100vh - 96px); overflow-y:auto;
+  display:flex; flex-direction:column; gap:12px; }
 .ab-rightpanel { position:sticky; top:80px; max-height:calc(100vh - 96px); display:flex; flex-direction:column;
   background:linear-gradient(160deg,var(--panel-2),var(--panel)); border:1px solid var(--edge); overflow:hidden; }
-.ab-centre { min-width:0; }
-.ab-rp-scrim { display:none; position:fixed; inset:0; z-index:65; background:rgba(5,5,7,.7); opacity:0; pointer-events:none; transition:opacity .3s ease; }
-@media(max-width:900px){
-  .ab-rp-scrim { display:block; }
-  .ab-rp-scrim.is-open { opacity:1; pointer-events:auto; }
-  .ab-rightpanel { position:fixed; left:0; right:0; top:auto; bottom:0; max-height:86vh; z-index:70;
-    border-radius:18px 18px 0 0; border-top:1px solid var(--gold); box-shadow:0 -22px 50px rgba(0,0,0,.55);
-    transform:translateY(100%); transition:transform .34s cubic-bezier(.16,1,.3,1); }
-  .ab-rightpanel::before { content:""; display:block; flex-shrink:0; width:38px; height:4px; border-radius:2px; background:rgba(199,154,58,.4); margin:9px auto 2px; }
-  .ab-rightpanel.is-open { transform:translateY(0); }
-  .ab-rightpanel:has(.ab-rp-empty) { display:none; }
+
+/* Narrow desktop window: the left rail folds into a full-width row above the
+   roster (still no mobile layout -- two columns minimum). Sits after the base
+   .ab-leftrail rule so these same-specificity overrides win. */
+@media(max-width:1499px){
+  .ab-detail.ab-3col { grid-template-columns:minmax(0,1fr) 460px; }
+  .ab-leftrail { grid-column:1 / -1; position:static; max-height:none;
+    flex-direction:row; flex-wrap:wrap; align-items:stretch; }
+  .ab-leftrail .hud-pill { flex:0 0 auto; min-width:200px; }
+  .ab-leftrail .ab-ctx-strip { flex-direction:row; flex:1 1 420px; }
+  .ab-leftrail .ab-ctx-chip { flex:1 1 160px; }
+  .ab-leftrail .ab-validation { flex-basis:100%; }
 }
 
-/* Centre panel header */
-.ab-centre-head { display:flex; align-items:center; gap:14px; margin-bottom:12px; flex-wrap:wrap; }
-.ab-army-title { flex:1; min-width:180px; margin:0; font-family:'Cinzel',serif; font-weight:700; font-size:22px; color:var(--parch); }
+/* Centre panel header (above the grid, spans the page) */
+.ab-centre-head { display:flex; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap; }
+.ab-army-title { flex:1; min-width:180px; margin:0; font-family:'Cinzel',serif; font-weight:700; font-size:24px; color:var(--parch); }
 
 /* Right panel: context detail */
 .ab-rp-empty { padding:40px 20px; text-align:center; color:var(--parch-dim); }
 .ab-rp-empty-icon { display:block; font-size:30px; color:var(--gold); opacity:.3; margin-bottom:10px; }
-.ab-rp-empty p { font-style:italic; font-size:13px; line-height:1.5; margin:0; }
+.ab-rp-empty p { font-style:italic; font-size:14px; line-height:1.5; margin:0; }
 .ab-rp-head { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; border-bottom:1px solid var(--edge); }
-.ab-rp-title { font-family:'Cinzel',serif; font-weight:700; font-size:15px; color:var(--gold-bright); margin:0; line-height:1.3; }
-.ab-rp-close { background:none; border:none; color:var(--parch-dim); font-size:22px; line-height:1; cursor:pointer; transition:color .2s; padding:0; }
+.ab-rp-title { font-family:'Cinzel',serif; font-weight:700; font-size:17px; color:var(--gold-bright); margin:0; line-height:1.3; }
+.ab-rp-close { background:none; border:none; color:var(--parch-dim); font-size:24px; line-height:1; cursor:pointer; transition:color .2s; padding:0; }
 .ab-rp-close:hover { color:var(--gold); }
 .ab-rp-body { overflow-y:auto; padding:14px 16px; }
-.ab-rp-pts { font-family:'Oswald',sans-serif; font-size:14px; color:var(--parch-dim); margin-bottom:12px; }
+.ab-rp-pts { font-family:'Oswald',sans-serif; font-size:15px; color:var(--parch-dim); margin-bottom:12px; }
 .ab-rp-pts b { color:var(--gold-bright); }
-.ab-rp-role { text-transform:uppercase; letter-spacing:.5px; font-size:11px; }
-.ab-rp-btn { display:inline-block; background:none; border:1px solid var(--edge); color:var(--gold); font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; padding:6px 12px; cursor:pointer; transition:.15s; margin-bottom:12px; }
+.ab-rp-role { text-transform:uppercase; letter-spacing:.5px; font-size:12px; }
+.ab-rp-btn { display:inline-block; background:none; border:1px solid var(--edge); color:var(--gold); font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; padding:7px 12px; cursor:pointer; transition:.15s; margin-bottom:12px; }
 .ab-rp-btn:hover { border-color:var(--gold); color:var(--gold-bright); }
 .ab-rp-btn.is-on { background:var(--gold); color:#0a0a0c; border-color:var(--gold); }
 .ab-rp-section { border-top:1px solid rgba(44,42,53,.6); padding-top:12px; margin-top:12px; }
-.ab-rp-sec-head { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); opacity:.7; margin-bottom:8px; }
-.ab-rp-hint { font-family:'EB Garamond',serif; font-size:13px; color:var(--parch-dim); font-style:italic; margin:0 0 8px; }
-.ab-rp-select { width:100%; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:14px; padding:7px 10px; }
+.ab-rp-sec-head { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold); opacity:.75; margin-bottom:8px; }
+.ab-rp-hint { font-family:'EB Garamond',serif; font-size:14px; color:var(--parch-dim); font-style:italic; margin:0 0 8px; }
+.ab-rp-select { width:100%; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:15px; padding:8px 10px; }
 .ab-rp-select:focus { outline:none; border-color:rgba(199,154,58,.5); }
 
 /* Profiles (statline + weapon) tables in the right panel */
 .ab-rp-collapse { display:flex; align-items:center; justify-content:space-between; width:100%; background:none; border:none; cursor:pointer; padding:0; }
-.ab-rp-collapse-chev { color:var(--gold); font-size:11px; }
-.wp-grp { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.7; margin:12px 0 4px; }
-.wp-table { width:100%; border-collapse:collapse; margin-top:6px; font-family:'Oswald',sans-serif; font-size:11px; }
-.wp-table th { font-weight:400; letter-spacing:.5px; text-transform:uppercase; color:var(--gold); opacity:.6; text-align:center; padding:3px 4px; border-bottom:1px solid var(--edge); }
+.ab-rp-collapse-chev { color:var(--gold); font-size:12px; }
+.wp-grp { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.75; margin:12px 0 4px; }
+.wp-table { width:100%; border-collapse:collapse; margin-top:6px; font-family:'Oswald',sans-serif; font-size:12px; }
+.wp-table th { font-weight:400; letter-spacing:.5px; text-transform:uppercase; color:var(--gold); opacity:.7; text-align:center; padding:3px 4px; border-bottom:1px solid var(--edge); }
 .wp-table td { text-align:center; padding:4px; color:var(--parch); border-bottom:1px solid rgba(44,42,53,.4); }
-.wp-table td.wp-nm { text-align:left; font-family:'EB Garamond',serif; font-size:13px; color:var(--parch); }
-.wp-kw { display:block; font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.4px; text-transform:uppercase; color:var(--parch-dim); }
+.wp-table td.wp-nm { text-align:left; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); }
+.wp-kw { display:block; font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.4px; text-transform:uppercase; color:var(--parch-dim); }
 
 /* Roster unit row: selection highlight (the row itself is .uc-row now). */
 .uc-row.is-selected { border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold); }
 
 /* Detachment chip: Force Disposition label */
-.ab-detach-chip-disp { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); }
+.ab-detach-chip-disp { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); }
 
 /* Sidebar card */
-.ab-card { background:linear-gradient(160deg,var(--panel-2),var(--panel)); border:1px solid var(--edge); padding:18px; margin-bottom:14px; }
-.ab-card-title { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase;
-  color:var(--gold); opacity:.7; margin:0 0 12px; }
+.ab-card { background:linear-gradient(160deg,var(--panel-2),var(--panel)); border:1px solid var(--edge); padding:16px; }
+.ab-card-title { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--gold); opacity:.75; margin:0 0 12px; }
 .ab-meta-item { display:flex; flex-direction:column; gap:4px; }
-.ab-meta-item label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.7; }
+.ab-meta-item label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.75; }
 .ab-meta-item select, .ab-meta-item input[type=number] {
   background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
-  font-family:'EB Garamond',serif; font-size:15px; padding:6px 10px;
+  font-family:'EB Garamond',serif; font-size:16px; padding:7px 10px;
 }
 .ab-meta-item select:focus, .ab-meta-item input:focus { outline:none; border-color:rgba(199,154,58,.5); }
 
-/* Validation block in sidebar */
+/* Validation block in the left rail */
 .ab-validation { margin-top:0; }
-.ab-val-row { font-family:'EB Garamond',serif; font-size:13px; padding:3px 0;
+.ab-val-row { font-family:'EB Garamond',serif; font-size:14px; padding:3px 0;
   display:flex; align-items:flex-start; gap:6px; line-height:1.4; }
 .ab-val-ok  { color:var(--good); }
 .ab-val-err { color:var(--blood-bright); }
@@ -127,14 +141,14 @@
 .ab-detrule-card { padding:0; }
 .ab-detrule { padding-top:12px; }
 .ab-detrule + .ab-detrule { margin-top:10px; border-top:1px dashed rgba(44,42,53,.5); padding-top:10px; }
-.ab-detrule-name { font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--gold-bright);
+.ab-detrule-name { font-family:'Cinzel',serif; font-weight:700; font-size:15px; color:var(--gold-bright);
   margin-bottom:4px; letter-spacing:.3px; }
-.ab-detrule-body { font-family:'EB Garamond',serif; font-size:14px; line-height:1.5; color:var(--parch);
+.ab-detrule-body { font-family:'EB Garamond',serif; font-size:15px; line-height:1.55; color:var(--parch);
   white-space:pre-wrap; }
 .ab-detrule-meta { margin-top:12px; padding-top:10px; border-top:1px solid rgba(44,42,53,.6); }
-.ab-detlist { font-family:'EB Garamond',serif; font-size:13px; color:var(--parch-dim); line-height:1.5; }
+.ab-detlist { font-family:'EB Garamond',serif; font-size:14px; color:var(--parch-dim); line-height:1.5; }
 .ab-detlist + .ab-detlist { margin-top:4px; }
-.ab-detlist-label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase;
+.ab-detlist-label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase;
   color:var(--gold); opacity:.85; }
 
 /* The [hidden] UA default (display:none) loses to the flex display on these
@@ -143,43 +157,40 @@
 
 /* Unit roster */
 .ab-export-btns { display:flex; flex-wrap:wrap; gap:8px; }
-.ab-export-btn { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase;
+.ab-export-btn { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase;
   color:var(--gold); background:none; border:1px solid var(--edge); padding:7px 12px; cursor:pointer; transition:.15s; }
 .ab-export-btn:hover { color:var(--gold-bright); border-color:var(--gold); }
 .new-army-btn--ghost { background:none; color:var(--gold); border:1px solid var(--edge); margin-top:10px; }
 .new-army-btn--ghost:hover { border-color:var(--gold); color:var(--gold-bright); }
 
-.au-role { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.6; margin:0 0 8px; }
-.au-size-input { width:70px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
-  font-family:'Oswald',sans-serif; font-size:15px; padding:4px 8px; text-align:center; }
+.au-role { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.75px; text-transform:uppercase; color:var(--gold); opacity:.8; margin:0 0 8px; }
+.au-size-input { width:74px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
+  font-family:'Oswald',sans-serif; font-size:16px; padding:5px 8px; text-align:center; }
 .au-size-input:focus { outline:none; border-color:rgba(199,154,58,.5); }
-.au-ownership { font-family:'EB Garamond',serif; font-size:14px; margin-top:4px; }
+.au-ownership { font-family:'EB Garamond',serif; font-size:14px; margin-top:6px; }
 .own-ok   { color:var(--good); }
 .own-warn { color:#c89a3a; }
 .own-none { color:var(--parch-dim); font-style:italic; }
-.au-assign-input { width:60px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch);
-  font-family:'Oswald',sans-serif; font-size:14px; padding:3px 7px; text-align:center; }
-.au-assign-input:focus { outline:none; border-color:rgba(199,154,58,.5); }
-.au-warlord { color:var(--gold-bright); font-size:13px; margin-left:4px; text-shadow:0 0 6px rgba(199,154,58,.5); }
-.au-ledby { font-family:'EB Garamond',serif; font-style:italic; font-size:12px; color:var(--gold); margin-left:6px; }
-.au-ally { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:var(--blood-bright);
+.au-warlord { color:var(--gold-bright); font-size:14px; margin-left:4px; text-shadow:0 0 6px rgba(199,154,58,.5); }
+.au-ledby { font-family:'EB Garamond',serif; font-style:italic; font-size:13px; color:var(--gold); margin-left:6px; }
+.au-ally { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; color:var(--blood-bright);
   border:1px solid rgba(150,40,40,.5); border-radius:2px; padding:1px 5px; margin-left:6px; }
 .au-nested { margin-left:26px; border-left:2px solid rgba(199,154,58,.35); padding-left:8px; margin-top:-2px; }
-.wg-summary { font-family:'EB Garamond',serif; font-size:13px; color:var(--parch); margin-bottom:12px; font-style:italic; line-height:1.4; }
+.wg-summary { font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); margin-bottom:12px; font-style:italic; line-height:1.45; }
 .wg-group { margin-bottom:12px; }
 .wg-group:last-child { margin-bottom:0; }
-.wg-radio { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); padding:3px 0; cursor:pointer; }
+.wg-radio { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:15px; color:var(--parch); padding:4px 0; cursor:pointer; }
 .wg-radio .wg-box-input { position:absolute; opacity:0; width:14px; height:14px; margin:0; pointer-events:none; }
 /* Round, not square: a radio (choose exactly one) must not be visually
    mistaken for a checkbox (.wg-check, toggle independently). */
-.wg-radio .wg-box { width:14px; height:14px; border:1px solid var(--edge); border-radius:50%; background:var(--panel);
+.wg-radio .wg-box { width:15px; height:15px; border:1px solid var(--edge); border-radius:50%; background:var(--panel);
   flex-shrink:0; position:relative; }
 .wg-radio .wg-box-input:checked + .wg-box { border-color:var(--gold); }
 .wg-radio .wg-box-input:checked + .wg-box::after { content:''; position:absolute; left:50%; top:50%; width:7px; height:7px;
   border-radius:50%; background:var(--gold); transform:translate(-50%,-50%); }
 .wg-radio .wg-box-input:focus-visible + .wg-box { outline:2px solid var(--gold-bright); outline-offset:1px; }
-.wg-check { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); padding:3px 0; cursor:pointer; }
-.wg-check input { accent-color:var(--gold); flex-shrink:0; }
+.wg-check { display:flex; align-items:center; gap:8px; font-family:'EB Garamond',serif; font-size:15px; color:var(--parch); padding:4px 0; cursor:pointer; }
+.wg-check input { accent-color:var(--gold); flex-shrink:0; width:15px; height:15px; }
 @keyframes wgShimmer { 0%{background-position:220% 0;} 100%{background-position:-20% 0;} }
 /* Flat, not boxed: a bold header + list of rows, no per-card border/icon/tag
    chrome -- a group's mechanic is obvious from its controls (round radio dot
@@ -187,7 +198,7 @@
    plain list style instead of a wall of look-alike bordered cards. */
 .wg-card { border-top:1px solid rgba(44,42,53,.6); margin-top:10px; padding-top:8px; }
 .wg-card:first-child { border-top:none; margin-top:0; padding-top:0; }
-.wg-violation { display:flex; flex-direction:column; gap:3px; font-family:'EB Garamond',serif; font-size:13px; color:#c89a3a; background:rgba(199,154,58,.07); border:1px solid rgba(199,154,58,.35); border-left:3px solid var(--gold); border-radius:4px; padding:8px 10px; margin-bottom:10px; }
+.wg-violation { display:flex; flex-direction:column; gap:3px; font-family:'EB Garamond',serif; font-size:14px; color:#c89a3a; background:rgba(199,154,58,.07); border:1px solid rgba(199,154,58,.35); border-left:3px solid var(--gold); border-radius:4px; padding:8px 10px; margin-bottom:10px; }
 /* Applied to #rpWargear (the .opt-theme editor container) while a loadout
    POST is in flight. */
 .opt-theme.is-pending { position:relative; opacity:.85; pointer-events:none; }
@@ -195,33 +206,31 @@
 .wg-card-toggle { width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
   background:none; border:none; cursor:pointer; padding:1px 0; text-align:left; }
 .wg-card-toggle:hover .wg-card-chev { color:var(--gold-bright); }
-.wg-card-title { font-family:'Oswald',sans-serif; font-weight:600; font-size:12px; letter-spacing:.75px; text-transform:uppercase; color:var(--gold); }
-.wg-card-badge { font-family:'Oswald',sans-serif; font-size:11px; color:var(--parch-dim); border:1px solid var(--edge);
+.wg-card-title { font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:.75px; text-transform:uppercase; color:var(--gold); }
+.wg-card-badge { font-family:'Oswald',sans-serif; font-size:12px; color:var(--parch-dim); border:1px solid var(--edge);
   border-radius:3px; padding:0 5px; margin-left:2px; }
 .wg-card-badge-bad { border-color:#c89a3a; color:#c89a3a; }
 .wg-squad-warn { color:#c89a3a; font-weight:700; }
-.wg-card-chev { color:var(--gold); font-size:11px; flex-shrink:0; }
+.wg-card-chev { color:var(--gold); font-size:12px; flex-shrink:0; }
 .wg-card-content { padding-top:6px; }
-.wg-radio em, .wg-stepper em { color:var(--gold-bright); font-style:normal; font-size:12px; }
-.wg-stepper { display:flex; align-items:center; justify-content:space-between; gap:12px; font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); padding:3px 0; }
-.wg-stepper input { width:58px; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'Oswald',sans-serif; font-size:14px; padding:3px 6px; text-align:center; }
+.wg-radio em, .wg-stepper em, .wg-check em { color:var(--gold-bright); font-style:normal; font-size:13px; }
+.wg-stepper { display:flex; align-items:center; justify-content:space-between; gap:12px; font-family:'EB Garamond',serif; font-size:15px; color:var(--parch); padding:4px 0; }
+.wg-stepper input { width:58px; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'Oswald',sans-serif; font-size:15px; padding:3px 6px; text-align:center; }
 .wg-stepper input:focus { outline:none; border-color:rgba(199,154,58,.5); }
 .wg-cap { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); margin-bottom:5px; }
 .wg-array-sub { padding:2px 0 4px; }
 .wg-array-sub + .wg-array-sub { border-top:1px dashed rgba(44,42,53,.6); margin-top:6px; padding-top:8px; }
-.wg-array-mini { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.4px; color:var(--parch); opacity:.8; margin-bottom:4px; }
+.wg-array-mini { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.4px; color:var(--parch); opacity:.85; margin-bottom:4px; }
 .wg-slots { display:flex; flex-wrap:wrap; gap:6px; }
 .wg-slot { background:var(--panel); border:1px solid var(--edge); color:var(--parch);
-  font-family:'EB Garamond',serif; font-size:13px; padding:5px 8px; max-width:100%; }
+  font-family:'EB Garamond',serif; font-size:14px; padding:5px 8px; max-width:100%; }
 .wg-slot:focus { outline:none; border-color:rgba(199,154,58,.5); }
 /* Ally tag on a picker card */
-.modal-ally-tag { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase;
+.modal-ally-tag { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase;
   color:var(--blood-bright); border:1px solid rgba(150,40,40,.5); border-radius:2px; padding:0 4px; margin-left:6px; }
 
 /* ============================================================
-   Companion-app-parity rebuild (new component families below).
-   Tokens new to this stylesheet only -- additive, nothing here
-   overrides an existing :root variable from style.css.
+   Companion-app-parity component families.
    ============================================================ */
 :root {
   --steel-blue: #3f6d82;
@@ -229,7 +238,7 @@
   --card-light: #ece4cf;
   --card-light-2: #e2d8bd;
   --card-ink: #2a2620;
-  --card-ink-dim: #6b6353;
+  --card-ink-dim: #5c5443;   /* darkened for contrast on the parchment cards */
   --warn-amber: #c89a3a;
 }
 
@@ -241,13 +250,13 @@
   border:1px solid var(--edge); padding:12px 14px;
 }
 .foc-section-name {
-  font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:2px;
+  font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; letter-spacing:1.5px;
   text-transform:uppercase; color:var(--parch); flex:1;
 }
-.foc-section-pts { font-family:'Oswald',sans-serif; font-size:13px; font-weight:600; color:var(--gold-bright); white-space:nowrap; }
+.foc-section-pts { font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; color:var(--gold-bright); white-space:nowrap; }
 .foc-add-btn {
-  flex-shrink:0; width:26px; height:26px; display:flex; align-items:center; justify-content:center;
-  background:none; border:1px solid var(--gold); color:var(--gold); font-size:16px; line-height:1;
+  flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+  background:none; border:1px solid var(--gold); color:var(--gold); font-size:18px; line-height:1;
   cursor:pointer; transition:.15s;
 }
 .foc-add-btn:hover { background:var(--gold); color:#0a0a0c; }
@@ -258,57 +267,58 @@
    app's white-card-on-dark-page look. ---- */
 .uc-row {
   display:flex; align-items:flex-start; gap:12px; background:var(--card-light);
-  border:1px solid var(--card-light-2); padding:10px 12px; margin-bottom:1px; position:relative;
+  border:1px solid var(--card-light-2); padding:11px 13px; margin-bottom:1px; position:relative;
 }
 .uc-thumb { width:64px; height:64px; object-fit:cover; flex-shrink:0; background:#0c0b10; border:1px solid var(--card-light-2); }
 .uc-body { flex:1; min-width:0; cursor:pointer; }
-.uc-name { display:flex; align-items:center; gap:6px; font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink); }
-.uc-owned-dot { width:7px; height:7px; border-radius:50%; background:var(--card-ink-dim); flex-shrink:0; }
+.uc-name { display:flex; align-items:center; gap:6px; font-family:'Cinzel',serif; font-weight:700; font-size:16px; color:var(--card-ink); flex-wrap:wrap; }
+/* The name itself opens the full datasheet card overlay. */
+.uc-name-link { cursor:pointer; }
+.uc-name-link:hover { color:var(--steel-blue); text-decoration:underline; text-underline-offset:3px; }
+.uc-owned-dot { width:8px; height:8px; border-radius:50%; background:var(--card-ink-dim); flex-shrink:0; }
 .uc-owned-dot.is-warn { background:var(--warn-amber); }
 .uc-owned-dot.is-none { background:var(--blood-bright); }
-.uc-bullets { list-style:none; margin:3px 0 0; padding:0; font-family:'EB Garamond',serif; font-size:13px; color:var(--card-ink-dim); line-height:1.45; }
+.uc-bullets { list-style:none; margin:3px 0 0; padding:0; font-family:'EB Garamond',serif; font-size:14px; color:var(--card-ink-dim); line-height:1.45; }
 .uc-bullets li { padding-left:0; }
 .uc-attached-tag {
   display:inline-block; margin-top:6px; background:var(--ink-2); color:var(--parch-dim);
-  font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase;
+  font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase;
   padding:3px 7px;
 }
 .uc-attached-tag b { color:var(--parch); font-weight:600; }
 .uc-side { flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
 .uc-pts-pill {
-  background:var(--steel-blue); color:#eef5f8; font-family:'Oswald',sans-serif; font-size:12px;
+  background:var(--steel-blue); color:#eef5f8; font-family:'Oswald',sans-serif; font-size:13px;
   font-weight:600; padding:3px 9px; white-space:nowrap;
 }
 .uc-kebab-wrap { position:relative; }
-.uc-kebab { background:none; border:none; color:var(--card-ink-dim); font-size:17px; line-height:1; cursor:pointer; padding:2px 6px; }
+.uc-kebab { background:none; border:none; color:var(--card-ink-dim); font-size:18px; line-height:1; cursor:pointer; padding:2px 6px; }
 .uc-kebab:hover { color:var(--card-ink); }
 .uc-kebab-menu {
   position:absolute; right:0; top:100%; z-index:5; background:var(--parch); border:1px solid var(--card-light-2);
-  box-shadow:var(--shadow); min-width:160px; display:flex; flex-direction:column; padding:4px 0;
+  box-shadow:var(--shadow); min-width:170px; display:flex; flex-direction:column; padding:4px 0;
 }
 .uc-kebab-menu[hidden] { display:none; }
 .uc-kebab-menu button {
   background:none; border:none; text-align:left; padding:8px 14px; cursor:pointer;
-  font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink);
+  font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink);
 }
 .uc-kebab-menu button:hover { background:rgba(0,0,0,.06); }
 .uc-kebab-menu button.is-danger:hover { color:var(--blood-bright); }
 
-/* ---- Persistent points/validity HUD: stays pinned to the bottom of the
-   centre column while the roster scrolls underneath it. ---- */
+/* ---- Points/validity HUD block at the top of the left rail. ---- */
 .hud-pill {
-  position:sticky; bottom:14px; z-index:8; display:inline-flex; align-items:stretch;
-  margin-top:10px; box-shadow:0 8px 24px rgba(0,0,0,.5); font-family:'Oswald',sans-serif;
-  cursor:pointer;
+  display:flex; align-items:stretch; box-shadow:0 8px 24px rgba(0,0,0,.35); font-family:'Oswald',sans-serif;
+  cursor:pointer; border:1px solid var(--edge);
 }
-.hud-pill:hover { box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 0 1px var(--gold); }
+.hud-pill:hover { box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 0 1px var(--gold); }
 .hud-warn {
   display:flex; align-items:center; justify-content:center; gap:4px; background:var(--warn-amber);
-  color:#1a1604; font-size:15px; font-weight:700; padding:8px 12px;
+  color:#1a1604; font-size:17px; font-weight:700; padding:8px 14px;
 }
-.hud-pts { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; background:var(--steel-blue); color:#eef5f8; padding:6px 14px; }
-.hud-pts b { font-size:15px; font-weight:700; }
-.hud-pts small { font-size:11px; letter-spacing:1px; opacity:.85; }
+.hud-pts { flex:1; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; background:var(--steel-blue); color:#eef5f8; padding:8px 16px; }
+.hud-pts b { font-size:20px; font-weight:700; }
+.hud-pts small { font-size:12px; letter-spacing:1px; text-transform:uppercase; opacity:.9; }
 
 /* ---- Command Bunker: steel-blue outer accordion (distinct from the gold
    .ab-detrule-card family -- this is a separate reference screen, not a
@@ -318,80 +328,111 @@
 .cb-head {
   width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;
   background:var(--steel-blue); color:#eef5f8; border:none; cursor:pointer;
-  font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:1.5px; text-transform:uppercase;
   padding:12px 16px; text-align:left;
 }
 .cb-head:hover { background:var(--steel-blue-bright); }
-.cb-chev { font-size:11px; }
+.cb-chev { font-size:12px; }
 .cb-section { padding:12px 16px 16px; background:var(--ink-2); }
 .cb-section[hidden] { display:none; }
 .cb-ds-row { display:flex; align-items:center; gap:10px; background:var(--card-light); border:1px solid var(--card-light-2); padding:8px 10px; margin-bottom:6px; cursor:pointer; }
+.cb-ds-row:hover { border-color:var(--steel-blue); }
 .cb-ds-row .uc-thumb { width:40px; height:40px; }
-.cb-ds-name { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink); }
+.cb-ds-name { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink); }
 .cb-ds-chev { color:var(--card-ink-dim); }
-.cb-phase-head { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); opacity:.8; margin:12px 0 6px; }
+.cb-phase-head { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold); opacity:.85; margin:12px 0 6px; }
 .cb-phase-head:first-child { margin-top:0; }
 
 /* Stratagem category color pills (battleTactic/strategicPloy/epicDeed/wargear). */
 .strat-pill { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; margin-bottom:6px; color:#fff; cursor:pointer; }
-.strat-pill-name { font-family:'Cinzel',serif; font-weight:700; font-size:13px; }
-.strat-pill-cp { font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; white-space:nowrap; }
-.strat-pill-chev { font-size:11px; opacity:.85; }
+.strat-pill-name { font-family:'Cinzel',serif; font-weight:700; font-size:14px; }
+.strat-pill-cp { font-family:'Oswald',sans-serif; font-size:12px; font-weight:600; white-space:nowrap; }
+.strat-pill-chev { font-size:12px; opacity:.85; }
 .strat-pill-battleTactic  { background:var(--steel-blue); }
 .strat-pill-strategicPloy { background:var(--blood-bright); }
 .strat-pill-epicDeed      { background:var(--good); }
 .strat-pill-wargear       { background:var(--rust); }
-.strat-pill-body { background:var(--card-light); color:var(--card-ink); font-family:'EB Garamond',serif; font-size:13px; line-height:1.5; padding:10px 12px; margin:-5px 0 6px; }
+.strat-pill-body { background:var(--card-light); color:var(--card-ink); font-family:'EB Garamond',serif; font-size:14px; line-height:1.5; padding:10px 12px; margin:-5px 0 6px; }
 .strat-pill-body[hidden] { display:none; }
 
 /* ---- Checkbox-accordion option rows: Enhancements / Wargear Options. Each
    item is its own expand-for-rules-text card with a trailing checkbox. ---- */
 .opt-row { display:flex; align-items:center; gap:10px; background:var(--card-light); border:1px solid var(--card-light-2); padding:9px 11px; margin-bottom:1px; }
-.opt-chev { background:none; border:none; color:var(--card-ink-dim); font-size:11px; cursor:pointer; padding:0; flex-shrink:0; }
-.opt-name { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink); }
-.opt-pts { font-family:'Oswald',sans-serif; font-size:11px; color:var(--card-ink-dim); margin-right:4px; white-space:nowrap; }
+.opt-chev { background:none; border:none; color:var(--card-ink-dim); font-size:12px; cursor:pointer; padding:0; flex-shrink:0; }
+.opt-name { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink); }
+.opt-pts { font-family:'Oswald',sans-serif; font-size:12px; color:var(--card-ink-dim); margin-right:4px; white-space:nowrap; }
 .opt-check { width:16px; height:16px; accent-color:var(--steel-blue); flex-shrink:0; }
-.opt-body { background:var(--card-light); border:1px solid var(--card-light-2); border-top:none; padding:0 11px 10px; font-family:'EB Garamond',serif; font-size:13px; color:var(--card-ink-dim); line-height:1.5; margin-top:-1px; margin-bottom:1px; }
+.opt-body { background:var(--card-light); border:1px solid var(--card-light-2); border-top:none; padding:0 11px 10px; font-family:'EB Garamond',serif; font-size:14px; color:var(--card-ink-dim); line-height:1.5; margin-top:-1px; margin-bottom:1px; }
 .opt-body[hidden] { display:none; }
 
-/* ---- Unit-options panel: Warlord row + relocated squad-size/assigned
-   controls (this project's collection tracking -- no app equivalent). ---- */
+/* ---- Unit-options panel: Warlord row + relocated squad-size control. ---- */
 .uo-warlord-row { display:flex; align-items:center; gap:10px; background:var(--card-light); border:1px solid var(--card-light-2); padding:10px 12px; margin-bottom:10px; cursor:pointer; }
-.uo-warlord-row span { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:13px; color:var(--card-ink); }
+.uo-warlord-row span { flex:1; font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink); }
 .uo-stat-row { display:flex; align-items:center; gap:10px; padding:6px 0; }
-.uo-stat-row label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); min-width:90px; }
+.uo-stat-row label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; color:var(--parch-dim); min-width:90px; }
 
-/* ---- Add-unit picker overlay (full screen, replaces the always-visible left
-   rail and the old centred modal). ---- */
-.po-overlay-head { display:flex; align-items:center; gap:14px; padding:14px 16px; border-bottom:1px solid var(--edge); }
-.po-overlay-title { font-family:'Cinzel',serif; font-weight:700; font-size:16px; color:var(--parch); margin:0; flex:1; }
-.po-search-wrap { padding:10px 16px; border-bottom:1px solid var(--edge); }
-.po-search { width:100%; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:14px; padding:8px 12px; }
+/* ---- Drawer overlays (add-unit picker / Command Bunker / Edit Roster):
+   right-docked panels about half the viewport wide, over a shared scrim.
+   The roster stays visible (dimmed) beside them. ---- */
+.po-scrim { position:fixed; inset:0; z-index:54; background:rgba(5,5,7,.55); }
+.po-scrim[hidden] { display:none; }
+.po-overlay {
+  position:fixed; top:0; right:0; bottom:0; z-index:56;
+  width:min(50vw, 980px); min-width:620px;
+  background:var(--ink); border-left:1px solid rgba(199,154,58,.35);
+  box-shadow:-28px 0 70px rgba(0,0,0,.6);
+  display:flex; flex-direction:column;
+  animation:poSlide .2s ease;
+}
+.po-overlay[hidden] { display:none; }
+@keyframes poSlide { from { transform:translateX(36px); opacity:.4; } to { transform:none; opacity:1; } }
+.po-overlay-head { display:flex; align-items:center; gap:14px; padding:14px 18px; border-bottom:1px solid var(--edge); }
+.po-overlay-title { font-family:'Cinzel',serif; font-weight:700; font-size:18px; color:var(--parch); margin:0; flex:1; }
+.po-close { background:none; border:none; color:var(--parch-dim); font-size:28px; line-height:1; cursor:pointer; padding:0 2px; transition:color .15s; }
+.po-close:hover { color:var(--gold); }
+.po-search-wrap { padding:10px 18px; border-bottom:1px solid var(--edge); }
+.po-search { width:100%; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:15px; padding:9px 12px; }
 .po-search:focus { outline:none; border-color:rgba(199,154,58,.5); }
-.po-body { padding:14px 16px; overflow-y:auto; }
+.po-body { padding:14px 18px; overflow-y:auto; }
 .po-card { display:flex; align-items:center; gap:12px; background:var(--card-light); border:1px solid var(--card-light-2); padding:10px 12px; margin-bottom:8px; }
 .po-thumb { width:56px; height:56px; object-fit:cover; flex-shrink:0; background:#0c0b10; border:1px solid var(--card-light-2); }
 .po-body-text { flex:1; min-width:0; }
-.po-name { font-family:'Cinzel',serif; font-weight:700; font-size:14px; color:var(--card-ink); }
-.po-owned { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.3px; color:var(--steel-blue); margin-top:2px; }
+.po-name { font-family:'Cinzel',serif; font-weight:700; font-size:16px; color:var(--card-ink); }
+.po-owned { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.3px; color:var(--steel-blue); margin-top:2px; }
 .po-side { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:5px; }
 .po-add {
-  width:30px; height:30px; display:flex; align-items:center; justify-content:center;
-  background:none; border:1px solid var(--card-ink); color:var(--card-ink); font-size:17px;
+  width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+  background:none; border:1px solid var(--card-ink); color:var(--card-ink); font-size:18px;
   line-height:1; cursor:pointer; transition:.15s;
 }
 .po-add:hover { background:var(--card-ink); color:var(--card-light); }
-.po-pts { font-family:'Oswald',sans-serif; font-size:11px; color:var(--steel-blue); white-space:nowrap; }
-.po-role-head { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); opacity:.7; padding:10px 0 4px; }
-.po-ally-head { color:var(--blood-bright); opacity:.8; border-top:1px solid rgba(150,40,40,.3); margin-top:8px; }
-.po-empty { color:var(--parch-dim); font-style:italic; padding:20px 0; }
+.po-pts { font-family:'Oswald',sans-serif; font-size:12px; color:var(--steel-blue); white-space:nowrap; }
+.po-role-head { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); opacity:.75; padding:10px 0 4px; }
+.po-ally-head { color:var(--blood-bright); opacity:.85; border-top:1px solid rgba(150,40,40,.3); margin-top:8px; }
+.po-empty { color:var(--parch-dim); font-style:italic; font-size:15px; padding:20px 0; }
+
+/* ---- Full datasheet card overlay: image-lightbox-style, X or backdrop
+   click to close. The card markup/styles are the shared .dsc-* family. ---- */
+.dsc-overlay {
+  position:fixed; inset:0; z-index:80; background:rgba(5,5,7,.8);
+  overflow-y:auto; padding:36px 24px;
+}
+.dsc-overlay[hidden] { display:none; }
+.dsc-overlay-body { max-width:1100px; margin:0 auto; }
+.dsc-overlay-close {
+  position:fixed; top:16px; right:28px; z-index:81; background:none; border:none;
+  color:var(--parch); font-size:42px; line-height:1; cursor:pointer; transition:color .15s;
+  text-shadow:0 2px 10px rgba(0,0,0,.9);
+}
+.dsc-overlay-close:hover { color:var(--gold-bright); }
+.dsc-overlay-loading { color:var(--parch-dim); font-style:italic; font-size:16px; text-align:center; padding:80px 0; }
 
 /* ---- Detachment-picker art cards: DP-budget header + selectable cards with
    faction banner/icon bleeding in (no per-detachment art exists -- this is
    the documented substitute). ---- */
 .dp-budget-head { display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--parch); color:var(--card-ink); padding:12px 16px; margin-bottom:14px; }
-.dp-budget-label { font-family:'Cinzel',serif; font-weight:700; font-size:13px; }
-.dp-budget-pill { background:var(--steel-blue); color:#eef5f8; font-family:'Oswald',sans-serif; font-size:12px; font-weight:700; padding:3px 10px; }
+.dp-budget-label { font-family:'Cinzel',serif; font-weight:700; font-size:14px; }
+.dp-budget-pill { background:var(--steel-blue); color:#eef5f8; font-family:'Oswald',sans-serif; font-size:13px; font-weight:700; padding:3px 10px; }
 .dp-budget-pill.is-over { background:var(--blood-bright); }
 .dp-card {
   position:relative; display:flex; align-items:center; gap:10px; background:var(--ink-2) center/cover no-repeat;
@@ -402,23 +443,23 @@
   background:linear-gradient(90deg, var(--ink-2) 35%, rgba(18,17,22,.55) 65%, rgba(18,17,22,.15) 100%);
 }
 .dp-card.is-selected { border-color:var(--gold); }
-.dp-card-chev { position:relative; z-index:1; background:none; border:none; color:var(--parch); font-size:12px; flex-shrink:0; }
-.dp-card-name { position:relative; z-index:1; flex:1; font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--parch); }
-.dp-card-cost { position:relative; z-index:1; background:rgba(0,0,0,.4); color:var(--gold-bright); font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; padding:3px 8px; white-space:nowrap; }
+.dp-card-chev { position:relative; z-index:1; background:none; border:none; color:var(--parch); font-size:13px; flex-shrink:0; }
+.dp-card-name { position:relative; z-index:1; flex:1; font-family:'Oswald',sans-serif; font-weight:600; font-size:14px; letter-spacing:.75px; text-transform:uppercase; color:var(--parch); }
+.dp-card-cost { position:relative; z-index:1; background:rgba(0,0,0,.4); color:var(--gold-bright); font-family:'Oswald',sans-serif; font-size:12px; font-weight:600; padding:3px 8px; white-space:nowrap; }
 .dp-card-expand { background:var(--ink-2); border-top:1px solid rgba(0,0,0,.3); padding:10px 16px; margin:-8px 0 8px; }
 .dp-card-expand[hidden] { display:none; }
-.dp-card-expand h4 { font-family:'Cinzel',serif; font-size:12px; color:var(--gold-bright); margin:0 0 4px; }
-.dp-card-expand p { font-family:'EB Garamond',serif; font-size:12px; color:var(--parch-dim); margin:0 0 6px; line-height:1.4; }
+.dp-card-expand h4 { font-family:'Cinzel',serif; font-size:13px; color:var(--gold-bright); margin:0 0 4px; }
+.dp-card-expand p { font-family:'EB Garamond',serif; font-size:13.5px; color:var(--parch-dim); margin:0 0 6px; line-height:1.45; }
 
-/* ---- Edit Roster overlay (a .po-overlay like the picker and Command
+/* ---- Edit Roster drawer (a .po-overlay like the picker and Command
    Bunker). ---- */
 .er-body { padding:16px 18px; overflow-y:auto; }
-.er-label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); opacity:.8; margin:0 0 8px; }
+.er-label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); opacity:.85; margin:0 0 8px; }
 .er-label:not(:first-child) { margin-top:18px; }
-.er-name-input { width:100%; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'Cinzel',serif; font-weight:700; font-size:16px; padding:9px 12px; }
+.er-name-input { width:100%; background:var(--panel); border:1px solid var(--edge); color:var(--parch); font-family:'Cinzel',serif; font-weight:700; font-size:17px; padding:9px 12px; }
 .er-name-input:focus { outline:none; border-color:rgba(199,154,58,.6); }
-.er-faction-row { background:var(--ink-2); border:1px solid var(--edge); color:var(--parch-dim); font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:14px 16px; }
-.er-config-row { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:14px; padding:12px 16px; cursor:pointer; margin-top:6px; text-align:left; }
+.er-faction-row { background:var(--ink-2); border:1px solid var(--edge); color:var(--parch-dim); font-family:'Oswald',sans-serif; font-size:14px; letter-spacing:.75px; text-transform:uppercase; padding:14px 16px; }
+.er-config-row { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--ink-2); border:1px solid var(--edge); color:var(--parch); font-family:'EB Garamond',serif; font-size:15px; padding:12px 16px; cursor:pointer; margin-top:6px; text-align:left; }
 .er-config-row:hover { border-color:rgba(199,154,58,.5); }
 .er-config-chev { color:var(--gold); }
 
@@ -428,11 +469,11 @@
 .uo-accordion-head {
   width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;
   background:#8d8675; color:#211e16; border:none; cursor:pointer;
-  font-family:'Oswald',sans-serif; font-weight:600; font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+  font-family:'Oswald',sans-serif; font-weight:600; font-size:12px; letter-spacing:1.2px; text-transform:uppercase;
   padding:9px 12px; text-align:left; margin-top:10px;
 }
 .uo-accordion-head:hover { background:#9a9381; }
-.uo-accordion-chev { font-size:11px; }
+.uo-accordion-chev { font-size:12px; }
 /* The body is the light surface the .opt-theme ink colors below assume --
    without it the editor renders dark-ink-on-dark-panel and is unreadable. */
 .uo-accordion-body { background:var(--card-light); border:1px solid var(--card-light-2); border-top:none; padding:10px 12px; }
@@ -463,32 +504,15 @@
 .opt-theme .wg-check input { accent-color:var(--steel-blue); }
 .opt-theme .wg-array-sub + .wg-array-sub { border-top-color:var(--card-light-2); }
 
-/* ---- Two-panel layout (centre + right rail) once the unit picker stops
-   being a persistent third column and becomes the full overlay below. The
-   rail is sized for the unit-options editor (wargear cards with stat lines
-   and count controls), not just a summary column. ---- */
-.ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 480px; gap:18px; }
-@media(max-width:1400px){ .ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 420px; gap:14px; } }
-@media(max-width:1180px){ .ab-detail.ab-2panel { grid-template-columns:minmax(0,1fr) 380px; gap:12px; } }
-@media(max-width:900px){ .ab-detail.ab-2panel { grid-template-columns:1fr; } }
-
-/* ---- Add-unit picker: full-screen overlay, matching the reference app's
-   dedicated add-unit screen. ---- */
-.po-overlay { position:fixed; inset:0; z-index:55; background:var(--ink); display:flex; flex-direction:column; }
-.po-overlay[hidden] { display:none; }
-.po-overlay-head .cb-back { background:none; border:none; color:var(--parch); font-size:18px; cursor:pointer; padding:0 10px 0 0; }
-
-/* ---- Command Bunker: faction badge entry point + the overlay's own body
-   (reuses .po-overlay/.po-overlay-head/.po-body for the screen shell). ---- */
+/* ---- Command Bunker: faction badge entry point (the drawer shell itself
+   reuses .po-overlay/.po-overlay-head/.po-body). ---- */
 .cb-open-btn {
-  flex-shrink:0; width:34px; height:34px; border-radius:50%; overflow:hidden;
+  flex-shrink:0; width:36px; height:36px; border-radius:50%; overflow:hidden;
   background:var(--ink-2); border:1px solid var(--gold); color:var(--gold);
   display:flex; align-items:center; justify-content:center; font-size:17px; cursor:pointer;
 }
 .cb-open-btn img { width:100%; height:100%; object-fit:cover; }
 .cb-open-btn:hover { border-color:var(--gold-bright); color:var(--gold-bright); }
-.cb-section[hidden] { display:none; }
-.cb-section { padding-bottom:4px; }
 
 /* Roster-header overflow kebab (Edit Roster / Duplicate Roster): same
    .uc-kebab-wrap/.uc-kebab-menu pattern as a unit row's kebab, just
@@ -496,42 +520,42 @@
 .rh-kebab { color:var(--parch); font-size:22px; }
 .rh-kebab:hover { color:var(--gold); }
 
-/* ---- Context strip: always-visible faction / battle-size / detachment /
-   enhancement-budget chips under the army title. Each chip is a labeled
-   shortcut to the screen that changes it. ---- */
-.ab-ctx-strip { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+/* ---- Context chips: faction / battle-size / detachment / enhancement-budget,
+   stacked in the left rail. Each chip is a labeled shortcut to the screen
+   that changes it. ---- */
+.ab-ctx-strip { display:flex; flex-direction:column; gap:8px; }
 .ab-ctx-chip {
   display:flex; flex-direction:column; align-items:flex-start; gap:2px;
   background:var(--panel); border:1px solid var(--edge); border-left:3px solid var(--gold);
-  padding:7px 12px; cursor:pointer; text-align:left; transition:.15s; min-width:0;
+  padding:9px 12px; cursor:pointer; text-align:left; transition:.15s; min-width:0;
 }
 .ab-ctx-chip:hover { border-color:rgba(199,154,58,.55); border-left-color:var(--gold-bright); background:rgba(199,154,58,.05); }
 .ab-ctx-chip.ab-ctx-static { cursor:default; }
 .ab-ctx-chip.ab-ctx-static:hover { border-color:var(--edge); border-left-color:var(--gold); background:var(--panel); }
-.ab-ctx-label { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold); opacity:.75; }
-.ab-ctx-value { font-family:'EB Garamond',serif; font-size:14px; color:var(--parch); line-height:1.3; }
+.ab-ctx-label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.8; }
+.ab-ctx-value { font-family:'EB Garamond',serif; font-size:15px; color:var(--parch); line-height:1.35; }
 .ab-ctx-value.is-over { color:var(--blood-bright); }
-.ab-ctx-hint { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:var(--gold); opacity:.7; }
+.ab-ctx-hint { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; color:var(--gold); opacity:.75; }
 /* Missing detachment: the one required pick a new list starts without --
    warning-coloured so the next action is visible on the roster itself. */
 .ab-ctx-chip.is-missing { border-color:rgba(200,154,58,.6); border-left-color:var(--warn-amber); background:rgba(199,154,58,.07); }
-.ab-ctx-chip.is-missing .ab-ctx-value { color:var(--warn-amber); font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.5px; text-transform:uppercase; }
+.ab-ctx-chip.is-missing .ab-ctx-value { color:var(--warn-amber); font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:.5px; text-transform:uppercase; }
 
 /* Clickable (unit-scoped) validation rows: same look as the static rows plus
    a jump arrow; button chrome stripped. */
-button.ab-val-row { background:none; border:none; width:100%; text-align:left; cursor:pointer; font-size:13px; }
+button.ab-val-row { background:none; border:none; width:100%; text-align:left; cursor:pointer; font-size:14px; }
 button.ab-val-row:hover { background:rgba(199,154,58,.06); }
 .ab-val-go { margin-left:auto; color:var(--gold); opacity:.6; flex-shrink:0; }
 button.ab-val-row:hover .ab-val-go { opacity:1; }
 
 /* Inline ⚠ on a roster row with an illegal wargear selection. */
-.uc-row-warn { color:#a9531f; font-size:13px; cursor:help; }
+.uc-row-warn { color:#a9531f; font-size:14px; cursor:help; }
 
 /* Picker card: model-count/owned meta line, profile chevron + inline
    datasheet preview (dark panel between the light cards). */
-.po-meta { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.3px; color:var(--card-ink-dim); margin-top:2px; }
+.po-meta { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:.3px; color:var(--card-ink-dim); margin-top:2px; }
 .po-own { color:var(--good); font-weight:600; }
-.po-prof-chev { font-size:11px; color:var(--card-ink-dim); }
+.po-prof-chev { font-size:12px; color:var(--card-ink-dim); }
 .po-profile { background:var(--ink-2); border:1px solid var(--edge); border-top:none; padding:10px 14px 14px; margin:-8px 0 8px; }
 .po-profile[hidden] { display:none; }
 
@@ -540,12 +564,20 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 
 /* ---- Wargear editor v2: rule-sentence subtitles, boxed miniature groups,
    and −/N/+ count controls replacing the bare number-spinner inputs. ---- */
-.wg-card-sub { font-family:'EB Garamond',serif; font-size:12.5px; font-style:italic;
+.wg-card-sub { font-family:'EB Garamond',serif; font-size:13.5px; font-style:italic;
   color:var(--parch-dim); line-height:1.45; margin:2px 0 8px; }
 .opt-theme .wg-card-sub { color:var(--card-ink-dim); }
 
 /* Option label: weapon name + points delta. */
 .wg-opt-label { display:flex; flex-direction:column; gap:1px; min-width:0; flex:1; }
+
+/* Placement tick-list (single additive item, e.g. a Chaos Icon): one row per
+   distinct current model setup, tick = that model carries it. */
+.wg-place { align-items:flex-start; }
+.wg-place input { margin-top:3px; }
+.wg-place.is-off { opacity:.55; }
+.wg-place-kit { color:var(--card-ink-dim); font-size:14px; }
+.wg-place .wg-opt-label { flex-direction:row; align-items:baseline; gap:6px; flex-wrap:wrap; }
 
 /* Miniature-group box: each model type's options (Aspiring Champion vs.
    Legionaries) sit in their own outlined block with a tinted header bar. */
@@ -558,7 +590,7 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .opt-theme .wg-mini-head { background:var(--card-light-2); }
 .opt-theme .wg-radio:hover, .opt-theme .wg-check:hover { background:rgba(63,109,130,.07); }
 
-/* −/N/+ count control: big tap targets; the number stays typeable but loses
+/* −/N/+ count control: big click targets; the number stays typeable but loses
    the fiddly native spinner arrows. */
 .wg-count { display:inline-flex; align-items:stretch; flex-shrink:0; }
 .wg-nudge { width:30px; min-height:30px; display:flex; align-items:center; justify-content:center;
@@ -573,8 +605,8 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .opt-theme .wg-nudge:hover { background:var(--steel-blue); border-color:var(--steel-blue); color:#eef5f8; }
 
 /* "Current loadout" summary block: one line per distinct model setup. */
-.wg-summary-lbl { display:block; font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px;
-  text-transform:uppercase; font-style:normal; color:var(--gold); opacity:.75; margin-bottom:3px; }
+.wg-summary-lbl { display:block; font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px;
+  text-transform:uppercase; font-style:normal; color:var(--gold); opacity:.8; margin-bottom:3px; }
 .opt-theme .wg-summary-lbl { color:var(--card-ink-dim); opacity:1; }
 .wg-summary ul { list-style:none; margin:0; padding:0; }
 .wg-summary li { padding:1px 0; }
@@ -583,5 +615,5 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 /* "Always equipped" footnote: fixed kit no option can change, once per
    miniature, at the bottom of the editor instead of a row per weapon. */
 .wg-fixed-note { border-top:1px dashed rgba(44,42,53,.6); margin-top:14px; padding-top:8px;
-  font-family:'EB Garamond',serif; font-size:13px; font-style:italic; color:var(--parch-dim); line-height:1.5; }
+  font-family:'EB Garamond',serif; font-size:14px; font-style:italic; color:var(--parch-dim); line-height:1.5; }
 .opt-theme .wg-fixed-note { border-top-color:var(--card-light-2); color:var(--card-ink-dim); }

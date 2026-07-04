@@ -282,7 +282,15 @@ def _bullet_bundles(instr, items):
     counts when the bullet names it with a leading quantity."""
     parts = _BULLET_SPLIT.split(instr or "")
     if len(parts) < 2:
-        return [], set()
+        # No bullet list: an inline "…can be replaced with 1 kombi-weapon and
+        # 1 close combat weapon." is ONE pick granting both items. Parse only
+        # the text after the phrase so the *displaced* weapons named before it
+        # can't be mistaken for granted ones.
+        m = re.search(r"can be replaced with\b(.*)", instr or "",
+                      re.IGNORECASE | re.DOTALL)
+        if not m:
+            return [], set()
+        parts = ["", m.group(1)]
     names = {i["item"] for i in items}
     bundles, singles = [], set()
     for seg in parts[1:]:
@@ -314,6 +322,13 @@ def _instruction_type(instruction):
     if "any number of" in t:
         return "replace_any"
     if "one of the following" in t:
+        return "replace_one"
+    if "can be replaced with" in t:
+        # Single-alternative swaps ("The Boss Nob's big choppa can be replaced
+        # with 1 power klaw") are replace_one with one option: mutually
+        # exclusive with the default they displace, not an additive extra.
+        # ("cannot be replaced" never contains this phrase, so additive
+        # equip-notes stay `choice`.)
         return "replace_one"
     return "choice"
 
@@ -428,11 +443,14 @@ def wargear_schema(did):
     # (boltgun-slot and bolt-pistol-slot both offering chainsword/accursed/
     # etc.), but the named weapon disambiguates them for free. Two guards: the
     # name must exactly match a Default-group item of the group's own miniature
-    # (case-insensitive), and that default key must not be managed by a weapon
-    # array (the array passes re-derive such keys after the replace_one
-    # exclusion runs, which would undo the clear -- e.g. Krieg Combat
-    # Engineers' Watchmaster, whose autopistol is also an "any number of
-    # models" array pool weapon).
+    # (case-insensitive, modulo a leading quantity and a plural "s"), and that
+    # default key must not be managed by a weapon array (the array passes
+    # re-derive such keys after the replace_one exclusion runs, which would
+    # undo the clear -- e.g. Krieg Combat Engineers' Watchmaster, whose
+    # autopistol is also an "any number of models" array pool weapon).
+    # A compound name ("big choppa and slugga", "bolt pistol, boltgun and
+    # close combat weapon") displaces SEVERAL defaults at once; linked only
+    # when every part resolves, else left unlinked like any ambiguous case.
     array_owned = {m["key"] for sp in specs for m in sp["members"]}
     array_owned |= _multi_item_keys(did)
     for grp in groups:
@@ -442,11 +460,21 @@ def wargear_schema(did):
                       re.IGNORECASE)
         if not m:
             continue
-        nm = m.group(1).strip().lower()
-        key = next((k for (mn, item), k in default_keys.items()
-                    if mn == grp["miniature"] and item.lower() == nm), None)
-        if key and key not in array_owned:
-            grp["linked_default_keys"] = (key,)
+        names = [nm.strip() for part in m.group(1).split(" and ")
+                 for nm in part.split(",") if nm.strip()]
+        link_keys = []
+        for nm in names:
+            nm_l = re.sub(r"^\d+\s+", "", nm.lower())
+            key = next((k for (mn, item), k in default_keys.items()
+                        if mn == grp["miniature"]
+                        and (item.lower() == nm_l or item.lower() + "s" == nm_l)),
+                       None)
+            if key is None or key in array_owned or key in link_keys:
+                link_keys = None
+                break
+            link_keys.append(key)
+        if link_keys:
+            grp["linked_default_keys"] = tuple(link_keys)
 
     # limited_per_n → array-pool cross-reference: a capped "…boltgun can be
     # replaced with…" group displaces the same pool weapon a replace_any array
@@ -644,22 +672,25 @@ def default_selection(did, squad_size):
 
 def apply_overrides(did, squad_size, overrides):
     """Full selection = default loadout overlaid with the sparse user overrides
-    (option-key counts *and* synthetic ``@b|…`` bundle picks)."""
+    (option-key counts, synthetic ``@b|…`` bundle picks, and ``@on|…``
+    placement hints -- which model of a miniature carries an additive item)."""
     sel = default_selection(did, squad_size)
     if overrides:
         for k, v in overrides.items():
-            if k in sel:
+            if k in sel or k.startswith("@on|"):
                 sel[k] = _int(v)
     return sel
 
 
 def overrides_of(did, squad_size, selection):
     """Sparse diff of a full selection from the default — what we persist. Item
-    counts derived from bundle picks are skipped (the ``@b|…`` picks carry them)."""
+    counts derived from bundle picks are skipped (the ``@b|…`` picks carry them).
+    ``@on|…`` placement hints default to 0, so any set hint is an override."""
     default = default_selection(did, squad_size)
     derived = _multi_item_keys(did)
     return {k: _int(v) for k, v in (selection or {}).items()
-            if k not in derived and k in default and _int(v) != default[k]}
+            if (k.startswith("@on|") and _int(v))
+            or (k not in derived and k in default and _int(v) != default[k])}
 
 
 def points_delta(did, squad_size, selection):
@@ -699,7 +730,7 @@ def validate_selection(did, squad_size, selection):
     default = default_selection(did, squad_size)
     sel = dict(default)
     for k, v in (selection or {}).items():
-        if k in default:
+        if k in default or k.startswith("@on|"):
             sel[k] = _int(v)
     counts = _miniature_counts(did, squad_size)
     violations = []
@@ -750,6 +781,23 @@ def validate_selection(did, squad_size, selection):
             if (set(grp["linked_default_keys"]) & spec_pool) or (gkeys & bundle_keys):
                 rel_spec[grp["instruction"]] = i
 
+    # Two replace_one groups can displace the SAME default (Boyz' Boss Nob:
+    # "big choppa → power klaw" and "big choppa and slugga → kombi-weapon...").
+    # A group with no active pick restores its linked defaults below -- but it
+    # must not resurrect one that a sibling group's active pick displaces.
+    # Activeness per group is stable across the loop (healing keeps a group's
+    # winning pick), so the set can be computed up front.
+    displaced_by_pick = set()
+    for grp in schema:
+        if grp["type"] == "replace_one" and \
+                any(_int(sel.get(i["key"])) > 0 for i in grp["items"]):
+            displaced_by_pick.update(grp.get("linked_default_keys") or ())
+    claimed_links = set()   # linked keys an already-applied pick displaces
+    # Stale-default detection must see the selection as it ARRIVED: a sibling
+    # group sharing the link zeroes the default before the picking group's
+    # turn, which would hide the auto-correction from the violation report.
+    sel_in = dict(sel)
+
     for grp in schema:
         if grp["type"] == "array":
             continue  # balanced unit-wide below, against its spec
@@ -775,7 +823,7 @@ def validate_selection(did, squad_size, selection):
                 + [{k: 1} for k in own_keys if k not in bundled_keys]
             linked = list(grp.get("linked_default_keys") or ())
             active = [u for u in units_ if any(_int(sel.get(k)) > 0 for k in u)]
-            default_active = any(_int(sel.get(k)) > 0 for k in linked)
+            default_active = any(_int(sel_in.get(k)) > 0 for k in linked)
             # a fully-active bundle beats a unit that's only active via a key
             # it shares with the winner (partial overlap after a patch)
             active.sort(key=lambda u: -sum(1 for k in u if _int(sel.get(k)) > 0))
@@ -784,6 +832,20 @@ def validate_selection(did, squad_size, selection):
                 act = {k for k in u if _int(sel.get(k)) > 0}
                 if not any(act <= set(v) for v in distinct):
                     distinct.append(u)
+            if distinct and (set(linked) & claimed_links):
+                # A sibling group's pick already consumed one of the defaults
+                # this swap replaces (Boss Nob: power klaw and the kombi bundle
+                # both take the big choppa) -- first group in schema order
+                # wins, this pick is dropped and its uncontested defaults come
+                # back.
+                flag("%s: default already replaced by another option" % instr)
+                for k in own_keys:
+                    sel[k] = 0
+                for k in linked:
+                    if k not in claimed_links:
+                        sel[k] = default.get(k, 0)
+                        displaced_by_pick.discard(k)  # nothing displaces it now
+                continue
             if len(distinct) > 1 or (distinct and default_active):
                 flag("%s: choose only one" % instr)
             if distinct:
@@ -792,11 +854,12 @@ def validate_selection(did, squad_size, selection):
                     sel[k] = chosen.get(k, 0)
                 for k in linked:
                     sel[k] = 0
+                claimed_links.update(linked)
             else:
                 for k in own_keys:
                     sel[k] = 0
                 for k in linked:
-                    sel[k] = default.get(k, 0)
+                    sel[k] = 0 if k in displaced_by_pick else default.get(k, 0)
         elif t == "limited_per_n":
             if grp["instruction"] in rel_spec:
                 continue  # settled against its weapon array below (cap + pool)
@@ -1167,8 +1230,18 @@ def validate_selection(did, squad_size, selection):
             # riders (shared partners like Boyz' close combat weapon) sum the
             # contributions of every bundle that grants them
             for pk, add in rider_add.items():
-                r2 = _resolve(item_of_g[pk])
+                it2 = item_of_g[pk]
+                r2 = _resolve(it2)
                 if r2 is None:
+                    # The array owns the rider's (canonical) key outright, so
+                    # its derived @b share is already written -- but the card's
+                    # replacement grants the rider ON TOP of that share (Krieg
+                    # Combat Engineers: the flamer pick's close combat weapon
+                    # is also an array bundle member).
+                    ck2 = canon.get((it2["miniature"], it2["item"]), pk)
+                    c2 = ctx.get(it2["miniature"])
+                    if add > 0 and c2 is not None and ck2 in c2["item_keys"]:
+                        sel[ck2] = _int(sel.get(ck2)) + add
                     settled_keys.add(pk)
                     continue
                 key2, base2, dx2, st2, _ck2 = r2
@@ -1229,6 +1302,13 @@ def validate_selection(did, squad_size, selection):
             flag("%s: more replacements than weapons to replace"
                  % clip(grp["instruction"], 40))
 
+    # Placement hints for items no longer selected are stale -- zero them so
+    # they neither persist in the overrides nor steer a future re-add.
+    for k in [k for k in sel if k.startswith("@on|")]:
+        base = k[4:].rsplit("|", 1)[0]
+        if _int(sel.get(base)) <= 0:
+            sel[k] = 0
+
     return {"selection": sel,
             "overrides": overrides_of(did, squad_size, sel),
             "violations": violations,
@@ -1262,7 +1342,9 @@ def _touched_items(did):
 def loadout_setups(did, squad_size, selection):
     """Structured per-model view of a resolved selection for the UI's "Current
     loadout" block: ``{"setups": [{miniature, count, items}, ...],
-    "fixed": [{miniature, items}, ...]}``.
+    "fixed": [{miniature, items}, ...], "kits": {miniature: [{item: qty}, ...]}}``
+    -- ``kits`` lists each model's changeable kit by model index, for the
+    placement tick-list UI.
 
     ``setups`` groups a miniature's models by identical *changeable* kit ("5×
     Legionary — Boltgun", "1× Legionary — Plasma gun"), reconstructed by
@@ -1279,6 +1361,17 @@ def loadout_setups(did, squad_size, selection):
     touched = _touched_items(did)
     mcounts = _miniature_counts(did, squad_size)
     default_sel = default_selection(did, squad_size)
+
+    # ``@on|<item key>|<model idx>`` placement hints: the user picked WHICH
+    # model of the miniature carries an additive item (a Chaos Icon). They
+    # steer attribution below; counts/legality never depend on them.
+    hints = {}   # (miniature, item) -> [model indexes]
+    for k, v in sel.items():
+        if k.startswith("@on|") and _int(v) > 0:
+            base, _, idx = k[4:].rpartition("|")
+            mi = key_item.get(base)
+            if mi and idx.isdigit():
+                hints.setdefault(mi, []).append(int(idx))
 
     # Final + default counts per (miniature, item); stable item order per mini.
     # Minis ordered smallest contingent first (leader before troops, matching
@@ -1331,7 +1424,7 @@ def loadout_setups(did, squad_size, selection):
             if nb > 0:
                 bundle_units.setdefault(M0, []).append(
                     ({key_item[k][1]: q for k, q in ks.items()}, nb))
-    setups, fixed = [], []
+    setups, fixed, all_kits = [], [], {}
     fmt = lambda it, c: ("%d× %s" % (c, it)) if c > 1 else it
 
     for M in mini_order:
@@ -1357,6 +1450,7 @@ def loadout_setups(did, squad_size, selection):
         if n <= 1:
             setups.append({"miniature": M, "count": max(n, 1),
                            "items": [fmt(it, c) for it, c in var.items()]})
+            all_kits[M] = [dict(var)]
             continue
 
         # Seed every model with its default variable kit...
@@ -1432,8 +1526,15 @@ def loadout_setups(did, squad_size, selection):
                         need[it] = need.get(it, 0) - q
             # additions: final > seeded. Replacements first (they pair with the
             # models their removals freed), additive extras after (round-robin
-            # onto armed models once the freed slots are spent).
+            # onto armed models once the freed slots are spent). A placement
+            # hint pins an addition to the model the user actually ticked.
             for it in sorted(ordered, key=lambda it: (M, it) not in displacing):
+                for i in sorted(hints.get((M, it), [])):
+                    if need.get(it, 0) <= 0:
+                        break
+                    if 0 <= i < n:
+                        kits[i][it] = kits[i].get(it, 0) + 1
+                        need[it] -= 1
                 while need.get(it, 0) > 0:
                     i = take_slot()
                     kits[i][it] = kits[i].get(it, 0) + 1
@@ -1443,6 +1544,10 @@ def loadout_setups(did, squad_size, selection):
             setups.append({"miniature": M, "count": n,
                            "items": [fmt(it, c) for it, c in var.items()]})
             continue
+
+        # Per-model kits, indexable by the model index ``@on`` hints use --
+        # the UI's placement tick-list is built from these.
+        all_kits[M] = [dict(kit) for kit in kits]
 
         # Group models with identical kits, largest group first.
         grouped, order = {}, []
@@ -1457,7 +1562,7 @@ def loadout_setups(did, squad_size, selection):
                            "items": [fmt(it, c) for it, c in
                                      sorted(sig, key=lambda p: rank.get(p[0], 999))]})
 
-    return {"setups": setups, "fixed": fixed}
+    return {"setups": setups, "fixed": fixed, "kits": all_kits}
 
 
 def resolved_loadout(did, squad_size, selection):

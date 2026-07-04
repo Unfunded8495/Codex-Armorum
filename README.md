@@ -27,8 +27,14 @@ collection. Each mini can keep its own label, wargear, paint stage, notes, and p
   unit pages and box contents.
 - **Codex Archive** - browse the model catalogue along a Warhammer 40,000 edition timeline, with an
   in-place model editor for release dates and images.
-- **Army Builder** - assign owned models to rosters, add detachments and enhancements, track points
-  totals, and flag short squads or wishlist units.
+- **Army Builder** - build rosters the way the official app does: Force-Org sections, a
+  detachment-points budget, enhancements with eligibility checking, leader attachment, per-model
+  wargear options with live points, allies, and a running validation panel. Flags units you'd
+  still need to buy, and rosters export/import for sharing.
+- **Missions** - a matched-play reference: mission packs, primary and secondary missions,
+  deployments, and battlefield layouts.
+- **Core Rules** - the full 11th-edition core rulebook as a searchable reader with
+  cross-reference links, term tooltips, and diagrams.
 
 Your collection, photos, favourites, purchases, custom boxes, and army lists are saved in
 `collection.db` (SQLite) so they persist between runs.
@@ -184,8 +190,8 @@ Along the top of every page is the **navigation bar**:
 - **Purchases** - record the boxed sets you have bought.
 - **Codex Archive** - browse models along a Warhammer 40,000 edition timeline.
 - **Paint Progress** - your painting stats dashboard.
-- **☰ Tools** - a menu holding the extra tools: **Army Builder**, **Weapon Loadouts**, and
-  **Model Catalogue**.
+- **☰ Tools** - a menu holding the extra tools: **Army Builder**, **Missions**, **Core Rules**,
+  **Weapon Loadouts**, and **Model Catalogue**.
 - **Seal Vault** - stops the app (see *Closing the app* at the end).
 
 You will also see a small running tally in the bar - how many minis you have **Bought**, how many are
@@ -254,12 +260,22 @@ breakdown of how many minis sit at each stage, and per-faction progress with lin
 
 ### 6. Build an army list
 
-Open **☰ Tools → Army Builder** to plan a game. Create an army list, add units from the models you
-own, choose a **detachment** and **enhancements**, and the app tracks your running **points total**.
-It flags squads that are short of models or units you'd need to buy.
+Open **☰ Tools → Army Builder** to plan a game. Create an army, pick a **battle size**, and add
+units through the category-scoped picker - the roster is organised into the same Force-Org
+sections as the official app. Choose **detachments** against a detachment-points budget, give
+characters **enhancements** (only legal bearers are offered), **attach leaders** to their
+squads, and set each unit's **wargear options** with live points. A validation panel flags
+anything illegal, and the points pill tracks your running total. Rosters can be **exported and
+imported** for sharing, and the **Command Bunker** overlay keeps your army rules, detachment
+rules, and stratagems one tap away. Units you don't own enough models for are flagged as
+wishlist.
 
 ### The extra tools
 
+- **Missions** (under Tools) - the matched-play mission reference: packs, primary and secondary
+  missions, deployments, and layouts.
+- **Core Rules** (under Tools) - read the full core rulebook in the app, with clickable
+  cross-references, term tooltips, and diagrams.
 - **Weapon Loadouts** (under Tools) - manage the weapon cards that power the hover pop-ups on
   datasheets, and link them to the units that use them.
 - **Model Catalogue** (under Tools) - maintain your model-release records, the images shown on unit
@@ -278,12 +294,17 @@ press **Ctrl + C** in the command window, as in Step 6 above.) Your collection i
 
 ## Unit data
 
-Unit data (factions, datasheets, weapon profiles, points, detachments, enhancements) comes from
-`data/w40k/w40k.db` - a read-only SQLite export of the official Warhammer 40,000 mobile app's
-rules database (the current snapshot is `data_version: 886`). `data_store.py` opens it
-read-only with `immutable=1` on app start; the file is never written to. Refreshing the rules
-data is a file-drop: replace `data/w40k/w40k.db` with a newer snapshot (or re-export from a
-fresh `base.apk` using `python scripts/w40k_exporter/w40k_exporter.py`) and restart the app.
+Unit data (factions, datasheets, weapon profiles, points, detachments, enhancements, missions,
+army-building enforcement rules) comes from `data/w40k/w40k.db` - a read-only SQLite export of
+the official Warhammer 40,000 mobile app's rules database (the current snapshot is
+`data_version: 886`). `data_store.py` opens it read-only with `immutable=1` on app start; the
+file is never written to. Mechanically, refreshing the rules data is a file-drop: replace
+`data/w40k/w40k.db` with a newer snapshot (re-exported from a fresh `base.apk` with
+`python scripts/w40k_exporter/w40k_exporter.py`) and restart the app. When the official app
+ships an update, follow **`CODEX_ARMORUM_DATA_UPDATE.md`** - the runbook covers exporting to a
+staging folder, **comparing the new data against the old** (`scripts/compare_w40k_db.py`),
+swapping the file in, and verifying your collection, tests, tooltips, and the Core Rules page
+against the new data.
 
 Faction and datasheet ids are lowercase hex UUIDs sourced from `w40k.db`. Chapters of the
 Adeptus Astartes are first-class factions, linked to the parent via `faction.parent_faction`.
@@ -322,7 +343,10 @@ warhammer-catalogue/
   catalogue_review.py     model catalogue management logic
   collection.py           mini ownership queries and wargear helpers
   box_sets.py             box set definitions and purchase creation
-  army.py                 army builder helpers (points, detachments, enhancements)
+  army.py                 army builder helpers (points, detachments, enhancements, leaders)
+  army_validation.py      roster legality engine (the builder's validation panel)
+  wargear.py              wargear/loadout engine (options, defaults, points, legality)
+  eligibility.py          enhancement eligibility (who may bear what)
   editions.py             loads the hand-curated edition timeline (Codex Archive)
   arsenal.py              Arsenal wargear feature (Flask blueprint)
   arsenal_store.py        Arsenal sqlite3 data access and sync helpers
@@ -331,11 +355,22 @@ warhammer-catalogue/
   images.py               image upload and reference-image handling
   utils.py                shared utility helpers
   data/w40k/w40k.db       official 40k app rules export (gitignored, refreshed out-of-band)
+  data/rules/             curated 11th-ed core-rules source + built core_rules.json (/rules page)
   data/                   model catalogue & edition-timeline JSONs
-  scripts/                w40k exporter, migration, audit, image-import, and test helpers
-  static/                 css + js + faction icons
+  scripts/                w40k exporter + compare tool, rules builder, migration & audit helpers
+  static/                 css + js + faction icons + weapon_keywords.json + rule diagrams
   templates/              Flask page templates
+  tests/                  army-builder test suite (see tests/README.md)
   uploads/                gallery photos (gitignored)
   cache/images/           cached catalogue, box, and unit reference images (gitignored)
   collection.db           saved local collection (created on first run, gitignored)
 ```
+
+Key how-it-works documents:
+
+| Doc | Covers |
+|---|---|
+| `CODEX_ARMORUM_APP_MAP.md` | How the running app fits together: pages, routes, modules, request flows |
+| `CODEX_ARMORUM_ARCHITECTURE.md` | Data sources, ID systems, what to preserve when migrating |
+| `CODEX_ARMORUM_DATA_UPDATE.md` | Updating to a new official-app data version: export, compare old vs new, verify |
+| `tests/README.md` | The army-builder test suite and how to run it |

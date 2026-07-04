@@ -1,12 +1,13 @@
 import { esc, api } from './utils.js';
 import { state } from './army-state.js';
-import { ROLE_ORDER, armyUnitRow, applyServerState, renderRoster, renderProfiles } from './army-detail.js';
+import { ROLE_ORDER, armyUnitRow, applyServerState, renderRoster, renderProfiles,
+         syncOverlayScrim } from './army-detail.js';
 
-/* ---- add-unit picker overlay --------------------------------------------
-   Full-screen overlay (matches the reference app's add-unit screen), reached
-   from a Force-Org section's "+" and pre-scoped to that one category -- a
-   unit's category is never a player choice, so every real entry point is
-   scoped. The category is optional only as a defensive fallback. ---------- */
+/* ---- add-unit picker drawer ----------------------------------------------
+   Right-docked drawer (the roster stays visible beside it), reached from a
+   Force-Org section's "+" and pre-scoped to that one category -- a unit's
+   category is never a player choice, so every real entry point is scoped.
+   The category is optional only as a defensive fallback. ------------------ */
 
 function unitsUsedCount(did){
   return (state.army?.units || []).filter(u=>u.datasheet_id===did).length;
@@ -26,6 +27,7 @@ export async function openUnitPicker(category){
   if(title) title.textContent = category || 'Add Unit';
   body.innerHTML = `<p class="po-empty">Loading&hellip;</p>`;
   modal.hidden = false;
+  syncOverlayScrim();
   document.getElementById('pickerSearch').value = '';
 
   let units = state.unitsCache[state.army.faction_id];
@@ -109,6 +111,7 @@ export function filterPicker(q){
 export function closeUnitPicker(){
   const modal = document.getElementById('unitPickerModal');
   if(modal) modal.hidden = true;
+  syncOverlayScrim();
 }
 
 // Tap a picker card's body to preview the datasheet (statline + weapons)

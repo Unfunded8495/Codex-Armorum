@@ -70,6 +70,15 @@ Golden verify reports "no snapshots" until you bless a baseline once, in your
 tree, with `python tests/golden_master.py --build`. Do this after the resolved
 output is what you want; thereafter a diff means something changed.
 
+## Role in rules-data updates
+
+When `data/w40k/w40k.db` is refreshed to a new official-app data version
+(see `CODEX_ARMORUM_DATA_UPDATE.md`), this suite is the verification step:
+engine invariants sweep every datasheet in the *new* data, and golden-master
+diffs should correspond one-to-one with the points/content changes that
+`scripts/compare_w40k_db.py` reported. Review the diffs, then re-bless with
+`python tests/run_all.py --golden-build`.
+
 ## Note on the chapter add-guard check
 
 `api_roundtrip.py`'s "a generic unit the picker offers is accepted" check is the

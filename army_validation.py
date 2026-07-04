@@ -8,7 +8,7 @@ Unit-scoped rows also carry ``auid`` (the army_units id) so the UI can jump
 to the offending unit.
 
 Phase 1 codes: points_over / points_ok, enhancement_over / enhancement_ok,
-no_detachment, under_assigned, over_assigned, wishlist_units.
+no_detachment, wishlist_units.
 """
 from army import (_army_unit_row, attach_check, battle_size_caps,
                   duplicate_cap, parse_detachment_ids, detachment_set_cost)
@@ -78,19 +78,9 @@ def _rows(army, units, store):
             rows.append({"level": "ok", "code": "detachment_points_ok",
                          "message": f"{dp_used} of {dp_budget} Detachment Points"})
 
-    # Ownership rows (carried over from the old client-side checks).
-    for u in units:
-        owned = u.get("owned_count") or 0
-        assigned = u.get("assigned_count") or 0
-        squad = u.get("squad_size") or 0
-        if assigned > squad:
-            rows.append({"level": "err", "code": "over_assigned", "auid": u["id"],
-                         "message": f"{u['name']}: {assigned - squad} too many assigned"})
-        elif owned > 0 and assigned < squad:
-            short = squad - assigned
-            rows.append({"level": "warn", "code": "under_assigned", "auid": u["id"],
-                         "message": f"{u['name']}: assign {short} more "
-                                    f"model{'' if short == 1 else 's'}"})
+    # Ownership is informational only -- lists are not managed against the
+    # collection (no per-list model assignment), so the only row is a passive
+    # count of units not owned at all.
     wishlist = sum(1 for u in units if (u.get("owned_count") or 0) == 0)
     if wishlist:
         rows.append({"level": "info", "code": "wishlist_units",
