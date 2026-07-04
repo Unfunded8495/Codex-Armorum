@@ -31,9 +31,6 @@
   ],
   "validation": [
     "points_ok",
-    "under_assigned",
-    "under_assigned",
-    "under_assigned",
     "warlord_missing"
   ]
 }
