@@ -6,7 +6,7 @@
   <title>Army Builder · Codex Armorum</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;1,500&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
@@ -15,17 +15,16 @@
 <body>
   <!-- apply saved reading mode before first paint (shared across all manual pages) -->
   <script>try{if(localStorage.getItem('caRules.theme')==='dark')document.body.setAttribute('data-rl-theme','dark');}catch(e){}</script>
-  <!-- The scanlines overlay stays for the (still dark) army list/create screen;
-       CSS hides it on the manual roster view (body.ab-roster). -->
-  <div class="scanlines" aria-hidden="true"></div>
+  <!-- NOTE: no .scanlines overlay on this page — it would darken the light paper -->
 
   <div class="rl-chrome">
     {% include "_topbar.html" %}
 
-    <!-- Battle Roster quick strip: only shown on the roster detail view
-         (body.ab-roster); the army list keeps its dark chrome without it. -->
-    <nav class="rl-strip" id="abStrip" aria-label="Battle roster quick reference">
-      <span class="rl-strip-label">Battle Roster</span>
+    <!-- Quick strip: shown on every builder screen. The label + chips swap per
+         view — "Army Builder" on the list, "Battle Roster" (+ FOC chips and the
+         live points readout) on the roster detail view. -->
+    <nav class="rl-strip" id="abStrip" aria-label="Army builder quick reference">
+      <span class="rl-strip-label" id="abStripLabel">Army Builder</span>
       <span class="rl-strip-chips" id="abStripChips"></span>
       <span class="rl-strip-spacer"></span>
       <span class="rl-strip-note" id="abStripPts"></span>
@@ -80,9 +79,7 @@
     <p id="lightboxCap"></p>
   </div>
 
-  <footer class="footer">
-    <p>For the Emperor. Unit data from Wahapedia. Army lists are stored locally in collection.db.</p>
-  </footer>
+  {% include "_footer.html" %}
 
   <script type="module" src="{{ url_for('static', filename='js/army_builder.js') }}"></script>
 </body>

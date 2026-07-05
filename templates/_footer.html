@@ -1,0 +1,9 @@
+  <footer class="footer">
+    {% if footer_quote and footer_quote.text %}
+    <p class="footer-quote">&ldquo;{{ footer_quote.text }}&rdquo;{% if footer_quote.attribution %}
+      <span class="footer-quote-attr">&mdash; {{ footer_quote.attribution }}</span>{% endif %}</p>
+    {% endif %}
+    <p>For the Emperor &mdash; and for everyone else too. A local tool for cataloguing your miniatures.
+    Rules, mission and unit data from the official Warhammer 40,000 app (11th Edition), for personal reference.
+    Model photos, where present, are the property of Games Workshop.</p>
+  </footer>

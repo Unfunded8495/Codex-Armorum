@@ -15,8 +15,8 @@ import { initLightbox } from './lightbox.js';
 import { refreshLedger } from './header.js';
 
 /* ---- routing ------------------------------------------------------------ */
-// body.ab-roster scopes the manual (paper) reskin to the roster detail view;
-// the army list/create screen keeps the dark app chrome.
+// Both screens sit on the manual (paper) surface; body.ab-roster scopes the
+// roster-detail extras (3-col layout, strip chips, component-var remap).
 function router(){
   const h = location.hash.slice(1) || '/';
   const p = h.split('/').filter(Boolean);

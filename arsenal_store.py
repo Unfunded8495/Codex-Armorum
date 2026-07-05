@@ -209,28 +209,40 @@ def faction_options(include_blank=True):
     if include_blank:
         options.append({"id": "", "name": "Generic"})
     for faction in get_store().faction_list():
-        options.append({"id": faction["id"], "name": faction["name"]})
+        options.append({
+            "id": faction["id"],
+            "name": faction.get("display_name") or faction["name"]})
     names = {item["name"] for item in options}
     with db() as c:
         for row in c.execute(
             "SELECT DISTINCT faction_name FROM arsenal_weapon WHERE faction_name<>'' ORDER BY faction_name"
         ).fetchall():
-            if row["faction_name"] not in names:
-                options.append({"id": "", "name": row["faction_name"]})
+            label = display_faction_label(row["faction_name"])
+            if label not in names:
+                names.add(label)
+                options.append({"id": "", "name": label})
     return options
 
 
 def faction_id_for_label(label):
     label_norm = _compact_label(label)
     for faction in get_store().factions:
-        if _compact_label(faction.get("name")) == label_norm:
+        if (_compact_label(faction.get("name")) == label_norm
+                or _compact_label(faction.get("display_name")) == label_norm):
             return faction.get("id", "")
     extra_labels = {"tauempire": "TAU", "emperorschildren": "EC"}
     return extra_labels.get(label_norm, "")
 
 
 def faction_name_for_id(fid):
-    return get_store().faction_by_id.get(fid, {}).get("name", "")
+    fac = get_store().faction_by_id.get(fid, {})
+    return fac.get("display_name") or fac.get("name", "")
+
+
+def display_faction_label(label):
+    """Translate a stored canonical faction label to its user-facing name
+    (Heretic Astartes -> Chaos Space Marines). Unknown labels pass through."""
+    return get_store().faction_display_by_name.get(label, label)
 
 
 def _compact_label(value):
@@ -287,8 +299,11 @@ def list_weapons(q="", faction="", category=""):
         params.append(category)
     if faction:
         fname = faction_name_for_id(faction) or faction
-        sql += " AND (w.faction_id=? OR w.faction_name=? OR COALESCE(w.faction_id,'')='' OR COALESCE(w.faction_name,'')='')"
-        params.extend([faction, fname])
+        # Match rows stored under either the display or the canonical label so
+        # pre-rename manual entries (e.g. "Heretic Astartes") still filter.
+        canonical = get_store().faction_by_id.get(faction, {}).get("name") or fname
+        sql += " AND (w.faction_id=? OR w.faction_name IN (?,?) OR COALESCE(w.faction_id,'')='' OR COALESCE(w.faction_name,'')='')"
+        params.extend([faction, fname, canonical])
     sql += " GROUP BY w.id ORDER BY COALESCE(NULLIF(w.faction_name,''),'Generic'), w.name"
     with db() as c:
         return [_weapon_with_urls(rowdict(row)) for row in c.execute(sql, params).fetchall()]
@@ -444,7 +459,7 @@ def _weapon_with_urls(weapon):
     if not weapon:
         return None
     weapon["primary_url"] = photo_url(weapon.get("primary_file"))
-    weapon["faction_label"] = weapon.get("faction_name") or "Generic"
+    weapon["faction_label"] = display_faction_label(weapon.get("faction_name")) or "Generic"
     weapon.update(_source_attrs(weapon.get("source")))
     _add_manual_wiki_attrs(weapon)
     return weapon
@@ -462,7 +477,8 @@ def weapon_datasheets(c, weapon_id):
         ds = store.ds_by_id.get(item["datasheet_id"], {})
         faction = store.faction_by_id.get(ds.get("faction_id", ""), {})
         item["unit_name"] = ds.get("name", item["datasheet_id"])
-        item["faction_name"] = faction.get("name", ds.get("faction_id", ""))
+        item["faction_name"] = (faction.get("display_name")
+                                or faction.get("name", ds.get("faction_id", "")))
         out.append(item)
     return out
 
@@ -548,7 +564,8 @@ def _faction_for_record(rec, store):
     if len(factions) != 1:
         return "", ""
     fid = next(iter(factions))
-    return fid, store.faction_by_id.get(fid, {}).get("name", "")
+    fac = store.faction_by_id.get(fid, {})
+    return fid, fac.get("display_name") or fac.get("name", "")
 
 
 def _merge_text(c, target_id, source, legacy_seed_mode=False):
@@ -744,7 +761,9 @@ def unit_loadout(datasheet_id):
     groups = _group_by_category(rows)
     return {
         "datasheet": ds,
-        "faction": {"id": ds.get("faction_id", ""), "name": faction.get("name", ds.get("faction_id", ""))},
+        "faction": {"id": ds.get("faction_id", ""),
+                    "name": faction.get("display_name")
+                            or faction.get("name", ds.get("faction_id", ""))},
         "groups": groups,
         "weapon_count": len(rows),
         "linked_count": sum(1 for row in rows if row["linked"]),
@@ -843,7 +862,8 @@ def audit_data(faction_filter="", problem="", q=""):
         faction = store.faction_by_id.get(ds.get("faction_id", ""), {})
         row["unit_name"] = ds.get("name", row["datasheet_id"])
         row["datasheet_faction_id"] = ds.get("faction_id", "")
-        row["datasheet_faction_name"] = faction.get("name", ds.get("faction_id", ""))
+        row["datasheet_faction_name"] = (faction.get("display_name")
+                                         or faction.get("name", ds.get("faction_id", "")))
         row["primary_url"] = photo_url(row.get("primary_file"))
         row.update(_source_attrs(row.get("source")))
         _add_manual_wiki_attrs(row)

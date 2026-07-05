@@ -6,7 +6,7 @@
   <title>Codex Armorum - 40K Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital@0;1&family=Mulish:wght@900&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;1,500&family=Mulish:wght@900&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -24,10 +24,7 @@
     <p id="lightboxCap"></p>
   </div>
 
-  <footer class="footer">
-    <p>For the Emperor &mdash; and for everyone else too. A local tool for cataloguing your miniatures.
-    Unit data from the BSData Warhammer 40,000 10th Edition ruleset. Model photos, where present, are the property of Games Workshop and shown for personal reference.</p>
-  </footer>
+  {% include "_footer.html" %}
 
   <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>

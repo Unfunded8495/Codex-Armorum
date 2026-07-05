@@ -19,6 +19,7 @@ the leaf-wins picker (`_pick_primary_faction`), with `PRIMARY_FACTION_OVERRIDES`
 covering the handful of explicit exceptions. The legacy "::"-separated chapter
 ids and the load-time chapter rollup are gone - chapters are first-class.
 """
+import html as _html
 import json
 import logging
 import os
@@ -290,6 +291,7 @@ class DataStore:
             "SELECT id, name, common_name, parent_faction FROM faction "
             "ORDER BY name"
         ).fetchall()
+        self.faction_display_by_name = {}
         for r in rows:
             fid = r["id"]
             self._faction_parent[fid] = r["parent_faction"]
@@ -304,6 +306,7 @@ class DataStore:
             }
             self.factions.append(faction_dict)
             self.faction_by_id[fid] = faction_dict
+            self.faction_display_by_name[r["name"]] = common or r["name"]
             self.ds_by_faction[fid] = []
         # Build child index. parent_faction holds the parent NAME in this export
         # - translate to the parent UUID.
@@ -324,7 +327,8 @@ class DataStore:
         ds_rows = conn.execute("""
             SELECT id, name, lore, is_legends, is_free_from_entitlements,
                    keywords, points, default_points, unit_composition_text,
-                   wargear_loadout, leads_units, can_be_led_by, damage_brackets
+                   wargear_loadout, leads_units, can_be_led_by, damage_brackets,
+                   base_size, points_steps
             FROM datasheet
         """).fetchall()
 
@@ -422,6 +426,14 @@ class DataStore:
             except (TypeError, ValueError):
                 damage_brackets_raw = []
 
+            # Duplicate-selection surcharge steps ("After the Nth selection of
+            # this unit, additional selections each cost +X pts"). At most one
+            # step per datasheet in data_version 886.
+            try:
+                points_steps = json.loads(ds["points_steps"] or "[]")
+            except (TypeError, ValueError):
+                points_steps = []
+
             stats = self._build_stats(models_by_ds.get(did, []))
             transport_text = self._extract_transport(extras_by_ds.get(did, []))
             extra_rules = [
@@ -471,6 +483,8 @@ class DataStore:
                 "role":          role,
                 "points":        ds["default_points"],
                 "_points_tiers": points_tiers if len(points_tiers) > 1 else None,
+                "base_size":     ds["base_size"] or "",
+                "_points_steps": points_steps,
                 "virtual_bool":  False,
                 "is_legends_bool": bool(ds["is_legends"]),
                 "legend":        ds["lore"] or "",
@@ -706,14 +720,16 @@ class DataStore:
         """Parse `unit_composition_text` into [{name, min, max}, ...].
 
         The body is laid out with U+25A0 bullets followed by markdown-bold
-        lines like "**1 Commissar**" or "**3-5 Bladeguard Veterans**". 131 of
-        1142 rows have no leading bullet; fall back to a single raw entry so
-        the UI always renders something."""
+        lines like "**1 Commissar**" or "**3-5 Bladeguard Veterans**". Legends
+        and boxed-set rows use plain U+2022 bullets ("• 1 Kasrkin Sergeant
+        model") instead; rows with no bullet at all fall back to a single raw
+        entry so the UI always renders something."""
         if not text:
             return []
-        # Split on the U+25A0 bullet; first segment is empty if the body starts
+        text = _html.unescape(text)
+        # Split on either bullet; first segment is empty if the body starts
         # with one.
-        segments = [seg.strip() for seg in text.split("■") if seg.strip()]
+        segments = [seg.strip() for seg in re.split(r"[■•]", text) if seg.strip()]
         out = []
         for seg in segments:
             # The line "**This model is equipped with: ..." (or the "Every
@@ -728,14 +744,17 @@ class DataStore:
             head = head.splitlines()[0] if head else ""
             head = re.sub(r"\*\*(.*?)\*\*", r"\1", head)
             head = head.strip().strip("–-").strip()
-            m = re.match(r"^\s*(\d+)(?:\s*[-–]\s*(\d+))?\s+(.+?)\s*$", head)
+            # Dash class covers the Unicode hyphens (U+2010/U+2011) some
+            # sheets use in ranges like "4‐9 Acolyte Hybrids".
+            m = re.match(r"^\s*(\d+)(?:\s*[-‐‑‒–—]\s*(\d+))?\s+(.+?)\s*$", head)
             if not m:
                 continue
             lo = int(m.group(1))
             hi = int(m.group(2)) if m.group(2) else lo
             name = m.group(3)
-            # Drop trailing "– EPIC HERO" style epithets.
-            name = re.split(r"\s+[–-]\s+", name, maxsplit=1)[0].strip()
+            # Drop trailing "– EPIC HERO" style epithets and footnote stars
+            # ("1-2 Atalan Wolfquads*").
+            name = re.split(r"\s+[–-]\s+", name, maxsplit=1)[0].strip().rstrip("*").strip()
             out.append({"name": name, "min": lo, "max": hi})
         if not out:
             # Last-ditch fallback: surface the raw description as a single
@@ -745,21 +764,47 @@ class DataStore:
 
     @staticmethod
     def _extract_loadout_sentence(text):
-        """Pull the "...equipped with: ..." sentence out of unit_composition_text
-        and strip markdown. Tolerates both `**...equipped with:**` and
-        `**...equipped with**:` shapes."""
+        """Return the loadout prose of unit_composition_text - every
+        "**The X is equipped with:** ..." sentence plus any designer's note -
+        as HTML, one <br>-separated line each, with markdown bold/italic
+        converted. The bolded lead-in is kept: the official app prints these
+        lines verbatim under Unit Composition, and a datasheet can carry
+        several of them (e.g. Boyz have a Boss Nob clause and an Every Boy
+        clause). Composition declarations ("■ **1 Boss Nob**") are dropped
+        here; `_parse_composition` owns those."""
         if not text:
             return ""
-        # Greedy prefix-eater swallows the colon, asterisks and whitespace that
-        # follow "equipped with" so the captured tail starts at real content.
-        m = re.search(r"equipped with[:\s\*]*(.+?)(?:\n|$)", text,
-                      flags=re.IGNORECASE | re.DOTALL)
-        if not m:
-            return ""
-        sentence = m.group(1).strip()
-        sentence = re.sub(r"\*\*(.*?)\*\*", r"\1", sentence)
-        sentence = sentence.strip().rstrip(".").strip()
-        return sentence
+        kept = []
+        for line in _html.unescape(text).replace("\r\n", "\n").splitlines():
+            # A leading "* " is a bullet marker (Neurogaunts' note), not an
+            # italic opener - italics hug their text ("*This unit...*").
+            line = re.sub(r"^\*\s+", "", line.strip())
+            if not line:
+                continue
+            stripped = re.sub(r"\*\*(.*?)\*\*", r"\1", line).strip()
+            # Any ■/• line is a composition declaration (verified: none carry
+            # loadout prose), as is a bare "N Name" / "N-M Name" line.
+            if stripped.startswith(("■", "•")):
+                continue
+            bare = stripped.lstrip("■•").strip()
+            if (re.match(r"^\d+(?:\s*[-‐‑‒–—]\s*\d+)?\s+\S", bare)
+                    and "equipped with" not in bare.lower()):
+                continue
+            # "OR" between alternative composition declarations (Cadian Shock
+            # Troops) belongs to the composition block, not the loadout.
+            if bare.lower() in ("or", "and"):
+                continue
+            kept.append(line)
+        out = []
+        for line in kept:
+            h = _html.escape(line, quote=False)
+            h = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", h)
+            h = re.sub(r"\*(.+?)\*", r"<i>\1</i>", h)
+            # A few sheets use unbalanced footnote asterisks ("**This unit can
+            # only contain 2 Gun Servitors...*"); drop whatever survives the
+            # markdown conversion rather than showing markup debris.
+            out.append(h.replace("*", ""))
+        return "<br>".join(out)
 
     def _resolve_leaders(self):
         """Resolve `leads_units` and `can_be_led_by` name lists to UUIDs using
@@ -1057,9 +1102,14 @@ class DataStore:
                                         points_limits, required_detachments
                                  FROM allied_faction"""):
             try:
+                ally_names = json.loads(r["ally_factions"] or "[]")
                 cfg = {
                     "id": r["id"],
-                    "ally_faction_names": json.loads(r["ally_factions"] or "[]"),
+                    "ally_faction_names": ally_names,
+                    # User-facing variants (Legiones Daemonica -> Chaos Daemons
+                    # etc.); ally_faction_names stays canonical for matching.
+                    "ally_faction_display_names": [
+                        self.faction_display_by_name.get(n, n) for n in ally_names],
                     "datasheet_ids": ally_dids.get(r["id"], set()),
                     "can_take_enhancements": bool(r["can_take_enhancements"]),
                     "mutually_exclusive_keyword_limit": r["mutually_exclusive_keyword_limit"] or 0,
@@ -1248,6 +1298,8 @@ class DataStore:
             "abilities":           d.get("_abilities") or {},
             "models":              d.get("_stats") or [],
             "costs":               self.cost.get(d["id"], []),
+            "base_size":           d.get("base_size") or "",
+            "points_steps":        d.get("_points_steps") or [],
             "composition":         composition,
             "options":             self.wargear_options.get(d["id"], []),
             "ranged":              d.get("_ranged", []),

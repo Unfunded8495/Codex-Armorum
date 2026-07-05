@@ -1195,7 +1195,7 @@ function mpCatOpenFieldEditor(cid, opts = {}){
   const armyOpts = [
     `<option value="">— None —</option>`,
     ...mpCatalogueFactions.map(f =>
-      `<option value="${esc(f.id)}"${f.id===(item.faction_id||'')?'  selected':''}>${esc(f.name)}</option>`
+      `<option value="${esc(f.id)}"${f.id===(item.faction_id||'')?'  selected':''}>${esc(f.display_name||f.name)}</option>`
     ),
   ].join('');
 
@@ -1453,7 +1453,7 @@ function mpCatRenderLinkSection(item, defaultFid){
   const factionOptions = [
     `<option value="">All factions</option>`,
     ...mpCatalogueFactions.map(f =>
-      `<option value="${esc(f.id)}"${f.id===mpCatEd.factionId?' selected':''}>${esc(f.name)}</option>`
+      `<option value="${esc(f.id)}"${f.id===mpCatEd.factionId?' selected':''}>${esc(f.display_name||f.name)}</option>`
     ),
   ].join('');
 

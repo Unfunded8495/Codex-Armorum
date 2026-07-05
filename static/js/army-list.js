@@ -9,23 +9,42 @@ export async function showArmyList(){
     {label:'My Armies', href:'/'},
     {label:'Army Builder'},
   ]);
-  view.innerHTML = `<div class="loading">Marshalling forces…</div>`;
+  // Reset the quick strip from any prior roster view (label + chips + points).
+  const stripLabel = document.getElementById('abStripLabel');
+  if(stripLabel) stripLabel.textContent = 'Army Builder';
+  const stripChips = document.getElementById('abStripChips');
+  if(stripChips) stripChips.innerHTML = '';
+  const stripPts = document.getElementById('abStripPts');
+  if(stripPts){ stripPts.innerHTML = ''; stripPts.classList.remove('is-over'); }
+  view.innerHTML = `<div class="rl-loading">Marshalling forces&hellip;</div>`;
   let armies;
   try{ armies = await api('/api/armies'); }
   catch(e){
-    view.innerHTML=`<div class="loading load-error">Could not reach the server.<br><small>Make sure app.py is running.</small></div>`;
+    view.innerHTML=`<div class="rl-error">Could not reach the server. Make sure <code>app.py</code> is running.</div>`;
     return;
   }
+  const listLine = `${armies.length} army list${armies.length===1?'':'s'} on file`;
   view.innerHTML = `
-    <h2 class="view-title">Army Builder</h2>
-    <p class="view-sub">Create army lists, plan your forces, track what you own and what you need</p>
-    <div class="rule"></div>
+    <header class="rl-mast">
+      <div>
+        <div class="rl-mast-plate rl-mast-plate--sm">Army Builder</div>
+        <div class="rl-mast-meta">Muster Rolls &middot; ${listLine}</div>
+        <div class="rl-mast-sub">Create army lists, plan your forces, track what you own and what you need</div>
+      </div>
+      <div class="rl-mast-ep">
+        <div>Victory needs no explanation,</div>
+        <div>defeat allows none.</div>
+        <div class="rl-ep-credit">&mdash; tactica imperialis</div>
+      </div>
+    </header>
     <div id="armyGrid" class="army-grid">
       ${armies.map(a=>armyTile(a)).join('')}
     </div>
     <button class="new-army-btn" data-testid="new-army-button" onclick="toggleCreateForm()">✠ Create New Army List</button>
     <button class="new-army-btn new-army-btn--ghost" data-testid="import-button" onclick="importArmyList()">⬆ Import List (JSON)</button>
-    <div id="createArmyForm" hidden></div>`;
+    <div id="createArmyForm" hidden></div>
+    <div class="rl-colophon"><hr>
+      <p>&#10016; &nbsp;Codex Armorum &middot; Army Builder&nbsp; &#10016;</p></div>`;
 }
 
 function armyTile(a){
@@ -34,7 +53,7 @@ function armyTile(a){
     ? `<img src="${esc(a.icon_url)}" alt="" loading="lazy">`
     : `<span class="faction-bg-letter">${esc((a.faction_display_name || a.faction_name)?.[0]||'?')}</span>`;
   const facLabel = a.faction_display_name || a.faction_name;
-  return `<div class="army-tile faction-surface" style="--cardarmy:${a.primary};--cardaccent:${a.accent};--cardglow:${a.accent};--at-accent:${a.accent}" onclick="location.hash='/army/${a.id}'">
+  return `<div class="army-tile" style="--at-accent:${a.accent}" onclick="location.hash='/army/${a.id}'">
     <div class="faction-bg-mark army-tile-mark" aria-hidden="true">${markHtml}</div>
     <button class="army-tile-del" onclick="event.stopPropagation();deleteArmy('${a.id}',this)" title="Delete army">✕</button>
     <div class="army-tile-name">${esc(a.name)}</div>
@@ -42,8 +61,8 @@ function armyTile(a){
     <div class="army-tile-pts">
       <b>${a.total_points}</b> / ${a.points_limit} pts · ${a.unit_count} unit${a.unit_count===1?'':'s'}
     </div>
-    <div style="margin-top:10px;height:4px;background:rgba(44,42,53,.8)">
-      <div style="height:100%;width:${pct}%;background:${pct>=100?'var(--blood-bright)':'var(--gold)'};transition:width .3s"></div>
+    <div class="army-tile-bar">
+      <div class="army-tile-fill${pct>=100?' is-full':''}" style="width:${pct}%"></div>
     </div>
   </div>`;
 }
@@ -94,7 +113,8 @@ export async function toggleCreateForm(){
           <label>Faction</label>
           <select id="cafFaction" data-testid="faction-select">
             <option value="">— select faction —</option>
-            ${factions.map(f=>`<option value="${esc(f.id)}">${esc(f.name)}</option>`).join('')}
+            ${[...factions].sort((a,b)=>(a.display_name||a.name).localeCompare(b.display_name||b.name))
+              .map(f=>`<option value="${esc(f.id)}">${esc(f.display_name||f.name)}</option>`).join('')}
           </select>
         </div>
         <div class="caf-field">
@@ -110,8 +130,8 @@ export async function toggleCreateForm(){
         </div>
       </div>
       <div class="ff-actions" style="margin-top:16px">
-        <button class="btn-primary" data-testid="create-army-confirm" onclick="submitCreateArmy()">Create Army</button>
-        <button class="btn-ghost"   onclick="toggleCreateForm()">Cancel</button>
+        <button class="rl-btn rl-btn--solid" data-testid="create-army-confirm" onclick="submitCreateArmy()">Create Army</button>
+        <button class="rl-btn" onclick="toggleCreateForm()">Cancel</button>
       </div>
     </div>`;
   el.hidden = false;

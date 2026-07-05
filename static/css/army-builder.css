@@ -4,75 +4,92 @@
    spend ultrawide width. Typography floor: nothing informational below 12px,
    letter-spacing above 1.5px only at 13px+.
 
-   Since the PDF-manual reskin the page has two visual worlds:
-   - the army LIST / create screen keeps the dark app chrome (styles below,
-     unchanged);
-   - the roster DETAIL view (body.ab-roster, set by the router) sits on the
-     shared manual paper surface (tokens in manual.css) as a "Battle Roster
-     sheet". The reskin is visual only -- markup hooks, ids and testids are
-     the pre-reskin ones. */
+   Since the PDF-manual reskin BOTH builder screens sit on the shared manual
+   paper surface (tokens in manual.css):
+   - the army LIST / create screen is a "Muster Roll" index page;
+   - the roster DETAIL view (body.ab-roster, set by the router) is the
+     "Battle Roster sheet". The reskin is visual only -- markup hooks, ids
+     and testids are the pre-reskin ones. */
 
 /* ============================================================
-   Army list + create flow (dark app chrome -- NOT reskinned)
+   Army list + create flow (manual paper look)
    ============================================================ */
-.army-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; margin-top:20px; }
+.army-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-top:6px; }
 .army-tile {
-  border:2px solid var(--cardarmy,var(--edge)); padding:18px; cursor:pointer;
-  transition:border-color .2s,transform .2s,box-shadow .2s; position:relative; overflow:hidden;
+  background:var(--rl-paper-2); border:1px solid var(--rl-edge); padding:16px 18px;
+  cursor:pointer; position:relative; overflow:hidden;
+  box-shadow:0 2px 12px rgba(20,24,12,.08);
+  transition:border-color .2s,transform .2s,box-shadow .2s;
 }
 .army-tile::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; z-index:2;
-  background:var(--at-accent,var(--gold)); }
-.army-tile:hover { border-color:var(--cardarmy,var(--gold)); transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.55),0 0 0 1px var(--at-accent,var(--gold)); }
-.army-tile-mark { left:82%; top:48%; width:220px; opacity:.16; }
-.army-tile:hover .army-tile-mark { opacity:.26; }
-.army-tile-name { font-family:'Cinzel',serif; font-weight:700; font-size:17px; color:#f3ead5; margin:0 0 4px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
-.army-tile-meta { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:.5px; color:var(--gold); margin:0 0 10px; text-shadow:0 2px 8px rgba(0,0,0,.92); }
-.army-tile-pts { font-family:'Oswald',sans-serif; font-size:14px; color:var(--parch-dim); text-shadow:0 2px 8px rgba(0,0,0,.92); }
-.army-tile-pts b { color:var(--gold-bright); }
-.army-tile-del { position:absolute; top:10px; right:10px; background:none; border:none;
-  color:var(--parch-dim); font-size:18px; cursor:pointer; line-height:1; opacity:.4; transition:opacity .2s,color .2s; }
-.army-tile-del:hover { opacity:1; color:var(--blood-bright); }
+  background:var(--at-accent,var(--rl-green)); }
+.army-tile:hover { border-color:var(--rl-green); transform:translateY(-2px);
+  box-shadow:0 10px 26px rgba(20,24,12,.18); }
+.army-tile > :not(.army-tile-mark) { position:relative; z-index:2; }
+.army-tile-mark { left:84%; top:50%; width:190px; opacity:.10; filter:saturate(.6); }
+.army-tile:hover .army-tile-mark { opacity:.16; }
+.army-tile .faction-bg-letter { color:var(--rl-olive); }
+.army-tile-name {
+  font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; letter-spacing:.8px;
+  text-transform:uppercase; color:var(--rl-ink); margin:0 22px 3px 0; line-height:1.3;
+}
+.army-tile-meta {
+  font-family:'Oswald',sans-serif; font-size:10.5px; font-weight:500; letter-spacing:1.4px;
+  text-transform:uppercase; color:var(--rl-green); margin:0 0 10px;
+}
+.army-tile-pts { font-family:'Oswald',sans-serif; font-size:12.5px; color:var(--rl-ink-soft); }
+.army-tile-pts b { color:var(--rl-ink); font-weight:600; }
+.army-tile-bar { margin-top:10px; height:5px; background:var(--rl-edge-soft); }
+.army-tile-fill { height:100%; background:var(--rl-green); transition:width .3s; }
+.army-tile-fill.is-full { background:var(--rl-over-bar); }
+.army-tile-del { position:absolute; top:9px; right:9px; background:none; border:none;
+  color:var(--rl-mute); font-size:16px; cursor:pointer; line-height:1; opacity:.45; transition:opacity .2s,color .2s; }
+.army-tile-del:hover { opacity:1; color:var(--rl-rust); }
 
 .new-army-btn {
   display:flex; align-items:center; justify-content:center; gap:8px;
-  background:transparent; border:1px dashed rgba(199,154,58,.4); color:var(--gold);
-  font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase;
-  padding:18px; cursor:pointer; width:100%; transition:all .2s; margin-top:18px;
+  background:transparent; border:1px dashed var(--rl-green); color:var(--rl-green);
+  font-family:'Oswald',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.6px;
+  text-transform:uppercase; padding:16px; cursor:pointer; width:100%;
+  transition:background .2s,border-color .2s,color .2s; margin-top:20px;
 }
-.new-army-btn:hover { background:rgba(199,154,58,.05); border-color:rgba(199,154,58,.7); }
-.new-army-btn--ghost { background:none; color:var(--gold); border:1px solid var(--edge); margin-top:10px; }
-.new-army-btn--ghost:hover { border-color:var(--gold); color:var(--gold-bright); }
+.new-army-btn:hover { background:var(--rl-green-soft); }
+.new-army-btn--ghost { border:1px solid var(--rl-edge); color:var(--rl-mute); margin-top:10px; padding:11px; }
+.new-army-btn--ghost:hover { background:none; border-color:var(--rl-green); color:var(--rl-green); }
 
 /* Create army form */
-.create-army-form { background:var(--ink-2); border:1px solid rgba(199,154,58,.4); padding:20px; margin-top:18px; }
-.create-army-form h3 { font-family:'Cinzel',serif; color:var(--gold-bright); margin:0 0 16px; font-size:16px; letter-spacing:1px; }
+.create-army-form {
+  background:var(--rl-paper-2); border:1px solid var(--rl-edge);
+  box-shadow:0 2px 12px rgba(20,24,12,.08); padding:18px 20px; margin-top:18px;
+}
+.create-army-form h3 {
+  font-family:'Oswald',sans-serif; font-size:10.5px; font-weight:600; letter-spacing:2.4px;
+  text-transform:uppercase; color:var(--rl-green); margin:0 0 14px;
+}
 .caf-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .caf-field { display:flex; flex-direction:column; gap:5px; }
-.caf-field label { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.85; }
-.caf-field select, .caf-field input[type=number], .caf-field input[type=text] {
-  background:var(--panel); border:1px solid var(--edge); color:var(--parch);
-  font-family:'EB Garamond',serif; font-size:16px; padding:8px 12px; transition:border-color .2s;
+.caf-field label {
+  font-family:'Oswald',sans-serif; font-size:9.5px; font-weight:600; letter-spacing:1.6px;
+  text-transform:uppercase; color:var(--rl-mute);
 }
-.caf-field select:focus, .caf-field input:focus { outline:none; border-color:rgba(199,154,58,.6); }
-.caf-field select option { background:var(--panel); }
+.caf-field select, .caf-field input[type=number], .caf-field input[type=text] {
+  background:var(--rl-paper); border:1px solid var(--rl-edge); color:var(--rl-ink);
+  font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:.5px; padding:8px 10px;
+  transition:border-color .2s;
+}
+.caf-field select:focus, .caf-field input:focus {
+  outline:none; border-color:var(--rl-green); box-shadow:0 0 0 3px var(--rl-green-soft);
+}
+.caf-field select option { background:var(--rl-paper); }
 .caf-field[hidden] { display:none; }
+.create-army-form .ff-actions { display:flex; gap:10px; }
 
 /* ============================================================
    Manual-page chrome scoping.
-   The strip + paper shell exist in the template on every builder screen but
-   only activate on the roster detail view (body.ab-roster).
+   The paper shell (.rl-shell from manual.css) + strip are active on every
+   builder screen; the roster detail view (body.ab-roster) additionally gets
+   the FOC chips + points readout rendered into the strip.
    ============================================================ */
-#abStrip { display:none; }
-body.ab-roster #abStrip { display:flex; }
-body.ab-roster .scanlines { display:none; }
-
-.ab-shell { background:none; box-shadow:none; color:inherit; }
-.ab-shell::before { display:none; }
-body.ab-roster .ab-shell {
-  background:var(--rl-paper); color:var(--rl-ink);
-  box-shadow:inset 0 14px 22px -16px rgba(0,0,0,.55);
-}
-body.ab-roster .ab-shell::before { display:block; }
 
 /* Companion-app component palette: on the roster view the parchment/steel
    family is re-pointed at the manual tokens, so every inner component
@@ -272,7 +289,7 @@ body.ab-roster .loading { color:var(--rl-mute); }
 }
 .ab-validation.is-bad .ab-val-title { color:var(--rl-rust); }
 #validationBody { padding:0 14px 12px; display:flex; flex-direction:column; gap:5px; }
-.ab-val-clean { font-family:'PT Sans',sans-serif; font-size:12.5px; font-style:italic; color:var(--rl-ink-soft); }
+.ab-val-clean { font-family:'PT Sans',sans-serif; font-size:12.5px; color:var(--rl-ink-soft); }
 .ab-val-row {
   font-family:'PT Sans',sans-serif; font-size:12.5px; line-height:1.45; padding:0;
   display:flex; align-items:flex-start; gap:7px;
@@ -422,6 +439,7 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .ab-rp-pts { font-family:'Oswald',sans-serif; font-size:13px; color:var(--rl-ink-soft); margin-bottom:12px; }
 .ab-rp-pts b { color:var(--rl-green); font-size:16px; }
 .ab-rp-pts .au-ally { color:var(--rl-rust); border-color:var(--rl-rust); }
+.ab-rp-step-note { font-size:12px; color:var(--rl-ink-soft); margin:-6px 0 12px; line-height:1.45; }
 .ab-rp-role { text-transform:uppercase; letter-spacing:.5px; font-size:11.5px; }
 .ab-rp-btn {
   display:inline-block; background:var(--rl-green-soft); border:1px solid var(--rl-green); color:var(--rl-green);
@@ -434,7 +452,7 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
   font-family:'Oswald',sans-serif; font-size:10.5px; font-weight:600; letter-spacing:1.6px;
   text-transform:uppercase; color:var(--rl-green); margin-bottom:8px;
 }
-.ab-rp-hint { font-family:'EB Garamond',serif; font-size:13.5px; color:var(--rl-mute); font-style:italic; margin:0 0 8px; }
+.ab-rp-hint { font-family:'EB Garamond',serif; font-size:13.5px; color:var(--rl-mute); margin:0 0 8px; }
 .ab-rp-select {
   width:100%; background:var(--rl-paper); border:1px solid var(--rl-edge); color:var(--rl-ink);
   font-family:'Oswald',sans-serif; font-size:12.5px; letter-spacing:.4px; padding:8px 10px;
@@ -468,11 +486,15 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .own-ok   { color:var(--rl-green); }
 .own-warn { color:var(--rl-rust); }
 .own-none { color:var(--rl-mute); font-style:italic; }
-.uo-stat-row { display:flex; align-items:center; gap:10px; padding:6px 0; }
-.uo-stat-row label {
-  font-family:'Oswald',sans-serif; font-size:10.5px; font-weight:600; letter-spacing:1.2px;
-  text-transform:uppercase; color:var(--rl-mute); min-width:90px;
+/* Squad size + collection note, boxed to match the warlord row below it */
+.uo-squad-box { background:var(--rl-paper); border:1px solid var(--rl-edge); padding:10px 12px; margin-bottom:10px; }
+.uo-squad-row { display:flex; align-items:center; gap:10px; cursor:pointer; }
+.uo-squad-label {
+  flex:1; font-family:'Oswald',sans-serif; font-weight:600; font-size:12.5px;
+  letter-spacing:1px; text-transform:uppercase; color:var(--rl-ink);
 }
+.uo-squad-range { font-size:11px; font-weight:600; color:var(--rl-mute); letter-spacing:1px; margin-left:4px; }
+.uo-squad-box .au-ownership { margin-top:9px; padding-top:8px; border-top:1px solid var(--rl-edge-soft); }
 
 /* Warlord row + option rows (enhancements) */
 .uo-warlord-row { display:flex; align-items:center; gap:10px; background:var(--rl-paper); border:1px solid var(--rl-edge); padding:10px 12px; margin-bottom:10px; cursor:pointer; }
@@ -504,7 +526,7 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
    .opt-theme variants from the pre-reskin dark/parchment split collapse into
    one manual look; the class is kept on the container for the pending
    shimmer + any selectors that still key off it. */
-.wg-summary { font-family:'EB Garamond',serif; font-size:13.5px; color:var(--rl-ink-soft); margin-bottom:12px; font-style:italic; line-height:1.45; }
+.wg-summary { font-family:'EB Garamond',serif; font-size:13.5px; color:var(--rl-ink-soft); margin-bottom:12px; line-height:1.45; }
 .wg-summary-lbl {
   display:block; font-family:'Oswald',sans-serif; font-size:10px; font-weight:600; letter-spacing:1.4px;
   text-transform:uppercase; font-style:normal; color:var(--rl-green); margin-bottom:3px;
@@ -533,7 +555,9 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .wg-card-chev { color:var(--rl-mute); font-size:12px; flex-shrink:0; }
 .wg-card-content { padding:8px 11px 10px; }
 .wg-card-content[hidden] { display:none; }
-.wg-card-sub { font-family:'PT Sans',sans-serif; font-size:11.5px; font-style:italic; color:var(--rl-mute); line-height:1.5; margin:0 0 8px; }
+.wg-card-sub { font-family:'PT Sans',sans-serif; font-size:12px; color:var(--rl-ink-soft); line-height:1.5; margin:0 0 8px; }
+.wg-sub-list { margin:4px 0; padding-left:18px; list-style:disc; }
+.wg-sub-list li { margin:2px 0; }
 .wg-radio { display:flex; align-items:center; gap:8px; font-family:'PT Sans',sans-serif; font-size:12.5px; color:var(--rl-ink-soft); padding:2px 0; cursor:pointer; }
 .wg-radio:hover, .wg-check:hover { color:var(--rl-ink); background:var(--rl-green-soft); }
 .wg-radio .wg-box-input { position:absolute; opacity:0; width:14px; height:14px; margin:0; pointer-events:none; }
@@ -601,7 +625,7 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 
 /* "Always equipped" footnote */
 .wg-fixed-note { border-top:1px dashed var(--rl-edge-soft); margin-top:14px; padding-top:8px;
-  font-family:'PT Sans',sans-serif; font-size:11.5px; font-style:italic; color:var(--rl-mute); line-height:1.5; }
+  font-family:'PT Sans',sans-serif; font-size:12px; color:var(--rl-ink-soft); line-height:1.5; }
 .wg-fixed-note .wg-summary-lbl { color:var(--rl-mute); }
 
 /* ---- drawer overlays ----
@@ -702,7 +726,7 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 }
 .dp-budget-pill { background:var(--rl-green); color:#fff; font-family:'Oswald',sans-serif; font-size:12px; font-weight:700; padding:3px 10px; }
 .dp-budget-pill.is-over { background:var(--rl-rust); }
-.dp-intro { margin:0 0 10px; font-family:'PT Sans',sans-serif; font-size:12px; line-height:1.55; font-style:italic; color:var(--rl-mute); }
+.dp-intro { margin:0 0 10px; font-family:'PT Sans',sans-serif; font-size:12px; line-height:1.55; color:var(--rl-ink-soft); }
 .dp-card {
   display:flex; align-items:center; gap:10px; background:var(--rl-paper-2);
   border:1px solid var(--rl-edge); padding:10px 12px; margin-bottom:9px; min-height:0;

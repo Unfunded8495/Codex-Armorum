@@ -1,5 +1,5 @@
 import { esc } from './utils.js';
-import { ruleText, wrapKeywords, bsdataMarkup } from './ruletext.js';
+import { ruleText, wrapKeywords, bsdataMarkup, optionMarkup } from './ruletext.js';
 
 // BSData stat profiles use UPPER-CASE keys (M, T, SV, W, LD, OC) and store a
 // single model's stats as a bare object rather than a one-item array. Read
@@ -161,14 +161,27 @@ function compositionLine(r){
   return esc(name);
 }
 
-export function renderUnitComposition(rows,loadout,ledBy){
-  if((!rows||!rows.length)&&!loadout&&(!ledBy||!ledBy.length)) return '';
+export function renderUnitComposition(rows,loadout,ledBy,baseSize){
+  if((!rows||!rows.length)&&!loadout&&(!ledBy||!ledBy.length)&&!baseSize) return '';
   return `<div class="section"><h2>Unit Composition</h2>
     ${rows&&rows.length?`<ul class="comp-list">
       ${rows.map(r=>`<li>${compositionLine(r)}</li>`).join('')}</ul>`:''}
     ${loadout?`<div class="loadout-block">${renderLoadout(loadout)}</div>`:''}
+    ${baseSize?`<div class="base-size-block"><h3>Base Size</h3><p>${esc(baseSize)}</p></div>`:''}
     ${ledBy&&ledBy.length?renderLedBy(ledBy):''}
   </div>`;
+}
+
+// Duplicate-selection surcharge carried in points_steps:
+// [{step_at, step_points}] -> "Your 3rd and subsequent selections of this
+// unit each cost +10 pts." (clearer than the official app's "After the 2nd
+// selection..." wording, which reads as if the 2nd costs more)
+export function pointsStepNote(steps){
+  const s = steps && steps[0];
+  if(!s || !s.step_at || !s.step_points) return '';
+  const n = s.step_at;
+  const ord = n===1?'1st':n===2?'2nd':n===3?'3rd':`${n}th`;
+  return `Your ${ord} and subsequent selections of this unit each cost +${s.step_points} pts.`;
 }
 
 function renderLoadout(loadout){
@@ -188,14 +201,15 @@ function renderLedBy(ledBy){
 export function renderOptions(rows){
   if(!rows||!rows.length) return '';
   return `<div class="section"><h2>Wargear Options</h2><ul class="opt-list">
-    ${rows.map(r=>`<li>${ruleText(r.description)}</li>`).join('')}</ul></div>`;
+    ${rows.map(r=>`<li>${optionMarkup(r.description)}</li>`).join('')}</ul></div>`;
 }
 
-export function renderPoints(costs){
-  if(!costs||!costs.length) return '';
+export function renderPoints(costs,steps){
+  const note = pointsStepNote(steps);
+  if((!costs||!costs.length)&&!note) return '';
   return `<div class="section"><h2>Points</h2><div class="points-row">
-    ${costs.map(c=>`<div class="points-box"><b>${esc(c.cost)}</b><span>${esc(c.description)}</span></div>`).join('')}
-  </div></div>`;
+    ${(costs||[]).map(c=>`<div class="points-box"><b>${esc(c.cost)}</b><span>${esc(c.description)}</span></div>`).join('')}
+  </div>${note?`<p class="points-step-note">${esc(note)}</p>`:''}</div>`;
 }
 
 export function renderKeywords(d){

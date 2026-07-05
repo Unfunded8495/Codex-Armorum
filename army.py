@@ -92,6 +92,25 @@ def _points_for(did, squad_size, fid=None, dt_ids=None):
     return _int(tier.get("points"))
 
 
+def points_step(did):
+    """The duplicate-selection surcharge for a datasheet ("After the Nth
+    selection of this unit, additional selections each cost +X pts"), as
+    ``{"step_at": N+1, "step_points": X}``, or None. w40k.db carries at most
+    one step per datasheet."""
+    steps = get_store().ds_by_id.get(did, {}).get("_points_steps") or []
+    return steps[0] if steps else None
+
+
+def points_step_surcharge(did, count):
+    """Total surcharge for ``count`` selections of ``did`` in one army: every
+    selection from ordinal ``step_at`` onward pays ``step_points`` on top of
+    its tier price."""
+    step = points_step(did)
+    if not step or count < _int(step.get("step_at")):
+        return 0
+    return _int(step.get("step_points")) * (count - (_int(step.get("step_at")) - 1))
+
+
 def _composition_breakdown(did, squad_size, fid=None, dt_ids=None):
     """``[{model, count}]`` at ``squad_size``: fixed models at their min, the
     single variable model absorbs the remainder. Tiers with >1 variable model
@@ -421,6 +440,24 @@ def _army_unit_row(c, au):
 
     base_pts = _points_for(did, squad_size, army_fid, army_dtids)
 
+    # Duplicate-selection surcharge: this row's ordinal among the army's
+    # selections of the same datasheet, in roster order (sort_order, rowid --
+    # the same order api_get_army lists rows). From ordinal step_at onward each
+    # selection pays step_points on top of its tier price, mirroring the
+    # official app's "After the Nth selection..." unit-composition note.
+    step = points_step(did)
+    step_pts = 0
+    if step:
+        earlier = c.execute(
+            "SELECT COUNT(*) n FROM army_units WHERE army_list_id=? AND datasheet_id=?"
+            " AND (COALESCE(sort_order,0) < COALESCE(?,0)"
+            "      OR (COALESCE(sort_order,0) = COALESCE(?,0)"
+            "          AND rowid < (SELECT rowid FROM army_units WHERE id=?)))",
+            (au["army_list_id"], did, au["sort_order"], au["sort_order"],
+             au["id"])).fetchone()["n"]
+        if earlier + 1 >= _int(step.get("step_at")):
+            step_pts = _int(step.get("step_points"))
+
     # ---- wargear loadout: reconcile the stored selection to the current squad
     # size, price the delta, and persist it. The denormalized wargear_points lets
     # api_list_armies add it without importing the wargear engine. (Local import
@@ -446,7 +483,7 @@ def _army_unit_row(c, au):
     if _loadout_json != _prev_loadout or wargear_pts != _prev_wgpts:
         c.execute("UPDATE army_units SET loadout=?, wargear_points=? WHERE id=?",
                   (_loadout_json, wargear_pts, au["id"]))
-    pts = base_pts + wargear_pts
+    pts = base_pts + wargear_pts + step_pts
 
     enh_name = ""
     enh_cost = 0
@@ -470,7 +507,8 @@ def _army_unit_row(c, au):
     # their config's can_take_enhancements.
     ally_cfg = None if _datasheet_in_faction(did, army_fid) else store.ally_config_for(army_fid, did)
     is_ally = ally_cfg is not None
-    ally_faction = " / ".join(ally_cfg["ally_faction_names"]) if ally_cfg else ""
+    ally_faction = " / ".join(ally_cfg.get("ally_faction_display_names")
+                              or ally_cfg["ally_faction_names"]) if ally_cfg else ""
 
     # ---- Leader attachment: legality from the structured leader_group data
     # (detachment gates, leader vs support slots, party keyword matching,
@@ -513,6 +551,8 @@ def _army_unit_row(c, au):
         "available_count": available,
         "points": pts,
         "wargear_points": wargear_pts,
+        "points_step": step,
+        "points_step_added": step_pts,
         "loadout": loadout,
         "loadout_summary": loadout_summary,
         "loadout_setups": loadout_setups,

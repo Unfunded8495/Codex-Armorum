@@ -111,7 +111,8 @@ function _buildPage(boxes, data, factions){
       <input id="catSearch" class="al-cat-search" placeholder="Search box sets…" autocomplete="off">
       <select id="catFaction" class="al-cat-faction">
         <option value="">All armies</option>
-        ${factions.map(f=>`<option value="${esc(f.id)}">${esc(f.name)}</option>`).join('')}
+        ${[...factions].sort((a,b)=>(a.display_name||a.name).localeCompare(b.display_name||b.name))
+          .map(f=>`<option value="${esc(f.id)}">${esc(f.display_name||f.name)}</option>`).join('')}
       </select>
       <select id="catSort" class="al-sort-sel">
         <option value="name">A–Z</option>
@@ -230,7 +231,8 @@ function _factionData(fid){
 }
 
 function _factionName(fid){
-  return _factionData(fid)?.name || pageFactionNames[fid] || fid;
+  const f = _factionData(fid);
+  return f?.display_name || f?.name || pageFactionNames[fid] || fid;
 }
 
 function _boxSurface(box){
@@ -238,7 +240,7 @@ function _boxSurface(box){
   if(!f) return { cls:'', style:'', mark:'' };
   const mark = f.icon_url
     ? `<div class="faction-bg-mark al-card-mark" aria-hidden="true"><img src="${esc(f.icon_url)}" alt="" loading="lazy"></div>`
-    : `<div class="faction-bg-mark al-card-mark" aria-hidden="true"><span class="faction-bg-letter">${esc((f.name||box.faction_id)?.[0]||'?')}</span></div>`;
+    : `<div class="faction-bg-mark al-card-mark" aria-hidden="true"><span class="faction-bg-letter">${esc((f.display_name||f.name||box.faction_id)?.[0]||'?')}</span></div>`;
   return {
     cls: ' faction-surface al-faction-card',
     style: ` style="--cardarmy:${f.primary};--cardaccent:${f.accent};--cardglow:${f.accent}"`,
@@ -322,7 +324,7 @@ function _renderModelSummary(purchases, factions){
   if(!purchases.length) return `<div class="al-sum-empty">No purchases recorded yet.</div>`;
 
   const factionName = {};
-  factions.forEach(f => { factionName[f.id] = f.name; });
+  factions.forEach(f => { factionName[f.id] = f.display_name || f.name; });
 
   const byFaction = {};
   for(const p of purchases){
@@ -865,7 +867,8 @@ function renderBoxEditor(box, factions){
         <label class="ff-label">Army</label>
         <select id="boxFaction">
           <option value="">Mixed / any army</option>
-          ${facs.map(f=>`<option value="${esc(f.id)}" ${f.id===fid?'selected':''}>${esc(f.name)}</option>`).join('')}
+          ${[...facs].sort((a,b)=>(a.display_name||a.name).localeCompare(b.display_name||b.name))
+            .map(f=>`<option value="${esc(f.id)}" ${f.id===fid?'selected':''}>${esc(f.display_name||f.name)}</option>`).join('')}
         </select>
       </div>
       <div class="al-ed-field">

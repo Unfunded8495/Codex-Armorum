@@ -1,0 +1,1532 @@
+[
+  {
+    "quote": "There is only the Emperor, and he is our Shield and Protector.",
+    "speaker": "Statement of fact, Second Book of Chantings",
+    "source": "Book of the Astronomican, pg. 78"
+  },
+  {
+    "quote": "Our thoughts light the Darkness that others may cross space. We are one with the Emperor, our souls are joined in his will. Praise the Emperor whose sacrifice is life as ours is death. Hail his name the Master of Humanity.",
+    "speaker": "The Credo of the Astronomican",
+    "source": "Warhammer 40,000: Rogue Trader, pg. 37; White Dwarf 93 (UK)"
+  },
+  {
+    "quote": "For every battle honour, a thousand heroes die alone, unsung, and unremembered.",
+    "speaker": "Unattributed",
+    "source": "Warhammer 40,000: Rogue Trader, pg. 72"
+  },
+  {
+    "quote": "What fear of death have we who know there is immortality in the great and noble deeds of men?",
+    "speaker": "Unattributed",
+    "source": "Warhammer 40,000 5th Edition Rulebook, pg. 110"
+  },
+  {
+    "quote": "Only in your deepest self is the truth of what you can be. And, without a doubt, that truth is terrible to bear.",
+    "speaker": "Sensei Saying",
+    "source": "Book of the Astronomican, pg. 70"
+  },
+  {
+    "quote": "Be faithful! Be strong! Be vigilant!",
+    "speaker": "The Emperor of Mankind",
+    "source": "Collected Visions, pg. 367"
+  },
+  {
+    "quote": "Let the strength of your will match the stone of your walls.",
+    "speaker": "Unattributed",
+    "source": "Warhammer Siege, pg. 112"
+  },
+  {
+    "quote": "My will be done.",
+    "speaker": "Unattributed",
+    "source": "Warhammer 40,000 Compendium, pg. 129"
+  },
+  {
+    "quote": "A fortress is a living thing: the commander its brain, the walls its bones, the sensors its eyes and ears, the troops its blood, their weapons its fists…",
+    "speaker": "Mordin Barr",
+    "source": "Warhammer Siege, pg. 91"
+  },
+  {
+    "quote": "The warp is a vital tool to us, a means of communication and transport… Without it, there would be no Imperium of Man. It is a tool we use at our own risk.",
+    "speaker": "Warmaster Horus (early Great Crusade era)",
+    "source": "Horus Rising (Novel), Part One, ch. 10, pg. 198"
+  },
+  {
+    "quote": "It’s amazing how much paperwork an act of heroism requires.",
+    "speaker": "Commissar Ciaphas Cain",
+    "source": "Ciaphas Cain: Hero of the Imperium (Omnibus), ch. 4"
+  },
+  {
+    "quote": "Revenge is a dish best served with mayonnaise and those little cheesy things on sticks.",
+    "speaker": "Osric the Loopy, Governor of Corania",
+    "source": "The Traitor’s Hand (Novel), ch. 21"
+  },
+  {
+    "quote": "Contact with alien races always renews one’s faith in humanity. It is my belief that foreign travel narrows the mind wonderfully.",
+    "speaker": "Helem Boesch",
+    "source": "Warhammer 40,000: Rogue Trader, pg. 41"
+  },
+  {
+    "quote": "If all else fails: duck. As a defensive stratagem it’s unreliable, but incredibly reassuring for a moment or two.",
+    "speaker": "Lord Corvis of Petrax",
+    "source": "Warhammer 40,000 5th Edition Rulebook, pg. 21"
+  },
+  {
+    "quote": "Never take a gamble you’re not prepared to lose.",
+    "speaker": "Abdul Goldberg, Rogue Trader",
+    "source": "For the Emperor (Novel) – Ciaphas Cain: Hero of the Imperium (Omnibus), ch. 14"
+  },
+  {
+    "quote": "Should a machine not function upon striking the panel marked ‘on’… The operator must recourse to consulting the instruction manual.",
+    "speaker": "Runic Spaceflight Manual W110E (Unattributed)",
+    "source": "Book of the Astronomican, pg. 18"
+  },
+  {
+    "quote": "If your battle plan’s working, it’s probably a trap.",
+    "speaker": "Kolton Phae",
+    "source": "The Traitor’s Hand (Novel), ch. 13 (Ciaphas Cain Omnibus)"
+  },
+  {
+    "quote": "You can never have too many enemies. The more you’ve got, the more likely they are to get in each other’s way.",
+    "speaker": "Jarvin Wallankot",
+    "source": "The Traitor’s Hand (Novel), ch. 15 (Ciaphas Cain Omnibus), pg. 675"
+  },
+  {
+    "quote": "If you don’t expect gratitude you’ll seldom be disappointed.",
+    "speaker": "Eyor Dedonki",
+    "source": "The Traitor’s Hand (Novel) – Ciaphas Cain: Hero of the Imperium (Omnibus)*, ch. 4, pg. 539"
+  },
+  {
+    "quote": "One thing you can say for enemies; they make life more interesting.",
+    "speaker": "Gilbran Quail, Collected Essays",
+    "source": "The Traitor’s Hand (Novel), ch. 2 (Ciaphas Cain Omnibus), pg. 513"
+  },
+  {
+    "quote": "Burn the heretic. Kill the mutant. Purge the unclean.",
+    "speaker": "Imperial Inquisition (Unattributed Maxim)",
+    "source": "Inquisition Lore"
+  },
+  {
+    "quote": "To be Unclean… To be Cleansed… This is the mark of the Mutant.",
+    "speaker": "First Book of Indocrinations (Training Chant)",
+    "source": "White Dwarf 93 (UK), pg. 39"
+  },
+  {
+    "quote": "Hate! Hate! Hate! Let it flow, let it run free!",
+    "speaker": "Inspirational Verse, Imperial Hymnal Vol. IV",
+    "source": "Book of the Astronomican, pg. 101"
+  },
+  {
+    "quote": "The universe has many horrors yet to throw at us. This is not the end of our struggle. This is just the beginning of our crusade to save Humanity.",
+    "speaker": "The Emperor of Mankind",
+    "source": "Collected Visions, pg. 367"
+  },
+  {
+    "quote": "No pity! No remorse! No fear!",
+    "speaker": "Chaplain Grimaldus (Referenced in broader Imperium lore)",
+    "source": "Helsreach"
+  },
+  {
+    "quote": "But without a purpose, an Astartes is nothing. A warrior without a war is no warrior at all.",
+    "speaker": "Malcador the Sigillite",
+    "source": "Garro: Oath of Moment (Audio Book), Track 5"
+  },
+  {
+    "quote": "Suffer not the unclean to live.",
+    "speaker": "Puritan Inquisitor (Unattributed)",
+    "source": "Inquisition Lore"
+  },
+  {
+    "quote": "Faith without deeds is worthless.",
+    "speaker": "Sister Miriya",
+    "source": "Faith & Fire"
+  },
+  {
+    "quote": "If a job’s worth doing it’s worth dying for.",
+    "speaker": "Unattributed Proverb",
+    "source": "Warhammer 40,000: Rogue Trader, pg. 28"
+  },
+  {
+    "quote": "Blessed is the mind too small for doubt.",
+    "speaker": "Imperial Creed (Unattributed)",
+    "source": "Various Codices"
+  },
+  {
+    "quote": "The Emperor protects.",
+    "speaker": "Unattributed",
+    "source": "Common Saying, Various"
+  },
+  {
+    "quote": "Success is commemorated; Failure merely remembered.",
+    "speaker": "Unattributed",
+    "source": "Book of the Astronomican, pg. 104"
+  },
+  {
+    "quote": "Speed the bolt that brings the end of enemy and friend.",
+    "speaker": "Unattributed",
+    "source": "Warhammer 40,000 Compendium, pg. 76"
+  },
+  {
+    "quote": "Walk softly and carry a big Multi-melta.",
+    "speaker": "Unattributed",
+    "source": "Book of the Astronomican, pg. 97"
+  },
+  {
+    "quote": "Wisdom is the beginning of fear.",
+    "speaker": "Unattributed",
+    "source": "Warhammer 40,000 Compendium, pg. 80"
+  },
+  {
+    "quote": "Only in death does duty end.",
+    "speaker": "Imperial Guard Doctrine (Unattributed)",
+    "source": "Imperial Guard Codex"
+  },
+  {
+    "quote": "Faith is our shield.",
+    "speaker": "Unattributed",
+    "source": "Dawn of War Series"
+  },
+  {
+    "quote": "Death before dishonour!",
+    "speaker": "Unattributed",
+    "source": "Various (Imperial Creed)"
+  },
+  {
+    "quote": "Rejoice. Give thanks. For we are but one step now from triumph.",
+    "speaker": "Canticles of Mars 79.12",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Thus do we invoke the Machine God. Thus do we make whole that which was sundered.",
+    "speaker": "Hymn of Reforging",
+    "source": "Codex: Space Marines (5th Edition), pg. 71"
+  },
+  {
+    "quote": "And lo, shall Your holy steel be as armour around our souls, and shall Your wisdom guide our hands. No spear nor barb of the enemy shall trouble our flesh of iron.",
+    "speaker": "Collected Logic-Psalms 31.3",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "To every problem, a solution lies in the application of tech-lore.",
+    "speaker": "Ferrarch Asklepian",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "We are all but a weapon in the right hand of the Emperor.",
+    "speaker": "Exhortationes Principiis Titannorum",
+    "source": "Adeptus Titanicus Rulebook, pg. 21"
+  },
+  {
+    "quote": "Faith is light, and where it burns, there is no night.",
+    "speaker": "Life of Saint Hermeticus 5.23",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "As all men must thank progenitors obscured by the past so we must endure the present that those who come after may continue the greater work.",
+    "speaker": "Garba Mojaro, Prefectus",
+    "source": "Warhammer 40,000: Rogue Trader, pg. 143"
+  },
+  {
+    "quote": "In ancient times, men built wonders… But we are much wiser now.",
+    "speaker": "Archmagos Ultima Cryol",
+    "source": "Dark Adeptus (Novel), Chapter 18"
+  },
+  {
+    "quote": "Let chime ring out! Part the veil of circuit and gear. For now is the hour of motion.",
+    "speaker": "Canticles of Rousing (excerpt)",
+    "source": "Warhammer 40,000: Darktide – Commodore’s Vestures Item"
+  },
+  {
+    "quote": "Toll the Great Bell Thrice! Sing Praise to the God of All Machines.",
+    "speaker": "Catechism of the Autoculus of Mars",
+    "source": "Warhammer 40,000 4th Edition Rulebook (Intro)"
+  },
+  {
+    "quote": "It’s not work if you enjoy it.",
+    "speaker": "Colloquialisms Minor Chapter 51",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Such sweet music is the chatter of binary, that has no tongue to lie.” (Mirroring Sayings of the Archmagi Appendix 4)",
+    "speaker": "Flavius Binary (paraphrased)",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Prayer has power, but I cannot deny fire does, too.",
+    "speaker": "Sayings of Archmagos Cortiko v.58",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Look not upon the alien, for the alien looks back.",
+    "speaker": "Unknown (another Mechanicus proverb)",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "The supporting fire of one’s brethren is always a comfort. Provided it doesn’t hit oneself.",
+    "speaker": "Grand Master Thordun Ranxey",
+    "source": "Adeptus Titanicus Rulebook, pg. 28"
+  },
+  {
+    "quote": "The tree of heresy persists where its roots be not torn up.” (Darkly wry advice for thoroughness.)",
+    "speaker": "Jovian Commentaries Ch. 59",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "The foe of reason builds monuments to his madness, and reveals himself thereby.",
+    "speaker": "Malcador (credited)",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Our enemies may rest, but rust never sleeps.",
+    "speaker": "Tech-Priest Jung",
+    "source": "Imperial Armour: Imperial Vehicles, pg. 59"
+  },
+  {
+    "quote": "The Tech-Priest tends his flock of Chimeras and lasguns as surely as his priestly brethren tend the souls of their Guardsmen…",
+    "speaker": "Magos Aubrey Bessemer",
+    "source": "Only War: Core Rulebook, pg. 98"
+  },
+  {
+    "quote": "The Omnissiah demands the stain of the xenos be deleted. Where it remains, the Omnissiah rages.",
+    "speaker": "Opus Fulminata",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Annihilation. Not exile, submission, or subjugation. For the xenos, only annihilation.",
+    "speaker": "Life of Fabricator General Kane 56.90",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "From such small heresies are great apostasies made.",
+    "speaker": "Maxims Metalica 76.12",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Then into the teeth of the enemy we shall stride.",
+    "speaker": "Life of Macharius 23.19",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Not all data should be acquired.” (Implying some truths are so damning they must be destroyed.)",
+    "speaker": "Ferro-Dictates 53.12",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Death is here!… Death! By the Machine God, Death is here!",
+    "speaker": "Magos Varnak (Last Words)",
+    "source": "Codex: Tyranids (4th Edition), pg. 25"
+  },
+  {
+    "quote": "Our only objective should be death to the alien and all his works. All else is deviance from the Omnissiah Creed.",
+    "speaker": "Life of Archmagos Borasis Appendix 9",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "The weak in mind will seek to understand the xenos. The strong in mind will destroy them, and bless their ignorance.",
+    "speaker": "Binary Hierarch Gethsemorr",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "When the heretic is silenced, it is as if his weapons and tools are stripped from him… He is left impotent and weak.",
+    "speaker": "Jovian Ministrations 61.90",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "All shall be darkness, all shall be madness, for everything will be known and nothing forbidden.",
+    "speaker": "Fabricator-General Jaegaron",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Seek not the words of the xenos, lest they infect us with blasphemy.",
+    "speaker": "Admonitions Mechanae 3:16",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "When we muse on the works of the enemy, we invite him into our minds.",
+    "speaker": "Canticles Flamminia 713",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "The Lord of Mars is with us in the dark, even if thou knowest it not.",
+    "speaker": "Exaltations 49",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Better safe and ignorant, than rueing the means of our downfall.",
+    "speaker": "Macharian Notions Ch. 4113",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Beware the deviance of thine own tools.",
+    "speaker": "Maxims of Amalanth 5.12",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "The xenos must be purged, for the stars are humanity’s birthright.",
+    "speaker": "Psalms Hermeticus 46",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "One can verge from the standard form, but… must always retain humanity, or be lost to the Men of Iron.",
+    "speaker": "Text of the Oiled Cog v.12",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "By acuteness of mind shall we find victory.",
+    "speaker": "Fabricator-General Explicatus",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "Fury has its uses.",
+    "speaker": "Fury Has Its Uses (Unknown)",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "When the enemy begs for destruction, do not let him go hungry.",
+    "speaker": "Helfirian Recollections Ch. 571",
+    "source": "Warhammer 40,000: Mechanicus"
+  },
+  {
+    "quote": "They shall be my finest warriors… They will be my Space Marines, and they shall know no fear.",
+    "speaker": "The Emperor of Mankind",
+    "source": "The Horus Heresy Book One – Betrayal, pg. 26"
+  },
+  {
+    "quote": "Into the fires of battle! Unto the anvil of war!",
+    "speaker": "Battle-cry of the Salamanders",
+    "source": "Codex: Space Marines (5th Edition), pg. 26"
+  },
+  {
+    "quote": "We march for Macragge! And we shall know no fear!",
+    "speaker": "Ultramarines Battle-chant",
+    "source": "Ultramarines – A Warhammer 40,000 Movie"
+  },
+  {
+    "quote": "What is it to be a Space Marine? It is to be death! … What is it to end life? It is an honour, to be the executioners of the Emperor.",
+    "speaker": "Catechism of Hate (Novella)",
+    "source": "Catechism of Hate (Novella), ch. Nine"
+  },
+  {
+    "quote": "Bravery is stronger than Adamantium… We have the courage of the Emperor! And in the Emperor’s name… ATTACK!!",
+    "speaker": "Chaplain Gonzago (Imperial Fists)",
+    "source": "Warhammer 40,000 Compendium, pg. 22; Warhammer Siege, pg. 109"
+  },
+  {
+    "quote": "While the enemies of the Emperor still draw breath, there can be no peace.",
+    "speaker": "Captain Gabriel Angelos, Blood Ravens",
+    "source": "Warhammer 40,000: Dawn of War"
+  },
+  {
+    "quote": "I haven’t lost an arm, brother. It’s right over there.",
+    "speaker": "Captain Alessio Cortez, Crimson Fists",
+    "source": "Rynn’s World (Novel), Part Three, ch. 8"
+  },
+  {
+    "quote": "Treat them with honour, my Brothers. Not because they will bring us victory this day, but because their fate will one day be ours.",
+    "speaker": "High Chaplain Astorath (Blood Angels)",
+    "source": "Codex: Blood Angels (5th Edition), pg. 44"
+  },
+  {
+    "quote": "We give hope. Ever has it been that the Space Marines are too few to conquer every threat… Yet the truth of our existence steels the hearts of lesser warriors.",
+    "speaker": "Chaplain Ortan Cassius (Ultramarines)",
+    "source": "Catechism of Hate (Novella), ch. One"
+  },
+  {
+    "quote": "We follow in the footsteps of Guilliman. As it is written in the Codex, so shall it be.",
+    "speaker": "Primarch Roboute Guilliman (Ultramarines)",
+    "source": "Codex: Space Marines (5th Edition), pg. 16"
+  },
+  {
+    "quote": "Don’t fool yourselves. War is all we are! Killing is all we are good for! The rest is delusion.",
+    "speaker": "Devastator Sergeant Avitus (Blood Ravens)",
+    "source": "Dawn of War II"
+  },
+  {
+    "quote": "-The Emperor protects. -And having a loaded bolter never hurt, either.",
+    "speaker": "Brother Proteus & Apothecary Pythol (Ultramarines)",
+    "source": "Ultramarines – A Warhammer 40,000 Movie"
+  },
+  {
+    "quote": "Problems? There is no problem I cannot solve with this…",
+    "speaker": "Commander Mad Chainsaw Johnson (White Scars)",
+    "source": "White Dwarf 93 (UK), pg. 40"
+  },
+  {
+    "quote": "Show me a fortress and I’ll show you a ruin.",
+    "speaker": "Captain Eddan Bourne (Silver Skulls)",
+    "source": "Warhammer Siege, pg. 105"
+  },
+  {
+    "quote": "We go where we wilt. We slay who we wilt. Let the Emperor judge the righteousness of our deeds.",
+    "speaker": "Sergeant D’Kestrel (Raven Guard)",
+    "source": "Codex: Space Marines (5th Edition), pg. 62"
+  },
+  {
+    "quote": "Come you aliens, show me what passes for fury amongst your misbegotten kind!",
+    "speaker": "Captain Gabriel Angelos (Blood Ravens)",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "At Lastrati we gathered every Whirlwind in the Crusade… Moments later the city was aflame, its defenders broken, and the battle truly joined.",
+    "speaker": "Ancients Tahncred & Androcles (Various Chapters)",
+    "source": "Imperial Armour Vol. 2 – 2nd Ed, pg. 82"
+  },
+  {
+    "quote": "The roar of engines, the recoil of cannons. That is where the true joy of battle lies.",
+    "speaker": "Sergeant Antaro Chronus (Ultramarines)",
+    "source": "Codex: Space Marines (5th Edition), pg. 89"
+  },
+  {
+    "quote": "Earth is the hub of the Imperium… And the most corrupt… where there is government and where there is money, there is corruption.",
+    "speaker": "Wolf Priest Ranek Icewalker (Space Wolves)",
+    "source": "Wolfblade (Novel), ch. Two"
+  },
+  {
+    "quote": "The lives of millions, and the honour of our Chapter, hang in the balance, brothers. Failure is not an option.",
+    "speaker": "Captain Androcles (Star Phantoms)",
+    "source": "Planetary Empires Strategy Cards, 2011"
+  },
+  {
+    "quote": "Give me a hundred Space Marines. Or failing that, give me a thousand other troops.",
+    "speaker": "Rogal Dorn, Primarch of the Imperial Fists",
+    "source": "Codex: Space Marines (4th Edition), pg. 2"
+  },
+  {
+    "quote": "Here we stand and here shall we die, unbroken and unbowed, though the very hand of death itself come for us, we will spit our defiance to the end!",
+    "speaker": "Chaplain-Dreadnought Armand Titus (Howling Griffons)",
+    "source": "Imperial Armour Volume Nine – The Badab War (Part One), pg.124"
+  },
+  {
+    "quote": "Kill! Maim! Burn! Kill! Maim! Burn!",
+    "speaker": "Khârn the Betrayer (Noted Pre-Heresy)",
+    "source": "(Referenced in multiple Chaos/Marine crossovers)"
+  },
+  {
+    "quote": "War is not about glory. War is about victory!",
+    "speaker": "Apothecary Pythol (Ultramarines)",
+    "source": "Ultramarines – A Warhammer 40,000 Movie"
+  },
+  {
+    "quote": "We are the slayers of kings, the destroyers of worlds… Let none stay our wrath.",
+    "speaker": "Captain Cato Sicarius (Ultramarines)",
+    "source": "Codex: Space Marines (5th Edition), pg. 19"
+  },
+  {
+    "quote": "Surround yourself with the greatest warriors at your command… It matters not. I shall take your head for the Great Khan and for the Emperor.",
+    "speaker": "Kor’sarro Khan (White Scars)",
+    "source": "Codex: Space Marines (5th Edition), pg. 94"
+  },
+  {
+    "quote": "We are the Emperor’s angels of death, not his angels of mercy.",
+    "speaker": "Blood Ravens Devastator Sergeant Avitus",
+    "source": "Dawn of War II"
+  },
+  {
+    "quote": "They know our tactics… So we must cast them aside for a day. We must fight them in ways they do not expect.",
+    "speaker": "Sergeant Aeonid Thiel (Ultramarines)",
+    "source": "Know No Fear (Novel), ch. Four"
+  },
+  {
+    "quote": "Flesh is weak. Only the machine is eternal.",
+    "speaker": "Iron Hands Principle",
+    "source": "Wrath of Iron (Novel)"
+  },
+  {
+    "quote": "We do not know what our chances of survival are, so we fight as if they were zero.",
+    "speaker": "Grey Knights Justicar Alaric",
+    "source": "Grey Knights (Novel), ch. Twenty"
+  },
+  {
+    "quote": "Everything has a purpose, Proteus. So the Emperor ordains.",
+    "speaker": "Chaplain Carnak (Imperial Fists)",
+    "source": "Ultramarines – A Warhammer 40,000 Movie"
+  },
+  {
+    "quote": "Through the destruction of our enemies do we earn our salvation!",
+    "speaker": "Blood Ravens Librarian Saying",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "From the darkness we strike: fast, silent, and deadly.",
+    "speaker": "Raven Guard Maxim",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "Walls of stone and walls of iron, fall down all the same.",
+    "speaker": "White Scars Battle-Hymn",
+    "source": "Warhammer Siege, pg. 93"
+  },
+  {
+    "quote": "Only the spirit is pure. The mind may be swayed, the body may fail.",
+    "speaker": "Iron Hands Credo",
+    "source": "Wrath of Iron (Novel), ch. 12"
+  },
+  {
+    "quote": "Many great legends lived before Brother Rammius, but most are unmourned and unremembered.",
+    "speaker": "Techmarine Simagus (Black Templars)",
+    "source": "White Dwarf 313 (UK), pg. 80"
+  },
+  {
+    "quote": "Or is it to lie, to hide and to plot so that others will never know of our shame?",
+    "speaker": "Dark Angels Interrogator-Chaplain Boreas",
+    "source": "Ravenwing (Novel), Two: Brother Boreas Speaks"
+  },
+  {
+    "quote": "Victory does not always rest with the big guns: but if we rest in front of them we shall be lost.",
+    "speaker": "Silver Skulls Commander Argentius",
+    "source": "Codex: Space Marines (5th Edition), pg. 79"
+  },
+  {
+    "quote": "If all else fails: duck. As a defensive stratagem it’s unreliable…",
+    "speaker": "Lord Corvis of Petrax (referenced by Marines)",
+    "source": "Warhammer 40,000 5th Edition Rulebook, pg.21"
+  },
+  {
+    "quote": "I am the Arch-fiend, the Despoiler of Worlds, and by my hands shall the false Emperor fall.",
+    "speaker": "Abaddon the Despoiler",
+    "source": "Codex: Chaos Space Marines (6th Edition), pg. 57"
+  },
+  {
+    "quote": "Horus was weak. Horus was a fool. He had the whole galaxy within his grasp and he let it slip away.",
+    "speaker": "Abaddon the Despoiler",
+    "source": "Codex: Chaos Space Marines (3rd Edition), pg. 44"
+  },
+  {
+    "quote": "The Emperor protects. Kill every last one.",
+    "speaker": "Abaddon the Despoiler",
+    "source": "The Last Son of Dorn (Novel), ch. 8"
+  },
+  {
+    "quote": "And what are the achievements of your fragile Imperium? It is a corpse rotting slowly from within while maggots writhe in its belly… I have forgotten nothing, and my wisdom has expanded far beyond mere mortal frailties.",
+    "speaker": "Ahzek Ahriman (Thousand Sons)",
+    "source": "US White Dwarf 275 (US), pg. 88"
+  },
+  {
+    "quote": "If the path to salvation leads through the halls of purgatory, then so be it.",
+    "speaker": "Ahzek Ahriman (Thousand Sons)",
+    "source": "Codex: Chaos Space Marines (6th Edition), pg. 60"
+  },
+  {
+    "quote": "If a man dedicates his life to good deeds and the welfare of others, he will die unthanked and unremembered… Infamy is always more preferable to ignominy.",
+    "speaker": "Fabius Bile (Emperor’s Children)",
+    "source": "Codex: Chaos Space Marines (4th Edition), pg. 53"
+  },
+  {
+    "quote": "I am Alpharius. I am Alpharius. We are all Alpharius.",
+    "speaker": "Alpha Legion",
+    "source": "Legion (Novel), ch. 1"
+  },
+  {
+    "quote": "They must not err, or they fall to heresy. All who fall join our cause… Chaos is inevitable. We lurk within the darkness of their souls, on the tip of their tongues, in their tortured dreams. We are them, but freed from the shackles of ignorance. We are them, but so much more!",
+    "speaker": "Diuman Cilious (Alpha Legion)",
+    "source": "Dawn of War: Soulstorm"
+  },
+  {
+    "quote": "The difference between gods and daemons depends largely upon where one stands at the time.",
+    "speaker": "Argel Tal (Word Bearers)",
+    "source": "The First Heretic (Novel), ch. 14"
+  },
+  {
+    "quote": "For years I have despised Lorgar… We no longer bear the word, my friend. We bear Lorgar.",
+    "speaker": "Sorot Tchure (Word Bearers)",
+    "source": "Know No Fear (Novel), ch. Eight, pg. 101"
+  },
+  {
+    "quote": "We’re back, and better than ever!",
+    "speaker": "Chaos Space Marines (Unattributed)",
+    "source": "Dawn of War (multiplayer/voice lines)"
+  },
+  {
+    "quote": "Do you hear the voices too?!!",
+    "speaker": "Chaos Aspiring Champions",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "We’re so loud you wanna die. Go forth and amplify!",
+    "speaker": "Noise Marines",
+    "source": "(D-Rok – Noise Marines)"
+  },
+  {
+    "quote": "Yes! Let the blood flow!… Once the Titan is mine, you will all worship me as you do the Gods!",
+    "speaker": "Crull, Warlord of the World Eaters",
+    "source": "Dawn of War: Winter Assault (paraphrased lines)"
+  },
+  {
+    "quote": "Great art so often fails to find an audience with the intellect to appreciate it. Sometimes I am filled with woe to think no one in this blighted millennium has the wit to see the scope of my brilliance.",
+    "speaker": "Fabius Bile",
+    "source": "Black Tide (Novel), ch. Eleven"
+  },
+  {
+    "quote": "Sanity is for the weak!",
+    "speaker": "Chaos Space Marines (Unattributed)",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "Sometimes a man can be convinced to do anything, no matter how abhorrent, with the right motivation. We are just here to provide that motivation—by force or temptation.",
+    "speaker": "Kor Phaeron",
+    "source": "Dark Creed (Novel) (paraphrased)"
+  },
+  {
+    "quote": "Do you really think I’m doing this to try and impress anyone? I know who I am, and I don’t give a greenskin’s fart what anyone thinks of me.",
+    "speaker": "Honsou (Iron Warriors)",
+    "source": "The Chapter’s Due (Novel), ch. 9"
+  },
+  {
+    "quote": "I murdered thousands for the Emperor and he gave me nothing… Now his lapdogs yap for every life I take. Let them yap—I’ve got the gods on my side.",
+    "speaker": "Svane Vulfbad",
+    "source": "Shadow War: Armageddon Rulebook, pg. 126"
+  },
+  {
+    "quote": "Destroy, for the sake of Destruction. Kill, for the sake of Killing.",
+    "speaker": "Noise Marines",
+    "source": "Codex: Chaos Space Marines (4th Edition), pg. 83"
+  },
+  {
+    "quote": "Let the galaxy burn!",
+    "speaker": "Abaddon the Despoiler",
+    "source": "Referenced across Chaos Space Marine contexts"
+  },
+  {
+    "quote": "Death to the false Emperor!",
+    "speaker": "Chaos Space Marines (Unattributed)",
+    "source": "Codex: Chaos Space Marines (4th Edition), pg. 4"
+  },
+  {
+    "quote": "Death is nothing compared to vindication.",
+    "speaker": "Primarch Konrad Curze (Night Haunter)",
+    "source": "Codex: Chaos (2nd Edition), pg. 14"
+  },
+  {
+    "quote": "I have become that which I once most feared: Death itself.",
+    "speaker": "Kargos Bloodspitter, Champion of Khorne",
+    "source": "Codex Imperialis, pg. 77 (Background Book)"
+  },
+  {
+    "quote": "Burn the body; sear the soul.",
+    "speaker": "Noise Marines",
+    "source": "Codex: Chaos Space Marines (4th Edition), pg. 82"
+  },
+  {
+    "quote": "I am doomed, but I walk in darkness. I am forgotten, but the future is my gift to humanity… after it’s bathed in blood.",
+    "speaker": "Svane Vulfbad",
+    "source": "Shadow War: Armageddon, (paraphrased)"
+  },
+  {
+    "quote": "Kill us! Kill us all! In the name of Terra, before he—” (last frantic cry, cut off by horrifying fate)",
+    "speaker": "Heritor Asphodel",
+    "source": "Necropolis (Novel), ch. 11"
+  },
+  {
+    "quote": "With the thirty-seven keys of Tzeentch, we open the way… With the mighty axe of Khorne, we cut open the world for them.",
+    "speaker": "Word Bearers Chant",
+    "source": "Dawn of War: Dark Crusade (Chaos stronghold prelude)"
+  },
+  {
+    "quote": "Horus was weak.",
+    "speaker": "Abaddon the Despoiler",
+    "source": "Codex: Chaos Space Marines (3rd Edition), pg. 44"
+  },
+  {
+    "quote": "We are the destroyer!",
+    "speaker": "Chaos Space Marines (Unattributed)",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "Let sensation wash over you, through you, claim you and cast you aside!",
+    "speaker": "Noise Marines",
+    "source": "Codex: Chaos Space Marines (8th Edition), pg. 48"
+  },
+  {
+    "quote": "Do you hear the voices too?!?",
+    "speaker": "Chaos Aspiring Champions",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "The Imperium is a weak old man, ready and waiting to be broken apart by his vengeful sons.",
+    "speaker": "Lufgt Huron (Tyrant of Badab)",
+    "source": "Codex: Chaos Space Marines (6th Edition), pg. 58"
+  },
+  {
+    "quote": "Seven months… We ate the crew… hateful mouthfuls… We drank promethium…",
+    "speaker": "Argel Tal",
+    "source": "The First Heretic (Novel), ch. 12"
+  },
+  {
+    "quote": "Slaughter everything and everyone until they kneel in the ashes of those they sought to protect.",
+    "speaker": "Haakor (Black Legion)",
+    "source": "Codex: Chaos Space Marines (8th Edition), pg. 130"
+  },
+  {
+    "quote": "In Nurgle’s embrace, we do not fear decay—decay becomes our greatest strength.",
+    "speaker": "Typhus the Traveler",
+    "source": "(Paraphrased from multiple Nurgle references)"
+  },
+  {
+    "quote": "Which of you will be the first course?",
+    "speaker": "Lucius the Eternal",
+    "source": "Codex: Chaos Space Marines (6th Edition), pg. 62"
+  },
+  {
+    "quote": "Only when you have soared through the morning skies on wings of flame can you understand the Hawk… And only one who has travelled but ultimately turned away from each of these paths can understand the Autarch.",
+    "speaker": "Anthrillien Morningchild, Autarch of Yme-Loc",
+    "source": "Codex: Eldar (4th Edition), pg. 29"
+  },
+  {
+    "quote": "Every moment of anger, hate, deceit, pain, suffering, pleasure, and desire is mirrored in the power of Chaos. When its legions march, they march to return upon us a ruin that is of our own making.",
+    "speaker": "Arenal, Farseer",
+    "source": "FFG Teaser for “The Final Gambit” (Conquest Card Game)"
+  },
+  {
+    "quote": "Attack swiftly, and without warning. This is the mantra of the Striking Scorpions – it is the way of all our kind.",
+    "speaker": "Aulirel Doomhand, Striking Scorpion Exarch",
+    "source": "Planetary Empires Strategy Card (Careful Planning), archived 2011"
+  },
+  {
+    "quote": "They shall come, expecting the obvious, the simple, the artless. Meanwhile, we shall appear unseen from ten directions, and from every one strike a fatal blow.",
+    "speaker": "Farseer Caerys of Ulthwé",
+    "source": "Dawn of War: Soulstorm"
+  },
+  {
+    "quote": "I hear the song of the celestial heavens, and the music is cacophonous. Righting the discord of the universal opus is what has given my people purpose when we should have collapsed in upon ourselves.",
+    "speaker": "Farseer Taldeer, Craftworld Ulthwé",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "The wind whipping across your face as your blades whip across the throats of the foe. It makes the blood sing.",
+    "speaker": "Hrythar Dreamweave, Wild Rider",
+    "source": "Codex: Eldar (4th Edition), pg. 17"
+  },
+  {
+    "quote": "There is no corner of the galaxy that has not felt the eagle-keen gaze of Alaitoc.",
+    "speaker": "Elarique Swiftblade, Autarch of Alaitoc",
+    "source": "Codex: Eldar (4th Edition), pg. 19"
+  },
+  {
+    "quote": "Gather the dead for war, let them join our ranks, lest we are forced to join theirs.",
+    "speaker": "Farseer Kelmon",
+    "source": "The Defence of Iyanden (archived site)"
+  },
+  {
+    "quote": "The gaze of Alaitoc sees all; there will be no escape for you.",
+    "speaker": "Eldorath Starbane",
+    "source": "FFG Card “Eldorath Starbane,” Warhammer 40,000: Conquest"
+  },
+  {
+    "quote": "Feel the rush of the wind against your skin and hear her keening cry in your ears. We are the Wild Riders, the children of the storm!",
+    "speaker": "Nuadhu ‘Fireheart’",
+    "source": "Codex: Eldar (4th Edition), pg. 40"
+  },
+  {
+    "quote": "Ask not the Eldar a question, for they will give you three answers, all of which are true and terrifying to know.",
+    "speaker": "Anonymous Eldar Maxim",
+    "source": "Codex: Eldar (4th Edition), pg. 53"
+  },
+  {
+    "quote": "You say we are random and capricious, we say you are vulgar and idiotic… Some of you call us your allies. You are not allies, any more than a butcher’s knife is his ally.",
+    "speaker": "Captured Eldar Ranger (Last Words)",
+    "source": "Codex: Eldar (3rd Edition), pg. 2 (Excerpt)"
+  },
+  {
+    "quote": "We warned you of the price of your actions, now you must pay it in full – in blood.",
+    "speaker": "Message Received Prior to the Assyri Devastation",
+    "source": "Codex: Eldar (4th Edition), pg. 32"
+  },
+  {
+    "quote": "Beauty and sensuality are virtues that can be expressed in bloodshed just as easily as in song… To an unfettered Eldar mind there is neither sanity nor madness, merely a wave of perfect existence.",
+    "speaker": "Ralamine Mung, Ordo Xenos (re: Eldar)",
+    "source": "Codex: Eldar (4th Edition), pg. 59"
+  },
+  {
+    "quote": "Ask not what the Eldar want of you—because the answers you receive will fracture your mortal sanity.",
+    "speaker": "Inquisitor Czevak",
+    "source": "(Paraphrased from various Eldar codices)"
+  },
+  {
+    "quote": "Death and Fate have taken the stage. In war there is poetry; in death, release.",
+    "speaker": "Unattributed Harlequin",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "Trust not in their appearance… There is no understanding them, for there is nothing to understand—they are a random force in the universe.",
+    "speaker": "Abriel Hume, Imperial Commander",
+    "source": "Codex: Eldar (4th Edition), pg. 37"
+  },
+  {
+    "quote": "What she showed me was indescribable. Just as well, as I’d sooner die than be forced to describe it.",
+    "speaker": "Eoheran Quilherna",
+    "source": "Wrath & Glory – Aeldari: Inheritance of Embers, pg. 49"
+  },
+  {
+    "quote": "I come to dance the Dance of Death.",
+    "speaker": "Unknown Harlequin",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "You may as well try to catch starlight as bring Eldar to battle.",
+    "speaker": "Unattributed (Eldar & Allies)",
+    "source": "Common Naval Saying (various sources)"
+  },
+  {
+    "quote": "We bring only death, and leave only carrion. It is a message even a Human can understand.",
+    "speaker": "Requiel of the Sons of Fuegan",
+    "source": "Codex: Eldar (4th Edition), pg. 16"
+  },
+  {
+    "quote": "Eldrad has seen the stars stained red with your blood, and it pleases him! You think us weak, but we will be your doom, children of Earth.",
+    "speaker": "Captured Eldar Ranger (Last Words)",
+    "source": "Codex: Eldar (3rd Edition), excerpt"
+  },
+  {
+    "quote": "Behold, the fiery destroyer of worlds. I walk again, a god among mere mortals.",
+    "speaker": "Avatar of Khaine",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "No barrier, no enemy will thwart my purpose. This night I bring him the dream of death!",
+    "speaker": "Lord-Phoenix Dreamspinner (Iyanden)",
+    "source": "Warhammer 40,000 Compendium, pg. 73"
+  },
+  {
+    "quote": "War is my master; Death my mistress.",
+    "speaker": "Phoenix Lord Maugan Ra",
+    "source": "Codex: Craftworld Eldar (3rd Edition), pg. 59"
+  },
+  {
+    "quote": "Make no mistake, Human. We do not fight for your Emperor. We fight against Horus.",
+    "speaker": "Lord-Phoenix Madallaith, Biel-Tan",
+    "source": "(Old excerpt, Biel-tan lore)"
+  },
+  {
+    "quote": "Patience is a virtue duly rewarded; now is the time of blood. Slaughter them all, in Khaine’s name!",
+    "speaker": "Skariel the Huntress (Striking Scorpion)",
+    "source": "Wrath & Glory – Aeldari: Inheritance of Embers, pg. 28"
+  },
+  {
+    "quote": "Let them gather the wreckage of their precious tank. It would please me to destroy it a second time.",
+    "speaker": "Querosq the Lambent, Fire Dragon",
+    "source": "Wrath & Glory – Aeldari: Inheritance of Embers, pg. 26"
+  },
+  {
+    "quote": "I have trespassed in the realm of daemons and seen the things within. You cannot fathom the price we pay to deliver death to our foes.",
+    "speaker": "Reborn Yrule, Warp Spider",
+    "source": "Wrath & Glory – Aeldari: Inheritance of Embers, pg. 30"
+  },
+  {
+    "quote": "Heed our warning or your souls shall echo their final lament in the warp, forever.",
+    "speaker": "Unknown Eldar (Pre-battle curse)",
+    "source": "(Various Eldar references / paraphrased)"
+  },
+  {
+    "quote": "I walk again, a god among mere mortals.",
+    "speaker": "Avatar of Khaine",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "I have seen the future, and it is death.",
+    "speaker": "Avenelle, Farseer",
+    "source": "FFG Card Doom, Warhammer 40,000: Conquest"
+  },
+  {
+    "quote": "May the winds of fate guide my sword.",
+    "speaker": "Baharroth",
+    "source": "FFG Card Baharroth, Warhammer 40,000: Conquest"
+  },
+  {
+    "quote": "They think they are safe. I am a servant of death, and they have underestimated my reach.",
+    "speaker": "Dismali, Dark Reaper",
+    "source": "Wrath & Glory – Aeldari: Inheritance of Embers, pg.24"
+  },
+  {
+    "quote": "The stars themselves once lived and died at our command.",
+    "speaker": "Farseer Mirehn Bielann",
+    "source": "Codex: Eldar (4th Edition), pg. 10"
+  },
+  {
+    "quote": "A craftworld is a sentient being, with a hundred thousand minds.",
+    "speaker": "Inquisitor Czevak",
+    "source": "Codex: Eldar (4th Edition), pg. 13"
+  },
+  {
+    "quote": "I bring only death and leave only corpses.",
+    "speaker": "Jain Zar (Phoenix Lord)",
+    "source": "FFG Teaser for “Against the Great Enemy” (Conquest)"
+  },
+  {
+    "quote": "The dead must join our ranks, lest we be forced to join theirs.",
+    "speaker": "Prince Yriel, Autarch of Iyanden",
+    "source": "Codex: Eldar (4th Edition), pg. 20"
+  },
+  {
+    "quote": "In war there is poetry; in death, release.",
+    "speaker": "Unknown Harlequin",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "Though my body dies, I will remain. Evermore.",
+    "speaker": "Death Chant, Eldar Soul-Graft",
+    "source": "Warhammer 40,000 Compendium, pg. 73"
+  },
+  {
+    "quote": "Some say that perfection is the enemy of the good. They speak nonsense… We should never cease our striving for greatness. Anything else is nothing but stagnation.",
+    "speaker": "Shas’o Arra’kon",
+    "source": "Psychic Awakening: The Greater Good, p. 66"
+  },
+  {
+    "quote": "Beneath the protective umbrella of the shield relay, we are all but untouchable. Once more, our science and enlightenment bring us closer to our ultimate aims.",
+    "speaker": "Aun’Cho",
+    "source": "Planetary Empires Strategy Card (Energy Shield Relay)"
+  },
+  {
+    "quote": "How ironic it is that as fast as we spread progress and hope throughout the galaxy, the Tyranids spread death and despair. Only united can we hope to stand against them.",
+    "speaker": "Aun’shi",
+    "source": "Codex: Tyranids (4th Edition), p. 43"
+  },
+  {
+    "quote": "It is as we join with others, in a way that only the Tau can, that we find ourselves able to fully realize our true potential. And that is the final source of our hopes and intentions.",
+    "speaker": "Aun’el T’au Tam’ya",
+    "source": "Codex: Tau (3rd Edition), p. 27; Tau Empire (4th), p. 15"
+  },
+  {
+    "quote": "It is not our technology that will enable us to prevail in this galaxy. It is our shared sense of honour and commonality of cause that unites us and will give us the power to defeat our enemies.",
+    "speaker": "Shas’el Sa’cea Or’es",
+    "source": "Codex: Tau (3rd Edition), p. 32; Tau Empire (4th), p. 8"
+  },
+  {
+    "quote": "To follow any path other than the Tau’va is to doom us all. Only together and with courage and discipline shall we stand victorious.",
+    "speaker": "Commander Shadowsun",
+    "source": "Codex: Tau Empire (4th Edition), p. 46"
+  },
+  {
+    "quote": "Those with superior reach can dictate the terms of battle and impose their will upon their foe. Remember, the first step on the path to victory is often the most important.",
+    "speaker": "Commander Puretide",
+    "source": "Codex: Tau Empire (7th Edition), pg. 100"
+  },
+  {
+    "quote": "Each must find their own way. If those in our heartland had witnessed the savageries of the void as have we, they would know this… None will join their strength together just to see their ancient enemies prosper.",
+    "speaker": "Commander Farsight",
+    "source": "Codex: Tau Empire (4th Edition), p. 44"
+  },
+  {
+    "quote": "The alien is not intrinsically evil. Do not hate him. Pity him his ignorance… Seek to understand his differences and acquaint him with his inadequacies. Only then will he accept his place in the Greater Good.",
+    "speaker": "O’Mau’tel",
+    "source": "Fire Warrior (Novel), p. 74"
+  },
+  {
+    "quote": "Our Conquest is inevitable, our ascension a matter of time. Let none who are wise deny our destiny.",
+    "speaker": "Aun’Va",
+    "source": "Codex: Tau Empire (7th Edition), “The Tau Empire”"
+  },
+  {
+    "quote": "We admire their strength. We honour that strength as we consume their meat. You humans are not so strong, but you are tenacious, and your meat is more palatable than Orkflesh.",
+    "speaker": "Shaper Lok Ch’kreen (Kroot)",
+    "source": "Only War: Enemies of the Imperium, p. 95"
+  },
+  {
+    "quote": "One of their light walkers carried a weapon of lethal effect… The tiny munition had passed through the vehicle with such speed that everything within the hull… had been sucked out. Including the crew.",
+    "speaker": "Major Kane, Mordant 607th",
+    "source": "Codex: Tau Empire (4th Edition), p. 14"
+  },
+  {
+    "quote": "Our tanks were useless… All I could see were trails of fire where the projectiles had ignited the air. Emperor’s mercy!",
+    "speaker": "Guardsman Cauley, 25th Graian Rifles",
+    "source": "Codex: Tau (3rd Edition), p. 30"
+  },
+  {
+    "quote": "You humans do not understand. You feed upon weak things… We feed upon the strong, because we desire to make our children stronger.",
+    "speaker": "Kroot Mercenary Chal’ka Nok",
+    "source": "Rogue Trader: Edge of the Abyss, p. 66"
+  },
+  {
+    "quote": "The first rule of unarmed combat is: don’t be unarmed.",
+    "speaker": "Unknown Academy Instructor (Tau)",
+    "source": "Fire Warrior (Novel), p. 165"
+  },
+  {
+    "quote": "A good warrior strikes fast, but retreats faster.",
+    "speaker": "Fire Caste Maxim",
+    "source": "[Needs Citation]"
+  },
+  {
+    "quote": "Living armour happens.” (Likened to the human saying “Grox dung happens.”)",
+    "speaker": "Bitter Tau Remark",
+    "source": "[Needs Citation]"
+  },
+  {
+    "quote": "No expansion without equilibrium. No conquest without control. Pursue success in serenity and service to the tau’va.",
+    "speaker": "Shas’O T’au Shi’ur (Meditation)",
+    "source": "Fire Warrior (Novel), [Needs Citation]"
+  },
+  {
+    "quote": "They got ded big shooty guns dat’ll kill tons of boyz, but if yer can get near ’em then you’ve got a chance… just gotta make sure you bring loads of boyz, coz you ain’t gonna have a whole lot left when you get close enough ta crump ’em.",
+    "speaker": "Warlord Skamork, the Great Despoiler (re: Tau)",
+    "source": "Codex: Tau (3rd Edition), p. 30"
+  },
+  {
+    "quote": "I do not fear death. Death fears ME!",
+    "speaker": "Shas’O Sa’cea Dre’koran Ta’ar",
+    "source": "[Needs Citation]"
+  },
+  {
+    "quote": "Learn to shorten your reach! If your foe can come close enough to negate your striking power, all stratagem is lost, and when all stratagem is lost, the battle is lost.",
+    "speaker": "O’Shovah (Commander Farsight)",
+    "source": "Codex: Tau (3rd Edition), p. 22"
+  },
+  {
+    "quote": "A thousand fibres connect each of us with our fellow Tau… Everything we do must be in furtherance of the Greater Good lest we return to the Mont’au, the Terror.",
+    "speaker": "Shas’O Vior’la Kais",
+    "source": "Codex: Tau (3rd Edition), p. 26; Tau Empire (4th), p. 5"
+  },
+  {
+    "quote": "Never have I faced a tide of foes that can alter both strategy and flesh to hasten our downfall. Swift as these beasts adapt, we must be swifter, or the Tau Empire will drown in its own blood.",
+    "speaker": "Shas’El Vorcah of Kel’shan",
+    "source": "FFG Teaser: The Great Devourer (Conquest)"
+  },
+  {
+    "quote": "No expansion without equilibrium. No conquest without control.",
+    "speaker": "Shas’O T’au Shi’ur",
+    "source": "Fire Warrior (Novel), [Needs Citation]"
+  },
+  {
+    "quote": "Fight with fire and courage, and nothing can stand against us.",
+    "speaker": "Commander Shadowsun",
+    "source": "Apocalypse, pg. 161"
+  },
+  {
+    "quote": "Our earth-caste brothers have provided us with the means to destroy our foe. Utilize the sensor array and rain death on the greenskin invaders.",
+    "speaker": "Shas’O Vorsheem",
+    "source": "Planetary Empires Strategy Card (Sensor Array)"
+  },
+  {
+    "quote": "See the Gue’la, how they arrogantly stride into our trap. We will punish their belligerence, their ignorant lack of foresight.",
+    "speaker": "O’Sharrek (Commander Darkwind)",
+    "source": "Planetary Empires Strategy Card (Ambush)"
+  },
+  {
+    "quote": "What are secrets with no-one to know them?",
+    "speaker": "Shas’O R’th",
+    "source": "GW – Medusa V Campaign (archived)"
+  },
+  {
+    "quote": "I have received your messages… If you wish to gain similar rights you must submit yourselves to his wisdom as members of the Tau empire.",
+    "speaker": "Por’el Tau’n Ukos",
+    "source": "Codex: Tau (3rd Edition), p. 25; Tau Empire (4th), p. 39"
+  },
+  {
+    "quote": "Even when broken, a sword may still cut.",
+    "speaker": "Aun’ko’vash",
+    "source": "Fire Warrior (Novel), p. 170"
+  },
+  {
+    "quote": "It burns so briefly, the light of my children, so briefly. But by the Greater Good, it burns so bright!",
+    "speaker": "Aun’Va",
+    "source": "Codex: Tau Empire (4th Edition), p. 42"
+  },
+  {
+    "quote": "The question of timing… Once decided, it must be pursued with utmost energy.",
+    "speaker": "Commander Puretide",
+    "source": "Codex: Tau Empire (4th Edition), p. 40"
+  },
+  {
+    "quote": "A well-maintained warrior is an effective warrior.",
+    "speaker": "Unknown Meditation",
+    "source": "Fire Warrior (Novel), p. 130"
+  },
+  {
+    "quote": "We do not belong on the ground. Our home is the sky.",
+    "speaker": "Air Caste Philosophy",
+    "source": "Apocalypse, pg. 158"
+  },
+  {
+    "quote": "Today… we fight for the Greater Good! And we will triumph!",
+    "speaker": "Aun’el Shi’Ores",
+    "source": "Dawn of War: Dark Crusade (Tau stronghold intro)"
+  },
+  {
+    "quote": "The one constant in the universe is change. The wise adapt. Believe in our destiny.",
+    "speaker": "Transcript from an Alien Probe",
+    "source": "Codex: Tau (3rd Edition), p. 66"
+  },
+  {
+    "quote": "The feeling of power from a battlesuit can be intoxicating. Remember your duty.",
+    "speaker": "Commander Shadowsun",
+    "source": "Apocalypse, pg. 161"
+  },
+  {
+    "quote": "There are two kinds of conduct… The first is a failure to reflect upon the Greater Good. The second is the refusal to follow it.",
+    "speaker": "Por’ui Dal’yth Ukos",
+    "source": "Codex: Tau (3rd Edition), p. 24"
+  },
+  {
+    "quote": "We is gonna stomp da universe flat and kill anyfink that fights back. We’re da Orks, and we woz made ta fight and win.",
+    "speaker": "Ghazghkull Mag Uruk Thraka",
+    "source": "Codex: Orks (4th Edition), pg. 106"
+  },
+  {
+    "quote": "OI! Lissen ta me wen I’z talkin’ to ya! We’z gonna go on ‘dere ship, smash it up an’ kill anyfing dat gets in our way, an’ den we’z gonna get back on da boat. Dat’ll show ‘em. WAAAGH!",
+    "speaker": "Gorgal ’edkicker",
+    "source": "Rogue Trader: Into the Storm, pg. 66"
+  },
+  {
+    "quote": "We’ve got our Gargantz an’ we’ve got our weapons… We’s gonna give da Humies a taste of ‘ot metal death.",
+    "speaker": "Warlord Dragnatz",
+    "source": "Epic Armageddon Rulebook, pg. 46"
+  },
+  {
+    "quote": "Evil Sunz like two fings most: Goin’ fast an’ krumpin’ stuff. Dat’s why we’z so good at it.",
+    "speaker": "Lugnut of the Bladed Wheels",
+    "source": "Codex: Orks (4th Edition), pg. 13"
+  },
+  {
+    "quote": "Dis here is Warboss Hedkrakka… Dis is Hedkrakka’s land now an’ we’z all comin’ to see you’z next! I need some grayskins for me boss-hut!",
+    "speaker": "Warboss Headkrakka",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "Operate! Operate! Still time to operate!",
+    "speaker": "Mad Dok Grotsnik",
+    "source": "Codex: Orks (4th Edition), pg. 59"
+  },
+  {
+    "quote": "Live off da land. Go find war. Kill wot comes close. Da old ways are best.",
+    "speaker": "Grodd, Snakebite Runtherd",
+    "source": "Codex: Orks (4th Edition), pg. 14"
+  },
+  {
+    "quote": "Da only good ’ooman is a dead ’ooman. An’ da only fing better than a dead ’ooman’z a dyin’ ’ooman who tells ya where ta find ’is mates.",
+    "speaker": "Morglum Necksnapper",
+    "source": "Waaargh: Orks, pg. 82"
+  },
+  {
+    "quote": "They got ded big shooty guns dat’ll kill tons of boyz, but if you can get near ’em, den you’ve got a chance.",
+    "speaker": "Warlord Skarmork",
+    "source": "Codex: Tau (3rd Edition), pg. 30"
+  },
+  {
+    "quote": "I’se got ’da teef, I’se got ’da loot, I’se got ’da dakka, an’ I’se got ’dis ’ere mega-armour. ’Dat’s why wot I sez goes aroun’ ’ere, ya runty Grots.",
+    "speaker": "Bawbag Gitstompa, Meganob",
+    "source": "Only War: Enemies of the Imperium, pg. 52"
+  },
+  {
+    "quote": "All Orks is equal, but some Orks are more equal dan uvvas.",
+    "speaker": "Goff Warboss Bugrat Skumdreg",
+    "source": "’Ere We Go, pg. 24"
+  },
+  {
+    "quote": "Travellin’ through space is borin’… One time we had some bloody great ugly fing come straight out of Weird Lugwort’s ’ed! … Space is a pretty good larf.",
+    "speaker": "Bigmaw, Ork Runtherd",
+    "source": "Codex: Orks (4th Edition), pg. 18"
+  },
+  {
+    "quote": "Bought me a deffblasta off Rotskrag earlier. Nice little killa. Just ask Rotskrag, hur hur.",
+    "speaker": "Fat Druzka, Flash Git",
+    "source": "Codex: Orks (4th Edition), pg. 14"
+  },
+  {
+    "quote": "We’s stomped ’umies, we’s blown up stuff… We’s gonna come back next year!",
+    "speaker": "Bugsplatta Defnik (Speed Freek)",
+    "source": "Epic Armageddon Rulebook, pg. 69"
+  },
+  {
+    "quote": "Boss, boss? Shouldn’t we ’ave appeared over dere?",
+    "speaker": "Dagskar Snotgob (Gretchin Slaver)",
+    "source": "Planetary Empires Strategy Card (Displacer Field)"
+  },
+  {
+    "quote": "‘Ere’s wot we’s gonna do, right? First I’se gonna yell Waaagh!… ‘Den we’ll all krump togevva! It’s a great plan, innit?",
+    "speaker": "Flikka Hammahead, Blood Axes Nob",
+    "source": "Only War: Enemies of the Imperium, pg. 47"
+  },
+  {
+    "quote": "Well, yer gots yer Boyz, ’den yer gots yer Oddboyz, see? Dey can loot an’ krump wit’ da best uv ’em, tho.",
+    "speaker": "Jezza, Blood Axe Stormboy",
+    "source": "Only War: Enemies of the Imperium, pg. 48"
+  },
+  {
+    "quote": "We’re safe ’ere, Gobbitz. There’s no way da beakies can get to us at the top of dis cliff…",
+    "speaker": "Gibly the Gretchin",
+    "source": "Epic Armageddon Rulebook, pg. 34"
+  },
+  {
+    "quote": "Yar! Oose da biggest an’ da baddest now, eh? I’ll show ya, I’ll show ya all! Just try an’ stop me!",
+    "speaker": "Grabthroat Shinkicka (Killa Kan pilot)",
+    "source": "Only War: Enemies of the Imperium, pg. 54"
+  },
+  {
+    "quote": "Don’t poke at ’der Squiggoths ya snotling-brained oaf! Dey don’t like it, an’ it hurts ’der feelins.",
+    "speaker": "Zargoz, Snakebites Runtherd",
+    "source": "Only War: Enemies of the Imperium, pg. 58"
+  },
+  {
+    "quote": "Us Blood Axes have learnt a lot from da humies. How best ta kill ’em, fer example.",
+    "speaker": "Korporal Snagbrat (Blood Axes)",
+    "source": "Codex: Orks (4th Edition), pg. 15"
+  },
+  {
+    "quote": "I’m da hand of Gork and Mork… Orks is meant ta conquer and make slaves of everyfing they don’t kill. I iz da profit of da Waaagh an whole worlds burn in me boot prints.",
+    "speaker": "Ghazghkull Mag Uruk Thraka",
+    "source": "Codex: Orks (4th Edition), pg. 91 (abridged version)"
+  },
+  {
+    "quote": "Da boss already et ’af a dozen uv ’im Squigs, kilt tree uv ’im Nobz… Dis is a good day.",
+    "speaker": "Borzash Geargrinda, Big Mek",
+    "source": "Only War: Enemies of the Imperium, pg. 48"
+  },
+  {
+    "quote": "Wot’s faster than a warbuggy, more killy than a warbike, an’ flies froo da air like a bird? I got no bleedin’ idea, but I’m gonna find out.",
+    "speaker": "Kog da Flymek",
+    "source": "Codex: Orks (4th Edition), pg. 48"
+  },
+  {
+    "quote": "Look lads, dose stoopid oomies left a bomb behind… Luzgit, help me pull dis fing free.",
+    "speaker": "Nekbrekka, Warboss",
+    "source": "Planetary Empires Strategy Card (Booby-trap)"
+  },
+  {
+    "quote": "I’z smashed ’umies an’ panzies an’ dogfaces; I’m gonna smash anyfing wot gets in my way… Nuffin kan stop me!",
+    "speaker": "Morgaash Kulgraz, Warlord of Undred-Undred Teef",
+    "source": "Rogue Trader: Into the Storm, pg. 58"
+  },
+  {
+    "quote": "Da only lost race I ever heard of woz when Hef crashed his trike in da final stretch… Cost me a few teef, dat.",
+    "speaker": "Nuzzgrond of the Black Skulls",
+    "source": "Codex: Orks (4th Edition), pg. 7"
+  },
+  {
+    "quote": "Dere’s jus’ one fing wiv kans wot ya ‘av ta bovver about—Sittin’ on dat spring gives ya piles!",
+    "speaker": "Ork Dreadnought Ace ‘Jip’ Gobsmak",
+    "source": "Warhammer 40,000 Compendium, pg. 57"
+  },
+  {
+    "quote": "Right, first I’ll take those teef out fer ya… dat should help ease da pain in yer leg.",
+    "speaker": "Grokkit & Dok Gutslash (exchange)",
+    "source": "Codex: Orks (4th Edition), pg. 38 (paraphrased)"
+  },
+  {
+    "quote": "Da ooman base iz got walls an’ fings, see… when you’z lot ‘ears sumfing go boom, you charge! Cos dere’ll be an ‘ole in da wall.",
+    "speaker": "Snikskin, Ork Kommando",
+    "source": "Rogue Trader: Into the Storm, pg. 92"
+  },
+  {
+    "quote": "Not enuff nails? … Nah, I put da little feller in upside down.",
+    "speaker": "Doc Hacksore",
+    "source": "’Ere We Go: Orks in Warhammer 40,000"
+  },
+  {
+    "quote": "Humies is all weak scum dat deserve ta get stomped. ’Cept fer One-Eye Yarrick.",
+    "speaker": "Ghazghkull Mag Uruk Thraka",
+    "source": "Codex: Imperial Guard (5th Edition), pg. 63"
+  },
+  {
+    "quote": "Orkz is made fer two fings! Fightin’, an’ winnin’!",
+    "speaker": "Nob’s Maxim (Unattributed)",
+    "source": "Dawn of War"
+  },
+  {
+    "quote": "Orkses is never defeated in battle. If we win we win, if we die we die fightin’ so it don’t count…",
+    "speaker": "Common Ork Saying",
+    "source": "Codex: Orks (4th Edition), pg. 49"
+  },
+  {
+    "quote": "Oi! Stop runnin’ away, yer snivellin’ humies, we got a race on ’ere!",
+    "speaker": "Skabgutz, Ork Trukk Boy",
+    "source": "Apocalypse Datasheet “Ork Trukk Konvoy”"
+  },
+  {
+    "quote": "Hur, hur, hur… look at Lubdog’s lads gettin’ all killed off.",
+    "speaker": "Buzzgob da Burna Boy",
+    "source": "Planetary Empires Strategy Card (Reinforcements)"
+  },
+  {
+    "quote": "Oomans are pink an’ soft, not tough an’ green like da Boyz. They’z always arguin’ about who’s da boss…",
+    "speaker": "Oomies & Unity (Unattributed Ork)",
+    "source": "Codex: Orks (4th Edition), pg. 40; Waaargh: Orks, pg. 81"
+  },
+  {
+    "quote": "DOK! Me arm got shot off! Gimme a new ’un!",
+    "speaker": "Wortgrod Mugskab",
+    "source": "Rogue Trader: Into the Storm, pg. 58"
+  },
+  {
+    "quote": "Look at me flash, Boss!",
+    "speaker": "Ork Flash Git (Unattributed)",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "I dunno wot you been told / Stormboy mobs is mighty bold…",
+    "speaker": "“Waaagh!” Drill (Stormboy Chants)",
+    "source": "Codex: Orks (4th Edition), pg. 47"
+  },
+  {
+    "quote": "Cast off the shackles of your slumber! The galaxy shall be ours once again!",
+    "speaker": "Anrakyr the Traveller",
+    "source": "Legions of Death (Conquest Card Game Teaser)"
+  },
+  {
+    "quote": "Our people are awakening, and soon all of the galaxy shall be ours once more.",
+    "speaker": "Anrakyr the Traveller",
+    "source": "Legions of Death (Conquest Card Game Teaser)"
+  },
+  {
+    "quote": "Order. Unity. Obedience. We taught the galaxy these things long ago, and we will do so again.",
+    "speaker": "Imotekh the Stormlord",
+    "source": "Legions of Death (Conquest Card Game Teaser)"
+  },
+  {
+    "quote": "All life will tear itself apart by my command.",
+    "speaker": "Nahumekh, Necron Lord",
+    "source": "Legions of Death (Conquest Card Game Teaser)"
+  },
+  {
+    "quote": "They will seek to harvest us at first… Then they will turn their efforts to enslaving the survivors. We must choose unity or death.",
+    "speaker": "Maechu, Farseer",
+    "source": "Codex: Necrons (3rd Edition), p. 21"
+  },
+  {
+    "quote": "The secrets of the universe are within my grasp. You cannot stop me now.",
+    "speaker": "Illuminor Szeras",
+    "source": "Searching For Truth (Conquest Card Game Teaser)"
+  },
+  {
+    "quote": "There will come a time when stygian night never ends… the beings that hid like shadows will feed on us forever.",
+    "speaker": "Adept Corteswain",
+    "source": "Codex: Necrons (3rd Edition), p. 51"
+  },
+  {
+    "quote": "When the end comes it will be not at the hand of any mortal being… Death will come at the hands of the ancients, those who determined our fate aeons before.",
+    "speaker": "Inquisitor Hoth",
+    "source": "Codex: Necrons (3rd Edition), p. 66"
+  },
+  {
+    "quote": "We are less than cattle to these beings… There is not one amongst them that would pay heed to a world of Man as I would to an ant on my boot.",
+    "speaker": "Inquisitor Kessel",
+    "source": "Codex: Necrons (3rd Edition), p. 27"
+  },
+  {
+    "quote": "Ha! The Imperium is a big place… Nothing can truly hurt us here.",
+    "speaker": "Lord Magister Ithax Stroam",
+    "source": "Codex: Necrons (3rd Edition), p. 11"
+  },
+  {
+    "quote": "Lucky creatures. At long last you have found the tranquility of death. I was like you, once, clinging to life and blind to the truth.",
+    "speaker": "Tomas Macabee, Necron Pariah (1)",
+    "source": "Dawn of War: Dark Crusade (Thur’Abis Plateau entry)"
+  },
+  {
+    "quote": "So come, poor victims of life. We will grant you tranquility in these crypts. Kronus will be a Tomb World once more.",
+    "speaker": "Tomas Macabee, Necron Pariah (2)",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "The Machine is strong. We must purge the weak, hated flesh… Punish the flesh. Iron in mind and body. Hail the Machine!",
+    "speaker": "Paullian Blantar (Iron Hands)",
+    "source": "Codex: Necrons (3rd Edition), p. 2 (Ironically placed here)"
+  },
+  {
+    "quote": "It was silent as the void… Those it came near took their own lives rather than endure its hellish presence.",
+    "speaker": "Morillia, Harlequin Shadowseer",
+    "source": "Codex: Necrons (3rd Edition), p. 25"
+  },
+  {
+    "quote": "The Yngir, who have slept since the birth of Chaos, shall crawl once more from their tombs, thirsting for warmth… The galaxy shall mourn.",
+    "speaker": "Farseer Lsathranil (excerpt)",
+    "source": "Codex: Necrons (3rd Edition), p. 5 (ominous prophecy, dark irony)"
+  },
+  {
+    "quote": "Any hopes, dreams or promises of salvation are naught but dust in the wind.",
+    "speaker": "Unattributed (Dogma Ommiastra)",
+    "source": "Codex: Necrons (3rd Edition), p. 18"
+  },
+  {
+    "quote": "Nothing can truly hurt us here. It matters not.",
+    "speaker": "Lord Magister Ithax Stroam",
+    "source": "Codex: Necrons (3rd Edition), p. 11 (echoing hubris)"
+  },
+  {
+    "quote": "Death stands above me, whispering low… There is only pain and fear.",
+    "speaker": "Excerpt from Cthelmax walls",
+    "source": "Codex: Necrons (3rd Edition), p. 19"
+  },
+  {
+    "quote": "They will be hungry after their long sleep… then they will turn to enslaving the survivors.",
+    "speaker": "Maechu, Farseer",
+    "source": "Codex: Necrons (3rd Edition), p. 21 (grim understatement)"
+  },
+  {
+    "quote": "We are born for a darker purpose than that of mere existence.",
+    "speaker": "Adept Corteswain",
+    "source": "Codex: Necrons (3rd Edition), p. 51"
+  },
+  {
+    "quote": "We taught the galaxy these things long ago, and we will do so again.” (Emphasizing the unstoppable reclamation of their old dominion)",
+    "speaker": "Imotekh the Stormlord",
+    "source": "Legions of Death (Conquest Card Game Teaser)"
+  },
+  {
+    "quote": "How could I, a respected scientist… turn my back on the civilization that has given me so much? The answer is simple. I have done everything in the name of purity.",
+    "speaker": "Tomas Macabee, Necron Pariah",
+    "source": "Dawn of War: Dark Crusade (broadcast message)"
+  },
+  {
+    "quote": "The galaxy shall be ours once again!",
+    "speaker": "Anrakyr the Traveller",
+    "source": "Legions of Death (Conquest Card Game Teaser)"
+  },
+  {
+    "quote": "They will seek to harvest us at first… Then they will turn their efforts to enslaving the survivors.” (Describing the monstrous extent of Necron plans)",
+    "speaker": "Maechu, Farseer",
+    "source": "Codex: Necrons (3rd Edition), p. 21"
+  },
+  {
+    "quote": "The War in Heaven shall be as nothing to their vengeance… The galaxy shall run red as the blood of Eldanesh.",
+    "speaker": "Farseer Lsathranil’s Prophecy",
+    "source": "Codex: Necrons (3rd Edition), p. 5"
+  },
+  {
+    "quote": "It drifted above us with slow, liquid grace, and its gaze caused madness and despair… [they] took their own lives rather than endure its hellish presence.",
+    "speaker": "Morillia, Harlequin Shadowseer",
+    "source": "Codex: Necrons (3rd Edition), p. 25"
+  },
+  {
+    "quote": "Any hopes, dreams… are naught but dust in the wind.",
+    "speaker": "Unattributed (Dogma Ommiastra)",
+    "source": "Codex: Necrons (3rd Edition), p. 18"
+  },
+  {
+    "quote": "Death stands above me… There is only pain and fear.",
+    "speaker": "Excerpt from Cthelmax",
+    "source": "Codex: Necrons (3rd Edition), p. 19"
+  },
+  {
+    "quote": "Cast off the shackles of your slumber!",
+    "speaker": "Anrakyr the Traveller",
+    "source": "Legions of Death Teaser"
+  },
+  {
+    "quote": "Order. Unity. Obedience.",
+    "speaker": "Imotekh the Stormlord",
+    "source": "Legions of Death Teaser"
+  },
+  {
+    "quote": "The secrets of the universe are within my grasp.",
+    "speaker": "Illuminor Szeras",
+    "source": "Searching For Truth Teaser"
+  },
+  {
+    "quote": "Lucky creatures… At long last you have found the tranquility of death.",
+    "speaker": "Tomas Macabee",
+    "source": "Dawn of War: Dark Crusade"
+  },
+  {
+    "quote": "The Yngir… shall crawl once more from their tombs, thirsting for warmth.",
+    "speaker": "Farseer Lsathranil",
+    "source": "Codex: Necrons (3rd Edition), p. 5"
+  },
+  {
+    "quote": "Death will come at the hands of the ancients.",
+    "speaker": "Inquisitor Hoth",
+    "source": "Codex: Necrons (3rd Edition), p. 66"
+  },
+  {
+    "quote": "We must choose unity or death.",
+    "speaker": "Maechu, Farseer",
+    "source": "Codex: Necrons (3rd Edition), p. 21"
+  }
+]

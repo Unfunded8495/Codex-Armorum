@@ -7,7 +7,7 @@
 {% block strip %}
   <span class="rl-strip-chips">
     {% for group in groups if group.units %}
-      <a class="rl-chip" href="#fac-{{ group.faction.id }}">{{ group.faction.name }}<b>{{ group.units|length }}</b></a>
+      <a class="rl-chip" href="#fac-{{ group.faction.id }}">{{ group.faction.display_name or group.faction.name }}<b>{{ group.units|length }}</b></a>
     {% endfor %}
   </span>
 {% endblock %}
@@ -35,7 +35,7 @@
 <section class="rl-section" id="fac-{{ group.faction.id }}">
   <div class="rl-shead">
     <span class="rl-snum">{{ '%02d' % loop.index }}</span>
-    <span class="rl-stitle">{{ group.faction.name }}</span>
+    <span class="rl-stitle">{{ group.faction.display_name or group.faction.name }}</span>
     <span class="rl-stag">{{ group.units|length }} datasheets</span>
   </div>
   <div class="ars-unit-grid">

@@ -416,7 +416,7 @@ a.rt-term:hover,a.rt-ref:hover,a.rt-ability:hover{background:var(--rl-green-soft
 /* FAQs */
 .rt-faq{border-left:3px solid var(--rl-green-soft);padding:2px 0 2px 14px;margin:0 0 14px}
 .rt-faq-q{margin:0 0 4px;font-weight:700}
-.rt-faq-a{margin:0;font-style:italic;color:var(--rl-ink-soft)}
+.rt-faq-a{margin:0;color:var(--rl-ink-soft)}
 
 /* flash highlight when jumping to an anchor */
 @keyframes rl-flash-kf{

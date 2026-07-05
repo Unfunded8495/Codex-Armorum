@@ -7,10 +7,12 @@ unit images. uploads/ holds your own photos.
 """
 import json
 import os
+import random
 import re
 import threading
 import time
 import uuid
+from collections import Counter
 from urllib.parse import quote, unquote
 
 from flask import (Flask, Response, abort, jsonify, render_template, request,
@@ -21,7 +23,7 @@ from army import (
     _army_unit_row, _enhancement_cost,
     _enhancement_for_ids, _normalise_squad_size, _points_for,
     _squad_bounds, _valid_detachment_for_faction, attach_check,
-    battle_size_caps,
+    battle_size_caps, points_step_surcharge,
     parse_detachment_ids, detachment_set_cost, clear_orphaned_enhancements,
 )
 from army_validation import validation_payload
@@ -127,6 +129,30 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "codex-armorum-local")
 init_db()                 # creates the collection schema
 init_arsenal(app)
 store = get_store()
+
+
+# ---------------------------------------------------------------- footer quotes
+def _load_footer_quotes():
+    path = os.path.join(app.root_path, "data", "footer_quotes.json")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return []
+
+
+_FOOTER_QUOTES = _load_footer_quotes()
+
+
+@app.context_processor
+def _inject_footer_quote():
+    """A random 40k quote for the shared footer (templates/_footer.html)."""
+    if not _FOOTER_QUOTES:
+        return {"footer_quote": None}
+    q = random.choice(_FOOTER_QUOTES)
+    speaker = q.get("speaker") or ""
+    attribution = "" if speaker.lower() == "unattributed" else speaker
+    return {"footer_quote": {"text": q.get("quote", ""), "attribution": attribution}}
 
 
 # ---------------------------------------------------------------- icon helpers
@@ -472,7 +498,8 @@ def api_faction_units(fid):
         # never offered as an ally even if it also appears in an ally config.
         added = {u["id"] for u in units}
         for cfg in store.allied_configs(fid):
-            label = " / ".join(cfg["ally_faction_names"]) or "Allies"
+            label = " / ".join(cfg.get("ally_faction_display_names")
+                               or cfg["ally_faction_names"]) or "Allies"
             for did in cfg["datasheet_ids"]:
                 ds = store.ds_by_id.get(did)
                 if ds and did not in added:
@@ -1347,6 +1374,12 @@ def api_list_armies():
                 _enhancement_cost(u["enhancement_id"]) +
                 (u["wargear_points"] or 0)
                 for u in units)
+            # Duplicate-selection surcharges ("After the Nth selection..."),
+            # counted per canonical datasheet across the whole army.
+            dup_counts = Counter(
+                store.ds_by_id.get(u["datasheet_id"], {}).get("id") or u["datasheet_id"]
+                for u in units)
+            total_pts += sum(points_step_surcharge(d, n) for d, n in dup_counts.items())
             fac = store.faction_by_id.get(r["faction_id"], {})
             # theme_for keeps reading the canonical name so the colours follow
             # the seven renamed factions; faction_display_name is the user-facing
@@ -2197,7 +2230,8 @@ def api_purchases_page_data():
     data["factions"] = _factions_payload(info, owned)
     # Covers parent factions (e.g. Aeldari) that _factions_payload drops for
     # having no datasheets of their own but that box sets still reference.
-    data["faction_names"] = {f["id"]: f["name"] for f in store.factions}
+    data["faction_names"] = {
+        f["id"]: f.get("display_name") or f["name"] for f in store.factions}
     return jsonify(data)
 
 
@@ -2304,7 +2338,8 @@ def _catalogue_only_collection_entry(r, did, faction_id, datasheet_id, stage_fil
     faction_row = store.faction_by_id.get(fid, {})
     faction_name = faction_row.get("name", ref.get("faction_label") or fid)
     faction_display_name = (
-        faction_row.get("display_name") or faction_name
+        faction_row.get("display_name")
+        or store.faction_display_by_name.get(faction_name, faction_name)
     )
     try:
         wg = json.loads(r["wargear"] or "[]")

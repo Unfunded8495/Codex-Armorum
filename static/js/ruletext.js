@@ -43,6 +43,31 @@ export function bsdataMarkup(raw){
   return out.join('');
 }
 
+/* Wargear-option rules text from the app export is one group per string: a
+   "■ This model's X can be replaced with ..." lead-in line followed by
+   "◦ 1 item" lines. Render the lead-in as text and the ◦ lines as a nested
+   list so the datasheet reads like the official app instead of one flattened
+   run-on line. */
+export function optionMarkup(raw){
+  if(raw==null) return '';
+  const lines = esc(String(raw).replace(/\r\n?/g,'\n')).split('\n')
+    .map(l=>l.trim()).filter(Boolean);
+  const out = [];
+  let inSub = false;
+  for(const line of lines){
+    const sub = line.match(/^[◦○]\s*(.+)$/);
+    if(sub){
+      if(!inSub){ out.push('<ul class="opt-sublist">'); inSub = true; }
+      out.push(`<li>${sub[1]}</li>`);
+    }else{
+      if(inSub){ out.push('</ul>'); inSub = false; }
+      out.push(`<span class="opt-lead">${line.replace(/^[■▪•]\s*/,'')}</span>`);
+    }
+  }
+  if(inSub) out.push('</ul>');
+  return out.join('');
+}
+
 export function cleanRuleText(text){
   return (text??'').toString()
     .replace(/ /g,' ').replace(/\s+/g,' ')

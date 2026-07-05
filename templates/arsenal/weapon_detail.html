@@ -5,7 +5,7 @@
 <section class="arsenal-detail-head">
   <div>
     <h2 class="view-title">{{ weapon.name }}</h2>
-    <p class="view-sub">{{ weapon.category|title }}{% if weapon.faction_name %} &middot; {{ weapon.faction_name }}{% else %} &middot; Generic{% endif %}</p>
+    <p class="view-sub">{{ weapon.category|title }}{% if weapon.faction_name %} &middot; {{ weapon.faction_label or weapon.faction_name }}{% else %} &middot; Generic{% endif %}</p>
   </div>
   <div class="arsenal-actions">
     <a class="btn-secondary" href="{{ url_for('arsenal.weapon_edit', weapon_id=weapon.id) }}">Edit</a>

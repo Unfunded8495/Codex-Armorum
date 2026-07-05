@@ -213,7 +213,8 @@ def _rows(army, units, store):
             if cfg:
                 by_cfg.setdefault(cfg["id"], (cfg, []))[1].append(u)
         for cfg, aus in by_cfg.values():
-            label = " / ".join(cfg["ally_faction_names"]) or "Allies"
+            label = " / ".join(cfg.get("ally_faction_display_names")
+                               or cfg["ally_faction_names"]) or "Allies"
             lim = next((p.get("points") for p in cfg["points_limits"]
                         if p.get("battle_size") == bs), None)
             if lim is not None:

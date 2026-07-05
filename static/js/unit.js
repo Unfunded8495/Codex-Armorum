@@ -86,11 +86,11 @@ export async function showUnit(did){
             ${renderWargear('Ranged Weapons', d.ranged)}
             ${renderWargear('Melee Weapons', d.melee)}
             ${renderAbilities(d.abilities)}
-            ${renderUnitComposition(d.composition, d.loadout, d.led_by)}
+            ${renderUnitComposition(d.composition, d.loadout, d.led_by, d.base_size)}
             ${renderLeaderAttach(d.leads)}
             ${renderOptions(d.options)}
             ${renderTransport(d)}
-            ${renderPoints(d.costs)}
+            ${renderPoints(d.costs, d.points_steps)}
             ${renderKeywords(d)}
           </div>
           <div class="ds-mode ds-mode-card" hidden>

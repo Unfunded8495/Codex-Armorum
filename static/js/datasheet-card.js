@@ -1,4 +1,6 @@
 import { esc } from './utils.js';
+import { optionMarkup } from './ruletext.js';
+import { pointsStepNote } from './datasheet.js';
 
 /* The card's base colour comes straight from the API payload's `primary`, which
    the backend resolves from the official faction colours in factions_theme.py —
@@ -109,12 +111,9 @@ function abilitiesBlock(d){
 }
 
 function wargearBlock(d){
-  const hasOptions = d.options && d.options.length;
-  if(!hasOptions && !d.loadout) return "";
-  let html = `<div class="dsc-head">Wargear Options</div><div class="dsc-block">`;
-  if(d.loadout) html += `<p class="dsc-loadout">${clean(d.loadout)}</p>`;
-  if(hasOptions) html += `<ul class="dsc-opt">` + d.options.map(o=>`<li>${clean(o.description)}</li>`).join('') + `</ul>`;
-  return html + `</div>`;
+  if(!d.options || !d.options.length) return "";
+  return `<div class="dsc-head">Wargear Options</div><div class="dsc-block">` +
+    `<ul class="dsc-opt">` + d.options.map(o=>`<li>${optionMarkup(o.description)}</li>`).join('') + `</ul></div>`;
 }
 
 function leaderBlock(d){
@@ -127,14 +126,28 @@ function leaderBlock(d){
     `<ul class="dsc-opt">${items}</ul></div>`;
 }
 
+// Mirror the official app's Unit Composition block: "1 Deff Dread" style
+// count-prefixed model lines followed by the bolded "This model is equipped
+// with: ..." sentence(s) served in d.loadout.
 function compositionBlock(d){
-  if(!d.composition || !d.composition.length) return "";
-  const items = d.composition.map(c=>{
+  const items = (d.composition||[]).map(c=>{
     const name = (c.name||'').trim();
-    return name ? `<li>${esc(name)}</li>` : '';
+    if(!name) return '';
+    if(/^\d/.test(name)) return `<li>${esc(name)}</li>`;
+    if(c.min!=null && c.max!=null){
+      const count = c.min===c.max ? `${c.min}` : `${c.min}-${c.max}`;
+      return `<li>${count} ${esc(name)}</li>`;
+    }
+    return `<li>${esc(name)}</li>`;
   }).join('');
-  if(!items) return "";
-  return `<div class="dsc-head">Unit Composition</div><div class="dsc-block"><ul class="dsc-opt">${items}</ul></div>`;
+  const stepNote = pointsStepNote(d.points_steps);
+  if(!items && !d.loadout && !stepNote && !d.base_size) return "";
+  return `<div class="dsc-head">Unit Composition</div><div class="dsc-block">` +
+    (items ? `<ul class="dsc-opt">${items}</ul>` : '') +
+    (d.loadout ? `<p class="dsc-loadout">${clean(d.loadout)}</p>` : '') +
+    (stepNote ? `<p class="dsc-step-note">${esc(stepNote)}</p>` : '') +
+    (d.base_size ? `<p class="dsc-base-size"><span class="dsc-k">Base Size:</span> ${esc(d.base_size)}</p>` : '') +
+    `</div>`;
 }
 
 function damagedBlock(d){
@@ -162,7 +175,7 @@ export function renderDatasheetCard(d){
   const primary = factionColour(d);
   const models  = Array.isArray(d.models) ? d.models : [d.models || {}];
   const invuln  = d.abilities && d.abilities.invuln_save;
-  const baseSize = (models[0] || {}).base_size;
+  const baseSize = d.base_size || (models[0] || {}).base_size;
 
   const statBlocks = models.map((m,i)=>{
     const mname = statVal(m,'profile_name','name');
