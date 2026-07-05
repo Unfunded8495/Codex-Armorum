@@ -2045,10 +2045,15 @@ function renderWargearEditor(u){
   // change are summarised once in the "Always equipped" note at the bottom.
   const ls = u.loadout_setups;
   let summaryHtml = '', fixedNote = '';
-  if(ls && (ls.setups||[]).length){
-    const lines = ls.setups.map(s=>
-      `<li><b>${s.count>1?`${s.count}× `:''}${esc(s.miniature||'Model')}</b>${s.items.length?` — ${s.items.map(esc).join(', ')}`:''}</li>`).join('');
-    summaryHtml = `<div class="wg-summary"><span class="wg-summary-lbl">Current loadout</span><ul>${lines}</ul></div>`;
+  if(ls){
+    // Render the structured view whenever the server sent one, even with no
+    // options ticked (setups empty, all kit fixed): otherwise the card flips
+    // between this and the fallback format as the first option is toggled.
+    if((ls.setups||[]).length){
+      const lines = ls.setups.map(s=>
+        `<li><b>${s.count>1?`${s.count}× `:''}${esc(s.miniature||'Model')}</b>${s.items.length?` — ${s.items.map(esc).join(', ')}`:''}</li>`).join('');
+      summaryHtml = `<div class="wg-summary"><span class="wg-summary-lbl">Current loadout</span><ul>${lines}</ul></div>`;
+    }
     if((ls.fixed||[]).length){
       fixedNote = `<div class="wg-fixed-note"><span class="wg-summary-lbl">Always equipped</span>
         ${ls.fixed.map(f=>`<div>${esc(f.miniature||'All models')} — ${f.items.map(esc).join(', ')}</div>`).join('')}</div>`;
