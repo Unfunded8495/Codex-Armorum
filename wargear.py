@@ -13,6 +13,8 @@ preserved.
 """
 import re
 from functools import lru_cache
+from itertools import combinations, combinations_with_replacement
+from math import comb
 
 import army
 from data_store import get_store
@@ -277,9 +279,11 @@ def _bullet_bundles(instr, items):
     """Parse an instruction's '◦' bullet list against the group's item names.
     Returns ``(bundles, singles)``: bundles are bullets granting SEVERAL of the
     group's items at once ("1 plasma pistol and 1 Astartes chainsword" is ONE
-    option) as ordered ``[(item, count), ...]`` lists; singles is the set of
-    item names that appear alone in some bullet. Conservative: an item only
-    counts when the bullet names it with a leading quantity."""
+    option) as ordered ``[(item, count), ...]`` lists; singles maps each item
+    name appearing alone in some bullet to its quantity there ("2 inferno
+    pistols" is ONE option granting 2 copies; conflicting quantities across
+    bullets fall back to 1). Conservative: an item only counts when the bullet
+    names it with a leading quantity."""
     parts = _BULLET_SPLIT.split(instr or "")
     if len(parts) < 2:
         # No bullet list: an inline "…can be replaced with 1 kombi-weapon and
@@ -289,10 +293,10 @@ def _bullet_bundles(instr, items):
         m = re.search(r"can be replaced with\b(.*)", instr or "",
                       re.IGNORECASE | re.DOTALL)
         if not m:
-            return [], set()
+            return [], {}
         parts = ["", m.group(1)]
     names = {i["item"] for i in items}
-    bundles, singles = [], set()
+    bundles, singles = [], {}
     for seg in parts[1:]:
         seg_l = " " + seg.lower()
         found = {}
@@ -304,7 +308,8 @@ def _bullet_bundles(instr, items):
             if any(nm != o and nm.lower() in o.lower() for o in found):
                 del found[nm]
         if len(found) == 1:
-            singles.add(next(iter(found)))
+            nm, (_pos, q) = next(iter(found.items()))
+            singles[nm] = q if singles.get(nm, q) == q else 1
         elif len(found) > 1 and " and " in seg_l:
             bundles.append([(nm, q) for nm, (pos, q) in
                             sorted(found.items(), key=lambda kv: kv[1][0])])
@@ -344,7 +349,13 @@ def wargear_schema(did):
     that link can't be resolved unambiguously. For ``limited_per_n`` groups it
     instead holds the weapon-array *pool* key(s) the capped replacement displaces
     (see the array cross-reference pass), so taking a replacement can decrement
-    the pool weapon. Empty for the 8 no-options units."""
+    the pool weapon. ``linked_default_qty`` maps a linked key to the number of
+    pool weapons ONE replacement displaces when that is more than 1 (Seraphim
+    trade BOTH their bolt pistols per pick); keys absent from the map displace 1.
+    ``option_qty`` is the grant-side mirror: it maps a group item's key to the
+    number of copies ONE pick carries when that is more than 1 (a Seraphim pick
+    grants 2 inferno pistols) -- the selection still stores picks.
+    Empty for the 8 no-options units."""
     keyed = _keyed_options(did)
     limited = _limited_index(did)
     allmodel = _all_model_index(did)
@@ -357,7 +368,8 @@ def wargear_schema(did):
             index[g] = len(groups)
             groups.append({"instruction": g, "type": None, "miniature": o.get("miniature"),
                            "items": [], "limits": None, "duplicate_limit": None,
-                           "linked_default_keys": ()})
+                           "linked_default_keys": (), "linked_default_qty": {},
+                           "option_qty": {}})
         groups[index[g]]["items"].append({
             "key": key, "item": o.get("item"), "miniature": o.get("miniature"),
             "input_type": o.get("input_type"), "points": _int(o.get("points")),
@@ -508,6 +520,66 @@ def wargear_schema(did):
         if linked:
             grp["linked_default_keys"] = tuple(linked)
 
+    # limited_per_n → default cross-reference (no weapon array): a capped
+    # "…can each replace their sonic blaster with 1 blastmaster" group on a
+    # unit with no replace_any array still displaces a Default-group weapon
+    # (Noise Marines: 5 sonic blasters + 2 blastmasters is one weapon too
+    # many per carrier). choose_from lists the full mutually-exclusive choice
+    # set including the default, so recover the displaced key(s) per
+    # miniature the group spans. Unlike the replace_one pass's flat leftover,
+    # the displaced set must be bundle-aware: an entry's choices often carry
+    # common riders in EVERY bundle (Heavy Intercessors: bolt pistol + close
+    # combat weapon ride in both the heavy-bolt-rifle bundle and the
+    # heavy-weapon bundles), and those are kept, not displaced. Displaced =
+    # items of the bundles NOT offering a group item, minus items of the
+    # bundles that do. Guards: exactly one overlapping entry, not already
+    # claimed by a replace_one group, every displaced item a confirmed
+    # Default-group item, and no linked key owned by a weapon array (its
+    # settlement would re-derive the decrement away). Genuinely additive
+    # extras (a Chaos Icon) displace nothing and stay unlinked.
+    # validate_selection's linked-card pass then consumes each displaced
+    # weapon per replacement taken -- times its bundle count, carried in
+    # ``linked_default_qty`` (Seraphim: "their 2 bolt pistols" is a count-2
+    # displaced bundle, so ONE pick consumes BOTH pistols).
+    for grp in groups:
+        if grp["type"] != "limited_per_n" or grp["linked_default_keys"]:
+            continue
+        minis = {i["miniature"] for i in grp["items"]}
+        names = {i["item"] for i in grp["items"]}
+        link_keys, link_qty = [], {}
+        for mini in minis:
+            matches = [c for c in cfs
+                       if (c.get("miniature") == mini or c.get("miniature") is None)
+                       and (_flat_items(c.get("choices")) & names)]
+            if len(matches) != 1 or id(matches[0]) in entry_owners:
+                link_keys = None
+                break
+            kept, dfl, dfl_qty = set(), set(), {}
+            for b in matches[0].get("choices") or []:
+                bundle = [i for i in (b if isinstance(b, list) else [])
+                          if isinstance(i, dict) and i.get("item")]
+                items_b = {i["item"] for i in bundle}
+                if items_b & names:
+                    kept.update(items_b)
+                else:
+                    dfl.update(items_b)
+                    for i in bundle:
+                        q = max(1, _int(i.get("count", 1)))
+                        dfl_qty[i["item"]] = max(dfl_qty.get(i["item"], 1), q)
+            displaced = dfl - kept - names
+            keys = [default_keys[(mini, nm)] for nm in displaced
+                    if (mini, nm) in default_keys]
+            if not displaced or len(keys) != len(displaced):
+                link_keys = None
+                break
+            link_keys += keys
+            for nm in displaced:
+                if dfl_qty.get(nm, 1) > 1:
+                    link_qty[default_keys[(mini, nm)]] = dfl_qty[nm]
+        if link_keys and not (set(link_keys) & array_owned):
+            grp["linked_default_keys"] = tuple(link_keys)
+            grp["linked_default_qty"] = link_qty
+
     # ---- multi-item option bundles ---------------------------------------
     # A bullet like "1 plasma pistol and 1 Astartes chainsword" is ONE option
     # granting both weapons; the flat options list models it as two independent
@@ -531,16 +603,22 @@ def wargear_schema(did):
                        if (a["miniature"] == grp["miniature"] or a["miniature"] is None)
                        and (gitems & a["items"])), None)
             raw = [list(cs) for cs in (am["choice_sets"] if am else ()) if len(cs) > 1]
-            singles = set()
+            singles = {}
         else:
             raw, singles = _bullet_bundles(grp["instruction"], grp["items"])
-        if not raw:
-            continue
         if any(nm in singles for b in raw for nm, _q in b):
             continue   # an item both standalone and bundled -- ambiguous
         by_name = {}
         for it in grp["items"]:
             by_name.setdefault(it["item"], []).append(it)
+        # A single-item bullet with a quantity ("2 inferno pistols") is ONE
+        # pick granting that many copies. The selection keeps storing picks
+        # (caps and pool consumption count picks); ``option_qty`` records the
+        # per-pick copy count so the display passes can report carried copies.
+        grp["option_qty"] = {by_name[nm][0]["key"]: q for nm, q in singles.items()
+                             if q > 1 and nm in by_name and len(by_name[nm]) == 1}
+        if not raw:
+            continue
         if not all(nm in by_name and len(by_name[nm]) == 1 for b in raw for nm, _q in b):
             continue   # same item on several miniatures in one group
         if any(len({by_name[nm][0]["miniature"] for nm, _q in b}) != 1 for b in raw):
@@ -712,6 +790,83 @@ def limited_cap(limits, squad_size):
         return 0
     best = max(applicable, key=lambda l: l.get("per_models") or 0)
     return _int(best.get("max_choices"))
+
+
+@lru_cache(maxsize=4096)
+def _cluster_legal_sets(did):
+    """Per ``choose_from`` cluster: ``(miniature, item names, legal states)``,
+    where a legal state is a frozenset of (item, count) pairs. The official
+    app's semantics: a loadout picks exactly ``limit`` choice bundles; the
+    explicit EMPTY bundle may fill any number of slots (an empty slot is not a
+    "duplicate weapon"), non-empty bundles repeat only when allow_duplicates.
+    Clusters whose items a weapon array manages are excluded -- the array
+    passes balance those against the mount count and the cluster ``limit`` is
+    not the mount count (see the array notes below). Two self-calibration
+    guards keep the gate honest against export quirks: a cluster the pristine
+    default loadout itself fails is dropped (its model disagrees with the
+    exported defaults -- Tactical Squad's counts, Soul Grinder's omitted
+    mandatory pick), and clusters sharing an item name on the same miniature
+    are all dropped (unit-wide counts can't be attributed to one of them --
+    Gladiator Valiant lists Multi-melta both fixed and optional)."""
+    array_items = {(m["miniature"], m["item"])
+                   for s in _array_specs(did) for m in s["members"]}
+    # Pristine state from the Default-group option rows -- the SAME source the
+    # gate counts at runtime, so "a fresh unit never flags" holds by
+    # construction (default_loadout is empty for some sheets, e.g. Serberys
+    # Sulphurhounds, and can disagree with the option rows).
+    ddef = {}
+    for o, _k in _keyed_options(did):
+        if _is_default_group(o.get("group")) and _int(o.get("default_value")) > 0:
+            k = (o.get("miniature"), o.get("item"))
+            ddef[k] = ddef.get(k, 0) + _int(o.get("default_value"))
+    out = []
+    for cf in _wl(did).get("choose_from") or []:
+        if cf.get("alternate"):
+            continue   # semantics unverified in this data; never guess a warning
+        mini = cf.get("miniature")
+        bundles, has_empty = [], False
+        for b in cf.get("choices") or []:
+            c = {}
+            for it in b:
+                c[it["item"]] = c.get(it["item"], 0) + _int(it.get("count"))
+            if c:
+                bundles.append(c)
+            else:
+                has_empty = True
+        if not bundles:
+            continue
+        items = frozenset(nm for c in bundles for nm in c)
+        if any((mini, nm) in array_items for nm in items):
+            continue
+        limit = max(1, _int(cf.get("limit")) or 1)
+        pick = combinations_with_replacement if cf.get("allow_duplicates") \
+            else combinations
+        est = (comb(len(bundles) + limit - 1, limit) if cf.get("allow_duplicates")
+               else comb(len(bundles), limit)) * (limit + 1 if has_empty else 1)
+        if est > 20000:
+            continue   # combinatorial guard; no such cluster in data_version 886
+        legal = set()
+        for k in ([limit] if not has_empty else range(limit + 1)):
+            for combo in pick(range(len(bundles)), k):
+                s = {}
+                for i in combo:
+                    for nm, q in bundles[i].items():
+                        s[nm] = s.get(nm, 0) + q
+                legal.add(frozenset(s.items()))
+        if not legal:
+            continue
+        dstate = frozenset((nm, ddef[(mini, nm)]) for nm in items
+                           if ddef.get((mini, nm), 0) > 0)
+        if dstate and dstate not in legal:
+            continue
+        out.append((mini, items, frozenset(legal)))
+    # Same-miniature name overlap: keep only unambiguous clusters.
+    usage = {}
+    for mini, items, _ in out:
+        for nm in items:
+            usage[(mini, nm)] = usage.get((mini, nm), 0) + 1
+    return tuple((mini, items, legal) for mini, items, legal in out
+                 if all(usage[(mini, nm)] == 1 for nm in items))
 
 
 def validate_selection(did, squad_size, selection):
@@ -1256,15 +1411,27 @@ def validate_selection(did, squad_size, selection):
 
     # linked limited_per_n cards with no multi-item array to settle against
     # (mounts-mode / single-item specs): every replacement taken on the card
-    # still consumes one of each displaced pool weapon of its own miniature,
-    # trimming the card when the pool runs out. Items the array already
-    # balances as members are excluded.
-    member_keys = set()
+    # still consumes each displaced pool weapon of its own miniature -- times
+    # its linked_default_qty when a pick trades several copies (a Seraphim
+    # pick eats BOTH bolt pistols) -- trimming the card when the pool runs
+    # out. Items the array already balances as members are excluded.
+    member_keys = {m["key"] for s in specs for m in s["members"]}
+    # Plain Default pool keys (not managed by any weapon array) are re-anchored
+    # to their squad-scaled default before consumption: the decrement below
+    # persists via overrides, so consuming from the *current* value would eat
+    # another pool weapon on every re-validation (5 sonic blasters -> 4 -> 3
+    # across edits). Array-managed pools skip this (the array pass just
+    # re-derived them from slot counts); keys an active replace_one pick
+    # displaced stay displaced.
     for grp in linked_groups:
         if grp["instruction"] in rel_spec:
             continue
-        if not member_keys:
-            member_keys = {m["key"] for s in specs for m in s["members"]}
+        for pk in grp["linked_default_keys"]:
+            if pk not in member_keys and pk not in claimed_links:
+                sel[pk] = _int(default.get(pk, 0))
+    for grp in linked_groups:
+        if grp["instruction"] in rel_spec:
+            continue
         # A multi-item bundle is ONE pick: only its first anchor consumes a
         # pool weapon; the other member keys ride along (skipped here).
         ride_along = set()
@@ -1286,9 +1453,11 @@ def validate_selection(did, squad_size, selection):
                     if k.split("|", 1)[0] == it["miniature"]]
             if not pool or not n:
                 continue
-            rows = min(n, min(max(0, _int(sel.get(pk))) for pk in pool))
+            qty = grp.get("linked_default_qty") or {}
+            rows = min(n, min(max(0, _int(sel.get(pk))) // qty.get(pk, 1)
+                              for pk in pool))
             for pk in pool:
-                sel[pk] = _int(sel.get(pk)) - rows
+                sel[pk] = _int(sel.get(pk)) - rows * qty.get(pk, 1)
             if rows < n:
                 sel[gk] = rows  # not enough pool weapons left to replace
                 bd = next((b for b in (grp.get("option_bundles") or ())
@@ -1308,6 +1477,38 @@ def validate_selection(did, squad_size, selection):
         base = k[4:].rsplit("|", 1)[0]
         if _int(sel.get(base)) <= 0:
             sel[k] = 0
+
+    # Final legality gate against the official app's exhaustive legal option
+    # sets (choose_from). The passes above heal group STRUCTURE (exclusivity,
+    # caps, pools), but conditional rules ("If this model is equipped with...",
+    # "For each X this model is equipped with...") exist only in that combo
+    # list, so a structurally-valid selection can still be an illegal loadout.
+    # Warn-only: there is no single nearest legal state to auto-correct
+    # toward. Single-model contingents only (squad-scaled cluster semantics
+    # are not modelled here), and an all-default empty pick is never flagged
+    # (a unit whose mandatory choice the exported default loadout omits would
+    # otherwise nag from birth). A pick's count multiplies by its option_qty
+    # grant ("2 lascannons" is one pick carrying two).
+    clusters = _cluster_legal_sets(did)
+    if clusters:
+        grant = {k: q for g in schema
+                 for k, q in (g.get("option_qty") or {}).items()}
+        icounts = {}
+        for o, key in _keyed_options(did):
+            n = _int(sel.get(key)) * grant.get(key, 1)
+            if n > 0:
+                mi = (o.get("miniature"), o.get("item"))
+                icounts[mi] = icounts.get(mi, 0) + n
+        for mini, items, legal in clusters:
+            if counts.get(mini) != 1:
+                continue
+            state = frozenset((nm, icounts[(mini, nm)]) for nm in items
+                              if icounts.get((mini, nm), 0) > 0)
+            if state and state not in legal:
+                got = " + ".join(("%d× %s" % (q, nm)) if q > 1 else nm
+                                 for nm, q in sorted(state))
+                flag("Illegal loadout: %s is not one of this model's legal "
+                     "weapon combinations" % clip(got, 90))
 
     return {"selection": sel,
             "overrides": overrides_of(did, squad_size, sel),
@@ -1375,7 +1576,10 @@ def loadout_setups(did, squad_size, selection):
 
     # Final + default counts per (miniature, item); stable item order per mini.
     # Minis ordered smallest contingent first (leader before troops, matching
-    # the roster row's composition line).
+    # the roster row's composition line). A qty pick (``option_qty``) counts
+    # its carried copies, not its pick count.
+    grant = {k: q for g in wargear_schema(did)
+             for k, q in (g.get("option_qty") or {}).items()}
     final, ddef, item_order = {}, {}, {}
     mini_order = sorted(mcounts, key=lambda M: mcounts.get(M, 0))
     for o, key in _keyed_options(did):
@@ -1386,7 +1590,7 @@ def loadout_setups(did, squad_size, selection):
         rank = item_order.setdefault(M, {})
         if it not in rank:
             rank[it] = len(rank)
-        c = _int(sel.get(key, 0))
+        c = _int(sel.get(key, 0)) * grant.get(key, 1)
         if c > 0:
             final.setdefault(M, {})
             final[M][it] = final[M].get(it, 0) + c
@@ -1424,6 +1628,22 @@ def loadout_setups(did, squad_size, selection):
             if nb > 0:
                 bundle_units.setdefault(M0, []).append(
                     ({key_item[k][1]: q for k, q in ks.items()}, nb))
+    # A qty pick (``option_qty``) likewise lands ALL its copies on one model
+    # (a Seraphim pick = 2 inferno pistols on that Seraphim).
+    for g in wargear_schema(did):
+        for k, q in (g.get("option_qty") or {}).items():
+            picks = _int(sel.get(k))
+            if picks > 0 and k in key_item:
+                M0, it0 = key_item[k]
+                bundle_units.setdefault(M0, []).append(({it0: q}, picks))
+    # Per-pick displaced copies: a pick that trades SEVERAL copies of one
+    # default (``linked_default_qty``, Seraphim: both bolt pistols) strips
+    # them from the same model during reconciliation below.
+    chunk = {}
+    for g in wargear_schema(did):
+        for pk, q in (g.get("linked_default_qty") or {}).items():
+            if q > 1 and pk in key_item:
+                chunk[key_item[pk]] = max(chunk.get(key_item[pk], 1), q)
     setups, fixed, all_kits = [], [], {}
     fmt = lambda it, c: ("%d× %s" % (c, it)) if c > 1 else it
 
@@ -1490,6 +1710,21 @@ def loadout_setups(did, squad_size, selection):
         freed, ok = [], True   # kit indices awaiting a replacement item
         for it in ordered:            # removals: seeded > final
             need = recon.get(it, 0) - var.get(it, 0)
+            # whole-pick chunks first: a pick trading SEVERAL copies of the
+            # same default takes them all off one model; leftovers (a mix of
+            # causes) fall through to the per-copy loop below
+            cq = chunk.get((M, it), 0)
+            while cq > 1 and need >= cq:
+                i = next((j for j in sorted(range(n), key=lambda j: j not in freed)
+                          if kits[j].get(it, 0) >= cq), None)
+                if i is None:
+                    break
+                kits[i][it] -= cq
+                if not kits[i][it]:
+                    del kits[i][it]
+                if i not in freed:
+                    freed.append(i)
+                need -= cq
             # prefer already-freed kits: a pick that displaces TWO defaults
             # ("choppa and slugga") strips both from the same model
             for i in sorted(range(n), key=lambda i: i not in freed):
@@ -1566,11 +1801,15 @@ def loadout_setups(did, squad_size, selection):
 
 
 def resolved_loadout(did, squad_size, selection):
-    """Human-readable per-miniature summary of the selected items (count > 0)."""
+    """Human-readable per-miniature summary of the selected items (count > 0).
+    A pick granting several copies (``option_qty``) reports the copies carried,
+    not the pick count (2 Seraphim picks = 4 inferno pistols)."""
     selection = selection or {}
+    grant = {k: q for g in wargear_schema(did)
+             for k, q in (g.get("option_qty") or {}).items()}
     by_mini, order = {}, []
     for o, key in _keyed_options(did):
-        count = _int(selection.get(key, 0))
+        count = _int(selection.get(key, 0)) * grant.get(key, 1)
         if count <= 0:
             continue
         mini = o.get("miniature") or ""

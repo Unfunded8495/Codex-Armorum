@@ -172,6 +172,8 @@ export function refreshQuickList(){
    re-renders only via explicit calls). */
 
 function renderAbStrip(army){
+  const labelEl = document.getElementById('abStripLabel');
+  if(labelEl) labelEl.textContent = 'Battle Roster';
   const chipsEl = document.getElementById('abStripChips');
   if(!chipsEl) return;
   const counts = {};
@@ -901,6 +903,12 @@ function markActiveSelection(){
 
 /* ---- right panel: unit detail ------------------------------------------- */
 
+// "3rd" for step_at=3 -- the ordinal a repeat selection starts paying its
+// duplicate-selection surcharge from.
+function ordinalWord(n){
+  return n===1?'1st':n===2?'2nd':n===3?'3rd':`${n}th`;
+}
+
 function renderUnitDetail(u){
   const pts = u.points + (u.enhancement_cost||0);
   const hasWg = u.wargear_schema && u.wargear_schema.length;
@@ -911,10 +919,11 @@ function renderUnitDetail(u){
     </div>
     <div class="ab-rp-body">
       <div class="ab-rp-pts"><b>${pts}</b> pts · <span class="ab-rp-role">${esc(u.role||'')}</span>${u.is_ally?` · <span class="au-ally">⚔ ${esc(u.ally_faction)}</span>`:''}</div>
+      ${u.points_step_added?`<p class="ab-rp-step-note">Includes +${u.points_step_added} pts — repeat selection of this unit (from the ${ordinalWord(u.points_step.step_at)} onward each costs +${u.points_step.step_points} pts).</p>`:''}
+      ${renderStatControls(u)}
       ${u.is_character?`<label class="uo-warlord-row"><span>Warlord</span><input type="checkbox" class="opt-check" data-testid="unit-warlord-toggle" ${u.is_warlord?'checked':''} onchange="toggleWarlord('${u.id}')"></label>`:''}
       ${u.can_have_enhancement?accordionSection('Enhancements', `<div id="rpEnh" data-testid="unit-enhancement-editor"></div>`):''}
       ${hasWg?accordionSection('Wargear Options', `<div class="opt-theme" data-testid="wargear-editor" id="rpWargear">${renderWargearEditor(u)}</div>`):''}
-      ${renderStatControls(u)}
       ${renderLeaderSection(u)}
       <div class="ab-rp-section">
         <button class="ab-rp-collapse" type="button" data-testid="unit-profiles-toggle" onclick="toggleUnitProfiles('${u.datasheet_id}', this)">
@@ -949,13 +958,12 @@ export function toggleAccordion(btn){
 function renderStatControls(u){
   const squadMin = u.squad_min || 1;
   const squadMax = u.squad_max || '';
-  return `<div class="ab-rp-section">
-      <div class="ab-rp-sec-head">Squad</div>
-      <div class="uo-stat-row">
-        <label>Squad Size</label>
+  return `<div class="uo-squad-box">
+      <label class="uo-squad-row">
+        <span class="uo-squad-label">Squad Size${squadMax&&squadMax!==squadMin?` <span class="uo-squad-range">${squadMin}–${squadMax}</span>`:''}</span>
         <input class="au-size-input" data-testid="unit-size-input" type="number" min="${squadMin}" ${squadMax?`max="${squadMax}"`:''} value="${u.squad_size}"
                onchange="updateSquadSize('${u.id}',this.value)" title="Squad size">
-      </div>
+      </label>
       <div class="au-ownership" id="au-own-${u.id}">${ownershipText(u)}</div>
     </div>`;
 }
@@ -1738,13 +1746,43 @@ function wgItemLabels(items){
 }
 function wgGroupTitle(g){
   const instr = g.instruction || '';
-  let m = /['’]s\s+([a-z][a-z\s]*?)\s+can be replaced/i.exec(instr);
+  // Weapon phrases are not just [a-z ]: "multi-melta", "2 heavy bolters",
+  // "Harlequin's blade", "master-crafted power weapon and storm shield" (with
+  // unicode hyphens). Capture lazily up to the verb instead of enumerating
+  // characters; the possessive can also be plural ("3 models' combi-bolters").
+  let m = /(?:['’]s|s['’])\s+([^.:\n]+?)\s+can (?:each )?be replaced/i.exec(instr);
   if(m) return 'Replace ' + wgCap(m[1]);
-  m = /have (?:its|their)\s+([a-z][a-z\s]*?)\s+replaced with/i.exec(instr);
+  m = /have (?:its|their)\s+([^.:\n]+?)\s+replaced with/i.exec(instr);
   if(m) return 'Replace ' + wgCap(m[1]);
   const first = (g.items && g.items[0]) || (g.minis && g.minis[0] && (g.minis[0].bundles||[])[0]);
   if(first) return 'Equip ' + wgCap(first.item || first.label || '');
   return 'Wargear Option';
+}
+
+// The rule sentence lists its weapon choices as "◦" bullets that collapse
+// into one unreadable run-on line -- break each choice onto its own bulleted
+// line, keeping non-bullet lines (the lead-in sentence, "* Maximum 1 per
+// model." footnotes) as plain text in source order.
+function wgSubMarkup(sub){
+  const lines = String(sub).replace(/\r\n?/g,'\n').split('\n')
+    .map(l=>l.trim()).filter(Boolean);
+  const out = [];
+  let inList = false;
+  for(const line of lines){
+    const parts = line.split(/\s*[◦○]\s*/);
+    const lead = parts.shift().trim();
+    if(lead){
+      if(inList){ out.push('</ul>'); inList = false; }
+      out.push(`<div>${esc(lead)}</div>`);
+    }
+    for(const p of parts){
+      if(!p.trim()) continue;
+      if(!inList){ out.push('<ul class="wg-sub-list">'); inList = true; }
+      out.push(`<li>${esc(p.trim())}</li>`);
+    }
+  }
+  if(inList) out.push('</ul>');
+  return out.join('');
 }
 
 // Bold header + collapsible body, no per-mechanic icon/tag chrome -- matches
@@ -1759,7 +1797,7 @@ function wgCard(title, badge, contentHtml, sub){
       <span class="wg-card-title">${esc(title)}${badge?` <span class="wg-card-badge">${esc(badge)}</span>`:''}</span>
       <span class="wg-card-chev">▾</span>
     </button>
-    <div class="wg-card-content">${sub?`<div class="wg-card-sub">${esc(sub)}</div>`:''}${contentHtml}</div>
+    <div class="wg-card-content">${sub?`<div class="wg-card-sub">${wgSubMarkup(sub)}</div>`:''}${contentHtml}</div>
   </div>`;
 }
 
@@ -1832,7 +1870,18 @@ function renderGroupHtml(u, g, sel, comp, size){
         ? o.items.map(i=>i.key) : []);
     const gk = esc(JSON.stringify(g.items.map(i=>i.key).concat(linked, rivalKeys)));
     const title = wgGroupTitle(g);
-    const defaultLabel = title.replace(/^Replace\s+/, '');
+    // The keep-default row is named after what picking it gives you back: the
+    // displaced Default-group item(s) (linked_default_keys, ground truth when
+    // the server resolved the link), else the weapon parsed from the title.
+    // A group that displaces nothing (an additive "can be equipped with" rule,
+    // e.g. the Helbrute's fist-mounted combi-bolter) gets "None" -- echoing
+    // the "Equip X" fallback title here read as a duplicate weapon option.
+    const defNames = {};
+    (u.wargear_schema||[]).forEach(o=>{ if(o.type==='default') (o.items||[]).forEach(i=>{ defNames[i.key]=i.item; }); });
+    const linkedNames = linked.map(k=>defNames[k]).filter(Boolean);
+    const defaultLabel = linked.length && linkedNames.length===linked.length
+      ? linkedNames.join(' and ')
+      : (/^Replace\s/.test(title) ? title.replace(/^Replace\s+/, '') : 'None');
     const labels = wgItemLabels(g.items);
     const ptsOf = {}; g.items.forEach(i=>ptsOf[i.key]=i.points||0);
     const perModel = k => g.type==='all_model'
@@ -2082,7 +2131,11 @@ function renderPlacementTicks(u, g, kitsMap, cap, dup, sel){
     (kitsMap[item.miniature]||[]).forEach((kit, idx)=>{
       const rest = Object.entries(kit).filter(([k])=>k!==it)
         .map(([k,q])=>q>1?`${q}× ${k}`:k);
-      const sig = rest.join(', ');
+      // Carriers get their own row even when the rest of their kit matches a
+      // free model's (an ADDITIVE item leaves the rest identical): folding
+      // them together renders one already-ticked row with no way to tick the
+      // 2nd+ pick of a cap>1 item.
+      const sig = ((kit[it]||0)>0 ? '✓|' : '') + rest.join(', ');
       let grp = bySig[sig];
       if(!grp){ grp = {rest, idxs:[], carriers:[]}; bySig[sig]=grp; groups.push(grp); }
       grp.idxs.push(idx);
@@ -2147,6 +2200,7 @@ export async function removeArmyUnit(auid){
   let res;
   try{ res = await api(`/api/army-units/${auid}`, {method:'DELETE'}); }
   catch(e){ return; }
+  const removed = state.army.units.find(u=>u.id===auid);
   state.army.units = state.army.units.filter(u=>u.id!==auid);
   // All 4 Force-Org sections stay visible even when empty (matching the
   // reference app), so a full re-render is simpler and correct here -- no
@@ -2155,6 +2209,13 @@ export async function removeArmyUnit(auid){
   if(body) body.innerHTML = renderRoster(state.army.units, state.army.accent);
   if(state.rightSel && state.rightSel.id===auid) clearRight();
   applyServerState(res);
+  // Removing one selection of a stepped datasheet shifts the duplicate-
+  // selection surcharge off a remaining sibling -- refetch so the sibling
+  // rows repaint with their server-priced points.
+  if(removed && removed.points_step &&
+     state.army.units.some(u=>u.datasheet_id===removed.datasheet_id)){
+    await showArmy(state.army.id);
+  }
 }
 
 /* ---- merge unit state --------------------------------------------------- */

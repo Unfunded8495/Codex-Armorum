@@ -41,6 +41,28 @@ def run():
     r.check(f"points: default-size price == default_points for all {len(dsids)} datasheets",
             not pts_bad, f"{len(pts_bad)} mismatch e.g. {pts_bad[:3]}")
 
+    # 1b) Duplicate-selection surcharge shape: army.points_step and the UI note
+    #     (pointsStepNote in datasheet.js) both read only steps[0], so a future
+    #     data_version shipping >1 step per datasheet would silently underprice
+    #     repeat selections and render an incomplete note. Fail loudly so the
+    #     data-update runbook catches it as "fix code, not data".
+    step_multi, step_bad, stepped = [], [], 0
+    for did in dsids:
+        steps = s.ds_by_id[did].get("_points_steps") or []
+        if steps:
+            stepped += 1
+        if len(steps) > 1:
+            step_multi.append(s.ds_by_id[did].get("name"))
+        for st in steps:
+            if _int(st.get("step_at")) < 2 or _int(st.get("step_points")) <= 0:
+                step_bad.append((s.ds_by_id[did].get("name"), st))
+    r.check(f"points: at most one points_step per datasheet ({stepped} stepped datasheets)",
+            stepped > 0 and not step_multi,
+            f"{len(step_multi)} multi-step e.g. {step_multi[:3]}" if step_multi
+            else "no stepped datasheets - population vanished?")
+    r.check("points: every points_step has step_at >= 2 and step_points > 0",
+            not step_bad, f"{len(step_bad)} malformed e.g. {step_bad[:3]}")
+
     # 2+3+4) One wargear pass: default loadout is legal, prices at delta 0, and
     #        every weapon-array balances to its slot_count.
     delta_bad, illegal, array_units, array_bad, errored = [], [], 0, [], []
@@ -145,26 +167,31 @@ def run():
                 over_kept.append((nm, grp["instruction"][:48]))
             elif not res["violations"]:
                 over_silent.append((nm, grp["instruction"][:48]))
-            # each kept replacement must displace its pool weapon(s) one-for-one:
-            # every pool key of the item's miniature drops by exactly `got` or
-            # not at all ("choppa AND slugga" rows drop together; a power fist
-            # leaves the combi-bolter alone), and something must drop unless the
-            # data offers the item *alongside* the full pool row (an additive
-            # extra like a Regimental Standard displaces nothing).
+            # each kept replacement must displace its pool weapon(s) in full:
+            # every pool key of the item's miniature drops by exactly `got`
+            # times its linked_default_qty (one pick can trade several copies,
+            # e.g. a Seraphim gives up BOTH bolt pistols) or not at all
+            # ("choppa AND slugga" rows drop together; a power fist leaves the
+            # combi-bolter alone), and something must drop unless the data
+            # offers the item *alongside* the full pool row (an additive extra
+            # like a Regimental Standard displaces nothing).
             it0 = grp["items"][0]
             ck0 = canon.get((it0["miniature"], it0["item"]), k0)
+            qty = grp.get("linked_default_qty") or {}
             pks = [pk for pk in grp["linked_default_keys"]
                    if pk.split("|", 1)[0] == it0["miniature"]]
+            want = [got * qty.get(pk, 1) for pk in pks]
             deltas = [_int(default.get(pk)) - _int(final.get(pk)) for pk in pks]
             additive = any(ck0 in b["key_counts"] and set(pks) <= set(b["key_counts"])
                            for md in wargear._multi_meta(did).values()
                            for pm in [md["per_mini"].get(it0["miniature"])] if pm
                            for b in pm["bundles"])
-            ok_deltas = all(d in (0, got) for d in deltas)
+            ok_deltas = all(d in (0, w) for d, w in zip(deltas, want))
             if additive:
                 ok_deltas = ok_deltas and all(d == 0 for d in deltas)
             else:
-                ok_deltas = ok_deltas and (not pks or got in deltas or got == 0)
+                ok_deltas = ok_deltas and (not pks or got == 0 or
+                                           any(d == w for d, w in zip(deltas, want)))
             if not ok_deltas:
                 pool_bad.append((nm, grp["instruction"][:48], deltas, got))
             # corrections converge: the corrected state is legal and stable
@@ -206,7 +233,7 @@ def run():
             lim_checked > 0 and not over_kept, f"{len(over_kept)} over cap e.g. {over_kept[:3]}")
     r.check("wargear: over-cap limited_per_n correction is recorded as a violation",
             not over_silent, f"{len(over_silent)} silent e.g. {over_silent[:3]}")
-    r.check("wargear: a limited_per_n replacement displaces its array-pool weapon one-for-one",
+    r.check("wargear: a limited_per_n replacement displaces its pool weapon(s) in full",
             not pool_bad, f"{len(pool_bad)} unbalanced e.g. {pool_bad[:3]}")
     r.check(f"wargear: over-cap @b bundle picks are clamped to the limited cap ({bundle_checked} spec×card pairs)",
             bundle_checked > 0 and not bundle_kept, f"{len(bundle_kept)} over cap e.g. {bundle_kept[:3]}")
