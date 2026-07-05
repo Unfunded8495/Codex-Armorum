@@ -26,6 +26,8 @@ data/datasheet_gaps.json
 data/datasheet_gaps.csv
 data/model_catalogue_manual.json.pre-remediate
 data/model_catalogue_resolutions.json.pre-remediate
+data/catalogue_relink_report.json
+data/model_catalogue_resolutions.json.pre-relink
 
 # Throwaway copies of collection.db used to test the migration end-to-end
 # (created by setting COLLECTION_DB_PATH=data/_migration_test/collection.db).

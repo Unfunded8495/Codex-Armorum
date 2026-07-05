@@ -1,8 +1,8 @@
 {
-  "unlinked_datasheet_count": 537,
+  "unlinked_datasheet_count": 441,
   "by_type": {
-    "cross_faction_shared": 54,
-    "genuinely_missing": 465,
-    "needs_review": 18
+    "cross_faction_shared": 53,
+    "genuinely_missing": 380,
+    "needs_review": 8
   }
 }
