@@ -1,3 +1,20 @@
+# Model gate (read first)
+The rules below assume an Opus-class model. Check the model name in your
+system prompt before applying them:
+- Opus, Sonnet, or Haiku: every rule applies in full.
+- Fable or Mythos class: the scaffolding rules listed next are advisory;
+  use judgement. Everything else, including all Hard stops and the whole
+  Project section, still applies in full.
+
+Scaffolding rules (advisory on Fable/Mythos, mandatory otherwise):
+- The whole Routing table (mandatory guardrail-doc reads).
+- IR4 (CAUSE line and revert ceremony), IR5 (two-strike escalation),
+  IR10 (paste the grep), IR11 (quote, do not summarise).
+- The "Plan first" line in the Project section (PLAN.md P7): on Fable,
+  small low-risk tasks may proceed without a pre-approved plan; still
+  present a plan and wait for approval on anything touching data files,
+  IDs, migrations, or the catalogue.
+
 <!-- BEGIN KIT CORE v1.0 - do not edit inside these markers, upgrades replace this block wholesale -->
 # Operating Rules (always apply)
 
