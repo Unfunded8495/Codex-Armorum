@@ -9,7 +9,8 @@ import { showArmy, saveArmyMeta, updateSquadSize,
          openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleMastRule,
          openEditRoster, closeEditRoster, editRosterShow, duplicateRoster, jumpToUnit,
          jumpToValidation, jumpToFoc,
-         openDatasheetCard, closeDatasheetCard, closeAllOverlays } from './army-detail.js';
+         openDatasheetCard, closeDatasheetCard, openWoundChart, closeWoundChart,
+         closeAllOverlays } from './army-detail.js';
 import { openUnitPicker, filterPicker, closeUnitPicker, addUnitToArmy, togglePickerProfile } from './unit-picker.js';
 import { initLightbox } from './lightbox.js';
 import { refreshLedger } from './header.js';
@@ -61,7 +62,7 @@ Object.assign(window, {
   openCommandBunker, closeCommandBunker, toggleCbSection, toggleStratPill, toggleMastRule,
   openEditRoster, closeEditRoster, editRosterShow, duplicateRoster, jumpToUnit,
   jumpToValidation, jumpToFoc,
-  openDatasheetCard, closeDatasheetCard, closeAllOverlays,
+  openDatasheetCard, closeDatasheetCard, openWoundChart, closeWoundChart, closeAllOverlays,
   exportArmy, exportDatasheetsPdf, importArmyList,
 });
 

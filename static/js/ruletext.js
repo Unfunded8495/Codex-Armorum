@@ -19,6 +19,54 @@ export function wrapKeywords(html){
   return out;
 }
 
+/* ---- tooltip interaction for the .kwt spans wrapKeywords produces ----
+   Mouse, outside the datasheet card: the CSS-only .kwt:hover::after bubble in
+   style.css. Inside the card that bubble is clipped by the chamfered frame
+   (.dsc-lower-inner overflow:hidden + clip-path), so hovering shows one
+   floating fixed-position element on <body> instead, which no frame can clip.
+   Touch has no hover: tapping any .kwt shows the floating element -- via the
+   tap's emulated mouseover inside the card (the card overlay body stops click
+   propagation, so click never reaches the document there), via click
+   everywhere else. Tapping anything else or scrolling dismisses it. While the
+   floating element is up, .kwt-active suppresses that keyword's CSS bubble so
+   the two never double-show. */
+let tipEl = null, tipFor = null;
+function showTip(kw){
+  const tip = kw.getAttribute('data-tip');
+  if(!tip) return;
+  if(!tipEl){
+    tipEl = document.createElement('div');
+    tipEl.className = 'kwtip';
+    tipEl.hidden = true;
+    document.body.appendChild(tipEl);
+  }
+  if(tipFor && tipFor !== kw) tipFor.classList.remove('kwt-active');
+  kw.classList.add('kwt-active');
+  tipFor = kw;
+  tipEl.textContent = tip;
+  tipEl.hidden = false;
+  const r = kw.getBoundingClientRect();
+  const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+  const left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+  const top = r.top - h - 7 >= 8 ? r.top - h - 7 : r.bottom + 7;
+  tipEl.style.left = `${left}px`;
+  tipEl.style.top = `${top}px`;
+}
+function hideTip(){
+  if(tipEl) tipEl.hidden = true;
+  if(tipFor){ tipFor.classList.remove('kwt-active'); tipFor = null; }
+}
+document.addEventListener('mouseover', e=>{
+  const kw = e.target.closest ? e.target.closest('.kwt') : null;
+  if(kw && kw.closest('.dsc-card')) showTip(kw);
+  else if(kw !== tipFor) hideTip();
+});
+document.addEventListener('click', e=>{
+  const kw = e.target.closest ? e.target.closest('.kwt') : null;
+  if(kw) showTip(kw); else hideTip();
+});
+document.addEventListener('scroll', hideTip, true);
+
 /* Convert BSData's plain-text rules markup into safe HTML.
    `**bold**`  -> <strong>, `^^small caps^^` -> keyword span, blank-line/­newline
    bullet markers (* - • ■ ▪) -> a bullet list. Input is escaped first. */

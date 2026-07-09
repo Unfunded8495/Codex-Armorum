@@ -77,7 +77,8 @@ function renderLeftRail(army){
     ${renderContextStrip(army)}
     ${renderValidationCard(army)}
     <button class="ab-adds-btn" type="button" onclick="openUnitPicker()">+ Add Unit</button>
-    ${renderQuickList(army)}`;
+    ${renderQuickList(army)}
+    <button class="ab-wrc-btn" type="button" onclick="openWoundChart()" data-testid="wound-chart-button">Wound Roll Chart</button>`;
 }
 
 // Points HUD: black plate with the big used total, a progress bar and a
@@ -627,7 +628,7 @@ export function syncOverlayScrim(){
 }
 
 export function closeAllOverlays(){
-  DRAWER_IDS.concat('dsCardOverlay').forEach(id=>{
+  DRAWER_IDS.concat('dsCardOverlay','woundChartOverlay').forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.hidden = true;
   });
@@ -654,6 +655,64 @@ export async function openDatasheetCard(did){
 
 export function closeDatasheetCard(){
   const overlay = document.getElementById('dsCardOverlay');
+  if(overlay) overlay.hidden = true;
+}
+
+/* ---- wound roll chart: static quick-reference overlay --------------------
+   Content mirrors core rules 05.02 (data/rules/wh40k_core_rules_combined.md)
+   in the layout of the printed chart. Opened from the left rail's button. */
+
+const WRC_PIPS = {
+  1:[[12,12]],
+  2:[[7.5,7.5],[16.5,16.5]],
+  3:[[7.5,7.5],[12,12],[16.5,16.5]],
+  4:[[7.5,7.5],[16.5,7.5],[7.5,16.5],[16.5,16.5]],
+  5:[[7.5,7.5],[16.5,7.5],[12,12],[7.5,16.5],[16.5,16.5]],
+  6:[[7.5,6.5],[16.5,6.5],[7.5,12],[16.5,12],[7.5,17.5],[16.5,17.5]],
+};
+function wrcDie(n){
+  const pips = WRC_PIPS[n].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.4"/>`).join('');
+  return `<svg class="wrc-die" viewBox="0 0 24 24" role="img" aria-label="${n}">` +
+    `<rect x="1" y="1" width="22" height="22" rx="4"/>${pips}</svg>`;
+}
+
+function renderWoundChart(){
+  const row = (cond, out, cls) =>
+    `<div class="wrc-row"><span class="wrc-arrow">&#8594;</span>` +
+    `<span class="wrc-cond">${cond}</span><span class="wrc-out ${cls}">${out}</span></div>`;
+  const mid = [
+    ['Strength is <b>TWICE</b> (or more than twice) the Toughness', 2],
+    ['Strength is <b>GREATER</b> than the Toughness', 3],
+    ['Strength is <b>EQUAL</b> to the Toughness', 4],
+    ['Strength is <b>LESS</b> than the Toughness', 5],
+    ['Strength is <b>HALF</b> (or less than half) the Toughness', 6],
+  ].map(([c,d])=>
+    `<div class="wrc-mid-row"><span class="wrc-mid-cond">${c}</span>` +
+    `<span class="wrc-req">${wrcDie(d)}<b>+</b></span></div>`).join('');
+  return `<div class="wrc-chart" data-testid="wound-chart">
+    <h2 class="wrc-title">Wound Roll</h2>
+    <p class="wrc-hint">Make one wound roll for each hit by rolling one D6. Match the first condition that applies.</p>
+    ${row(`Unmodified ${wrcDie(1)}`, 'Fails', 'wrc-fail')}
+    ${row(`Unmodified ${wrcDie(6)}`, 'Critical Wound', 'wrc-crit')}
+    ${row('Equal to or greater than the required result below:', 'Wound', 'wrc-wound')}
+    <div class="wrc-mid">
+      <div class="wrc-mid-head"><span>Attack&#8217;s Strength vs Target&#8217;s Toughness</span><span>Required Result</span></div>
+      ${mid}
+    </div>
+    ${row('Any other result', 'Fails', 'wrc-fail')}
+  </div>`;
+}
+
+export function openWoundChart(){
+  const overlay = document.getElementById('woundChartOverlay');
+  const body = document.getElementById('woundChartBody');
+  if(!overlay || !body) return;
+  if(!body.innerHTML) body.innerHTML = renderWoundChart();
+  overlay.hidden = false;
+}
+
+export function closeWoundChart(){
+  const overlay = document.getElementById('woundChartOverlay');
   if(overlay) overlay.hidden = true;
 }
 
@@ -891,6 +950,7 @@ async function printDatasheetCards(details, armyName){
       .pdf-page:last-child{break-after:auto;}
       .pdf-card{width:1160px;flex:0 0 auto;}
       .pdf-card .dsc-card{box-shadow:none;max-width:none;}
+      .kwt{border-bottom:none;}   /* hover-tooltip underlines are screen chrome */
       ${PDF_DESKTOP_PIN}
     </style></head><body>${pages}</body></html>`;
 

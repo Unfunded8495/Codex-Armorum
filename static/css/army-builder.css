@@ -139,6 +139,7 @@ body.ab-roster .loading { color:var(--rl-mute); }
   .ab-leftrail .ab-validation { grid-column:1 / -1; }
   .ab-leftrail .ab-adds-btn { grid-column:1 / -1; }
   .ab-leftrail .ab-quicklist { display:none; }   /* redundant beside the full roster */
+  .ab-leftrail .ab-wrc-btn { grid-column:1 / -1; }
 }
 
 /* ---- masthead: BATTLE ROSTER plate + editable title + stats sub-line ---- */
@@ -342,6 +343,60 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
   padding:12px 14px; cursor:pointer; box-shadow:0 2px 10px rgba(20,24,12,.18); flex-shrink:0;
 }
 .ab-adds-btn:hover { filter:brightness(1.1); }
+
+/* ---- wound roll chart: left-rail button + reference overlay ---- */
+.ab-wrc-btn {
+  font-family:'Oswald',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.8px;
+  text-transform:uppercase; color:var(--rl-ink); background:none;
+  border:1px solid var(--rl-edge); padding:10px 14px; cursor:pointer; flex-shrink:0;
+}
+.ab-wrc-btn:hover { background:var(--rl-green-soft); border-color:var(--rl-green); }
+
+.wrc-body { max-width:640px; }
+.wrc-chart {
+  background:var(--rl-paper); border:1px solid var(--rl-edge);
+  box-shadow:0 12px 34px rgba(0,0,0,.5); padding:20px 22px 22px;
+}
+.wrc-title {
+  font-family:'Oswald',sans-serif; font-size:17px; font-weight:600;
+  letter-spacing:1.5px; text-transform:uppercase; color:var(--rl-ink); margin:0 0 4px;
+}
+.wrc-hint { font-family:'PT Sans',sans-serif; font-size:13px; color:var(--rl-ink-soft); margin:0 0 14px; }
+.wrc-row {
+  display:flex; align-items:center; gap:12px;
+  border:2px solid var(--rl-black); background:var(--rl-paper-2);
+}
+.wrc-row + .wrc-row, .wrc-row + .wrc-mid, .wrc-mid + .wrc-row { margin-top:-2px; }
+.wrc-arrow { font-size:18px; padding-left:12px; color:var(--rl-ink); flex-shrink:0; }
+.wrc-cond {
+  flex:1; display:flex; align-items:center; gap:8px; padding:9px 4px;
+  font-family:'PT Sans',sans-serif; font-size:14px; color:var(--rl-ink);
+}
+.wrc-out {
+  width:190px; align-self:stretch; display:flex; align-items:center; justify-content:center;
+  font-family:'Oswald',sans-serif; font-size:13.5px; font-weight:600;
+  letter-spacing:1.2px; text-transform:uppercase; color:#fff; text-align:center; padding:9px 8px;
+}
+.wrc-fail { background:var(--rl-rust); }
+.wrc-crit, .wrc-wound { background:var(--rl-green); }
+.wrc-mid { border:3px solid var(--rl-black); }
+.wrc-mid-head {
+  display:flex; align-items:center; background:var(--rl-paper-3); border-bottom:2px solid var(--rl-black);
+  font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
+  letter-spacing:1px; text-transform:uppercase; color:var(--rl-ink);
+}
+.wrc-mid-head span:first-child { flex:1; padding:10px 12px; }
+.wrc-mid-head span:last-child { width:110px; text-align:center; padding:6px 8px; flex-shrink:0; }
+.wrc-mid-row { display:flex; align-items:center; background:var(--rl-paper-2); }
+.wrc-mid-row + .wrc-mid-row { border-top:1px solid var(--rl-edge); }
+.wrc-mid-cond { flex:1; padding:9px 12px; font-family:'PT Sans',sans-serif; font-size:14px; color:var(--rl-ink); }
+.wrc-req {
+  width:110px; display:flex; align-items:center; justify-content:center; gap:4px; flex-shrink:0;
+  font-family:'Oswald',sans-serif; font-size:15px; font-weight:600; color:var(--rl-ink);
+}
+.wrc-die { width:22px; height:22px; flex-shrink:0; vertical-align:middle; }
+.wrc-die rect { fill:var(--rl-black); }
+.wrc-die circle { fill:var(--rl-paper); }
 
 /* ---- roster quick list ---- */
 .ab-ql-list { padding:2px 0 12px; max-height:320px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--rl-edge) transparent; }

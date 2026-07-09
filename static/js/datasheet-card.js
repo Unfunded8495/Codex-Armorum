@@ -1,5 +1,5 @@
 import { esc } from './utils.js';
-import { optionMarkup } from './ruletext.js';
+import { optionMarkup, wrapKeywords } from './ruletext.js';
 import { pointsStepNote } from './datasheet.js';
 
 /* The card's base colour comes straight from the API payload's `primary`, which
@@ -32,7 +32,9 @@ function clean(html){
   t = t.replace(/<p[^>]*>/gi,"").replace(/<\/p>/gi,"<br>")
        .replace(/<(?!\/?(ul|li|br|b|strong)\b)[^>]*>/gi,"");
   t = t.replace(/(<br>\s*){2,}/gi,"<br>").replace(/^(<br>)+|(<br>)+$/g,"");
-  return t.trim();
+  /* Glossary tooltips must be added after the span-stripping above,
+     or the .kwt spans wrapKeywords inserts would be stripped with the rest. */
+  return wrapKeywords(t.trim());
 }
 
 function statBadges(model, invuln){
@@ -60,7 +62,7 @@ function rangeCell(v){if(!v) return "-"; if(String(v).toLowerCase()==="melee") r
 function kwTag(k){
   if(!k) return "";
   const t = k.split(",").map(x=>x.trim()).filter(Boolean);
-  return t.length ? `<span class="dsc-wkw">[${t.map(x=>esc(x).toUpperCase()).join(", ")}]</span>` : "";
+  return t.length ? `<span class="dsc-wkw">[${t.map(x=>wrapKeywords(esc(x).toUpperCase())).join(", ")}]</span>` : "";
 }
 
 /* Each weapon profile is its own row with its full name and its own keywords.

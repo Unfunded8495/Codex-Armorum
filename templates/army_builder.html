@@ -72,6 +72,13 @@
     <div class="dsc-overlay-body" id="dsCardBody" onclick="event.stopPropagation()"></div>
   </div>
 
+  <!-- Wound roll chart: quick-reference table from core rules 05.02 (left-rail
+       button opens, X or backdrop closes). Content rendered on first open. -->
+  <div class="dsc-overlay" id="woundChartOverlay" data-testid="wound-chart-overlay" hidden onclick="closeWoundChart()">
+    <button class="dsc-overlay-close" type="button" onclick="closeWoundChart()" aria-label="Close" title="Close">&times;</button>
+    <div class="dsc-overlay-body wrc-body" id="woundChartBody" onclick="event.stopPropagation()"></div>
+  </div>
+
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" hidden>
     <button class="lightbox-close" id="lightboxClose">&times;</button>
