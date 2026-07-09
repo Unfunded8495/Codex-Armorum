@@ -114,6 +114,95 @@ def theme_for(name):
     return DEFAULT
 
 
+# Grand-alliance grouping. w40k.db carries no alliance column, so the three
+# buckets (Imperium / Chaos / Xenos) are mapped by name here, the same way THEME
+# maps colours. Keys mirror THEME (incl. the Wahapedia/w40k.db aliases and the
+# Space Marine chapters) so every faction the payload emits resolves to a bucket.
+# Lookups are normalised by allegiance_for(), matching theme_for().
+ALLEGIANCE = {
+    # ── Imperium ────────────────────────────────────────────────────────────────
+    "Adepta Sororitas": "Imperium",
+    "Adeptus Astartes": "Imperium",
+    "Adeptus Custodes": "Imperium",
+    "Adeptus Mechanicus": "Imperium",
+    "Adeptus Titanicus": "Imperium",
+    "Agents of the Imperium": "Imperium",
+    "Imperial Agents": "Imperium",
+    "Astra Militarum": "Imperium",
+    "Grey Knights": "Imperium",
+    "Imperial Knights": "Imperium",
+    "Inquisition": "Imperium",
+    "Space Marines": "Imperium",
+    # Space Marine chapters (parent_faction = Adeptus Astartes)
+    "Black Templars": "Imperium",
+    "Blood Angels": "Imperium",
+    "Blood Ravens": "Imperium",
+    "Dark Angels": "Imperium",
+    "Deathwatch": "Imperium",
+    "Imperial Fists": "Imperium",
+    "Iron Hands": "Imperium",
+    "Raven Guard": "Imperium",
+    "Salamanders": "Imperium",
+    "Space Wolves": "Imperium",
+    "Ultramarines": "Imperium",
+    "White Scars": "Imperium",
+
+    # ── Chaos ───────────────────────────────────────────────────────────────────
+    "Chaos Space Marines": "Chaos",
+    "Heretic Astartes": "Chaos",
+    "Chaos Daemons": "Chaos",
+    "Legiones Daemonica": "Chaos",
+    "Chaos Knights": "Chaos",
+    "Death Guard": "Chaos",
+    "Emperor's Children": "Chaos",
+    "Thousand Sons": "Chaos",
+    "World Eaters": "Chaos",
+    "Titanicus Traitoris": "Chaos",
+    # Heretic Astartes subfactions in w40k.db
+    "Blood Legions": "Chaos",
+    "Plague Legions": "Chaos",
+    "Legions of Excess": "Chaos",
+    "Scintillating Legions": "Chaos",
+
+    # ── Xenos ───────────────────────────────────────────────────────────────────
+    "Aeldari": "Xenos",
+    "Asuryani": "Xenos",
+    "Harlequins": "Xenos",
+    "Ynnari": "Xenos",
+    "Drukhari": "Xenos",
+    "Genestealer Cults": "Xenos",
+    "Leagues of Votann": "Xenos",
+    "Necrons": "Xenos",
+    "Orks": "Xenos",
+    "Tyranids": "Xenos",
+    "T'au Empire": "Xenos",
+}
+
+# Non-Imperium, non-Chaos factions are Xenos; this is also the catch-all for any
+# faction not explicitly listed (e.g. Unaligned Forces, or a future addition).
+DEFAULT_ALLEGIANCE = "Xenos"
+
+_ALLEGIANCE_NORM = {_norm(k): v for k, v in ALLEGIANCE.items()}
+
+
+def allegiance_for(name):
+    """Return "Imperium" | "Chaos" | "Xenos" for a faction name.
+
+    Same lookup tolerance as theme_for(): exact, then normalised (case /
+    apostrophe insensitive), then the trailing segment of a BSData-style
+    "A - B - C" name. Falls back to Xenos (the catch-all bucket)."""
+    if name in ALLEGIANCE:
+        return ALLEGIANCE[name]
+    norm = _norm(name)
+    if norm in _ALLEGIANCE_NORM:
+        return _ALLEGIANCE_NORM[norm]
+    if name and " - " in name:
+        tail = _norm(name.rsplit(" - ", 1)[-1])
+        if tail in _ALLEGIANCE_NORM:
+            return _ALLEGIANCE_NORM[tail]
+    return DEFAULT_ALLEGIANCE
+
+
 def _glyph(key, accent):
     a = accent
     if key == "skull":

@@ -23,26 +23,32 @@ Related, already shipped (2026-07-05):
 Promote the session audit script into the test suite so every later phase is verified
 mechanically, not by hand re-audit.
 
-- [ ] `tests/wargear_reachability.py`: enumerate UI-reachable selections per auditable
+- [x] `tests/wargear_reachability.py`: enumerate UI-reachable selections per auditable
       datasheet, run each through `validate_selection`, assert:
       (a) every reachable-but-illegal end state carries the "Illegal loadout" warn;
       (b) the legal-but-unreachable set matches the checked-in baseline.
-- [ ] `data/wargear_reachability_baseline.json` + writer flag (mirror the
-      `datasheet_gaps_baseline.json` pattern; baseline only ever shrinks).
-- [ ] Wire into `tests/run_all.py`.
-- [ ] Source script to adapt: session scratchpad `wargear_legality_audit2.py` (pass-4
-      variant with option_qty multiplier and repeatable-empty cluster semantics).
+- [x] `data/wargear_reachability_baseline.json` + writer flag (`--update-baseline`,
+      mirrors the `datasheet_gaps_baseline.json` pattern; baseline only ever shrinks).
+- [x] Wire into `tests/run_all.py`.
+- [-] Source script to adapt: session scratchpad `wargear_legality_audit2.py` was lost
+      with its session. The enumerator was reconstructed from the engine contracts and
+      army-detail.js renderGroupHtml instead (option_qty multiplier and
+      repeatable-empty cluster semantics reproduced; verified on Bloodthirster,
+      Cadre Fireblade, Ancient in Terminator Armour).
 
 ## Phase 1 - Engine-only: broken and half-wired replacements (~20 sheets, no JS)
 
-### 1a. Swaps that never displace their default (link resolution failed)
+### 1a. Swaps that never displace their default (link resolution failed) - DONE 2026-07-08
 Picking Y leaves X equipped: the true "Y instead of X" state is unreachable AND the
-"X+Y" state is reachable-illegal. Fix: add a `_cluster_legal_sets`-based disambiguation
-pass to the replace_one default-linking fallback (a candidate link is correct iff the
-post-swap state is legal).
+"X+Y" state is reachable-illegal. Fix landed: the primary choose_from linking pass in
+`wargear.wargear_schema` treated `all_choose_from_items - alt_items` as displaced, which
+also zeroed items the alt KEEPS (the Palatine's blade). Now a default item is displaced
+only if it is absent from every bundle offering the alternative. Verified by the Phase 0
+oracle: unreachable sheets 108 -> 76 (58 loadouts now reachable, incl. Palatine), full
+`run_all.py` green (golden unchanged), assertion (a) still clean, baseline re-blessed.
 
-- [ ] Linking pass in `wargear.wargear_schema`
-- [ ] Engine invariant: every replace_one whose instruction names a default has a link
+- [x] Linking pass in `wargear.wargear_schema` (bundle-aware displaced-item computation)
+- [x] Guard: the Phase 0 oracle is the mechanical invariant (baseline shrink-only)
 - Sheets:
   - [ ] Palatine (bolt pistol -> plasma pistol)
   - [ ] Venom / Ynnari Venom (twin splinter rifle -> splinter cannon)
@@ -178,3 +184,19 @@ permanently where the export itself is inconsistent (record `[-]` with reason).
 - 2026-07-05: Plan created. Prerequisites shipped the same day: wgGroupTitle label fix,
   choose_from legality warn gate (40/52 illegal-loadout sheets now warn; the rest are
   multi-mini or guard-excluded). Nothing in phases 0-5 started yet.
+- 2026-07-08: Phase 0 landed. tests/wargear_reachability.py enumerates UI-reachable
+  selections (default size) for 1001 auditable single-model-cluster datasheets and:
+  (a) HARD-FAILs on any unwarned reachable-illegal end state - currently CLEAN (the
+  legality gate is complete on the auditable subset); (b) tracks legal-but-unreachable
+  loadouts vs data/wargear_reachability_baseline.json (shrink-only, --update-baseline).
+  Baseline captured 108 sheets / 462 unreachable loadouts - more than the 53 the manual
+  audit found, because the oracle is exhaustive. Notable new finding: many squad
+  sergeants (Tactical, Devastator, ...) render their "replace bolt pistol and boltgun
+  with one X and one Y" group with a cap of 0 (validate_selection clamps every swap to 0
+  with "max 0 at this size"), so the whole sergeant weapon menu is unreachable. Wired
+  into run_all.py after the engine layer.
+- 2026-07-08: Phase 1a landed (bundle-aware displaced-item linking in wargear_schema).
+  Oracle baseline 108 -> 76 sheets / 462 -> 404 loadouts (58 now reachable); (a) clean;
+  run_all.py green (golden unchanged). Still open: Phase 1b quantity swaps still reproduce
+  (Acastus 2x Lascannon, Contemptor 2x Infernus incinerator, Valkyrie 2x Heavy bolter);
+  the cap-0 sergeant class needs a new pickable control for its choose_from (design TBD).

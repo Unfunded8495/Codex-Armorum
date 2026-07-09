@@ -1,10 +1,11 @@
-import { esc, api, jsStr, readableInk, withTimeout } from './utils.js';
+import { esc, api, jsStr, withTimeout } from './utils.js';
 import { clearFactionCache } from './home.js';
 import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
 import { openLightbox } from './lightbox.js';
 import { renderDatasheetModels, renderInvuln, renderDamaged, renderTransport, renderWargear, renderAbilities, renderUnitComposition, renderLeaderAttach, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
 import { renderDatasheetCard } from './datasheet-card.js';
 import { setupArsenalHover } from './arsenal-hover.js';
+import { rlThemeMode, rlThemeToggleHtml, rlWireThemeToggle } from './rl-theme.js';
 
 const view       = document.getElementById('view');
 
@@ -21,20 +22,36 @@ const STAGE_LABELS = {
 
 /* ---- unit detail -------------------------------------------------------- */
 
+/* paper shell + reading strip helpers (shared skin: spa-shell.css) */
+function unitShell(inner){ return `<div class="rl-shell"><div class="rl-wrap">${inner}</div></div>`; }
+function unitStrip(backHref, backLabel){
+  return `
+    <nav class="rl-strip" aria-label="Datasheet">
+      <a class="rl-back" href="${backHref}">&lsaquo; ${esc(backLabel)}</a>
+      <span class="rl-strip-spacer"></span>
+      ${rlThemeToggleHtml()}
+    </nav>`;
+}
+
 export async function showUnit(did){
   setActiveNav('armies');
   refreshLedger();
-  view.innerHTML = `<div class="loading">Retrieving datasheet…</div>`;
+  document.body.classList.add('rl-spa', 'unit-sheet');
+  document.body.setAttribute('data-rl-theme', rlThemeMode());
+  view.innerHTML = unitStrip('#/', 'My Armies') + unitShell(
+    `<div class="rl-load"><div class="rl-load-bar"></div>` +
+    `<div class="rl-load-note">Retrieving datasheet…</div></div>`);
+  rlWireThemeToggle(document);
   let d;
   try{ d = await withTimeout(api(`/api/units/${did}`)); }
   catch(e){
     const isTimeout = e.message === 'timeout';
-    view.innerHTML = `<div class="loading load-error">
-      ${isTimeout
-        ? 'Taking too long to load.<br><small>Is app.py still running in your terminal?</small>'
-        : 'Could not reach the server.<br><small>Make sure app.py is running, then refresh.</small>'
-      }
-    </div>`;
+    view.innerHTML = unitStrip('#/', 'My Armies') + unitShell(`<div class="rl-error">${
+      isTimeout
+        ? 'Taking too long to load.<small>Is app.py still running in your terminal?</small>'
+        : 'Could not reach the server.<small>Make sure app.py is running, then refresh.</small>'
+      }</div>`);
+    rlWireThemeToggle(document);
     return;
   }
   CURRENT        = {did, choices: d.wargear_choices||[],
@@ -48,7 +65,7 @@ export async function showUnit(did){
   ]);
 
   const linkedModels = d.linked_catalogue_models || [];
-  view.innerHTML = `
+  view.innerHTML = unitStrip('#/faction/' + encodeURIComponent(d.faction_id), d.faction_display_name || d.faction_name) + unitShell(`
     <div class="detail-wrap">
       <div class="detail-media">
         ${renderHeroGallery(did, d)}
@@ -67,7 +84,7 @@ export async function showUnit(did){
         ${linkedModels.length ? renderLinkedReleases(linkedModels) : ''}
       </div>
       <div class="detail-info">
-        <h1 class="detail-name" style="color:${readableInk(d.accent)}">${esc(d.name)}</h1>
+        <h1 class="detail-name">${esc(d.name)}</h1>
         <p class="detail-role">${esc(d.role)}</p>
         <div class="unit-tabs" role="tablist">
           <button class="unit-tab is-active" id="unitInfoTab" data-unit-tab="info">Unit Information</button>
@@ -101,8 +118,9 @@ export async function showUnit(did){
           ${renderCollectionShell(d)}
         </div>
       </div>
-    </div>`;
+    </div>`);
 
+  rlWireThemeToggle(document);
   wireUnitTabs();
   wireDatasheetViewToggle();
   setupArsenalHover(document.getElementById('unitInfoPanel'));

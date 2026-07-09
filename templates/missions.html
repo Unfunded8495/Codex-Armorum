@@ -49,6 +49,13 @@
 
   {% include "_footer.html" %}
 
+  <!-- Enlarge-on-click overlay for the deployment / layout map images -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <img id="lightboxImg" alt="">
+    <p id="lightboxCap"></p>
+  </div>
+
   <script type="module" src="{{ url_for('static', filename='js/missions.js') }}"></script>
 </body>
 </html>

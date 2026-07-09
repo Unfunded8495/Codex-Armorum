@@ -65,10 +65,21 @@
 .mz-lore{margin:0 0 9px;font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:14px;line-height:1.5;color:var(--rl-mute)}
 .mz-brief{margin:0 0 10px;font-family:'PT Sans',sans-serif;font-size:13.5px;line-height:1.58;color:var(--rl-ink-soft)}
 .mz-brief b,.mz-obj-when b{color:var(--rl-ink);font-weight:700}
-.mz-objs{border-top:1px solid var(--rl-edge-soft);padding-top:9px;display:flex;flex-direction:column;gap:6px}
-.mz-obj{display:flex;gap:9px;align-items:baseline}
+.mz-objs{border-top:1px solid var(--rl-edge-soft);padding-top:10px;display:flex;flex-direction:column;gap:12px}
+.mz-obj{display:flex;flex-direction:column;gap:6px}
+.mz-obj-head{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
 .mz-obj-name{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--rl-green);white-space:nowrap}
 .mz-obj-when{font-family:'PT Sans',sans-serif;font-size:12.5px;line-height:1.5;color:var(--rl-ink-soft)}
+/* scoring lines: criteria left, victory-point award right */
+.mz-score{display:flex;flex-direction:column;gap:6px}
+.mz-score-row{display:flex;gap:12px;align-items:baseline}
+.mz-score-row--cumul{padding-left:14px;position:relative}
+.mz-score-row--cumul::before{content:"+";position:absolute;left:1px;top:0;color:var(--rl-green);font-family:'Oswald',sans-serif;font-weight:700;font-size:13px;line-height:1.45}
+.mz-score-crit{flex:1;font-family:'PT Sans',sans-serif;font-size:12.5px;line-height:1.45;color:var(--rl-ink)}
+.mz-score-crit b{font-weight:700}
+.mz-score-award{flex:none;display:inline-flex;align-items:baseline;gap:6px;white-space:nowrap}
+.mz-score-vp{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--rl-green)}
+.mz-score-tag{font-family:'Oswald',sans-serif;font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--rl-mute);border:1px solid var(--rl-edge);padding:1px 5px}
 
 /* ------------------------------------------------ secondary / twist cards */
 .mz-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
@@ -92,26 +103,29 @@
   clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%);
 }
 .mz-fig-kind{background:var(--rl-green);color:#fff;font-size:10px;font-weight:600;letter-spacing:1.2px;padding:2px 7px}
-.mz-board{
-  margin:12px 14px 0;border:1px solid var(--rl-edge-soft);background:var(--rl-paper-3);
-  position:relative;aspect-ratio:60/44;overflow:hidden;
+.mz-map{
+  display:block;width:calc(100% - 28px);margin:12px 14px 0;
+  border:1px solid var(--rl-edge-soft);background:var(--rl-paper-3);
+  aspect-ratio:1535/1961;object-fit:contain;cursor:zoom-in;
 }
-.mz-zone{position:absolute;inset:0}
-.mz-zone--you{background:var(--rl-green-soft);box-shadow:inset 0 0 0 2px var(--rl-green)}
-.mz-zone--enemy{background:var(--rl-enemy);box-shadow:inset 0 0 0 2px var(--rl-rust)}
-.mz-centre{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--rl-mute);opacity:.55}
-.mz-zone-label{
-  position:absolute;transform:translate(-50%,-50%);font-family:'Oswald',sans-serif;
-  font-size:9px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;pointer-events:none;
-}
-.mz-zone-label--you{color:var(--rl-green)}
-.mz-zone-label--enemy{color:var(--rl-rust)}
-.mz-dot{
-  position:absolute;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;
-  background:var(--rl-green);box-shadow:0 0 0 2px var(--rl-paper-3),0 0 0 3px var(--rl-green);
-}
+/* the shared lightbox sits at z-index:60; lift it above the manual sticky
+   chrome (60), the back-to-top button (70) and the mobile drawer (100) */
+.lightbox{z-index:120}
+/* the caption is the map name (informational), so keep it upright here */
+.lightbox p{font-style:normal}
 .mz-fig-note{margin:10px 14px 0;font-family:'PT Sans',sans-serif;font-size:12.5px;line-height:1.55;color:var(--rl-ink-soft)}
 .mz-fig-plain{margin:12px 14px 0;font-family:'EB Garamond',serif;font-style:italic;font-size:12.5px;color:var(--rl-mute)}
+
+/* per-card plan/measured arrow toggle on layout figures */
+.mz-lay-toggle{
+  display:inline-flex;align-items:center;gap:6px;margin:9px 14px 0;
+  background:var(--rl-paper-3);border:1px solid var(--rl-edge);color:var(--rl-ink-soft);
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.2px;
+  text-transform:uppercase;padding:4px 9px;cursor:pointer;transition:color .15s,border-color .15s;
+}
+.mz-lay-toggle:hover{color:var(--rl-green);border-color:var(--rl-green)}
+.mz-lay-toggle[data-mode="measure"]{color:var(--rl-green);border-color:var(--rl-green)}
+.mz-lay-toggle-icon{font-size:13px;line-height:1}
 
 /* layout family grouping (45 layouts, no geometry — grouped compact list) */
 .mz-lay-fam{margin:0 0 22px}

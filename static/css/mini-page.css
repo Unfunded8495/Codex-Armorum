@@ -1,0 +1,61 @@
+/* =====================================================================
+   mini-page.css - Mini manager page (#/mini/:did)
+   ---------------------------------------------------------------------
+   The mini page reuses the shared datasheet-family paper skin: showMiniPage
+   sets body.rl-spa + unit-sheet (so unit-sheet.css's token remap + the
+   mini-group-card / gear / stage repaints apply) + mini-sheet (this file).
+   Here we repaint the page's own .mp-* armour-plate chrome:
+     - the sculpt "display case" is kept as a self-contained DARK island so
+       cut-out minis still pop on their radial stage (dark tokens re-asserted
+       locally, undoing the paper remap just inside that card);
+     - the Reliquary Ledger, the built/unbuilt mini cards, the title and the
+       flavour legend are repainted to paper.
+   All rules scoped to body.mini-sheet.
+   ===================================================================== */
+
+/* ---- sculpt display case: a dark island on the paper page -------------
+   Re-assert the original dark design tokens inside the sculpt card so its
+   data-plate, name, meta and radial stage render as designed on dark. */
+body.mini-sheet .mp-sculpt{
+  --panel:#16151b; --panel-2:#1d1c24; --ink-2:#121116; --edge:#2c2a35;
+  --parch:#e6dcc4; --parch-dim:#9c9686; --gold:#c79a3a; --gold-bright:#e8c873;
+}
+
+/* ---- title block ---------------------------------------------------- */
+body.mini-sheet .mp-page .detail-name{color:var(--rl-ink);text-shadow:none}
+body.mini-sheet .mp-page .legend{color:var(--rl-mute)}
+
+/* ---- reliquary ledger (paper armour-plate) -------------------------- */
+body.mini-sheet .mp-page .mp-ledger{
+  background:var(--rl-paper-2);border-color:var(--rl-edge);
+  box-shadow:0 1px 6px rgba(20,24,12,.06);
+}
+body.mini-sheet .mp-ledger-head{color:var(--rl-ink-soft)}
+body.mini-sheet .mp-ledger-total b{color:var(--rl-ink);text-shadow:none}
+body.mini-sheet .mp-ledger-total span{color:var(--rl-mute)}
+body.mini-sheet .mp-ledger-pctrow{color:var(--rl-ink-soft)}
+body.mini-sheet .mp-ledger-pctrow span:last-child{color:#8a6a24}
+body.mini-sheet .mp-page .mp-ledger .mp-bar-track{background:var(--rl-paper-3);border-color:var(--rl-edge)}
+body.mini-sheet .mp-page .mp-ledger .mp-bar-fill{background:linear-gradient(180deg,#e8c873,#c79a3a);box-shadow:none}
+body.mini-sheet .mp-ledger-row{border-top-color:var(--rl-edge)}
+body.mini-sheet .mp-ledger-label{color:var(--rl-mute)}
+body.mini-sheet .mp-ledger-count{color:var(--rl-ink)}
+
+/* ---- mini group cards (built / unbuilt) on paper -------------------- */
+body.mini-sheet .mp-page .mini-group-card{box-shadow:0 1px 6px rgba(20,24,12,.06)}
+body.mini-sheet .mini-group-card.mp-built-card{
+  background:var(--rl-paper-2);border:1px solid var(--rl-edge);
+  border-left:3px solid var(--faction,#8a6a24);
+}
+body.mini-sheet .mini-group-card.mp-unbuilt-card{
+  background:var(--rl-paper);border:1px solid var(--rl-edge);
+  border-left:3px solid color-mix(in srgb,var(--gold) 55%,transparent);
+}
+
+/* ---- Work in Progress notes (paper armour-plate) ------------------- */
+body.mini-sheet .mp-page .mp-wip{
+  background:var(--rl-paper-2);border-color:var(--rl-edge);border-top-color:var(--rl-edge);
+  box-shadow:0 1px 6px rgba(20,24,12,.06);
+}
+body.mini-sheet .mp-page .mp-wip-summary{color:var(--rl-ink-soft)}
+body.mini-sheet .mp-page .mp-wip-notes{background:var(--rl-paper);border-color:var(--rl-edge);color:var(--rl-ink)}

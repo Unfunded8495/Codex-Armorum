@@ -169,6 +169,36 @@ body.ab-roster .loading { color:var(--rl-mute); }
 }
 .ab-mast-hint { margin-left:auto; white-space:nowrap; }
 
+/* Rules strip under the army name: Army Rules / Detachments / Force
+   Disposition chips, each expanding its rules text in a panel below.
+   Panels reuse the bunker's .ab-detrule markup, remapped to the paper
+   surface here (the bunker itself stays dark). */
+.ab-mast-rules { margin-top:12px; }
+.ab-mr-row { display:flex; gap:26px; flex-wrap:wrap; align-items:flex-start; }
+.ab-mr-cell { display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0; }
+.ab-mr-label {
+  font-family:'Oswald',sans-serif; font-size:10.5px; font-weight:600; letter-spacing:1.6px;
+  text-transform:uppercase; color:var(--rl-mute); white-space:nowrap;
+}
+.ab-mr-none {
+  font-family:'Oswald',sans-serif; font-size:11px; font-weight:500; letter-spacing:1.2px;
+  text-transform:uppercase; color:var(--rl-mute);
+}
+.ab-mr-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; letter-spacing:1.2px;
+  text-transform:uppercase; color:var(--rl-green); background:var(--rl-green-soft);
+  border:1px solid var(--rl-green); padding:4px 9px; cursor:pointer; transition:.15s;
+}
+.ab-mr-chip:hover, .ab-mr-chip.is-open { background:var(--rl-green); color:#fff; }
+.ab-mr-chev { font-size:9px; line-height:1; }
+.ab-mr-panel { margin-top:10px; }
+.ab-mr-panel[hidden] { display:none; }
+.ab-mast-rules .ab-detrule-card { background:var(--rl-paper-2); border:1px solid var(--rl-edge); }
+.ab-mast-rules .ab-detrule + .ab-detrule { border-top:1px dashed var(--rl-edge); }
+.ab-mast-rules .ab-detrule-name { color:var(--rl-green); }
+.ab-mast-rules .ab-detrule-body { color:var(--rl-ink); }
+
 /* Masthead action cluster on the manual surface */
 .ab-export-btns { display:flex; flex-wrap:wrap; gap:6px; }
 .ab-export-btn {

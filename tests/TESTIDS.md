@@ -28,6 +28,10 @@ overlay.
 |---|---|
 | `army-detail` | the army-builder detail container (3-column grid on the manual "Battle Roster sheet") |
 | `army-title` | the army name — now an editable `<input>` styled as the page title (wired to `saveArmyMeta`; also still editable from Edit Roster) |
+| `mast-rules` | the rules strip under the army name (Army Rules / Detachments / Force Disposition) |
+| `mast-rules-army` / `mast-rules-detachments` / `mast-rules-disposition` | the strip's three cells |
+| `mast-rule-chip` | a chip in the strip; click toggles its explanation panel (`toggleMastRule`) |
+| `mast-rule-panel` | an explanation panel under the strip (hidden until its chip is clicked) |
 | `open-command-bunker` | the faction-badge button that opens Command Bunker |
 | `context-strip` | the left rail's Configuration card (same hooks as the old context strip, reskinned) |
 | `ctx-faction` | configuration row -> opens Command Bunker |

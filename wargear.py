@@ -438,8 +438,21 @@ def wargear_schema(did):
         leftover = _flat_items(cf.get("choices")) - alt_items
         if not leftover:
             continue
-        link_keys = [default_keys[(mini, nm)] for nm in leftover if (mini, nm) in default_keys]
-        if len(link_keys) == len(leftover):
+        # choose_from lists whole loadout BUNDLES, so a default item is only
+        # DISPLACED by an alternative if it is absent from every bundle that
+        # offers that alternative. Items kept alongside the alt (the Palatine's
+        # blade, kept when its bolt pistol becomes a plasma pistol) must not be
+        # linked -- linking them would zero the kept weapon and make the legal
+        # "blade + plasma pistol" state unreachable.
+        alt_bundle_items = set()
+        for bundle in cf.get("choices") or []:
+            names = {it.get("item") for it in bundle if isinstance(it, dict)}
+            if names & alt_items:
+                alt_bundle_items |= names
+        displaced = [nm for nm in leftover if nm not in alt_bundle_items]
+        link_keys = [default_keys[(mini, nm)] for nm in displaced
+                     if (mini, nm) in default_keys]
+        if displaced and len(link_keys) == len(displaced):
             grp["linked_default_keys"] = tuple(link_keys)
 
     # Weapon arrays: ``replace_any`` groups with a pool become an ``array`` group.

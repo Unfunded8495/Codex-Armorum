@@ -960,9 +960,40 @@ def resolve_reference(data, idx):
         core_rules.append({"section": en(s), "containers": containers})
 
     # missions
-    pm_obj = defaultdict(list)
-    for o in sorted(data["primary_mission_objective"], key=lambda o: o.get("displayOrder") or 0):
-        pm_obj[o["primaryMissionId"]].append({"name": en(o), "when": to_plain_text(en(o, "whenText"))})
+    # The scoring table (criteria + victory points) that fills the body of each
+    # printed mission card lives in the *_objective_scoring tables, keyed by
+    # objective id. Without it a card shows only its period header and "when"
+    # line, so attach the scoring rows to each objective in the app's own
+    # display order.
+    def build_score_rows(table, fk, extra=False):
+        by_obj = defaultdict(list)
+        for s in sorted(data[table], key=lambda s: s.get("displayOrder") or 0):
+            row = {"criteria": to_plain_text(en(s, "scoringCriteria")),
+                   "vp": s.get("victoryPoints"),
+                   "cumulative": bool(s.get("isCumulative")),
+                   "mutually_exclusive": bool(s.get("isMutuallyExclusive"))}
+            if extra:
+                # Secondaries score a different value when played Fixed vs
+                # Tactical, and some cap their total; primaries do neither.
+                row["mode"] = s.get("scoringType")   # fixed | tactical | standard
+                row["cap"] = s.get("victoryPointsCap")
+            by_obj[s[fk]].append(row)
+        return by_obj
+
+    def build_objectives(table, fk, score_by_obj):
+        by_mission = defaultdict(list)
+        for o in sorted(data[table], key=lambda o: o.get("displayOrder") or 0):
+            by_mission[o[fk]].append({
+                "name": en(o), "when": to_plain_text(en(o, "whenText")),
+                "scoring": score_by_obj.get(o["id"], [])})
+        return by_mission
+
+    pm_obj = build_objectives(
+        "primary_mission_objective", "primaryMissionId",
+        build_score_rows("primary_mission_objective_scoring", "primaryMissionObjectiveId"))
+    sm_obj = build_objectives(
+        "secondary_mission_objective", "secondaryMissionId",
+        build_score_rows("secondary_mission_objective_scoring", "secondaryMissionObjectiveId", extra=True))
     primary = [{"id": m["id"], "pack": m.get("missionPackId"), "name": en(m),
                 "lore": to_plain_text(en(m, "lore")),
                 "description": to_plain_text(en(m, "description")),
@@ -971,7 +1002,8 @@ def resolve_reference(data, idx):
                   "fixed": bool(m.get("isFixedSecondary")),
                   "scorable_first_turn": bool(m.get("isScorableFirstTurn")),
                   "lore": to_plain_text(en(m, "lore")),
-                  "description": to_plain_text(en(m, "description"))}
+                  "description": to_plain_text(en(m, "description")),
+                  "objectives": sm_obj.get(m["id"], [])}
                  for m in data["secondary_mission"]]
     deployments = [{"id": m["id"], "pack": m.get("missionPackId"), "name": en(m)}
                    for m in data["mission_deployment"]]
@@ -1727,7 +1759,7 @@ CREATE TABLE mission_primary (
 );
 CREATE TABLE mission_secondary (
     id TEXT, mission_pack_id TEXT, name TEXT, fixed INTEGER, scorable_first_turn INTEGER,
-    lore TEXT, description TEXT
+    lore TEXT, description TEXT, objectives TEXT
 );
 CREATE TABLE mission_pack (id TEXT PRIMARY KEY, name TEXT);
 CREATE TABLE mission_deployment (id TEXT PRIMARY KEY, mission_pack_id TEXT, name TEXT);
@@ -1997,9 +2029,9 @@ def build_sqlite(data, idx, ref, db_path, log=print):
                     [(m["id"], m["pack"], m["name"], m["lore"], m["description"],
                       json.dumps(m["objectives"], ensure_ascii=False))
                      for m in ref["missions"]["primary_missions"]])
-    cur.executemany("INSERT INTO mission_secondary VALUES (?,?,?,?,?,?,?)",
+    cur.executemany("INSERT INTO mission_secondary VALUES (?,?,?,?,?,?,?,?)",
                     [(m["id"], m["pack"], m["name"], _b(m["fixed"]), _b(m["scorable_first_turn"]),
-                      m["lore"], m["description"])
+                      m["lore"], m["description"], json.dumps(m["objectives"], ensure_ascii=False))
                      for m in ref["missions"]["secondary_missions"]])
     cur.executemany("INSERT INTO mission_pack VALUES (?,?)",
                     [(m["id"], m["name"]) for m in ref["missions"]["packs"]])

@@ -1,0 +1,227 @@
+/* =====================================================================
+   spa-shell.css - shared "PDF manual" paper skin for the SPA views
+   ---------------------------------------------------------------------
+   The three drill-in SPA views (My Armies home, Faction Roster, Unit
+   Datasheet) sit in a light paper shell below the unchanged dark top-bar.
+   This file holds everything they share: the --rl-* token blocks, the
+   full-bleed override + scanline hide, the paper shell + texture, the
+   reading strip (chips + theme toggle + back link), the hero, section
+   and group headers, the progress track, loading/error, paper buttons,
+   and the shared keyframes.
+
+   Scope root: body.rl-spa (set by the router alongside one per-view class
+   home-armies / faction-roster / unit-sheet). Per-view components live in
+   my-armies.css / faction-roster.css / unit-sheet.css. Theme is switched
+   with body[data-rl-theme="dark"] using the shared caRules.theme key.
+
+   Token values are the same as the manual pages' static/css/manual.css so
+   the SPA paper views read identically to /rules, /missions, etc.
+   ===================================================================== */
+
+/* ------------------------------------------------------------ theme tokens */
+body.rl-spa{
+  --rl-paper:#e9ebdf; --rl-paper-2:#f3f4ea; --rl-paper-3:#dde1cf;
+  --rl-ink:#22261a; --rl-ink-soft:#43493a; --rl-mute:#71785f;
+  --rl-olive-2:#2f3626; --rl-cream:#ece9d6;
+  --rl-black:#16180f; --rl-plate-txt:#f4f3e6; --rl-salmon:#e8a68b;
+  --rl-edge:rgba(62,70,50,.28); --rl-edge-soft:rgba(62,70,50,.14);
+  --rl-green:#178a4c; --rl-green-soft:rgba(23,138,76,.13); --rl-tex:.55;
+}
+body.rl-spa[data-rl-theme="dark"]{
+  --rl-paper:#191c12; --rl-paper-2:#202417; --rl-paper-3:#12140c;
+  --rl-ink:#e2e1d0; --rl-ink-soft:#bcbcab; --rl-mute:#8e947c;
+  --rl-black:#0c0e08; --rl-plate-txt:#eeeadb;
+  --rl-edge:rgba(210,215,192,.22); --rl-edge-soft:rgba(210,215,192,.10);
+  --rl-green:#4cbd80; --rl-green-soft:rgba(76,189,128,.16); --rl-tex:.28;
+}
+
+/* --------------------------------------------------- SPA shell overrides */
+/* Paper views run edge to edge under the top-bar: drop main's max-width +
+   padding and the dark scanline overlay for the duration of a paper view. */
+body.rl-spa main#view{max-width:none;margin:0;padding:0}
+body.rl-spa .scanlines{display:none}
+
+/* ------------------------------------------------------------ paper shell */
+.rl-shell{
+  position:relative;background:var(--rl-paper);color:var(--rl-ink);
+  box-shadow:inset 0 14px 22px -16px rgba(0,0,0,.55);
+  font-family:'PT Sans',sans-serif;
+}
+.rl-shell::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:var(--rl-tex);
+  background:
+    radial-gradient(ellipse 60% 38% at 12% 0%, rgba(120,138,90,.16), transparent 70%),
+    radial-gradient(ellipse 50% 30% at 95% 4%, rgba(120,138,90,.13), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% 104%, rgba(96,110,72,.12), transparent 72%),
+    repeating-linear-gradient(0deg, rgba(80,92,58,.028) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(90deg, rgba(80,92,58,.028) 0 1px, transparent 1px 28px);
+}
+.rl-wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:26px 34px 96px}
+
+/* ---------------------------------------------------------- reading strip */
+.rl-strip{
+  display:flex;align-items:center;gap:6px;padding:0 22px;height:42px;
+  background:var(--rl-olive-2);border-bottom:1px solid rgba(0,0,0,.4);
+  overflow-x:auto;white-space:nowrap;scrollbar-width:none;
+}
+.rl-strip::-webkit-scrollbar{display:none}
+.rl-strip-label{
+  font-family:'Oswald',sans-serif;font-size:10.5px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;color:rgba(236,233,214,.62);
+  padding:4px 8px 4px 0;flex-shrink:0;
+}
+.rl-back{
+  font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.4px;
+  text-transform:uppercase;color:rgba(236,233,214,.7);text-decoration:none;
+  padding:4px 10px 4px 0;flex-shrink:0;transition:color .15s;
+}
+.rl-back:hover{color:#fff}
+.rl-chip{
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+  font-family:'Oswald',sans-serif;font-size:11.5px;font-weight:600;
+  letter-spacing:1.4px;text-transform:uppercase;border:none;
+  padding:5px 11px;flex-shrink:0;color:rgba(236,233,214,.9);
+  background:rgba(255,255,255,.06);transition:background .15s,color .15s;
+}
+.rl-chip b{font-size:9.5px;font-weight:600;color:var(--rl-salmon);letter-spacing:.5px}
+.rl-chip:hover{background:rgba(255,255,255,.1);color:#fff}
+.rl-chip.is-active{background:#c7b27a;color:#16180f}
+.rl-chip.is-active b{color:rgba(22,24,15,.6)}
+.rl-strip-spacer{flex:1;min-width:16px}
+.rl-toggle{
+  font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:1.6px;text-transform:uppercase;color:#ece9d6;
+  background:none;border:1px solid rgba(236,233,214,.28);
+  padding:5px 12px;cursor:pointer;flex-shrink:0;margin-left:10px;
+  display:inline-flex;align-items:center;gap:7px;transition:background .15s,border-color .15s;
+}
+.rl-toggle:hover{background:rgba(255,255,255,.14);border-color:rgba(236,233,214,.5)}
+.rl-toggle-dot{
+  display:inline-block;width:11px;height:11px;border-radius:50%;
+  border:1.5px solid currentColor;
+  background:linear-gradient(90deg,currentColor 50%,transparent 50%);
+}
+
+/* --------------------------------------------------------------- loading */
+.rl-load{padding:20px 0}
+.rl-load-bar{height:300px;width:100%;background:var(--rl-paper-3);animation:rlShimmer 1.4s ease infinite}
+.rl-load-note{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:var(--rl-mute);margin-top:26px}
+.rl-error{
+  font-family:'PT Sans',sans-serif;font-size:15px;color:var(--rl-ink-soft);
+  padding:40px 4px;text-align:center;
+}
+.rl-error small{display:block;margin-top:8px;color:var(--rl-mute);font-size:13px}
+
+/* ------------------------------------------------------------ paper button */
+.rl-btn{
+  display:inline-flex;align-items:center;gap:9px;font-family:'Oswald',sans-serif;
+  font-size:12.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:#16180f;background:var(--am-accent,#c79a3a);padding:10px 18px;
+  text-decoration:none;border:none;cursor:pointer;
+}
+.rl-btn--ghost{
+  color:var(--rl-ink-soft);background:transparent;border:1px solid var(--rl-edge);
+}
+.rl-btn--ghost:hover{border-color:var(--rl-green);color:var(--rl-ink)}
+
+/* ---------------------------------------------------------- featured hero */
+.rl-hero{
+  display:block;position:relative;height:316px;overflow:hidden;text-decoration:none;
+  border:1px solid var(--rl-edge);box-shadow:0 4px 20px rgba(20,24,12,.18);
+  animation:rlFadeIn .3s ease both;
+  background:linear-gradient(135deg,var(--am-primary,#2a2a2a),#0d0e08);
+}
+.rl-hero.is-empty{background:var(--rl-paper-2);height:150px;border:1px dashed var(--rl-edge);box-shadow:none}
+.rl-hero.is-empty .rl-hero-name{color:var(--rl-ink);text-shadow:none}
+.rl-hero.is-empty .rl-hero-tagline{color:var(--rl-mute);text-shadow:none}
+.rl-hero.is-empty .rl-hero-flag{color:#16180f}
+.rl-hero-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%}
+.rl-hero-scrim-h{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,11,7,.93) 0%,rgba(10,11,7,.78) 42%,rgba(10,11,7,.28) 78%,rgba(10,11,7,.1) 100%)}
+.rl-hero-scrim-v{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(10,11,7,.6) 100%)}
+.rl-hero-inner{
+  position:relative;z-index:2;height:100%;display:flex;align-items:center;
+  justify-content:space-between;gap:30px;padding:30px 34px;box-sizing:border-box;
+}
+.rl-hero-copy{max-width:520px}
+.rl-hero-eyebrow{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.rl-hero-emblem{width:26px;height:26px;flex-shrink:0}
+.rl-hero-emblem img{width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0,0,0,.7))}
+.rl-hero-flag{
+  font-family:'Oswald',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;color:#16180f;padding:3px 10px;background:var(--am-accent,#c79a3a);
+}
+.rl-hero-group{
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:1.8px;
+  text-transform:uppercase;color:rgba(236,233,214,.75);
+}
+.rl-hero-name{
+  font-family:'Cinzel',serif;font-weight:900;font-size:46px;line-height:.98;letter-spacing:1px;
+  color:#fff;margin:0;text-shadow:0 3px 14px rgba(0,0,0,.7);
+}
+.rl-hero-tagline{
+  font-family:'EB Garamond',serif;font-style:italic;font-size:15.5px;line-height:1.5;
+  color:rgba(240,238,224,.9);margin:12px 0 18px;text-shadow:0 1px 6px rgba(0,0,0,.6);
+}
+.rl-hero-cta{
+  display:inline-flex;align-items:center;gap:9px;font-family:'Oswald',sans-serif;
+  font-size:12.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:#16180f;background:var(--am-accent,#c79a3a);padding:10px 18px;
+}
+.rl-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.rl-hero-side{flex-shrink:0;text-align:right}
+.rl-plate{display:flex;border:1px solid rgba(255,255,255,.2);background:rgba(10,11,7,.55);backdrop-filter:blur(3px)}
+.rl-plate-cell{text-align:center;padding:12px 16px 11px}
+.rl-plate-cell + .rl-plate-cell{border-left:1px solid rgba(255,255,255,.15)}
+.rl-plate-cell b{display:block;font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;line-height:1;color:#fff}
+.rl-plate-cell.is-accent b{color:var(--am-accent,#c79a3a)}
+.rl-plate-cell span{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(236,233,214,.6);display:block;margin-top:4px}
+.rl-hero-track{height:6px;width:100%;background:rgba(255,255,255,.14);margin-top:9px;position:relative;overflow:hidden}
+.rl-hero-fill{position:absolute;left:0;top:0;bottom:0;background:var(--am-accent,#c79a3a)}
+.rl-hero-star{
+  position:absolute;top:14px;right:16px;z-index:3;width:32px;height:32px;
+  border:1px solid rgba(255,255,255,.35);background:rgba(10,11,7,.5);color:#f5c542;
+  font-size:16px;cursor:pointer;line-height:1;padding:0;transition:background .15s,border-color .15s;
+}
+.rl-hero-star:hover{background:rgba(10,11,7,.8);border-color:#f5c542}
+
+/* ------------------------------------------------------- section headers */
+.rl-sect-head{display:flex;align-items:center;gap:12px;margin:32px 0 14px}
+.rl-sect-tag{
+  display:inline-block;background:var(--rl-black);color:var(--rl-plate-txt);
+  font-family:'Oswald',sans-serif;font-size:13.5px;font-weight:600;letter-spacing:2.4px;
+  text-transform:uppercase;padding:7px 22px 6px 13px;
+  clip-path:polygon(0 0,100% 0,calc(100% - 11px) 100%,0 100%);
+}
+.rl-sect-note{
+  font-family:'Oswald',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--rl-mute);
+}
+.rl-sect-rule{flex:1;height:1px;background:var(--rl-edge)}
+
+/* group header (allegiance group / role group): title + count + underline */
+.rl-group{margin:22px 0 0}
+.rl-group-head{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--rl-black);padding-bottom:6px;margin-bottom:14px}
+.rl-group-title{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--rl-ink)}
+.rl-group-count{font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:var(--rl-mute)}
+
+/* -------------------------------------------------------- progress track */
+.rl-track{height:6px;background:var(--rl-paper-3);position:relative;overflow:hidden}
+.rl-track-fill{position:absolute;left:0;top:0;bottom:0;background:var(--am-primary,#333)}
+
+/* -------------------------------------------------------------- foot note */
+.rl-foot{text-align:center;margin:56px 0 0}
+.rl-foot-rule{height:1px;background:var(--rl-edge);margin-bottom:15px}
+.rl-foot-text{font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--rl-mute)}
+
+/* ------------------------------------------------------------- animations */
+@keyframes rlFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes rlShimmer{0%{opacity:.35}50%{opacity:.7}100%{opacity:.35}}
+
+/* ------------------------------------------------------------- responsive */
+@media (max-width:820px){
+  .rl-wrap{padding:22px 16px 70px}
+  .rl-hero{height:auto}
+  .rl-hero-inner{flex-direction:column;align-items:flex-start;gap:18px}
+  .rl-hero-side{text-align:left;align-self:stretch}
+  .rl-hero-name{font-size:38px}
+}

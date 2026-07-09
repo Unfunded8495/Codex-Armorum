@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Play · Codex Armorum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;1,500&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/guide.css') }}">
+</head>
+
+{#- a diagram figure sourced from static/images/rules/. `n` is a step tag. -#}
+{% macro fig(file, w, h, cap, note='') %}
+<figure class="gd-fig">
+  <img class="gd-fig-img" loading="lazy" width="{{ w }}" height="{{ h }}"
+       src="{{ url_for('static', filename='images/rules/' ~ file) }}"
+       data-cap="{{ cap }}" alt="{{ cap }}">
+  <figcaption class="gd-fig-cap">{{ cap }}</figcaption>
+  {% if note %}<p class="gd-fig-note">{{ note }}</p>{% endif %}
+</figure>
+{% endmacro %}
+
+<body>
+  <!-- apply saved reading mode before first paint (shared across all manual pages) -->
+  <script>try{if(localStorage.getItem('caRules.theme')==='dark')document.body.setAttribute('data-rl-theme','dark');}catch(e){}</script>
+  <!-- NOTE: no .scanlines overlay on this page: it would darken the light paper -->
+
+  <div class="rl-chrome">
+    {% include "_topbar.html" %}
+
+    <nav class="rl-strip" id="gdStrip" aria-label="How to play quick reference">
+      <span class="rl-strip-label">How to Play</span>
+      <span class="rl-strip-chips" id="gdStripChips"></span>
+      <span class="rl-strip-spacer"></span>
+      <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="gdThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="gdThemeLabel">Dark</span></button>
+    </nav>
+  </div>
+
+  <div class="rl-shell" id="gdShell">
+    <div class="gd-grid">
+      <aside class="rl-side" aria-label="Guide contents">
+        <div class="rl-side-head"><span>Contents</span><span>8 chapters</span></div>
+        <nav class="rl-toc gd-toc" id="gdToc">
+          <a class="gd-toc-link" href="#ch-need"><span class="gd-toc-num">01</span>What You Need</a>
+          <a class="gd-toc-link" href="#ch-muster"><span class="gd-toc-num">02</span>Muster Your Army</a>
+          <a class="gd-toc-link" href="#ch-setup"><span class="gd-toc-num">03</span>Setting Up the Table</a>
+          <a class="gd-toc-link" href="#ch-round"><span class="gd-toc-num">04</span>The Battle Round</a>
+          <a class="gd-toc-link" href="#ch-scoring"><span class="gd-toc-num">05</span>Scoring &amp; Winning</a>
+          <a class="gd-toc-link" href="#ch-cp"><span class="gd-toc-num">06</span>Command Points</a>
+          <a class="gd-toc-link" href="#ch-first"><span class="gd-toc-num">07</span>Your First Game</a>
+          <a class="gd-toc-link" href="#ch-ref"><span class="gd-toc-num">08</span>Quick Reference</a>
+        </nav>
+        <div class="gd-toc-foot">
+          <p>Every rule here is Warhammer 40,000, 11th Edition. For the full text, see the <a href="/rules">Core Rules</a>.</p>
+        </div>
+      </aside>
+
+      <main class="rl-main gd-main" id="gdMain">
+
+        <!-- ===================================================== HERO -->
+        <header class="gd-hero">
+          <div class="gd-hero-art" aria-hidden="true">
+            <span style="background-image:url('{{ url_for('static', filename='images/space_marines.jpg') }}')"></span>
+            <span style="background-image:url('{{ url_for('static', filename='images/orks.jpg') }}')"></span>
+            <span style="background-image:url('{{ url_for('static', filename='images/necrons.jpg') }}')"></span>
+            <span style="background-image:url('{{ url_for('static', filename='images/aeldari.jpg') }}')"></span>
+            <span style="background-image:url('{{ url_for('static', filename='images/tyranids.jpg') }}')"></span>
+            <span style="background-image:url('{{ url_for('static', filename='images/astra_militarum.jpg') }}')"></span>
+          </div>
+          <div class="gd-hero-body">
+            <img class="gd-hero-logo" src="{{ url_for('static', filename='images/warhammer_40_000_logo.png') }}"
+                 alt="Warhammer 40,000" width="300" height="150">
+            <h1 class="gd-hero-title">How to Actually Play</h1>
+            <p class="gd-hero-sub">From a blank table to the final score. A walkthrough for your first game of 11th Edition, illustrated at every step.</p>
+            <div class="gd-hero-links">
+              <a class="rl-btn rl-btn--solid" href="#ch-round">Jump to the battle round</a>
+              <a class="rl-btn" href="#ch-first">Just tell me what to do first</a>
+            </div>
+          </div>
+        </header>
+
+        <p class="gd-lede">The <a href="/rules">Core Rules</a> explain every rule in isolation, but they never tell you what to physically do first, second and third on game day. This guide does. Section numbers in brackets (like 07.02) match the reference numbers used in the Core Rules, so you can always jump there for the fine print.</p>
+
+        <!-- ===================================================== 01 -->
+        <section class="rl-section gd-section" id="ch-need">
+          <div class="rl-shead"><span class="rl-snum">01</span><span class="rl-stitle">What You Need</span><span class="rl-stag">before game day</span></div>
+          <p class="rl-intro">A game of Warhammer 40,000 is two armies fighting over objectives on a terrain-covered table, for a set number of turns. To play, gather:</p>
+          <ul class="gd-list">
+            <li><b>Two armies</b> of Citadel miniatures, one per player, built to an agreed points size (see the next chapter).</li>
+            <li><b>An army list</b> for each player: which units, which wargear, which enhancements. Build and check yours in the <a href="/army-builder">Army Builder</a>.</li>
+            <li><b>A table</b> with terrain. The mission's deployment map defines the battlefield size and the two deployment zones.</li>
+            <li><b>Terrain</b>: ruins, containers, woods, crates. More is better than less; a bare table heavily favours shooting armies.</li>
+            <li><b>Dice</b> (a good handful of D6), a <b>tape measure</b> in inches, and something to mark objectives.</li>
+            <li><b>A mission</b>, generated before you begin, from a mission deck or the <a href="/missions">Missions</a> page.</li>
+          </ul>
+          <div class="gd-split">
+            <div class="gd-split-text">
+              <h3 class="gd-h3">Read a datasheet first</h3>
+              <p class="gd-prose">Everything a unit can do lives on its <b>datasheet</b>: its characteristics (Movement, Toughness, Save, Wounds, Objective Control and so on), its weapons, its abilities and its keywords. You will have one per unit in your army. Learn to read one and most of the game falls into place.</p>
+              <p class="gd-prose">Every model you own has its full datasheet in the <a href="/arsenal/loadouts">Weapon Loadouts</a> and catalogue views on this site.</p>
+            </div>
+            {{ fig('exampledatasheetboyz.jpg', 1418, 2038, 'Example datasheet: Ork Boyz', 'Characteristics top-left, weapons in the middle, abilities and keywords below. Click any figure to enlarge it.') }}
+          </div>
+        </section>
+
+        <!-- ===================================================== 02 -->
+        <section class="rl-section gd-section" id="ch-muster">
+          <div class="rl-shead"><span class="rl-snum">02</span><span class="rl-stitle">Muster Your Army</span><span class="rl-stag">list building</span></div>
+          <p class="rl-intro">Missions tell you to <b>muster an army</b> to a total points size. The three standard battle sizes are:</p>
+
+          <table class="gd-table">
+            <thead><tr><th>Battle size</th><th>Points</th><th>Detachments</th><th>Enhancements</th><th>Duplicate limit</th></tr></thead>
+            <tbody>
+              <tr><td>Incursion</td><td>1,000</td><td>2</td><td>2</td><td>2</td></tr>
+              <tr><td class="gd-td-hi">Strike Force</td><td>2,000</td><td>3</td><td>4</td><td>3</td></tr>
+              <tr><td>Onslaught</td><td>3,000</td><td>3</td><td>4</td><td>3</td></tr>
+            </tbody>
+          </table>
+          <p class="gd-prose"><b>Strike Force (2,000 points)</b> is the default for most games. Mustering means: pick an army faction, pick your detachment (its rules, enhancements and stratagems), add units up to the points limit, then choose wargear, enhancements and which unit each <b>Leader</b> will join.</p>
+
+          <div class="gd-callout">
+            <span class="gd-callout-kind">On this site</span>
+            <p>The <a href="/army-builder">Army Builder</a> enforces every rule below (points, detachment tiers, leader eligibility, enhancement limits), so a list it accepts is a legal list.</p>
+          </div>
+
+          <h3 class="gd-h3">Pick a faction</h3>
+          <p class="gd-prose">Over two dozen factions each play very differently. Your units' faction abilities only work if the army faction you choose matches a faction keyword on their datasheet (22.02). Tap any faction to start a list for it.</p>
+          {%- set factions = [
+            ('adepta_sororitas.jpg', 'Adepta Sororitas'),
+            ('adeptus_custodes.jpg', 'Adeptus Custodes'),
+            ('adeptus_mechanicus.jpg', 'Adeptus Mechanicus'),
+            ('aeldari.jpg', 'Aeldari'),
+            ('astra_militarum.jpg', 'Astra Militarum'),
+            ('black_templars.jpg', 'Black Templars'),
+            ('blood_angels.jpg', 'Blood Angels'),
+            ('chaos_daemons.jpg', 'Chaos Daemons'),
+            ('chaos_knights.jpg', 'Chaos Knights'),
+            ('chaos_space_marines.jpg', 'Chaos Space Marines'),
+            ('chaos_titan_legions.jpg', 'Chaos Titan Legions'),
+            ('dark_angels.jpg', 'Dark Angels'),
+            ('deathwatch.jpg', 'Deathwatch'),
+            ('death_guard.jpg', 'Death Guard'),
+            ('drukhari.jpg', 'Drukhari'),
+            ('emperor_s_children.jpg', "Emperor's Children"),
+            ('genestealer_cults.jpg', 'Genestealer Cults'),
+            ('grey_knights.jpg', 'Grey Knights'),
+            ('imperial_agents.jpg', 'Imperial Agents'),
+            ('imperial_knights.jpg', 'Imperial Knights'),
+            ('leagues_of_votann.jpg', 'Leagues of Votann'),
+            ('necrons.jpg', 'Necrons'),
+            ('orks.jpg', 'Orks'),
+            ('space_marines.jpg', 'Space Marines'),
+            ('space_wolves.jpg', 'Space Wolves'),
+            ('thousand_sons.jpg', 'Thousand Sons'),
+            ('titan_legions.jpg', 'Titan Legions'),
+            ('tyranids.jpg', 'Tyranids'),
+            ('t_au_empire.jpg', "T'au Empire"),
+            ('world_eaters.jpg', 'World Eaters')
+          ] -%}
+          <div class="gd-faction-grid">
+            {% for file, label in factions %}
+            <a class="gd-faction" href="/army-builder" title="Build a {{ label }} army">
+              <span class="gd-faction-img" style="background-image:url('{{ url_for('static', filename='images/' ~ file) }}')"></span>
+              <span class="gd-faction-name">{{ label }}</span>
+            </a>
+            {% endfor %}
+          </div>
+        </section>
+
+        <!-- ===================================================== 03 -->
+        <section class="rl-section gd-section" id="ch-setup">
+          <div class="rl-shead"><span class="rl-snum">03</span><span class="rl-stitle">Setting Up the Table</span><span class="rl-stag">before the first turn</span></div>
+          <p class="rl-intro">Your mission card lists the exact setup sequence; below is the shape almost every matched-play mission takes. Do all of this before any dice are rolled in anger.</p>
+
+          <h3 class="gd-h3">1 &middot; Generate the mission</h3>
+          <p class="gd-prose">Before anything is placed, settle on a <b>primary mission</b> (how you score most points), a <b>deployment map</b> (below), a <b>mission layout</b> (where terrain and objectives sit) and, if you both agree, a <b>twist</b> (a battle-wide rule such as Night Fighting). The <a href="/missions">Missions</a> page holds the whole current matched-play pack with scoring text.</p>
+
+          <p class="gd-prose"><b>The six deployment maps</b> decide where each army starts:</p>
+          <div class="gd-fig-grid">
+            <figure class="gd-fig"><img class="gd-fig-img gd-map" loading="lazy" width="800" height="600" src="{{ url_for('static', filename='images/deployments/ic_hammer_and_anvil.png') }}" data-cap="Hammer and Anvil" alt="Hammer and Anvil deployment"><figcaption class="gd-fig-cap">Hammer and Anvil</figcaption><p class="gd-fig-note">Deploy along the short board edges; a long advance separates the armies.</p></figure>
+            <figure class="gd-fig"><img class="gd-fig-img gd-map" loading="lazy" width="800" height="600" src="{{ url_for('static', filename='images/deployments/ic_dawn_of_war.png') }}" data-cap="Dawn of War" alt="Dawn of War deployment"><figcaption class="gd-fig-cap">Dawn of War</figcaption><p class="gd-fig-note">Deploy along opposite long board edges, the classic embattled line.</p></figure>
+            <figure class="gd-fig"><img class="gd-fig-img gd-map" loading="lazy" width="800" height="600" src="{{ url_for('static', filename='images/deployments/ic_search_and_destroy.png') }}" data-cap="Search and Destroy" alt="Search and Destroy deployment"><figcaption class="gd-fig-cap">Search and Destroy</figcaption><p class="gd-fig-note">Deploy in diagonally opposite table quarters; everything between is No Man's Land.</p></figure>
+            <figure class="gd-fig"><img class="gd-fig-img gd-map" loading="lazy" width="800" height="600" src="{{ url_for('static', filename='images/deployments/ic_crucible_of_battle.png') }}" data-cap="Crucible of Battle" alt="Crucible of Battle deployment"><figcaption class="gd-fig-cap">Crucible of Battle</figcaption><p class="gd-fig-note">Deploy in opposite corners along the main diagonal of the battlefield.</p></figure>
+            <figure class="gd-fig"><img class="gd-fig-img gd-map" loading="lazy" width="800" height="600" src="{{ url_for('static', filename='images/deployments/ic_sweeping_engagement.png') }}" data-cap="Sweeping Engagement" alt="Sweeping Engagement deployment"><figcaption class="gd-fig-cap">Sweeping Engagement</figcaption><p class="gd-fig-note">Angled zones sweep in from opposite corners toward the centre.</p></figure>
+            <figure class="gd-fig"><img class="gd-fig-img gd-map" loading="lazy" width="800" height="600" src="{{ url_for('static', filename='images/deployments/ic_tipping_point.png') }}" data-cap="Tipping Point" alt="Tipping Point deployment"><figcaption class="gd-fig-cap">Tipping Point</figcaption><p class="gd-fig-note">Offset diagonal zones tilt in toward the contested centre line.</p></figure>
+          </div>
+
+          <p class="gd-prose">The <b>layout</b> then tells you where terrain and objectives go. Here are a few from the current pack; use the toggle to switch between the plan and the measured version.</p>
+          <div class="gd-fig-grid gd-lay-grid" id="gdLayouts">
+            <p class="gd-loading">Loading example layouts&hellip;</p>
+          </div>
+
+          <h3 class="gd-h3">2 &middot; Build the battlefield</h3>
+          <p class="gd-prose">Place terrain following the layout, or by agreement (13.01). Each cluster of terrain (or the mat it sits on) defines a <b>terrain area</b>. Terrain comes in three categories (13.02): <b>Exposed</b> (craters, debris: no real cover), <b>Light</b> (barricades, low walls: can give cover, little obstruction) and <b>Dense</b> (buildings, ruins, woods: blocks sight and movement, and matters most). When in doubt, add more dense terrain and leave room around it for big models.</p>
+          <div class="gd-fig-grid">
+            {{ fig('diagram-terrain-placed-on-a-mat.jpg', 1206, 872, 'Terrain placed on a mat', 'The mat edges define the terrain area.') }}
+            {{ fig('diagram-terrain-placed-on-the-battlefield.jpg', 1203, 870, 'Terrain placed on the battlefield', 'Features can also be placed directly to define an area.') }}
+            {{ fig('diagram-terrain-and-movement-top.jpg', 1205, 869, 'Terrain and movement (1)', 'Models move over and around features.') }}
+            {{ fig('diagram-terrain-and-movement-bottom.jpg', 1211, 870, 'Terrain and movement (2)', 'Dense terrain has the greatest impact on movement.') }}
+          </div>
+
+          <h3 class="gd-h3">3 &middot; Place objectives</h3>
+          <p class="gd-prose">The map shows several objective points. Each should sit on a terrain area; that whole area <b>is</b> the objective, a <b>terrain objective</b> (14.01). A model is within range of it while it is within that area. Standing on objectives is how you win, so mark them clearly.</p>
+          {{ fig('diagram-controlling-a-terrain-objective.jpg', 1204, 1145, 'Controlling a terrain objective', 'Each player totals the Objective Control of their models in the area; higher total controls it.') }}
+
+          <h3 class="gd-h3">4 &middot; Roll off, deploy, begin</h3>
+          <ol class="gd-list gd-list--ol">
+            <li><b>Roll off</b> to decide Attacker and Defender (the mission says what each picks).</li>
+            <li><b>Declare Battle Formations.</b> Note the things starting off the table: units embarked in transports, units in <b>strategic reserves</b> (20.01) and units using Deep Strike or Infiltrators. Aircraft must start in reserves (23.01).</li>
+            <li><b>Deploy</b> your armies, alternating units, each wholly within your own zone.</li>
+            <li><b>Resolve Pre-battle Abilities</b> (Scout moves happen here, 24.31).</li>
+            <li><b>Determine the first turn</b> and begin. The same player takes the first turn every battle round (07.02).</li>
+          </ol>
+        </section>
+
+        <!-- ===================================================== 04 -->
+        <section class="rl-section gd-section" id="ch-round">
+          <div class="rl-shead"><span class="rl-snum">04</span><span class="rl-stitle">The Battle Round</span><span class="rl-stag">the heart of the game</span></div>
+          <p class="rl-intro">The game runs in <b>battle rounds</b> (usually five). In each round the first player takes a full turn, then the second player takes a full turn (07). Every turn moves through five phases in this fixed order:</p>
+
+          <div class="gd-phases">
+            <a class="gd-phase" href="#ph-command"><span class="gd-phase-n">1</span><span class="gd-phase-name">Command</span></a>
+            <a class="gd-phase" href="#ph-move"><span class="gd-phase-n">2</span><span class="gd-phase-name">Movement</span></a>
+            <a class="gd-phase" href="#ph-shoot"><span class="gd-phase-n">3</span><span class="gd-phase-name">Shooting</span></a>
+            <a class="gd-phase" href="#ph-charge"><span class="gd-phase-n">4</span><span class="gd-phase-name">Charge</span></a>
+            <a class="gd-phase" href="#ph-fight"><span class="gd-phase-n">5</span><span class="gd-phase-name">Fight</span></a>
+          </div>
+
+          <h3 class="gd-h3" id="ph-command">Command phase (08)</h3>
+          <p class="gd-prose">Both players gain <b>1 Command Point</b> (yes, both, every turn). Then the active player makes a <b>battle-shock</b> roll for each unit that is at or below half strength, or already battle-shocked (08.03). While a unit is battle-shocked its Objective Control drops to zero (shown as &ldquo;-&rdquo;), so it stops holding objectives; it also cannot be targeted by its own stratagems and cannot start or finish actions. A failed unit stays shaken and keeps testing until a battle-shock roll succeeds.</p>
+          {{ fig('diagram-battle-shock-examples.jpg', 711, 1766, 'Battle-shock examples', 'Which units test, and what failing means.') }}
+
+          <h3 class="gd-h3" id="ph-move">Movement phase (09)</h3>
+          <p class="gd-prose">Move your units one at a time. Each picks a move type: <b>Remain Stationary</b>, a <b>Normal Move</b> (up to its Move characteristic), an <b>Advance</b> (Move + D6, but usually no shooting or charging after), or a <b>Fall Back</b> to escape combat at a cost. Units end moves in <b>coherency</b> and cannot move within <b>engagement range</b> (2&Prime; horizontally, 5&Prime; vertically) of the enemy. Reserves and Deep Strike units also arrive now.</p>
+          <div class="gd-fig-grid">
+            {{ fig('diagram-moving-in-a-straight-line.jpg', 713, 715, 'Moving in a straight line', 'Measure every part of the model as it moves.') }}
+            {{ fig('diagram-rotating.jpg', 1207, 717, 'Rotating a model', 'Turning on the spot still counts as movement.') }}
+            {{ fig('diagram-coherency.jpg', 1205, 873, 'Unit coherency', 'Models must stay within 2 inches of the unit.') }}
+            {{ fig('diagram-engagement.jpg', 1209, 872, 'Engagement range', 'The 2 inch / 5 inch bubble around every model.') }}
+          </div>
+
+          <h3 class="gd-h3" id="ph-shoot">Shooting phase (10)</h3>
+          <p class="gd-prose">Pick each eligible unit in turn: select the weapons, select target units that are <b>visible</b> and in range, then resolve the attacks (below). A model is a valid target only if it can be seen, so line of sight and cover matter enormously.</p>
+          <div class="gd-fig-grid">
+            {{ fig('diagram-model-visible.jpg', 960, 424, 'Model visible', 'Any part seen means the model is visible.') }}
+            {{ fig('diagram-model-fully-visible.jpg', 956, 425, 'Model fully visible', 'The whole model can be seen.') }}
+            {{ fig('diagram-unit-visible.jpg', 958, 421, 'Unit visible', 'At least one model in the unit is visible.') }}
+            {{ fig('diagram-unit-fully-visible.jpg', 957, 418, 'Unit fully visible', 'Every model in the unit is visible.') }}
+            {{ fig('diagram-benefit-of-cover.jpg', 589, 1144, 'Benefit of cover', 'Cover worsens the shooter\'s BS by 1; it does not improve the save.') }}
+            {{ fig('diagram-hidden-and-obscuring.jpg', 593, 1143, 'Hidden and obscuring', 'Dense terrain blocks sight; a hidden unit is only seen within 15 inches.') }}
+          </div>
+          <p class="gd-prose">Terrain changes who can be hit. In 11th Edition the <b>benefit of cover</b> does not improve a save; instead it worsens the shooter's Ballistic Skill by 1 (a harder hit roll), and it applies to Infantry, Beasts or Swarm units in a terrain area or units screened by intervening terrain (13.08). A <b>hidden</b> Infantry, Beasts or Swarm unit sitting in dense terrain that has not shot this turn or last can only be targeted from within 15&Prime; (13.09).</p>
+
+          <h4 class="gd-h4">The attack sequence (05): how every attack resolves</h4>
+          <p class="gd-prose">Shooting and fighting both use the same four steps. Roll each step's dice together:</p>
+          <ol class="gd-list gd-list--ol">
+            <li><b>Hit rolls:</b> one D6 per attack. Meet or beat the weapon's BS (shooting) or WS (melee). An unmodified 1 always misses; an unmodified 6 is a Critical Hit.</li>
+            <li><b>Wound rolls:</b> one D6 per hit, comparing Strength to Toughness (see the table in Quick Reference). Unmodified 1 fails, unmodified 6 is a Critical Wound.</li>
+            <li><b>Save rolls:</b> the defender rolls one D6 per wound, trying to beat the weapon's AP-modified save, or an invulnerable save (which ignores AP).</li>
+            <li><b>Inflict damage:</b> each failed save costs a model the weapon's Damage. At 0 wounds a model is destroyed. Excess damage does not carry to the next model.</li>
+          </ol>
+          <div class="gd-fig-grid">
+            {{ fig('diagram-making-attacks.jpg', 597, 1768, 'Making attacks', 'Select weapons, select targets, resolve.') }}
+            {{ fig('diagram-resolving-attack-dice.jpg', 600, 1765, 'Resolving attack dice', 'Hit, wound, save, damage in sequence.') }}
+            {{ fig('diagram-resolving-other-attacks.jpg', 595, 1763, 'Resolving other attacks', 'The same flow with weapon abilities.') }}
+            {{ fig('diagram-allocation-groups.jpg', 965, 1768, 'Allocation groups', 'How the defender assigns wounds.') }}
+            {{ fig('diagram-attacking-attached-units.jpg', 966, 1766, 'Attacking attached units', 'Leaders and their bodyguard take hits as one.') }}
+          </div>
+
+          <h3 class="gd-h3" id="ph-charge">Charge phase (11)</h3>
+          <p class="gd-prose">To fight in melee a unit must charge, and the order matters. First pick an eligible unit: within 12&Prime; of an enemy, not already engaged, and it has not advanced or fallen back this turn. Then roll <b>2D6</b> for the maximum distance (11.02). <b>Only after the roll</b> do you choose targets: enemy units within 12&Prime; and within the distance you rolled (11.04). The charge succeeds only if the unit can end engaged with <b>every</b> target it chose, without touching anything it did not. Fall short and the unit does not move at all. Charging pays off: chargers strike with Fights First.</p>
+          {{ fig('diagram-making-a-charge-move.jpg', 1201, 974, 'Making a charge move', 'Roll 2D6 first, then choose targets within the distance rolled.') }}
+
+          <h3 class="gd-h3" id="ph-fight">Fight phase (12)</h3>
+          <p class="gd-prose">Both players act here, in three steps: <b>Pile In</b> (a 3&Prime; move to tighten combat), <b>Fight</b> (units fight one at a time, Fights First units before the rest, players alternating) and <b>Consolidate</b> (a final 3&Prime; move). Fighting uses the same attack sequence as shooting. You must fight with every unit that can.</p>
+          <div class="gd-fig-grid">
+            {{ fig('diagram-start-of-fight-phase.jpg', 1204, 872, 'Start of the fight phase', 'Who is engaged and eligible to fight.') }}
+            {{ fig('diagram-pile-in-moves.jpg', 1204, 867, 'Pile-in moves', 'Move up to 3 inches to reach the enemy.') }}
+            {{ fig('diagram-normal-fight.jpg', 1202, 872, 'Normal fight', 'Alternate selecting units to fight.') }}
+            {{ fig('diagram-overrun-fight.jpg', 1206, 866, 'Overrun fight', 'Move into a new combat and fight on.') }}
+          </div>
+
+          <div class="gd-callout gd-callout--more">
+            <span class="gd-callout-kind">Going further</span>
+            <p>Once the five phases feel natural, the advanced rules add monsters and vehicles, transports, flyers and surging. Read them in full in the <a href="/rules">Core Rules</a>. A taste:</p>
+            <div class="gd-fig-grid gd-fig-grid--sm">
+              {{ fig('diagram-engaged-monsters-vehicles-shooting.jpg', 1209, 975, 'Monsters and vehicles shooting in combat') }}
+              {{ fig('diagram-plunging-fire.jpg', 1203, 682, 'Plunging fire from high ground') }}
+              {{ fig('diagram-making-a-surge-move.jpg', 960, 698, 'Making a surge move') }}
+              {{ fig('diagram-taking-to-the-skies.jpg', 1208, 1041, 'Flying models taking to the skies') }}
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================== 05 -->
+        <section class="rl-section gd-section" id="ch-scoring">
+          <div class="rl-shead"><span class="rl-snum">05</span><span class="rl-stitle">Scoring &amp; Winning</span><span class="rl-stag">victory points</span></div>
+          <p class="rl-intro">Kills alone do not win games; <b>victory points do</b>, and most come from holding objectives.</p>
+          <div class="gd-split">
+            <div class="gd-split-text">
+              <p class="gd-prose"><b>Controlling an objective (14.02):</b> at the end of each phase and turn, each player adds up the Objective Control (OC) of all their models within the objective's terrain area. Highest total controls it; a tie means nobody holds it unless it is <b>secured</b> (14.03).</p>
+              <p class="gd-prose"><b>Primary mission:</b> your card says when and how you score, usually for holding objectives at the end of your turn or the battle round. The End of Turn and End of Battle Round steps exist so you remember to check (07.03).</p>
+              <p class="gd-prose"><b>Secondary missions</b> score alongside the primary, drawn as the game goes on. <b>Actions (16)</b> are battlefield tasks some missions need; a unit that starts one cannot shoot or declare a charge for the rest of the turn, and battle-shocked or OC-zero units cannot start them at all, so they are a real trade.</p>
+              <p class="gd-prose">The battle ends after the last round (or if an army is wiped out). Highest total victory points wins.</p>
+            </div>
+            {{ fig('diagram-controlling-a-terrain-objective.jpg', 1204, 1145, 'Level of control on an objective', 'The player with the higher total OC in the area controls it.') }}
+          </div>
+        </section>
+
+        <!-- ===================================================== 06 -->
+        <section class="rl-section gd-section" id="ch-cp">
+          <div class="rl-shead"><span class="rl-snum">06</span><span class="rl-stitle">Command Points</span><span class="rl-stag">stratagems</span></div>
+          <p class="rl-intro">Command Points (CP) are your tactical currency. You gain 1 in every Command phase, including your opponent's turn, and spend them on <b>stratagems</b>: your detachment's own, plus the ten core stratagems every army has (15.02 to 15.12).</p>
+          <div class="gd-strat-grid">
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Command Re-roll</b><p>Re-roll one hit, wound, save, damage, advance, hazard, charge or attacks roll.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Epic Challenge</b><p>Give a character's melee weapons Precision to pick out enemy characters.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Insane Bravery</b><p>Auto-pass a battle-shock test. Once per battle.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Explosives</b><p>A grenades or explosives unit throws for mortal wounds instead of shooting.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Crushing Impact</b><p>A monster or vehicle that finishes a charge deals mortal wounds.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Rapid Ingress</b><p>Bring a reserves unit onto the table early, at the end of the enemy's move.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Fire Overwatch</b><p>An unengaged unit shoots in the enemy's turn, but hits only on unmodified 6s.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Smokescreen</b><p>A Smoke unit gains the benefit of cover in your opponent's Shooting phase.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Heroic Intervention</b><p>An unengaged unit counter-charges in the enemy's Charge phase (2 CP for wider reach).</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">2 CP</span><b>Counter-offensive</b><p>An eligible unit fights next, out of the normal sequence.</p></div>
+          </div>
+          <p class="gd-prose">Each stratagem states when it can be used, what it targets and what it costs. Counter-offensive is the only core stratagem that costs 2 CP; the rest are 1 CP. Spend CP freely; hoarding them wins nothing.</p>
+        </section>
+
+        <!-- ===================================================== 07 -->
+        <section class="rl-section gd-section" id="ch-first">
+          <div class="rl-shead"><span class="rl-snum">07</span><span class="rl-stitle">Your First Game</span><span class="rl-stag">a suggested script</span></div>
+          <div class="gd-card">
+            <ol class="gd-list gd-list--ol">
+              <li>Both players build a <b>1,000 point (Incursion)</b> list in the <a href="/army-builder">Army Builder</a>.</li>
+              <li>Pick one primary mission, one deployment map and one layout from the <a href="/missions">Missions</a> page. Skip twists and secondaries the first time.</li>
+              <li>Set up terrain and objectives per the layout, roll off, deploy, roll for the first turn.</li>
+              <li>Play all five battle rounds with the phase list in front of you. Expect the first game to be slow; by round three the rhythm (Command, Move, Shoot, Charge, Fight) is automatic.</li>
+              <li>Score primaries at the timing printed on the mission card, and total victory points at the end.</li>
+            </ol>
+          </div>
+          <div class="gd-callout gd-callout--warn">
+            <span class="gd-callout-kind">Common first-game slips</span>
+            <p>Forgetting that <b>both</b> players gain CP each Command phase. Forgetting battle-shock tests for weakened units. Treating cover as a better save instead of a worse hit roll for the shooter. Forgetting to roll the charge before picking targets. And leaving objectives bare because everything went hunting kills.</p>
+          </div>
+        </section>
+
+        <!-- ===================================================== 08 -->
+        <section class="rl-section gd-section" id="ch-ref">
+          <div class="rl-shead"><span class="rl-snum">08</span><span class="rl-stitle">Quick Reference</span><span class="rl-stag">keep this handy</span></div>
+          <div class="gd-ref-grid">
+            <div class="gd-ref">
+              <h3 class="gd-h3">Turn order</h3>
+              <p class="gd-prose">Start of Turn &rarr; Command &rarr; Movement &rarr; Shooting &rarr; Charge &rarr; Fight &rarr; End of Turn.</p>
+              <h3 class="gd-h3">Attack sequence</h3>
+              <p class="gd-prose">Hit &rarr; Wound &rarr; Save &rarr; Inflict Damage.</p>
+              <h3 class="gd-h3">Key distances</h3>
+              <table class="gd-table gd-table--sm">
+                <tbody>
+                  <tr><td>Engagement range</td><td>2&Prime; horizontal, 5&Prime; vertical</td></tr>
+                  <tr><td>Charge declaration</td><td>within 12&Prime;</td></tr>
+                  <tr><td>Charge move</td><td>2D6&Prime; maximum</td></tr>
+                  <tr><td>Pile-in / Consolidate</td><td>3&Prime;</td></tr>
+                  <tr><td>Advance bonus</td><td>+D6&Prime;</td></tr>
+                  <tr><td>Detection range (hidden unit)</td><td>15&Prime;</td></tr>
+                </tbody>
+              </table>
+              <p class="gd-prose"><b>Cover:</b> the benefit of cover worsens the shooter's BS by 1; it does not improve the target's save.</p>
+            </div>
+            <div class="gd-ref">
+              <h3 class="gd-h3">Wound roll (Strength vs Toughness)</h3>
+              <table class="gd-table gd-table--sm">
+                <thead><tr><th>Comparison</th><th>Needed</th></tr></thead>
+                <tbody>
+                  <tr><td>S at least double T</td><td>2+</td></tr>
+                  <tr><td>S greater than T</td><td>3+</td></tr>
+                  <tr><td>S equal to T</td><td>4+</td></tr>
+                  <tr><td>S less than T</td><td>5+</td></tr>
+                  <tr><td>S half T or less</td><td>6+</td></tr>
+                </tbody>
+              </table>
+              <h3 class="gd-h3">Where to find things</h3>
+              <ul class="gd-list gd-list--links">
+                <li><a href="/rules">Core Rules</a>: the full 11th Edition ruleset, searchable, with diagrams.</li>
+                <li><a href="/missions">Missions</a>: the current matched-play pack and scoring.</li>
+                <li><a href="/army-builder">Army Builder</a>: build legal lists with live points.</li>
+                <li><a href="/arsenal/loadouts">Weapon Loadouts</a>: datasheets and wargear.</li>
+                <li><a href="/collection">Paint Progress</a>: what you own and can field.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <div class="rl-colophon">
+          <hr>
+          <p>Warhammer 40,000 &middot; 11th Edition &middot; a Codex Armorum field guide</p>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="rl-top-btn" id="gdTopBtn" title="Back to top" aria-label="Back to top">&#8679;</button>
+
+  {% include "_footer.html" %}
+
+  <!-- Enlarge-on-click overlay for diagrams and maps -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <img id="lightboxImg" alt="">
+    <p id="lightboxCap"></p>
+  </div>
+
+  <script type="module" src="{{ url_for('static', filename='js/guide.js') }}"></script>
+</body>
+</html>

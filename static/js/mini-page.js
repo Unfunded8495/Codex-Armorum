@@ -1,7 +1,8 @@
-import { esc, api, jsStr, readableInk, withTimeout } from './utils.js';
+import { esc, api, jsStr, withTimeout } from './utils.js';
 import { clearFactionCache } from './home.js';
 import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
 import { openLightbox } from './lightbox.js';
+import { rlThemeMode, rlThemeToggleHtml, rlWireThemeToggle } from './rl-theme.js';
 
 /* ---- constants ---- */
 const STAGES = ['unbuilt','assembled','primed','base_coated','washed','highlighted','finished','display'];
@@ -43,16 +44,33 @@ let mpCatFed = { cid: null, focusLinks: false };
 /* ---- DOM ---- */
 const view       = document.getElementById('view');
 
+/* paper shell + reading strip helpers (shared skin: spa-shell.css). The mini
+   page reuses the unit-sheet paper skin plus mini-page.css for its .mp-* chrome. */
+function mpShell(inner){ return `<div class="rl-shell"><div class="rl-wrap">${inner}</div></div>`; }
+function mpStrip(backHref, backLabel){
+  return `
+    <nav class="rl-strip" aria-label="Mini manager">
+      <a class="rl-back" href="${backHref}">&lsaquo; ${esc(backLabel)}</a>
+      <span class="rl-strip-spacer"></span>
+      ${rlThemeToggleHtml()}
+    </nav>`;
+}
+
 /* ====================================================================
    ENTRY POINT
    ==================================================================== */
 export async function showMiniPage(did){
   setActiveNav('armies');
   refreshLedger();
+  document.body.classList.add('rl-spa', 'unit-sheet', 'mini-sheet');
+  document.body.setAttribute('data-rl-theme', rlThemeMode());
   mpDatasheetId = did;
   mpMinis = [];
   mpUnit  = null;
-  view.innerHTML = `<div class="loading">Mustering your minis…</div>`;
+  view.innerHTML = mpStrip('#/', 'My Armies') + mpShell(
+    `<div class="rl-load"><div class="rl-load-bar"></div>` +
+    `<div class="rl-load-note">Mustering your minis…</div></div>`);
+  rlWireThemeToggle(document);
 
   // A datasheet-less catalogue model ("cat:<id>") has no datasheet, so skip the
   // unit fetch and render a reduced page (paint tracker + owned sculpt card only).
@@ -69,17 +87,18 @@ export async function showMiniPage(did){
     }
   }catch(e){
     const isTimeout = e.message === 'timeout';
-    view.innerHTML = `<div class="loading load-error">
-      ${isTimeout
-        ? 'Taking too long to load.<br><small>Is app.py still running in your terminal?</small>'
-        : 'Could not reach the server.<br><small>Make sure app.py is running, then refresh.</small>'
-      }
-    </div>`;
+    view.innerHTML = mpStrip('#/', 'My Armies') + mpShell(`<div class="rl-error">${
+      isTimeout
+        ? 'Taking too long to load.<small>Is app.py still running in your terminal?</small>'
+        : 'Could not reach the server.<small>Make sure app.py is running, then refresh.</small>'
+      }</div>`);
+    rlWireThemeToggle(document);
     return;
   }
 
   if(!mpMinis.length){
-    view.innerHTML = `<div class="loading">No minis found for this unit.</div>`;
+    view.innerHTML = mpStrip('#/', 'My Armies') + mpShell(`<div class="rl-error">No minis found for this unit.</div>`);
+    rlWireThemeToggle(document);
     return;
   }
 
@@ -126,20 +145,19 @@ function mpRenderPage(){
   const isCat  = (mpDatasheetId || '').startsWith('cat:');
   const groups = mpGroupMinis(mpMinis);
 
-  const accent  = mpUnit?.accent || 'var(--gold)';
   const name    = mpUnit?.name   || rep.datasheet_name;
   const role    = mpUnit?.role   || '';
   const legend  = mpUnit?.legend || '';
   const faction = mpUnit?.faction_display_name || mpUnit?.faction_name
                 || rep.faction_display_name || rep.faction_name;
 
-  view.innerHTML = `
+  view.innerHTML = mpStrip('#/faction/' + encodeURIComponent(rep.faction_id), faction) + mpShell(`
     <div class="detail-wrap mp-page">
       <div class="detail-media">
         ${mpLeftMediaHtml()}${mpReliquaryLedgerHtml()}
       </div>
       <div class="detail-info">
-        <h1 class="detail-name" style="color:${readableInk(accent)}">${esc(name)}</h1>
+        <h1 class="detail-name">${esc(name)}</h1>
         <p class="detail-role"><span class="mp-tick" aria-hidden="true"></span>${esc(faction)}${role?' · '+esc(role):''}</p>
         ${legend?`<p class="legend">${esc(legend)}</p>`:''}
         <div class="mp-mini-list" id="mpMiniList">
@@ -150,8 +168,9 @@ function mpRenderPage(){
         </div>`}
         ${isCat ? '' : mpRenderWipSection()}
       </div>
-    </div>`;
+    </div>`);
 
+  rlWireThemeToggle(document);
   mpWireLeftMedia();
   mpWireDropZones();
   if(!isCat) mpWireWipDropZone();

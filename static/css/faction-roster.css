@@ -1,0 +1,65 @@
+/* =====================================================================
+   faction-roster.css - Faction Roster page (#/faction/:fid)
+   ---------------------------------------------------------------------
+   Shared paper skin lives in spa-shell.css (body.rl-spa). This file adds
+   the roster-only pieces: the hero ghost button on the dark hero art, the
+   paint-stage legend, the role-section spacing, and - the key part - the
+   theme-agnostic repaint of the shared unit tile. buildUnitTiles emits the
+   same .unit-card markup used on the dark Purchases page; here, under
+   body.faction-roster, we repaint its surfaces to paper tokens. No fork.
+   ===================================================================== */
+
+/* hero: the ghost action button sits on the dark hero art, so give it light
+   ink rather than the paper-surface ink the shared .rl-btn--ghost uses */
+.rl-hero .rl-btn--ghost{color:#ece9d6;border-color:rgba(255,255,255,.45);background:rgba(10,11,7,.35)}
+.rl-hero .rl-btn--ghost:hover{border-color:#fff;color:#fff;background:rgba(10,11,7,.55)}
+
+/* paint-stage legend under the hero */
+.fac-legend{
+  display:flex;flex-wrap:wrap;gap:18px;margin:16px 0 2px;
+  font-family:'Oswald',sans-serif;font-size:10.5px;font-weight:500;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--rl-mute);
+}
+.fac-legend span{display:inline-flex;align-items:center;gap:6px}
+.fac-legend .ul-dot{width:8px;height:8px;transform:rotate(45deg);display:inline-block}
+
+/* role sections use the shared .rl-group header; first one a touch tighter */
+.fac-role-section:first-of-type{margin-top:12px}
+
+/* ---- theme-agnostic unit tile ----------------------------------------
+   Same markup as the dark Purchases tiles; repainted to paper only inside
+   the roster scope. Faction colour still arrives inline as --cardarmy. */
+body.faction-roster .unit-grid{grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:12px}
+body.faction-roster .unit-card{
+  background:var(--rl-paper-2);border:1px solid var(--rl-edge);
+  border-left:3px solid var(--cardarmy,#333);
+  box-shadow:0 1px 6px rgba(20,24,12,.06);
+  transition:transform .16s ease,box-shadow .16s ease;
+  animation:rlFadeIn .35s ease both;
+}
+body.faction-roster .unit-card:hover{
+  transform:translateY(-3px);box-shadow:0 8px 18px rgba(20,24,12,.14);
+}
+body.faction-roster .unit-body.faction-surface{
+  background:var(--rl-paper-2);border-top:1px solid var(--rl-edge-soft);
+}
+body.faction-roster .unit-body.faction-surface::after{display:none}
+body.faction-roster .unit-name{color:var(--rl-ink)}
+body.faction-roster .unit-name:hover{color:var(--cardarmy,var(--rl-ink))}
+body.faction-roster .fc-unit-stats{color:var(--rl-mute)}
+body.faction-roster .fc-unit-stats span:last-child{color:var(--rl-ink-soft)}
+body.faction-roster .fc-unit-stats.is-tri b{color:var(--rl-ink)}
+body.faction-roster .fc-unit-bar-wrap{background:var(--rl-paper-3)}
+body.faction-roster .fc-shared-note{color:var(--cardarmy,var(--rl-ink-soft))}
+/* the faction watermark behind the tile body is too heavy on light paper */
+body.faction-roster .unit-body .faction-bg-mark{opacity:.06}
+
+/* ---- browse-all + empty state on paper ---- */
+body.faction-roster .view-title{color:var(--rl-ink);font-family:'Cinzel',serif;letter-spacing:.5px}
+body.faction-roster .fc-summary{color:var(--rl-mute)}
+body.faction-roster .fc-summary b{color:var(--rl-ink)}
+body.faction-roster .fc-sep{color:var(--rl-edge)}
+body.faction-roster .fc-empty{color:var(--rl-ink-soft)}
+body.faction-roster .fc-empty strong{color:var(--rl-ink)}
+body.faction-roster .fc-empty-or,
+body.faction-roster .fc-empty .fc-empty-hint{color:var(--rl-mute)}

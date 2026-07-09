@@ -13,8 +13,10 @@ warhammer.db
 # Migration backups of the model catalogue JSON
 data/model_catalogue_manual.json.pre-app40k
 
-# Official 40k app data export (large, refreshed out-of-band)
+# Official 40k app data export (large, refreshed out-of-band), plus the
+# previous snapshot kept locally for scripts/compare_w40k_db.py diffs
 data/w40k/w40k.db
+data/w40k/w40k.db.prev
 
 # Generated migration report
 data/migration_app40k_report.json
@@ -47,3 +49,8 @@ uploads/
 
 # Local archive of superseded / unused files (not part of the app)
 archive/
+
+# One-time ListForge reference dump used by scripts/validate_against_listforge.py.
+# Third-party (~28 MB), same official data_version we already own. Refresh command
+# is documented in the script docstring. Not committed.
+scripts/data/listforge_dump_886.json

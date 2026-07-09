@@ -1,0 +1,78 @@
+/* =====================================================================
+   my-armies.css - "My Armies" home-only components (SPA route "/")
+   ---------------------------------------------------------------------
+   The shared paper skin (tokens, shell, reading strip, hero, section and
+   group headers, progress track, loading) lives in spa-shell.css under
+   body.rl-spa. This file holds only what is unique to the home: the
+   starred-army rail and the allegiance index grid. The home sets both
+   body.rl-spa and body.home-armies; these components use the shared
+   --rl-* tokens plus the per-card --am-primary / --am-accent.
+   ===================================================================== */
+
+/* the All Armies header sits a little lower and tighter than the default */
+.rl-sect-head.is-index{margin:38px 0 6px}
+
+/* -------------------------------------------------- your armies (tiled grid) */
+.am-rail{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px;padding:2px 2px 12px}
+.am-railcard{
+  display:block;text-decoration:none;position:relative;
+  border:1px solid var(--rl-edge);background:var(--rl-paper-2);overflow:hidden;
+  box-shadow:0 2px 12px rgba(20,24,12,.1);transition:transform .16s ease;
+  animation:rlFadeIn .35s ease both;
+}
+.am-railcard:hover{transform:translateY(-3px)}
+.am-railcard.is-featured{border-color:var(--rl-green);box-shadow:0 2px 16px rgba(23,138,76,.28)}
+.am-railhead{position:relative;height:116px;overflow:hidden;background:linear-gradient(135deg,var(--am-primary,#333),color-mix(in srgb,var(--am-primary,#333) 55%,transparent) 60%,#0d0e08)}
+.am-railhead-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+.am-railhead-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,13,8,.15),rgba(12,13,8,.72))}
+.am-railtag{
+  position:absolute;top:9px;left:9px;z-index:2;font-family:'Oswald',sans-serif;font-size:9px;
+  font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#16180f;
+  background:var(--am-accent,#c79a3a);padding:2px 8px;
+}
+.am-railcard.is-featured .am-railtag{background:#f5c542}
+.am-railglyph{position:absolute;left:12px;bottom:10px;width:40px;height:40px}
+.am-railglyph img{width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0,0,0,.7));opacity:.92}
+.am-railstar{
+  position:absolute;top:9px;right:9px;width:27px;height:27px;border:1px solid rgba(255,255,255,.35);
+  background:rgba(12,13,8,.45);color:#f5c542;font-size:13px;cursor:pointer;line-height:1;padding:0;
+  transition:background .15s,border-color .15s;
+}
+.am-railstar:hover{background:rgba(12,13,8,.75);border-color:#f5c542}
+.am-railbody{padding:11px 13px 13px;background:var(--rl-paper-2);border-top:3px solid var(--am-primary,#333)}
+.am-railname{font-family:'Cinzel',serif;font-weight:700;font-size:17px;line-height:1.05;color:var(--rl-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.am-railprog{
+  display:flex;align-items:baseline;justify-content:space-between;font-family:'Oswald',sans-serif;
+  font-size:9.5px;font-weight:500;letter-spacing:1.1px;text-transform:uppercase;color:var(--rl-mute);margin:8px 0 5px;
+}
+.am-railprog b{color:var(--am-primary,#333)}
+
+/* -------------------------------------------------------- all armies index */
+.am-index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:11px}
+.am-lift{
+  display:block;position:relative;overflow:hidden;text-decoration:none;
+  border:1px solid var(--rl-edge);border-left:3px solid var(--am-primary,#333);
+  background:var(--rl-paper-2);padding:11px 13px 12px;box-shadow:0 1px 6px rgba(20,24,12,.06);
+  transition:transform .16s ease,box-shadow .16s ease;animation:rlFadeIn .35s ease both;
+}
+.am-lift:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(20,24,12,.14)}
+.am-lift-wm{position:absolute;top:50%;left:50%;width:120px;height:120px;opacity:.06;pointer-events:none;transform:translate(-50%,-50%) rotate(15deg)}
+.am-lift-wm img{width:100%;height:100%;object-fit:contain}
+.am-lift-row{position:relative;z-index:1;display:flex;align-items:center;gap:11px}
+.am-glyph{
+  width:38px;height:38px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--am-primary,#333),color-mix(in srgb,var(--am-primary,#333) 60%,transparent));
+  border:1px solid color-mix(in srgb,var(--am-accent,#c79a3a) 50%,transparent);
+}
+.am-glyph img{width:22px;height:22px;object-fit:contain;filter:brightness(0) invert(1);opacity:.95}
+.am-lift-text{min-width:0;flex:1}
+.am-name{font-family:'Oswald',sans-serif;font-size:14.5px;font-weight:600;letter-spacing:.4px;color:var(--rl-ink);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.am-meta{font-family:'Oswald',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--rl-mute);margin-top:2px}
+.am-star{
+  flex-shrink:0;width:26px;height:26px;line-height:1;padding:0;cursor:pointer;font-size:14px;
+  color:var(--rl-mute);background:transparent;border:1px solid var(--rl-edge);transition:color .15s,background .15s,border-color .15s;
+}
+.am-star:hover{color:#c79a3a;border-color:var(--rl-green)}
+.am-star.is-on{color:#c79a3a;background:var(--rl-green-soft);border-color:var(--rl-green)}
+.am-lift-bar{position:relative;z-index:1;height:5px;background:var(--rl-paper-3);margin-top:11px;overflow:hidden}
+.am-lift-bar .rl-track-fill{background:var(--am-primary,#333)}

@@ -18,6 +18,7 @@ PY = sys.executable
 
 LAYERS = [
     ("engine invariants", ["engine_invariants.py"]),
+    ("wargear reachability", ["wargear_reachability.py"]),
     ("api round-trip", ["api_roundtrip.py"]),
     ("multi-detachment", ["multi_detachment.py"]),
     ("golden master (verify)", ["golden_master.py"]),

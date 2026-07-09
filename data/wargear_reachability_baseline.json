@@ -1,0 +1,790 @@
+{
+  "note": "Legal-but-unreachable wargear loadouts per datasheet at default squad size. Shrink-only: run --update-baseline after a reachability phase lands. See docs/WARGEAR_REACHABILITY_PLAN.md.",
+  "audited_count": 1001,
+  "datasheets": {
+    "0536bb6c-1638-41bb-a99c-9ec05c4135e8": {
+      "name": "Legionaries",
+      "unreachable": [
+        "Astartes chainsword + Heavy melee weapon + Plasma pistol"
+      ]
+    },
+    "0cffa359-e5a4-43cd-a1a0-f7b26065d1f7": {
+      "name": "Chaos Terminators",
+      "unreachable": [
+        "Chainfist",
+        "Power fist"
+      ]
+    },
+    "0ec8b8b9-7906-4ab2-87d8-54e8a6e76484": {
+      "name": "Lieutenant",
+      "unreachable": [
+        "Master-crafted power weapon + Neo-volkite pistol + Storm Shield"
+      ]
+    },
+    "1c9d82f2-a0cd-4991-8653-e955460637b3": {
+      "name": "Battlewagon",
+      "unreachable": [
+        "2× Big shoota",
+        "3× Big shoota",
+        "4× Big shoota"
+      ]
+    },
+    "1ccb48ec-c82d-4d27-a4ef-f199e79e8043": {
+      "name": "Fortis Kill Team",
+      "unreachable": [
+        "2× Astartes chainsword",
+        "2× Power weapon",
+        "Astartes chainsword + Astartes grenade launcher + Deathwatch bolt rifle",
+        "Astartes chainsword + Close combat weapon",
+        "Astartes chainsword + Deathwatch bolt rifle",
+        "Astartes chainsword + Hand flamer",
+        "Astartes chainsword + Plasma pistol",
+        "Astartes chainsword + Power fist",
+        "Astartes chainsword + Power weapon",
+        "Astartes chainsword + Thunder hammer",
+        "Astartes grenade launcher + Deathwatch bolt rifle + Power fist",
+        "Astartes grenade launcher + Deathwatch bolt rifle + Power weapon",
+        "Astartes grenade launcher + Deathwatch bolt rifle + Thunder hammer",
+        "Close combat weapon + Hand flamer",
+        "Close combat weapon + Plasma pistol",
+        "Close combat weapon + Power weapon",
+        "Deathwatch bolt rifle + Power fist",
+        "Deathwatch bolt rifle + Power weapon",
+        "Deathwatch bolt rifle + Thunder hammer",
+        "Hand flamer + Power fist",
+        "Hand flamer + Power weapon",
+        "Hand flamer + Thunder hammer",
+        "Plasma pistol + Power fist",
+        "Plasma pistol + Power weapon",
+        "Plasma pistol + Thunder hammer",
+        "Power fist + Power weapon",
+        "Power weapon + Thunder hammer"
+      ]
+    },
+    "2a02787d-3f2f-4733-a1a9-f2e12455fcd7": {
+      "name": "Helbrute",
+      "unreachable": [
+        "2× Combi-bolter + 2× Helbrute fist",
+        "2× Heavy flamer + 2× Helbrute fist",
+        "Combi-bolter + Heavy flamer + 2× Helbrute fist",
+        "Helbrute hammer + Missile launcher",
+        "Missile launcher + Power scourge"
+      ]
+    },
+    "2b1f2b92-4f3a-4c7e-a10b-f33385622fee": {
+      "name": "Dire Avengers",
+      "unreachable": [
+        "Close combat weapon + 2× Diresword + 2× Shuriken pistol",
+        "Close combat weapon + 2× Power glaive + 2× Shuriken pistol",
+        "Close combat weapon + Diresword + Power glaive + 2× Shuriken pistol",
+        "Close combat weapon + Diresword + Power glaive + Shimmershield + Shuriken pistol",
+        "Close combat weapon + Diresword + Shuriken pistol",
+        "Close combat weapon + Power glaive + Shuriken pistol"
+      ]
+    },
+    "2fe849bd-6e7c-441a-b507-06a1e18716bf": {
+      "name": "Tempestus Aquilons",
+      "unreachable": [
+        "2× Hot-shot laspistol",
+        "Bolt pistol + Chainsword",
+        "Bolt pistol + Hot-shot laspistol",
+        "Bolt pistol + Power weapon",
+        "Chainsword",
+        "Chainsword + Hot-shot laspistol",
+        "Close combat weapon + 2× Hot-shot laspistol",
+        "Hot-shot laspistol",
+        "Hot-shot laspistol + Power weapon",
+        "Power weapon"
+      ]
+    },
+    "324075e0-5b62-4972-9eef-0864ddc5e414": {
+      "name": "Helbrute",
+      "unreachable": [
+        "2× Combi-bolter + 2× Helbrute fist",
+        "2× Heavy flamer + 2× Helbrute fist",
+        "Combi-bolter + Heavy flamer + 2× Helbrute fist"
+      ]
+    },
+    "32863243-9242-4adc-badd-5efda0d840eb": {
+      "name": "Strike Team",
+      "unreachable": [
+        "2× Guardian Drone",
+        "2× Gun Drone",
+        "2× Marker Drone",
+        "2× Shield Drone",
+        "Guardian Drone + Gun Drone",
+        "Guardian Drone + Marker Drone",
+        "Guardian Drone + Shield Drone",
+        "Gun Drone + Marker Drone",
+        "Gun Drone + Shield Drone",
+        "Marker Drone + Shield Drone"
+      ]
+    },
+    "33ef24f6-be56-47ce-ad82-4300158dd612": {
+      "name": "Rogal Dorn Battle Tank",
+      "unreachable": [
+        "3× Heavy stubber",
+        "Coaxial autocannon + Oppressor cannon"
+      ]
+    },
+    "357623fb-321e-4365-8935-cd104423f6db": {
+      "name": "Execrator",
+      "unreachable": [
+        "Pyre pistol"
+      ]
+    },
+    "37b676c9-24aa-465c-97fe-6f1ebdd907e2": {
+      "name": "Chaos Acastus Knight Porphyrion",
+      "unreachable": [
+        "2× Lascannon",
+        "Acastus autocannon + Lascannon"
+      ]
+    },
+    "3dbc2efc-6cfd-4636-8502-d31b190b83ba": {
+      "name": "Riptide Battlesuit",
+      "unreachable": [
+        "2× Missile Drone"
+      ]
+    },
+    "4031c312-82d0-4f15-b41b-addf144d3035": {
+      "name": "Contemptor-Achillus Dreadnought",
+      "unreachable": [
+        "2× Infernus incinerator",
+        "2× Twin adrathic destructor",
+        "Infernus incinerator + Lastrum storm bolter",
+        "Infernus incinerator + Twin adrathic destructor",
+        "Lastrum storm bolter + Twin adrathic destructor"
+      ]
+    },
+    "40f210ca-9412-4828-ac96-9bf6182df755": {
+      "name": "Helbrute",
+      "unreachable": [
+        "2× Heavy flamer + 2× Helbrute fist",
+        "2× Helbrute fist + 2× Inferno combi-bolter",
+        "Heavy flamer + 2× Helbrute fist + Inferno combi-bolter"
+      ]
+    },
+    "45e2f2df-cf9d-44e6-8f50-144206de2faa": {
+      "name": "Hernkyn Yaegirs",
+      "unreachable": [
+        "Bolt revolver + Plasma knife"
+      ]
+    },
+    "47e790b3-2abd-4230-b280-ae87e036dad8": {
+      "name": "Stormraven Gunship",
+      "unreachable": [
+        "2× Hurricane bolter"
+      ]
+    },
+    "54ab0ff3-c598-452c-b9e5-4128d0a3957c": {
+      "name": "Inquisitorial Chimera",
+      "unreachable": [
+        "2× Heavy bolter",
+        "2× Heavy bolter + Heavy stubber",
+        "2× Heavy bolter + Storm bolter",
+        "2× Heavy flamer",
+        "2× Heavy flamer + Heavy stubber",
+        "2× Heavy flamer + Storm bolter",
+        "Heavy bolter + Heavy flamer",
+        "Heavy bolter + Heavy flamer + Heavy stubber",
+        "Heavy bolter + Heavy flamer + Storm bolter",
+        "Storm bolter"
+      ]
+    },
+    "556ff0b6-fd5e-4888-9b93-a5b5f730a2b2": {
+      "name": "Chaos Rhino",
+      "unreachable": [
+        "Combi-weapon",
+        "Combi-weapon + Havoc launcher",
+        "Havoc launcher"
+      ]
+    },
+    "56a89836-34ad-4a12-8259-050aa1f8c36f": {
+      "name": "Tactical Squad",
+      "unreachable": [
+        "Astartes chainsword + Bolt pistol",
+        "Astartes chainsword + Boltgun",
+        "Astartes chainsword + Combi-weapon",
+        "Astartes chainsword + Grav-pistol",
+        "Astartes chainsword + Plasma pistol",
+        "Astartes chainsword + Power fist",
+        "Astartes chainsword + Power weapon",
+        "Astartes chainsword + Storm bolter",
+        "Astartes chainsword + Thunder hammer",
+        "Bolt pistol + Combi-weapon",
+        "Bolt pistol + Power fist",
+        "Bolt pistol + Power weapon",
+        "Bolt pistol + Storm bolter",
+        "Bolt pistol + Thunder hammer",
+        "Boltgun + Grav-pistol",
+        "Boltgun + Plasma pistol",
+        "Boltgun + Power fist",
+        "Boltgun + Power weapon",
+        "Boltgun + Thunder hammer",
+        "Combi-weapon + Grav-pistol",
+        "Combi-weapon + Plasma pistol",
+        "Combi-weapon + Power fist",
+        "Combi-weapon + Power weapon",
+        "Combi-weapon + Thunder hammer",
+        "Grav-pistol + Power fist",
+        "Grav-pistol + Power weapon",
+        "Grav-pistol + Storm bolter",
+        "Grav-pistol + Thunder hammer",
+        "Plasma pistol + Power fist",
+        "Plasma pistol + Power weapon",
+        "Plasma pistol + Storm bolter",
+        "Plasma pistol + Thunder hammer",
+        "Power fist + Power weapon",
+        "Power fist + Storm bolter",
+        "Power fist + Thunder hammer",
+        "Power weapon + Storm bolter",
+        "Power weapon + Thunder hammer",
+        "Storm bolter + Thunder hammer",
+        "Twin lightning claws"
+      ]
+    },
+    "56ceb48f-5b5a-46d7-830c-09e63cb888bb": {
+      "name": "Helbrute",
+      "unreachable": [
+        "2× Combi-bolter + 2× Helbrute fist",
+        "2× Heavy flamer + 2× Helbrute fist",
+        "Combi-bolter + Heavy flamer + 2× Helbrute fist"
+      ]
+    },
+    "597b7e1e-6e9b-4921-9089-bde707b16674": {
+      "name": "Vespid Stingwings",
+      "unreachable": [
+        "Oversight Drone"
+      ]
+    },
+    "607500c7-beb1-48fa-943d-e6cf645137d2": {
+      "name": "Tiger Shark",
+      "unreachable": [
+        "2× Seeker missile",
+        "3× Seeker missile",
+        "4× Seeker missile",
+        "5× Seeker missile",
+        "6× Seeker missile"
+      ]
+    },
+    "685b7218-f701-4101-9e15-c7d1047dc65f": {
+      "name": "Acastus Knight Porphyrion",
+      "unreachable": [
+        "2× Lascannon",
+        "Acastus autocannon + Lascannon"
+      ]
+    },
+    "6a88fb5f-9a97-4ceb-a25c-1990c09eb2c0": {
+      "name": "Wulfen Dreadnought",
+      "unreachable": [
+        "Blizzard Shield + Fenrisian great axe + Heavy flamer",
+        "Blizzard Shield + Fenrisian great axe + Storm bolter",
+        "Blizzard Shield + Great wolf claw + 2× Heavy flamer",
+        "Blizzard Shield + Great wolf claw + 2× Storm bolter",
+        "Blizzard Shield + Great wolf claw + Heavy flamer + Storm bolter",
+        "Fenrisian great axe + Great wolf claw + Heavy flamer"
+      ]
+    },
+    "71d2b1b5-e274-4c8b-aea5-9edfe0ce72e1": {
+      "name": "Canoptek Spyders",
+      "unreachable": [
+        "2× Particle beamer"
+      ]
+    },
+    "72f4b744-afbe-4846-9ec6-2c4a34674a48": {
+      "name": "Big’ed Bossbunka",
+      "unreachable": [
+        "3× Big shoota",
+        "4× Big shoota"
+      ]
+    },
+    "74899fa9-1678-4669-9dce-ffcade67a8a2": {
+      "name": "Stormraven Gunship",
+      "unreachable": [
+        "2× Hurricane bolter"
+      ]
+    },
+    "74c044ed-6a53-45a9-ab84-7d1f5a30bada": {
+      "name": "Devastator Squad",
+      "unreachable": [
+        "Astartes chainsword + Bolt pistol",
+        "Astartes chainsword + Boltgun",
+        "Astartes chainsword + Combi-weapon",
+        "Astartes chainsword + Grav-pistol",
+        "Astartes chainsword + Plasma pistol",
+        "Astartes chainsword + Power fist",
+        "Astartes chainsword + Power weapon",
+        "Astartes chainsword + Thunder hammer",
+        "Bolt pistol + Combi-weapon",
+        "Bolt pistol + Power fist",
+        "Bolt pistol + Power weapon",
+        "Bolt pistol + Thunder hammer",
+        "Boltgun + Grav-pistol",
+        "Boltgun + Plasma pistol",
+        "Boltgun + Power fist",
+        "Boltgun + Power weapon",
+        "Boltgun + Thunder hammer",
+        "Combi-weapon + Grav-pistol",
+        "Combi-weapon + Plasma pistol",
+        "Combi-weapon + Power fist",
+        "Combi-weapon + Power weapon",
+        "Combi-weapon + Thunder hammer",
+        "Grav-pistol + Power fist",
+        "Grav-pistol + Power weapon",
+        "Grav-pistol + Thunder hammer",
+        "Plasma pistol + Power fist",
+        "Plasma pistol + Power weapon",
+        "Plasma pistol + Thunder hammer",
+        "Power fist + Power weapon",
+        "Power fist + Thunder hammer",
+        "Power weapon + Thunder hammer"
+      ]
+    },
+    "7610f3fb-f9cf-4c95-8f30-c7a44dc6a0a3": {
+      "name": "Ethereal",
+      "unreachable": [
+        "2× Gun Drone",
+        "2× Marker Drone",
+        "2× Shield Drone"
+      ]
+    },
+    "7a2d34de-4d07-43a2-928a-2be9dfdc47a7": {
+      "name": "AX-1-0 Tiger Shark",
+      "unreachable": [
+        "2× Seeker missile",
+        "3× Seeker missile",
+        "4× Seeker missile",
+        "5× Seeker missile",
+        "6× Seeker missile"
+      ]
+    },
+    "7b244876-3ee9-4ae5-85e2-457f55569011": {
+      "name": "Wracks",
+      "unreachable": [
+        "Hexrifle + Power weapon",
+        "Hexrifle + Torturer’s tool",
+        "Liquifier gun + Power weapon",
+        "Liquifier gun + Torturer’s tool",
+        "Ossefactor + Power weapon",
+        "Ossefactor + Torturer’s tool",
+        "Power weapon + Stinger pistol",
+        "Stinger pistol + Torturer’s tool"
+      ]
+    },
+    "7ddf7559-7584-434a-8f03-95faed97a0d6": {
+      "name": "Commander in Coldstar Battlesuit",
+      "unreachable": [
+        "2× Gun Drone",
+        "2× Marker Drone",
+        "2× Shield Drone"
+      ]
+    },
+    "84f96802-860d-4058-badd-7e2e12bd007e": {
+      "name": "Wraithlord",
+      "unreachable": [
+        "2× Bright lance",
+        "2× Flamer",
+        "2× Missile launcher",
+        "2× Scatter laser",
+        "2× Shuriken cannon",
+        "2× Starcannon",
+        "Flamer + Shuriken catapult"
+      ]
+    },
+    "856d4761-9f7d-4f3f-8c1d-429123e96ae7": {
+      "name": "Ironkin Steeljacks with Heavy Volkanite Disintegrators",
+      "unreachable": [
+        "Autoch-pattern bolter + Plasma sword + Preymark Crest"
+      ]
+    },
+    "914f5a07-e9e1-4cad-a149-fd7b0d07298a": {
+      "name": "Deff Dread",
+      "unreachable": [
+        "2× Big shoota + 2× Kustom mega-blasta",
+        "2× Big shoota + 2× Rokkit launcha",
+        "2× Big shoota + 2× Skorcha",
+        "2× Big shoota + Dread klaw + Kustom mega-blasta",
+        "2× Big shoota + Dread klaw + Rokkit launcha",
+        "2× Big shoota + Dread klaw + Skorcha",
+        "2× Big shoota + Kustom mega-blasta + Rokkit launcha",
+        "2× Big shoota + Kustom mega-blasta + Skorcha",
+        "2× Big shoota + Rokkit launcha + Skorcha",
+        "2× Dread klaw + 2× Kustom mega-blasta",
+        "2× Dread klaw + 2× Rokkit launcha",
+        "2× Dread klaw + 2× Skorcha",
+        "2× Dread klaw + Kustom mega-blasta + Rokkit launcha",
+        "2× Dread klaw + Kustom mega-blasta + Skorcha",
+        "2× Dread klaw + Rokkit launcha + Skorcha",
+        "2× Kustom mega-blasta + 2× Rokkit launcha",
+        "2× Kustom mega-blasta + 2× Skorcha",
+        "2× Kustom mega-blasta + Rokkit launcha + Skorcha",
+        "2× Rokkit launcha + 2× Skorcha",
+        "3× Big shoota + Dread klaw",
+        "3× Big shoota + Kustom mega-blasta",
+        "3× Big shoota + Rokkit launcha",
+        "3× Big shoota + Skorcha",
+        "3× Dread klaw + Kustom mega-blasta",
+        "3× Dread klaw + Rokkit launcha",
+        "3× Dread klaw + Skorcha",
+        "3× Kustom mega-blasta + Rokkit launcha",
+        "3× Kustom mega-blasta + Skorcha",
+        "3× Rokkit launcha + Skorcha",
+        "4× Big shoota",
+        "4× Dread klaw",
+        "4× Kustom mega-blasta",
+        "4× Rokkit launcha",
+        "4× Skorcha",
+        "Big shoota + 2× Dread klaw + Kustom mega-blasta",
+        "Big shoota + 2× Dread klaw + Rokkit launcha",
+        "Big shoota + 2× Dread klaw + Skorcha",
+        "Big shoota + 2× Kustom mega-blasta + Rokkit launcha",
+        "Big shoota + 2× Kustom mega-blasta + Skorcha",
+        "Big shoota + 2× Rokkit launcha + Skorcha",
+        "Big shoota + 3× Dread klaw",
+        "Big shoota + 3× Kustom mega-blasta",
+        "Big shoota + 3× Rokkit launcha",
+        "Big shoota + 3× Skorcha",
+        "Big shoota + Dread klaw + 2× Kustom mega-blasta",
+        "Big shoota + Dread klaw + 2× Rokkit launcha",
+        "Big shoota + Dread klaw + 2× Skorcha",
+        "Big shoota + Dread klaw + Kustom mega-blasta + Rokkit launcha",
+        "Big shoota + Dread klaw + Kustom mega-blasta + Skorcha",
+        "Big shoota + Dread klaw + Rokkit launcha + Skorcha",
+        "Big shoota + Kustom mega-blasta + 2× Rokkit launcha",
+        "Big shoota + Kustom mega-blasta + 2× Skorcha",
+        "Big shoota + Kustom mega-blasta + Rokkit launcha + Skorcha",
+        "Big shoota + Rokkit launcha + 2× Skorcha",
+        "Dread klaw + 2× Kustom mega-blasta + Rokkit launcha",
+        "Dread klaw + 2× Kustom mega-blasta + Skorcha",
+        "Dread klaw + 2× Rokkit launcha + Skorcha",
+        "Dread klaw + 3× Kustom mega-blasta",
+        "Dread klaw + 3× Rokkit launcha",
+        "Dread klaw + 3× Skorcha",
+        "Dread klaw + Kustom mega-blasta + 2× Rokkit launcha",
+        "Dread klaw + Kustom mega-blasta + 2× Skorcha",
+        "Dread klaw + Kustom mega-blasta + Rokkit launcha + Skorcha",
+        "Dread klaw + Rokkit launcha + 2× Skorcha",
+        "Kustom mega-blasta + 2× Rokkit launcha + Skorcha",
+        "Kustom mega-blasta + 3× Rokkit launcha",
+        "Kustom mega-blasta + 3× Skorcha",
+        "Kustom mega-blasta + Rokkit launcha + 2× Skorcha",
+        "Rokkit launcha + 3× Skorcha"
+      ]
+    },
+    "93427578-9687-4e27-b9a7-a81825e5d028": {
+      "name": "Chosen",
+      "unreachable": [
+        "Accursed weapon + Bolt pistol + Combi-weapon",
+        "Accursed weapon + Combi-weapon + Plasma pistol",
+        "Bolt pistol + Boltgun + Power fist",
+        "Bolt pistol + Paired accursed weapons",
+        "Boltgun + Plasma pistol + Power fist",
+        "Paired accursed weapons + Plasma pistol"
+      ]
+    },
+    "938a5124-b306-4d33-a23e-1c84ad3f86ba": {
+      "name": "Hekaton Land Fortress",
+      "unreachable": [
+        "2× Twin ion beamer",
+        "Twin bolt cannon + Twin ion beamer"
+      ]
+    },
+    "9648d234-c523-4d9d-baa4-84b921ca2add": {
+      "name": "Telemon Heavy Dreadnought",
+      "unreachable": [
+        "2× Arachnus storm cannon",
+        "2× Telemon caestus + 2× Twin plasma projector",
+        "Arachnus storm cannon + Iliastus accelerator culverin",
+        "Arachnus storm cannon + Telemon caestus + Twin plasma projector",
+        "Iliastus accelerator culverin + Telemon caestus + Twin plasma projector"
+      ]
+    },
+    "9b28d56a-79af-4eb9-8617-631b28072dc6": {
+      "name": "Chaos Rhino",
+      "unreachable": [
+        "Combi-weapon + Havoc launcher",
+        "Havoc launcher"
+      ]
+    },
+    "9b535b98-681a-4812-b574-e95134a681e4": {
+      "name": "Reiver Squad",
+      "unreachable": [
+        "Bolt carbine + Close combat weapon + Combat knife + Special issue bolt pistol",
+        "Bolt carbine + Close combat weapon + Special issue bolt pistol"
+      ]
+    },
+    "9c20e4f6-fe52-42e5-9269-c0e61148cc6c": {
+      "name": "Aquila Kill Team",
+      "unreachable": [
+        "Astartes grenade launcher + Bolt pistol + Close combat weapon + Hellstorm bolt rifle",
+        "Bolt pistol + Close combat weapon + Frag cannon"
+      ]
+    },
+    "9dbca5b4-4910-4f02-ac5e-f6a70cf8cfaa": {
+      "name": "Blightlord Terminators",
+      "unreachable": [
+        "Combi-weapon"
+      ]
+    },
+    "a2e5f8c1-cd48-456c-b390-064b081274f7": {
+      "name": "Chaos Rhino",
+      "unreachable": [
+        "Combi-weapon + Havoc launcher",
+        "Havoc launcher"
+      ]
+    },
+    "a5d1a499-47aa-4b7a-9913-09172ee91bd4": {
+      "name": "Hive Tyrant",
+      "unreachable": [
+        "2× Monstrous scything talons",
+        "Heavy venom cannon + Monstrous bonesword and lash whip",
+        "Heavy venom cannon + Monstrous scything talons",
+        "Monstrous bonesword and lash whip + Stranglethorn cannon",
+        "Monstrous scything talons + Stranglethorn cannon"
+      ]
+    },
+    "a8d9a89f-cda7-4b20-ba69-b8d8f7d8dacc": {
+      "name": "Valkyrie",
+      "unreachable": [
+        "2× Heavy bolter"
+      ]
+    },
+    "a923c76a-632d-491c-8d71-83d81fdf44f2": {
+      "name": "Chaos Rhino",
+      "unreachable": [
+        "Havoc launcher",
+        "Havoc launcher + Inferno combi-weapon"
+      ]
+    },
+    "aa754bcb-3a8d-4d3b-94d6-16d435fadd0e": {
+      "name": "Hammerhead Gunship",
+      "unreachable": [
+        "2× Seeker missile"
+      ]
+    },
+    "aae5a0a5-112d-465e-97f4-4789ad1baddf": {
+      "name": "Chimera",
+      "unreachable": [
+        "2× Heavy bolter",
+        "2× Heavy flamer",
+        "Heavy bolter + Heavy flamer"
+      ]
+    },
+    "b55995e6-0a64-426b-aaf9-52999ab0a991": {
+      "name": "Devilfish",
+      "unreachable": [
+        "2× Seeker missile"
+      ]
+    },
+    "b77a7259-c507-4293-a579-f83a8b721a54": {
+      "name": "War Walkers",
+      "unreachable": [
+        "2× Bright lance",
+        "2× Missile launcher",
+        "2× Scatter laser",
+        "2× Starcannon",
+        "Bright lance + Missile launcher",
+        "Bright lance + Scatter laser",
+        "Bright lance + Shuriken cannon",
+        "Bright lance + Starcannon",
+        "Missile launcher + Scatter laser",
+        "Missile launcher + Shuriken cannon",
+        "Missile launcher + Starcannon",
+        "Scatter laser + Shuriken cannon",
+        "Scatter laser + Starcannon",
+        "Shuriken cannon + Starcannon"
+      ]
+    },
+    "b7a31553-3069-465c-892f-1ac3130e83e4": {
+      "name": "Sydonian Skatros",
+      "unreachable": [
+        "Skatros transuranic arquebus"
+      ]
+    },
+    "bf1908d4-18e7-46fd-a308-f65e69b70974": {
+      "name": "Decimus Kill Team",
+      "unreachable": [
+        "Astartes grenade launcher + Bolt pistol + Close combat weapon + Hellstorm bolt rifle",
+        "Bolt pistol + Close combat weapon + Frag cannon"
+      ]
+    },
+    "c2428762-4f6e-418e-8943-28b4abede45f": {
+      "name": "Broadside Battlesuits",
+      "unreachable": [
+        "2× Gun Drone",
+        "2× Marker Drone",
+        "2× Missile Drone",
+        "2× Shield Drone"
+      ]
+    },
+    "c56c8e39-c3b7-4e5e-83d9-62e07801563d": {
+      "name": "Land Speeder",
+      "unreachable": [
+        "Heavy flamer"
+      ]
+    },
+    "c680a0cd-db4a-467a-a4fe-aaf3feb0b2fc": {
+      "name": "Phantom Titan",
+      "unreachable": [
+        "5× Pulse laser + 2× Wraith glaive",
+        "D-bombard + 2× Pulse laser + Wraith glaive",
+        "D-bombard + Phantom starcannon + Pulse laser + Wraith glaive",
+        "Phantom pulsar + 3× Pulse laser + Wraith glaive",
+        "Phantom starcannon + 4× Pulse laser + 2× Wraith glaive"
+      ]
+    },
+    "c9466348-3667-4ea4-8f2f-597dc6072b9b": {
+      "name": "Chaos Terminator Squad",
+      "unreachable": [
+        "Chainfist",
+        "Power fist"
+      ]
+    },
+    "cac85f15-389a-45cf-888d-e17b3285fbe5": {
+      "name": "Wraithknight",
+      "unreachable": [
+        "2× Scatter laser",
+        "2× Shuriken cannon",
+        "2× Starcannon"
+      ]
+    },
+    "cd03e48d-ef51-40a1-97c7-0f2ada778c7c": {
+      "name": "Tankbustas",
+      "unreachable": [
+        "Choppa + Rokkit pistol + Smash hammer"
+      ]
+    },
+    "ce69c919-6a01-4e21-b1bd-2b768b537657": {
+      "name": "Commander in Enforcer Battlesuit",
+      "unreachable": [
+        "2× Gun Drone",
+        "2× Marker Drone",
+        "2× Shield Drone"
+      ]
+    },
+    "cec275e8-0bf3-499c-9646-3b84443eb02c": {
+      "name": "Sternguard Veteran Squad",
+      "unreachable": [
+        "Astartes chainsword + Sternguard bolt rifle",
+        "Power fist + Sternguard bolt rifle",
+        "Power weapon + Sternguard bolt rifle"
+      ]
+    },
+    "d1fe5e7d-f5c8-449d-9714-958112c27af6": {
+      "name": "Piranhas",
+      "unreachable": [
+        "2× Seeker missile"
+      ]
+    },
+    "d497f327-8293-497d-98b1-fd5a0b957de7": {
+      "name": "Breacher Team",
+      "unreachable": [
+        "2× Guardian Drone",
+        "2× Gun Drone",
+        "2× Marker Drone",
+        "2× Shield Drone",
+        "Guardian Drone + Gun Drone",
+        "Guardian Drone + Marker Drone",
+        "Guardian Drone + Shield Drone",
+        "Gun Drone + Marker Drone",
+        "Gun Drone + Shield Drone",
+        "Marker Drone + Shield Drone"
+      ]
+    },
+    "e162e0db-3a17-43c7-9f42-a0c0999e4fad": {
+      "name": "Talonstrike Kill Team",
+      "unreachable": [
+        "Astartes chainsword + Hand flamer",
+        "Astartes chainsword + Plasma pistol",
+        "Hand flamer + Power fist",
+        "Hand flamer + Power weapon",
+        "Heavy bolt pistol + Power fist",
+        "Heavy bolt pistol + Power weapon",
+        "Plasma pistol + Power fist",
+        "Plasma pistol + Power weapon"
+      ]
+    },
+    "e4c530ff-d042-4f57-9d13-17bb571cdbc4": {
+      "name": "Wraithknight with Ghostglaive",
+      "unreachable": [
+        "2× Scatter laser",
+        "2× Shuriken cannon",
+        "2× Starcannon"
+      ]
+    },
+    "e796b42f-64bb-472a-86bb-1e1d695e3f1b": {
+      "name": "Chaos Rhino",
+      "unreachable": [
+        "Combi-weapon + Havoc launcher",
+        "Havoc launcher"
+      ]
+    },
+    "eb4c3561-28e7-4062-b7bb-fd312958d7d5": {
+      "name": "Stealth Battlesuits",
+      "unreachable": [
+        "2× Gun Drone",
+        "2× Gun Drone + 2× Marker Drone",
+        "2× Gun Drone + Marker Drone",
+        "2× Marker Drone",
+        "Gun Drone + 2× Marker Drone"
+      ]
+    },
+    "ee075c03-bc58-414d-8124-32feba88554b": {
+      "name": "Shield-Captain",
+      "unreachable": [
+        "Praesidium Shield + Pyrithite spear",
+        "Praesidium Shield + Sentinel blade"
+      ]
+    },
+    "f61e2503-2416-4259-bb41-b1089202ffb4": {
+      "name": "Rogal Dorn Commander",
+      "unreachable": [
+        "2× Multi-melta",
+        "3× Heavy stubber"
+      ]
+    },
+    "f7219f56-0d7e-46f0-bb56-73fc596ee09e": {
+      "name": "Aggressor Squad",
+      "unreachable": [
+        "Auto boltstorm gauntlets + Fragstorm grenade launcher"
+      ]
+    },
+    "f7aff398-85bb-4f56-bd37-bfc91532214c": {
+      "name": "Sternguard Veteran Squad",
+      "unreachable": [
+        "Astartes chainsword + Sternguard bolt rifle",
+        "Power fist + Sternguard bolt rifle",
+        "Power weapon + Sternguard bolt rifle"
+      ]
+    },
+    "f94a64f8-598a-4556-b7eb-be6413305eb1": {
+      "name": "Inquisitor",
+      "unreachable": [
+        "Bolt pistol + Force weapon + Psychic Gifts + Psychic Shock Wave",
+        "Combi-weapon + Force weapon + Psychic Gifts + Psychic Shock Wave"
+      ]
+    },
+    "fcd98c59-1972-4870-b8f9-863fe78ac349": {
+      "name": "Cadre Fireblade",
+      "unreachable": [
+        "2× Gun Drone",
+        "2× Marker Drone",
+        "2× Shield Drone"
+      ]
+    },
+    "fdbbd4fa-7f3e-4b4f-ac05-0e8ee653b8ea": {
+      "name": "Bloodthirster",
+      "unreachable": [
+        "Axe of Khorne + Bloodflail",
+        "Axe of Khorne + Lash of Khorne"
+      ]
+    },
+    "ffe69f08-0df8-48ae-a590-470233040666": {
+      "name": "Bloodthirster",
+      "unreachable": [
+        "Axe of Khorne + Bloodflail",
+        "Axe of Khorne + Lash of Khorne"
+      ]
+    }
+  }
+}

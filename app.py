@@ -339,6 +339,7 @@ def _factions_payload(info=None, owned=None):
         primary, accent, _ = ft.theme_for(f["name"])
         f["primary"] = primary
         f["accent"]  = accent
+        f["allegiance"] = ft.allegiance_for(f["name"])
         f["owned_units"]      = by_faction.get(f["id"], 0)
         f["owned_minis"]     = minis_by_faction.get(f["id"], 0)
         f["bought_units"]     = bought_by_faction.get(f["id"], 0)
@@ -385,6 +386,19 @@ def missions_page():
         "missions.html",
         active_page="missions",
         breadcrumb=[{"label": "Missions"}],
+    )
+
+
+@app.route("/how-to-play")
+def guide_page():
+    """Illustrated new-player walkthrough (blank table to final score).
+    Static editorial page in the shared manual style; the layout figures
+    are hydrated client-side from /api/missions. Editorial source of truth
+    is data/rules/how_to_play.md - keep the two in step."""
+    return render_template(
+        "guide.html",
+        active_page="guide",
+        breadcrumb=[{"label": "How to Play"}],
     )
 
 

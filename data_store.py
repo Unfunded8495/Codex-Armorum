@@ -104,6 +104,12 @@ _PRIMARY_FACTION_OVERRIDE_RULES = [
     # keywords place it in Death Guard. No "Unaligned" faction row to fall back
     # on, so an explicit override is the only way to land it in the right place.
     ("Maggot Lords Plague Marines", "Death Guard"),
+    # Sir Hekhtur (Codex: Imperial Knights, Epic Hero) also ships with zero
+    # datasheet_faction rows in data_version 886 - the same gap ListForge shows -
+    # and his keywords carry no faction keyword to fall back on. His publication
+    # (Codex: Imperial Knights) and every codex-sibling place him in Imperial
+    # Knights, so pin him there explicitly.
+    ("Sir Hekhtur", "Imperial Knights"),
 ]
 
 
@@ -265,16 +271,21 @@ class DataStore:
                     conn.execute("SELECT * FROM %s ORDER BY %s" % (table, order)).fetchall()
                     if r["mission_pack_id"] not in cp_ids]
 
-        primary = rows("mission_primary")
-        for m in primary:
-            try:
-                m["objectives"] = json.loads(m.get("objectives") or "[]")
-            except (TypeError, ValueError):
-                m["objectives"] = []
+        def with_objectives(table):
+            # `objectives` is a JSON blob of period rows, each carrying its own
+            # scoring lines (criteria + victory points); decode it to a list.
+            out = rows(table)
+            for m in out:
+                try:
+                    m["objectives"] = json.loads(m.get("objectives") or "[]")
+                except (TypeError, ValueError):
+                    m["objectives"] = []
+            return out
+
         self.missions = {
             "packs":       [p for p in packs if p["id"] not in cp_ids],
-            "primary":     primary,
-            "secondary":   rows("mission_secondary"),
+            "primary":     with_objectives("mission_primary"),
+            "secondary":   with_objectives("mission_secondary"),
             "deployments": rows("mission_deployment"),
             "layouts":     rows("mission_layout"),
             "presets":     rows("mission_preset"),

@@ -1,0 +1,86 @@
+/* =====================================================================
+   unit-sheet.css - Unit Datasheet page (#/unit/:did)
+   ---------------------------------------------------------------------
+   Full paper restyle of the datasheet, the Card view, the My Collection
+   tab and the linked catalogue-release editor. The shared datasheet
+   renderers (datasheet.js / datasheet-card.js) are also used by the Army
+   Builder, so nothing here changes their markup - instead we remap the
+   style.css design tokens INSIDE the paper shell (body.unit-sheet .rl-shell,
+   not on body, so the dark top-bar + footer keep their tokens) and spot-fix
+   the few elements that hardcode dark overlays. Every rule is scoped to
+   body.unit-sheet, so the Army Builder's datasheet card is untouched.
+   Shared skin: spa-shell.css.
+   ===================================================================== */
+
+/* ---- token remap: flip the datasheet region to paper ----------------- */
+body.unit-sheet .rl-shell{
+  --panel:var(--rl-paper-2);
+  --panel-2:var(--rl-paper);
+  --ink-2:var(--rl-paper-3);
+  --edge:var(--rl-edge);
+  --parch:var(--rl-ink);
+  --parch-dim:var(--rl-mute);
+  --gold:#8a6a24;          /* dark bronze: readable accent on cream */
+  --gold-bright:#4f3d12;   /* near-ink bronze: emphasis text */
+  --shadow:0 8px 20px rgba(20,24,12,.14);
+  --line:var(--rl-edge);       /* ds-view-toggle fallback var */
+  --ink-dim:var(--rl-mute);    /* ds-view-toggle fallback var */
+  /* --ink is deliberately left dark: it is used as text ON gold/bright
+     plates (invuln value, active Card-view button) which must stay dark. */
+}
+
+/* layout: a little breathing room at the top of the paper wrap */
+body.unit-sheet .rl-wrap{padding-top:22px}
+body.unit-sheet .detail-name{color:var(--rl-ink)}
+
+/* ---- datasheet spot-fixes (hardcoded dark overlays) ------------------ */
+/* stat-box label header + wargear table header were rgba(0,0,0,.35) */
+body.unit-sheet .stat-box .lbl{background:var(--rl-paper-3);border-bottom-color:var(--rl-edge)}
+body.unit-sheet table.wargear th{background:var(--rl-paper-3)}
+body.unit-sheet table.wargear td{border-bottom-color:var(--rl-edge-soft)}
+body.unit-sheet table.wargear tr:hover td{background:var(--rl-green-soft)}
+/* weapon-keyword tags were rgba(0,0,0,.25) */
+body.unit-sheet .wkw-tag{background:var(--rl-paper-3);border-color:var(--rl-edge)}
+/* keyword pills: border was rgba(44,42,53,.8) */
+body.unit-sheet .pill{border-color:var(--rl-edge)}
+body.unit-sheet .pill.faction{
+  border-color:color-mix(in srgb,var(--gold) 55%,transparent);
+  background:color-mix(in srgb,var(--gold) 12%,transparent);
+}
+/* invuln badge: keep the bright gold plate with dark value text */
+body.unit-sheet .invuln-badge{border-color:color-mix(in srgb,var(--gold) 55%,transparent)}
+body.unit-sheet .invuln-val{background:linear-gradient(180deg,#e8c873,#c79a3a);color:#16180f}
+body.unit-sheet .points-box{border-color:color-mix(in srgb,var(--gold) 45%,transparent)}
+
+/* tabs: paper active tab */
+body.unit-sheet .unit-tab.is-active{
+  background:var(--rl-paper-2);border-color:var(--rl-edge);border-bottom-color:var(--rl-paper-2);
+}
+
+/* ---- My Collection tab (mini group cards) --------------------------- */
+body.unit-sheet .coll-count{color:var(--gold)}
+body.unit-sheet .mini-group-card{
+  background:var(--rl-paper-2);border:1px solid var(--rl-edge);
+  border-left:2px solid color-mix(in srgb,var(--gold) 55%,transparent);
+}
+body.unit-sheet .mc-sculpt{background:var(--rl-paper-3);color:var(--rl-mute)}
+body.unit-sheet .mgc-minis{border-top-color:var(--rl-edge)}
+body.unit-sheet .mini-sub-card{background:var(--rl-paper-3);border-color:var(--rl-edge)}
+body.unit-sheet .mgc-thumb{border-color:var(--rl-edge)}
+/* gear chips + notes textarea + selects pick up --ink-2/--edge from the
+   remap; the gear chip keeps a subtle paper tint */
+body.unit-sheet .gear-chip{background:var(--rl-paper-3);border-color:var(--rl-edge);color:var(--rl-ink-soft)}
+body.unit-sheet .gear-chip.muted{color:var(--rl-mute)}
+body.unit-sheet .mc-notes{background:var(--rl-paper);border-color:var(--rl-edge);color:var(--rl-ink)}
+
+/* ---- linked catalogue-release editor -------------------------------- */
+body.unit-sheet .linked-releases{border-color:var(--rl-edge)}
+body.unit-sheet .linked-release-item{border-bottom-color:var(--rl-edge-soft)}
+body.unit-sheet .linked-release-item.is-editing .linked-release-row{background:var(--rl-green-soft)}
+body.unit-sheet .linked-release-thumb,
+body.unit-sheet .linked-release-no-img{border-color:var(--rl-edge);background:var(--rl-paper-3)}
+body.unit-sheet .cfe-input,
+body.unit-sheet .ff-input,
+body.unit-sheet .mc-notes,
+body.unit-sheet .lre-img-url{background:var(--rl-paper);border-color:var(--rl-edge);color:var(--rl-ink)}
+body.unit-sheet .am-label{color:var(--gold)}

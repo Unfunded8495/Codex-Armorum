@@ -246,6 +246,7 @@ function renderRosterHeader(army){
       </div>
       <input class="ab-army-title" data-testid="army-title" value="${esc(army.name)}"
              aria-label="Army name" spellcheck="false" placeholder="Army name" onchange="saveArmyMeta()">
+      ${renderMastRules(army)}
       <div class="ab-mast-sub">
         <span id="abMastStats">${esc(army.battle_size||'Custom')} &middot; ${army.points_limit} pts &nbsp;&middot;&nbsp; ${mastStats(army)}</span>
         <span class="ab-mast-hint">Click a unit name for its datasheet</span>
@@ -263,6 +264,86 @@ function refreshMastStats(){
   const el = document.getElementById('abMastStats');
   if(el && state.army) el.innerHTML =
     `${esc(state.army.battle_size||'Custom')} &middot; ${state.army.points_limit} pts &nbsp;&middot;&nbsp; ${mastStats(state.army)}`;
+}
+
+/* ---- masthead rules strip -------------------------------------------------
+   Row under the army name: the army rules, the selected detachments and the
+   Force Disposition they grant, each as a chip that expands its full rules
+   text in a panel below the strip (collapsed by default -- army rule texts
+   run to several thousand characters). Everything comes from the army
+   payload. The disposition explainer is a fixed blurb: w40k.db stores only
+   disposition names; the per-symbol mission matrix lives on the physical
+   event cards, not in the data. */
+
+const DISPOSITION_EXPLAINER = 'Force Disposition is fixed by your choice of '
+  + 'detachment. In Warhammer event play you record one Force Disposition '
+  + 'available to your army when mustering; at the table each player finds '
+  + "their opponent's disposition symbol on their own Force Disposition "
+  + 'card, and the Primary Mission listed below that symbol is the one they '
+  + 'play and score.';
+
+function mastRuleChip(key, label){
+  return `<button type="button" class="ab-mr-chip" data-testid="mast-rule-chip" data-key="${esc(key)}"
+        aria-expanded="false" onclick="toggleMastRule('${esc(key)}')">${esc(label)}<span class="ab-mr-chev">&#9662;</span></button>`;
+}
+
+function renderMastRules(army){
+  const none = `<span class="ab-mr-none">None</span>`;
+  const panels = [];
+  const panel = (key, rules) =>
+    panels.push(`<div class="ab-mr-panel" id="abMrPanel-${esc(key)}" data-testid="mast-rule-panel" hidden>${renderCbRuleList(rules)}</div>`);
+
+  const armyRules = army.army_rules || [];
+  const ruleChips = armyRules.length ? armyRules.map((r,i)=>{
+    panel(`ar-${i}`, [{name:r.name, description:r.body_text}]);
+    return mastRuleChip(`ar-${i}`, r.name);
+  }).join('') : none;
+
+  const dets     = army.detachments || [];
+  const detRules = army.detachment_rules || [];
+  const detChips = dets.length ? dets.map(d=>{
+    panel(`det-${d.id}`, detRules.filter(r=>r.detachment_name===d.name));
+    return mastRuleChip(`det-${d.id}`, d.name);
+  }).join('') : none;
+
+  // Dispositions share one panel (key "disp"): it lists which detachment
+  // grants which disposition, then the generic explainer.
+  const disps = dets.filter(d=>d.disposition);
+  let dispChips = none;
+  if(disps.length){
+    panel('disp', [
+      ...disps.map(d=>({name:d.disposition, description:`Granted by the ${d.name} detachment.`})),
+      {name:'', description:DISPOSITION_EXPLAINER},
+    ]);
+    dispChips = [...new Set(disps.map(d=>d.disposition))]
+      .map(n=>mastRuleChip('disp', n)).join('');
+  }
+
+  const cell = (label, testid, chips)=>`<span class="ab-mr-cell" data-testid="${testid}">
+        <span class="ab-mr-label">${label}</span>${chips}</span>`;
+  return `<div class="ab-mast-rules" data-testid="mast-rules">
+      <div class="ab-mr-row">
+        ${cell('Army Rules', 'mast-rules-army', ruleChips)}
+        ${cell('Detachments', 'mast-rules-detachments', detChips)}
+        ${cell('Force Disposition', 'mast-rules-disposition', dispChips)}
+      </div>
+      ${panels.join('')}
+    </div>`;
+}
+
+// Toggle a rules-strip explanation panel. Chips sharing a key (two
+// detachments granting dispositions open the same panel) stay in sync.
+export function toggleMastRule(key){
+  const p = document.getElementById(`abMrPanel-${key}`);
+  if(!p) return;
+  const opening = p.hidden;
+  p.hidden = !opening;
+  document.querySelectorAll(`.ab-mr-chip[data-key="${key}"]`).forEach(ch=>{
+    ch.setAttribute('aria-expanded', opening ? 'true' : 'false');
+    ch.classList.toggle('is-open', opening);
+    const chev = ch.querySelector('.ab-mr-chev');
+    if(chev) chev.innerHTML = opening ? '&#9652;' : '&#9662;';
+  });
 }
 
 /* ---- configuration card ---------------------------------------------------

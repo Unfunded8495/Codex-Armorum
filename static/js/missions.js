@@ -5,6 +5,7 @@
    Light default + dark reading mode shared with /rules (localStorage
    "caRules.theme"). No scrollIntoView — jumps use scrollTop math. */
 import { esc } from './utils.js';
+import { openLightbox, initLightbox } from './lightbox.js';
 
 const view = document.getElementById('view');
 const stripChipsEl = document.getElementById('mzStripChips');
@@ -30,32 +31,32 @@ const CATS = [
 ];
 
 /* Deployment geometry is not in the data (the DB stores only id + name), so we
-   keep a small schematic map from the known 11th-ed deployment names to zone
-   polygons on a 60x44 board. Shapes are schematic reading aids, not measured
-   maps. Unknown names simply render without a diagram. */
-const DEPLOY_GEOMETRY = {
+   map the known 11th-ed deployment names to their official zone maps (the PNGs
+   shipped under static/images/deployments) plus a short reading note. Unknown
+   names simply render without a map. */
+const DEPLOY_MAPS = {
   'dawn of war': {
-    you: '0,32 60,32 60,44 0,44', enemy: '0,0 60,0 60,12 0,12',
-    note: 'Deploy along opposite long board edges — the classic embattled line.',
+    img: 'ic_dawn_of_war.png',
+    note: 'Deploy along opposite long board edges, the classic embattled line.',
   },
   'hammer and anvil': {
-    you: '0,0 14,0 14,44 0,44', enemy: '46,0 60,0 60,44 46,44',
+    img: 'ic_hammer_and_anvil.png',
     note: 'Deploy along the short board edges; a long advance separates the armies.',
   },
   'search and destroy': {
-    you: '0,22 30,22 30,44 0,44', enemy: '30,0 60,0 60,22 30,22',
+    img: 'ic_search_and_destroy.png',
     note: 'Deploy in diagonally opposite table quarters; everything between is No Man’s Land.',
   },
   'crucible of battle': {
-    you: '0,8 0,44 40,44', enemy: '60,0 20,0 60,36',
+    img: 'ic_crucible_of_battle.png',
     note: 'Deploy in opposite corners along the main diagonal of the battlefield.',
   },
   'sweeping engagement': {
-    you: '0,24 34,44 0,44', enemy: '60,0 26,0 60,20',
+    img: 'ic_sweeping_engagement.png',
     note: 'Angled zones sweep in from opposite corners toward the centre.',
   },
   'tipping point': {
-    you: '0,16 24,44 0,44', enemy: '60,0 36,0 60,28',
+    img: 'ic_tipping_point.png',
     note: 'Offset diagonal zones tilt in toward the contested centre line.',
   },
 };
@@ -83,6 +84,9 @@ async function init(){
   renderToc();
   renderMain();
   bindContentJumps();
+  bindLayoutToggles();
+  bindMapZoom();
+  initLightbox();
   bindScrollSpy();
   if(location.hash) jumpTo(location.hash.slice(1), false);
 }
@@ -100,6 +104,7 @@ function normalise(d){
     secondary: (d.secondary || []).map(m => ({
       id: m.id, name: m.name || '', lore: m.lore || '', brief: m.description || '',
       fixed: !!m.fixed, turn1: !!m.scorable_first_turn,
+      objectives: m.objectives || [],
     })),
     deployments: (d.deployments || []).map(x => ({ id: x.id, name: x.name || '' })),
     layouts:     (d.layouts || []).map(x => ({ id: x.id, name: x.name || '' })),
@@ -118,6 +123,33 @@ function normalise(d){
 /* GW plain-text carries **bold** markers; escape first, then promote pairs. */
 function fmt(s){ return esc(s || '').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
 function count(key){ return (DATA[key] || []).length; }
+
+/* One scoring line: the criteria on the left, the victory-point award on the
+   right. Cumulative rows read as a "+N" bonus; secondary rows also carry the
+   Fixed/Tactical mode they score in and an optional cap. */
+function scoreRow(s){
+  const vp = `${s.cumulative ? '+' : ''}${s.vp != null ? s.vp : 0}VP`;
+  const tags = [];
+  if(s.mode === 'fixed')    tags.push('<span class="mz-score-tag">Fixed</span>');
+  if(s.mode === 'tactical') tags.push('<span class="mz-score-tag">Tactical</span>');
+  if(s.cap)                 tags.push(`<span class="mz-score-tag">max ${esc(String(s.cap))}VP</span>`);
+  if(s.cumulative)          tags.push('<span class="mz-score-tag">cumulative</span>');
+  return `<div class="mz-score-row${s.cumulative ? ' mz-score-row--cumul' : ''}">
+    <span class="mz-score-crit">${fmt(s.criteria || '')}</span>
+    <span class="mz-score-award"><span class="mz-score-vp">${esc(vp)}</span>${tags.join('')}</span>
+  </div>`;
+}
+
+/* One period of a mission card: the period header, its "when", and the
+   scoring lines that score during it. Shared by primary and secondary cards. */
+function objBlock(o){
+  const when = o.when ? `<span class="mz-obj-when">${fmt(o.when)}</span>` : '';
+  const scoring = (o.scoring || []).map(scoreRow).join('');
+  return `<div class="mz-obj">
+    <div class="mz-obj-head"><span class="mz-obj-name">${esc(o.name || '')}</span>${when}</div>
+    ${scoring ? `<div class="mz-score">${scoring}</div>` : ''}
+  </div>`;
+}
 
 /* --------------------------------------------------------- quick-ref strip */
 
@@ -194,9 +226,7 @@ function sectionPrimary(){
     <div class="mz-pri-body">
       ${m.lore ? `<p class="mz-lore">${esc(m.lore)}</p>` : ''}
       ${m.brief ? `<p class="mz-brief">${fmt(m.brief)}</p>` : ''}
-      ${m.objectives.length ? `<div class="mz-objs">${m.objectives.map(o =>
-        `<div class="mz-obj"><span class="mz-obj-name">${esc(o.name || '')}</span>
-          <span class="mz-obj-when">${fmt(o.when || '')}</span></div>`).join('')}</div>` : ''}
+      ${m.objectives.length ? `<div class="mz-objs">${m.objectives.map(objBlock).join('')}</div>` : ''}
     </div>
   </article>`).join('');
   return `<section class="rl-section" id="sec-primary">
@@ -217,6 +247,7 @@ function sectionSecondary(){
     </div>
     ${m.lore ? `<p class="mz-lore">${esc(m.lore)}</p>` : ''}
     ${m.brief ? `<p class="mz-brief">${fmt(m.brief)}</p>` : ''}
+    ${m.objectives.length ? `<div class="mz-objs">${m.objectives.map(objBlock).join('')}</div>` : ''}
   </article>`).join('');
   return `<section class="rl-section" id="sec-secondary">
     ${shead('02', 'Secondary Missions', `${count('secondary')} cards`)}
@@ -225,33 +256,15 @@ function sectionSecondary(){
   </section>`;
 }
 
-function zoneClip(points){
-  const pct = points.split(' ').map(p => {
-    const [x, y] = p.split(',').map(Number);
-    return `${(x / 60 * 100).toFixed(1)}% ${(y / 44 * 100).toFixed(1)}%`;
-  }).join(', ');
-  return `clip-path:polygon(${pct})`;
-}
-function centroid(points){
-  const pts = points.split(' ').map(p => p.split(',').map(Number));
-  const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
-  const cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
-  return `left:${(cx / 60 * 100).toFixed(1)}%;top:${(cy / 44 * 100).toFixed(1)}%`;
-}
-
 function sectionDeployments(){
   const cards = DATA.deployments.map((d, i) => {
-    const geo = DEPLOY_GEOMETRY[(d.name || '').trim().toLowerCase()];
+    const map = DEPLOY_MAPS[(d.name || '').trim().toLowerCase()];
     const num = `Dep ${String(i + 1).padStart(2, '0')}`;
-    const board = geo ? `<div class="mz-board">
-        <div class="mz-zone mz-zone--enemy" style="${zoneClip(geo.enemy)}"></div>
-        <div class="mz-zone mz-zone--you" style="${zoneClip(geo.you)}"></div>
-        <span class="mz-centre"></span>
-        <span class="mz-zone-label mz-zone-label--you" style="${centroid(geo.you)}">You</span>
-        <span class="mz-zone-label mz-zone-label--enemy" style="${centroid(geo.enemy)}">Enemy</span>
-      </div>` : '';
-    const note = geo
-      ? `<p class="mz-fig-note">${esc(geo.note)}</p>`
+    const board = map
+      ? `<img class="mz-map" loading="lazy" src="/static/images/deployments/${map.img}" alt="${esc(d.name)} deployment zone map">`
+      : '';
+    const note = map
+      ? `<p class="mz-fig-note">${esc(map.note)}</p>`
       : `<p class="mz-fig-plain">Deployment map &mdash; see the mission pack for the exact zones.</p>`;
     return `<figure id="${d.id}" class="mz-fig">
       <figcaption class="mz-fig-cap"><span class="mz-fig-kind">${num}</span>${esc(d.name)}</figcaption>
@@ -285,9 +298,18 @@ function sectionLayouts(){
   }
   const body = fams.map(fam => {
     const items = byFam.get(fam);
-    const cards = items.map((x, i) => `<figure id="${x.id}" class="mz-fig">
+    const cards = items.map((x, i) => {
+      const slug = String(x.id).replace(/-/g, '_');
+      const plain   = `/static/images/layouts/ic_layout_${slug}.png`;
+      const measure = `/static/images/layouts/ic_measurement_layout_${slug}.png`;
+      return `<figure id="${x.id}" class="mz-fig mz-lay-fig">
       <figcaption class="mz-fig-cap"><span class="mz-fig-kind">Lay ${String(i + 1).padStart(2, '0')}</span>${esc(layoutVariant(x.name))}</figcaption>
-    </figure>`).join('');
+      <img class="mz-map mz-lay-map" loading="lazy" src="${plain}" data-plain="${plain}" data-measure="${measure}" alt="${esc(x.name)} objective layout map">
+      <button type="button" class="mz-lay-toggle" data-mode="plan" aria-label="Switch to measured view" title="Show measured distances">
+        <span class="mz-lay-toggle-icon" aria-hidden="true">&#8646;</span><span class="mz-lay-toggle-label">Plan</span>
+      </button>
+    </figure>`;
+    }).join('');
     return `<div class="mz-lay-fam">
       <div class="mz-lay-fam-head">${esc(fam)}<span class="mz-lay-fam-count">${items.length} layouts</span></div>
       <div class="mz-fig-grid">${cards}</div>
@@ -365,6 +387,35 @@ function bindContentJumps(){
       e.preventDefault();
       jumpTo(a.getAttribute('href').slice(1));
     });
+  });
+}
+
+/* Per-card arrow that flips a layout figure between the plan image and the
+   measured variant. Delegated on `view`; the measured PNG loads only on the
+   first flip (src starts on the plan URL, the measured URL waits in data-). */
+function bindLayoutToggles(){
+  view.addEventListener('click', e => {
+    const btn = e.target.closest('.mz-lay-toggle');
+    if(!btn || !view.contains(btn)) return;
+    const img = btn.closest('.mz-lay-fig')?.querySelector('.mz-lay-map');
+    if(!img) return;
+    const toMeasure = btn.getAttribute('data-mode') !== 'measure';
+    btn.setAttribute('data-mode', toMeasure ? 'measure' : 'plan');
+    img.src = toMeasure ? img.dataset.measure : img.dataset.plain;
+    btn.querySelector('.mz-lay-toggle-label').textContent = toMeasure ? 'Measured' : 'Plan';
+    btn.setAttribute('aria-label', toMeasure ? 'Switch to plan view' : 'Switch to measured view');
+    btn.setAttribute('title', toMeasure ? 'Hide measured distances' : 'Show measured distances');
+  });
+}
+
+/* Click any deployment / layout map to open it enlarged in the shared
+   lightbox. Layout figures open whichever variant is currently shown, since
+   we read the image's live src. */
+function bindMapZoom(){
+  view.addEventListener('click', e => {
+    const img = e.target.closest('.mz-map');
+    if(!img || !view.contains(img)) return;
+    openLightbox(img.currentSrc || img.src, img.alt);
   });
 }
 
