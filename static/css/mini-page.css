@@ -59,3 +59,65 @@ body.mini-sheet .mp-page .mp-wip{
 }
 body.mini-sheet .mp-page .mp-wip-summary{color:var(--rl-ink-soft)}
 body.mini-sheet .mp-page .mp-wip-notes{background:var(--rl-paper);border-color:var(--rl-edge);color:var(--rl-ink)}
+
+/* ---- mini card internals on paper -----------------------------------
+   The .mp-page rules in style.css hardcode dark-skin hexes (cream label
+   text, dark photo stages, blood-red deletes). Repaint them with the
+   --rl-* tokens so both the light and dark paper themes resolve; the
+   sculpt display case above stays a dark island. Several rules here beat
+   the style.css :hover/:focus variants on specificity, so those states
+   are re-declared alongside their base rule. */
+
+/* card head: group name, rename + edit-loadout affordances */
+body.mini-sheet .mp-page .mgc-label{color:var(--rl-ink)}
+body.mini-sheet .mp-page .mgc-label-btn{color:var(--rl-mute)}
+body.mini-sheet .mp-page .mgc-label-btn:hover{color:var(--gold-bright)}
+body.mini-sheet .mp-page .mc-gear-row .link-btn{color:var(--rl-mute)}
+body.mini-sheet .mp-page .mc-gear-row .link-btn:hover{color:var(--gold-bright)}
+
+/* dividers, squad expander, per-mini rows, inline editors */
+body.mini-sheet .mp-page .mc-gear-row{border-top-color:var(--rl-edge)}
+body.mini-sheet .mp-page .mgc-details{border-top-color:var(--rl-edge)}
+body.mini-sheet .mp-page .mgc-summary{color:var(--rl-ink-soft)}
+body.mini-sheet .mp-page .mgc-summary:hover{color:var(--gold-bright)}
+body.mini-sheet .mp-page .msc-num,
+body.mini-sheet .mp-page .msc-bucket{color:var(--rl-mute)}
+body.mini-sheet .mp-page .mc-label-ed,
+body.mini-sheet .mp-page .mc-gear-ed{border-color:var(--rl-edge)}
+
+/* stage select: paper plate with a bronze caret */
+body.mini-sheet .mp-page .stage-sel{
+  background:var(--rl-paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a6a24'/%3E%3C/svg%3E") no-repeat right 11px center;
+  border-color:var(--rl-edge);color:var(--rl-ink);
+}
+body.mini-sheet .mp-page .stage-sel:hover{border-color:color-mix(in srgb,var(--gold) 55%,transparent)}
+body.mini-sheet .mp-page .stage-sel:focus{border-color:var(--gold)}
+body.mini-sheet .mp-page .stage-sel.is-multikit{border-color:color-mix(in srgb,var(--gold) 60%,transparent)}
+body.mini-sheet .mp-page .mini-sub-card .stage-sel{background-color:var(--rl-paper);border-color:var(--rl-edge)}
+
+/* photo tiles: prints mounted on a paper mat instead of the dark stage */
+body.mini-sheet .mp-page .mc-gallery .shot{
+  border:1px solid var(--rl-edge);
+  background:var(--rl-paper);
+  padding:4px;
+  box-shadow:0 1px 5px rgba(20,24,12,.14);
+}
+body.mini-sheet .mp-page .mc-gallery .shot .del{
+  top:7px;right:7px;
+  background:rgba(34,38,26,.55);
+}
+body.mini-sheet .mp-page .mc-gallery .shot .del:hover{background:var(--blood-bright)}
+body.mini-sheet .mp-page .mgc-media-gallery{scrollbar-color:color-mix(in srgb,var(--gold) 45%,transparent) transparent}
+body.mini-sheet .mp-page .mgc-media-gallery::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--gold) 45%,transparent)}
+
+/* add-photo tiles: dashed paper tile (the small gold "+" pin keeps its
+   plate via the higher-specificity style.css rule) */
+body.mini-sheet .mp-page .uploader{border-color:var(--rl-edge);color:var(--rl-mute)}
+body.mini-sheet .mp-page .uploader:hover,
+body.mini-sheet .mp-page .uploader.drag{border-color:var(--gold);color:var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent)}
+body.mini-sheet .mp-page #mpWipGallery .uploader{color:var(--rl-mute);background:var(--rl-paper);border-color:color-mix(in srgb,var(--gold) 40%,transparent)}
+body.mini-sheet .mp-page #mpWipGallery .uploader:hover{color:var(--gold);border-color:var(--gold)}
+
+/* view-full-datasheet pill on paper */
+body.mini-sheet .mp-page .mp-ds-link{background:var(--rl-paper-2);border-color:color-mix(in srgb,var(--gold) 50%,transparent);color:var(--rl-ink-soft)}
+body.mini-sheet .mp-page .mp-ds-link:hover{color:var(--gold-bright);border-color:var(--gold)}

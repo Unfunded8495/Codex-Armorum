@@ -2013,23 +2013,6 @@ a.brand{text-decoration:none;color:inherit}
 @media(max-width:880px){.mp-page.detail-wrap{grid-template-columns:1fr}}
 .mp-page .detail-media{top:88px;display:flex;flex-direction:column;gap:18px}
 
-/* ---- reusable brass corner rivets (4 dots via one pseudo-element) ---- */
-.mp-rivets{position:relative}
-.mp-rivets::after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
-  --rivet:radial-gradient(circle 2.5px at 45% 40%,#f5dd97,#c89a3f 52%,#6e4d1a 84%,#43300f 97%,transparent 100%);
-  background-image:var(--rivet),var(--rivet),var(--rivet),var(--rivet);
-  background-repeat:no-repeat;background-size:6px 6px;
-  background-position:6px 6px,calc(100% - 6px) 6px,6px calc(100% - 6px),calc(100% - 6px) calc(100% - 6px);
-  filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.7));
-}
-/* the larger panels inset their rivets a touch further (8px) */
-.mp-page .mp-ledger.mp-rivets::after,
-.mp-page .mp-sculpt.mp-rivets::after,
-.mp-page .mp-wip.mp-rivets::after{
-  background-position:8px 8px,calc(100% - 8px) 8px,8px calc(100% - 8px),calc(100% - 8px) calc(100% - 8px);
-}
-
 /* ---- bucket diamonds (ledger rows, solo + squad stage controls) ---- */
 .mp-diamond{width:9px;height:9px;flex:0 0 auto;transform:rotate(45deg)}
 .mp-diamond[data-b="done"]{background:#6fae5a;box-shadow:0 0 7px rgba(111,174,90,.6)}

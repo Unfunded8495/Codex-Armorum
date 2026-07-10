@@ -203,7 +203,7 @@ function mpReliquaryLedgerHtml(){
   const total = mpMinis.length;
   const c     = mpBucketCounts();
   const pct   = total > 0 ? Math.round(c.done / total * 100) : 0;
-  return `<div class="mp-ledger mp-rivets">
+  return `<div class="mp-ledger">
     <div class="mp-ledger-head"><span class="mp-diamond-sm"></span><span>Reliquary Ledger</span></div>
     <div class="mp-ledger-total"><b id="mpTotal">${total}</b><span>mini${total===1?'':'s'} in collection</span></div>
     <div class="mp-ledger-pctrow"><span>Company Painted</span><span id="mpPct">${pct}%</span></div>
@@ -237,7 +237,7 @@ function mpLeftMediaHtml(){
   const heroImg = (mpUnit?.linked_catalogue_models || []).find(m=>m.image_url)?.image_url
     || `/api/units/${esc(rep.datasheet_id)}/image`;
   // Reuse the sculpt-card frame so the no-catalogue fallback matches the design.
-  return `<div class="catalogue-card mp-sculpt mp-rivets has-image" id="mpCatalogueCol">
+  return `<div class="catalogue-card mp-sculpt has-image" id="mpCatalogueCol">
     <div class="catalogue-image mp-stage">
       ${mpDataPlateHtml()}
       <img src="${esc(heroImg)}" alt="${esc(name)}">
@@ -518,7 +518,7 @@ function mpRenderGroup(group){
     : '';
 
   const soloCls = count === 1 ? ' is-solo' : '';
-  return `<div class="mini-group-card mp-rivets${soloCls}${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${cardStyle}>
+  return `<div class="mini-group-card${soloCls}${unbuiltCls}" id="${gcid}" data-mini-ids="${ids}" data-did="${esc(did)}"${cardStyle}>
     ${toprow}${details}
   </div>`;
 }
@@ -866,7 +866,7 @@ function mpWipUploaderTile(){
 function mpRenderWipSection(){
   const notes  = mpUnit?.wip_notes  || '';
   const photos = mpUnit?.wip_photos || [];
-  return `<details class="mp-wip mp-rivets" id="mpWip"${notes||photos.length?' open':''}>
+  return `<details class="mp-wip" id="mpWip"${notes||photos.length?' open':''}>
     <summary class="mgc-summary mp-wip-summary"><span class="mp-diamond-sm"></span>Work in Progress Notes</summary>
     <div class="mp-wip-body">
       <textarea class="mc-notes mp-wip-notes" id="mpWipNotes"
@@ -1100,7 +1100,7 @@ function mpCatRenderCard(item){
       </a>`).join('')
     : '<span class="catalogue-unlinked">No current datasheet</span>';
   return `
-    <article class="catalogue-card mp-sculpt mp-rivets${item.image?' has-image':''}${cls}"${style} data-cid="${esc(item.id)}">
+    <article class="catalogue-card mp-sculpt${item.image?' has-image':''}${cls}"${style} data-cid="${esc(item.id)}">
       ${mark}
       ${item.image
         ? `<div class="catalogue-image mp-stage catalogue-image-clickable" data-lightbox-url="${esc(item.image.url)}" data-lightbox-cap="${esc(item.name)}">
