@@ -2,7 +2,7 @@ import { esc, api, jsStr, withTimeout } from './utils.js';
 import { clearFactionCache } from './home.js';
 import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
 import { openLightbox } from './lightbox.js';
-import { renderDatasheetModels, renderInvuln, renderDamaged, renderTransport, renderWargear, renderAbilities, renderUnitComposition, renderLeaderAttach, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
+import { renderDatasheetModels, renderInvuln, renderDamaged, renderTransport, renderWargear, renderAbilities, renderWargearAbilities, renderUnitComposition, renderLeaderAttach, renderOptions, renderPoints, renderKeywords } from './datasheet.js';
 import { renderDatasheetCard } from './datasheet-card.js';
 import { setupArsenalHover } from './arsenal-hover.js';
 import { rlThemeMode, rlThemeToggleHtml, rlWireThemeToggle } from './rl-theme.js';
@@ -103,6 +103,7 @@ export async function showUnit(did){
             ${renderWargear('Ranged Weapons', d.ranged)}
             ${renderWargear('Melee Weapons', d.melee)}
             ${renderAbilities(d.abilities)}
+            ${renderWargearAbilities(d.abilities)}
             ${renderUnitComposition(d.composition, d.loadout, d.led_by, d.base_size)}
             ${renderLeaderAttach(d.leads)}
             ${renderOptions(d.options)}

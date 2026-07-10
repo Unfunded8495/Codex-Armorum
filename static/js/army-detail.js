@@ -1,7 +1,7 @@
 import { esc, api, intOr } from './utils.js';
 import { state, ensureBattleSizes } from './army-state.js';
 import { setBreadcrumb } from './header.js';
-import { renderDatasheetCard } from './datasheet-card.js';
+import { renderDatasheetCard, cardWeaponMatches, weaponBase } from './datasheet-card.js';
 
 const view       = document.getElementById('view');
 const breadcrumb = document.getElementById('breadcrumb');
@@ -637,11 +637,18 @@ export function closeAllOverlays(){
 
 // Full datasheet card overlaid like an image lightbox -- reached by clicking a
 // unit's name in the roster or a Command Bunker datasheet row. Same cached
-// /api/units/<did> payload the profiles sections use.
-export async function openDatasheetCard(did){
+// /api/units/<did> payload the profiles sections use. A roster row also passes
+// its army-unit id, which scopes the card to that unit so the weapon tables
+// can be filtered to its current loadout (with a show-all toggle); the
+// Command Bunker path has no roster unit and always gets the full card.
+let dsCardCtx = null;   // {did, auid, showAll} for the currently open card
+
+export async function openDatasheetCard(did, auid){
   const overlay = document.getElementById('dsCardOverlay');
   const body = document.getElementById('dsCardBody');
   if(!overlay || !body) return;
+  const ctx = {did, auid: auid || null, showAll: false};
+  dsCardCtx = ctx;
   body.innerHTML = `<p class="dsc-overlay-loading">Loading datasheet&hellip;</p>`;
   overlay.hidden = false;
   let detail = state.unitDetailCache[did];
@@ -649,8 +656,45 @@ export async function openDatasheetCard(did){
     try{ detail = await api(`/api/units/${did}`); state.unitDetailCache[did] = detail; }
     catch(e){ body.innerHTML = `<p class="dsc-overlay-loading">Could not load the datasheet.</p>`; return; }
   }
-  body.innerHTML = renderDatasheetCard(detail);
+  if(dsCardCtx !== ctx) return;   // another card was opened while this one loaded
+  renderDsCardBody();
   body.scrollTop = 0;
+}
+
+// Weapon base names the unit currently carries (lowercased), from the same
+// loadout_setups payload the wargear editor's "Current loadout" block uses.
+// Null when the server sent no structured view: the card stays unfiltered.
+function takenWeaponSet(u){
+  const ls = u && u.loadout_setups;
+  if(!ls) return null;
+  const names = new Set();
+  (ls.setups || []).concat(ls.fixed || []).forEach(row =>
+    (row.items || []).forEach(n => names.add(weaponBase(n).toLowerCase())));
+  return names.size ? names : null;
+}
+
+function renderDsCardBody(){
+  const body = document.getElementById('dsCardBody');
+  if(!body || !dsCardCtx) return;
+  const detail = state.unitDetailCache[dsCardCtx.did];
+  if(!detail) return;
+  const u = dsCardCtx.auid && state.army ? state.army.units.find(x => x.id === dsCardCtx.auid) : null;
+  const taken = u ? takenWeaponSet(u) : null;
+  // The name join can miss (wargear keys never appear on weapon rows); when
+  // nothing matches, show the full card instead of empty weapon tables.
+  const filterable = !!(taken && cardWeaponMatches(detail, taken));
+  const filtered = filterable && !dsCardCtx.showAll;
+  const bar = filterable ? `<div class="dsc-loadout-bar">
+      <span class="dsc-loadout-note">${filtered ? "Weapons are filtered to this unit's current loadout." : "Showing every weapon option on the datasheet."}</span>
+      <button type="button" class="dsc-loadout-toggle" data-testid="dsc-loadout-toggle" onclick="toggleDsCardLoadout()">${filtered ? 'Show all weapons' : 'Show selected only'}</button>
+    </div>` : '';
+  body.innerHTML = bar + renderDatasheetCard(detail, filtered ? {takenWeapons: taken} : null);
+}
+
+export function toggleDsCardLoadout(){
+  if(!dsCardCtx) return;
+  dsCardCtx.showAll = !dsCardCtx.showAll;
+  renderDsCardBody();
 }
 
 export function closeDatasheetCard(){
@@ -1568,7 +1612,7 @@ export function armyUnitRow(u, accent){
     <div class="uc-band">
       <span class="uc-owned-dot ${ownershipDot(u)}" title="${esc(ownershipText(u).replace(/<[^>]+>/g,''))}"></span>
       <span class="uc-name">
-        <span class="uc-name-link" title="View datasheet card" onclick="event.stopPropagation();openDatasheetCard('${u.datasheet_id}')">${esc(u.name)}</span>${u.is_warlord?' <span class="au-warlord" title="Warlord">★ Warlord</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ Led by ${esc(u.attached_leader_name)}</span>`:''}
+        <span class="uc-name-link" title="View datasheet card" onclick="event.stopPropagation();openDatasheetCard('${u.datasheet_id}','${auid}')">${esc(u.name)}</span>${u.is_warlord?' <span class="au-warlord" title="Warlord">★ Warlord</span>':''}${u.is_ally?` <span class="au-ally" data-testid="ally-badge" title="Allied: ${esc(u.ally_faction)}">⚔ ${esc(u.ally_faction)}</span>`:''}${u.attached_leader_name?` <span class="au-ledby" title="Led by ${esc(u.attached_leader_name)}">⮡ Led by ${esc(u.attached_leader_name)}</span>`:''}
         <span id="au-warn-${auid}">${unitWarnBadge(u)}</span>
       </span>
       <span class="uc-pts-pill" id="au-pts-${auid}">${pts} pts</span>
@@ -2230,6 +2274,10 @@ async function postLoadout(auid, patch){
   const u = state.army.units.find(x=>x.id===auid);
   const wgEl = document.getElementById('rpWargear');   // wargear editor in right panel
   if(wgEl && u && state.rightSel && state.rightSel.id===auid) wgEl.innerHTML = renderWargearEditor(u);
+  // If the datasheet-card overlay is open on this unit, refresh its filtered
+  // weapon tables so the card tracks the loadout change.
+  const dsOverlay = document.getElementById('dsCardOverlay');
+  if(dsOverlay && !dsOverlay.hidden && dsCardCtx && dsCardCtx.auid === auid) renderDsCardBody();
   wgElBefore?.classList.remove('is-pending');
 }
 

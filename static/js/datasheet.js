@@ -128,6 +128,20 @@ export function renderAbilities(abilities){
   </div>`;
 }
 
+/* Wargear abilities (Chaos Icon and similar) - carried gear whose rule text
+   lives on the wargear item, not the ability table. Own section like the card. */
+export function renderWargearAbilities(abilities){
+  const list = (abilities && abilities.wargear) || [];
+  if(!list.length) return '';
+  return `<div class="section abilities-section">
+    <h2>Wargear Abilities</h2>
+    ${list.map(a => `<div class="ability-item">
+      <span class="ability-name">${esc(a.name)}:</span>
+      <span class="ability-text">${bsdataMarkup(a.description)}</span>
+    </div>`).join('')}
+  </div>`;
+}
+
 /* "Leader" block - the units this model can be attached to. */
 export function renderLeaderAttach(leads){
   if(!leads || !leads.length) return '';

@@ -57,7 +57,7 @@ function statBadges(model, invuln){
 }
 
 function profileName(n){return (n||"").replace(/\s[-–—]\s/," – ");}
-function weaponBase(n){return (n||"").split(/\s[-–—]\s/)[0].trim();}
+export function weaponBase(n){return (n||"").split(/\s[-–—]\s/)[0].trim();}
 function rangeCell(v){if(!v) return "-"; if(String(v).toLowerCase()==="melee") return "Melee"; return esc(v)+'"';}
 function kwTag(k){
   if(!k) return "";
@@ -67,8 +67,12 @@ function kwTag(k){
 
 /* Each weapon profile is its own row with its full name and its own keywords.
    Zebra shading alternates per weapon group (base name), so multi profile weapons
-   such as the two plasma pistol modes share one shaded block. */
-function weaponTable(list, melee){
+   such as the two plasma pistol modes share one shaded block.
+   `taken` (optional Set of lowercased base names) keeps only carried weapons;
+   matching is by base name so every profile of a taken weapon stays visible.
+   A table whose weapons are all filtered out is dropped entirely. */
+function weaponTable(list, melee, taken){
+  if(taken) list = (list || []).filter(w => taken.has(weaponBase(w.name).toLowerCase()));
   if(!list || !list.length) return "";
   const sk = melee ? "WS" : "BS";
   let rows = "", prevBase = null, gi = -1;
@@ -107,6 +111,16 @@ function abilitiesBlock(d){
   if(core.length)    html += `<p class="dsc-coreline"><span class="dsc-k">Core:</span> ${esc(core.join(', '))}</p>`;
   if(faction.length) html += `<p class="dsc-coreline"><span class="dsc-k">Faction:</span> ${esc(faction.join(', '))}</p>`;
   for(const x of datasheet){
+    html += `<div class="dsc-ability"><span class="dsc-an">${esc(x.name)}:</span> ${clean(x.description)}</div>`;
+  }
+  return html + `</div>`;
+}
+
+function wargearAbilitiesBlock(d){
+  const list = (d.abilities && d.abilities.wargear) || [];
+  if(!list.length) return "";
+  let html = `<div class="dsc-head">Wargear Abilities</div><div class="dsc-block">`;
+  for(const x of list){
     html += `<div class="dsc-ability"><span class="dsc-an">${esc(x.name)}:</span> ${clean(x.description)}</div>`;
   }
   return html + `</div>`;
@@ -173,7 +187,20 @@ function keywordsFooter(d){
     `</div>`;
 }
 
-export function renderDatasheetCard(d){
+/* True when at least one of the card's weapon rows matches the taken set.
+   The wargear system and the weapon rows share no ids, so the join is by
+   name; callers use this to fall back to the unfiltered card when the name
+   match misses outright (never render empty weapon tables). */
+export function cardWeaponMatches(d, taken){
+  const hit = w => taken.has(weaponBase(w.name).toLowerCase());
+  return (d.ranged || []).some(hit) || (d.melee || []).some(hit);
+}
+
+/* opts.takenWeapons: optional Set of lowercased weapon base names; when given,
+   the weapon tables show only those weapons (army-builder loadout view).
+   Callers without opts get the full card, unchanged. */
+export function renderDatasheetCard(d, opts){
+  const taken = (opts && opts.takenWeapons) || null;
   const primary = factionColour(d);
   const models  = Array.isArray(d.models) ? d.models : [d.models || {}];
   const invuln  = d.abilities && d.abilities.invuln_save;
@@ -185,8 +212,8 @@ export function renderDatasheetCard(d){
     return `<div class="dsc-model">${tag}${statBadges(m, i===0 ? invuln : null)}</div>`;
   }).join('');
 
-  const left  = weaponTable(d.ranged,false) + weaponTable(d.melee,true) + wargearBlock(d) + leaderBlock(d);
-  const right = abilitiesBlock(d) + compositionBlock(d) + damagedBlock(d);
+  const left  = weaponTable(d.ranged,false,taken) + weaponTable(d.melee,true,taken) + wargearBlock(d) + leaderBlock(d);
+  const right = abilitiesBlock(d) + wargearAbilitiesBlock(d) + compositionBlock(d) + damagedBlock(d);
 
   return `
     <div class="dsc-card" style="--dsc-primary:${primary}">

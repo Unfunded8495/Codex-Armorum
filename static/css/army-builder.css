@@ -926,3 +926,17 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 }
 .dsc-overlay-close:hover { color:var(--gold-bright); }
 .dsc-overlay-loading { color:var(--parch-dim); font-style:italic; font-size:16px; text-align:center; padding:80px 0; }
+/* Loadout filter bar above the card (roster-opened cards only): note + toggle
+   pill. Sits on the dark overlay scrim, so it uses the same parchment text
+   vars as the overlay's close button, not the card's own palette. */
+.dsc-loadout-bar {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  max-width:1100px; margin:0 auto 10px;
+}
+.dsc-loadout-note { color:var(--parch-dim); font-size:13px; }
+.dsc-loadout-toggle {
+  flex:none; background:none; border:1px solid var(--parch-dim); color:var(--parch);
+  font-size:12px; padding:5px 14px; border-radius:999px; cursor:pointer;
+  transition:color .15s, border-color .15s;
+}
+.dsc-loadout-toggle:hover { color:var(--gold-bright); border-color:var(--gold-bright); }

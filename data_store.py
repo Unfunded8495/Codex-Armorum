@@ -379,6 +379,17 @@ class DataStore:
                                  FROM extra_rule""").fetchall():
             extras_by_ds.setdefault(r["datasheet_id"], []).append(dict(r))
 
+        # datasheet -> wargear abilities (Chaos Icon, Gun Drone, ...). These
+        # are weapon rows typed 'wargear' whose rule lives in rule_text; most
+        # have no weapon_profile rows, so the profile join below never sees
+        # them.
+        wargear_ab_by_ds = {}
+        for r in conn.execute("""SELECT datasheet_id, name, rule_text
+                                 FROM weapon
+                                 WHERE wargear_type = 'wargear'""").fetchall():
+            wargear_ab_by_ds.setdefault(r["datasheet_id"], []).append(
+                {"name": r["name"], "description": r["rule_text"] or ""})
+
         # datasheet -> weapon profiles. Multi-profile weapons (e.g. Plasma
         # pistol standard/supercharge) carry separate profile rows.
         profiles_by_ds = {}
@@ -458,6 +469,7 @@ class DataStore:
             ability_groups["transport"] = transport_text
             ability_groups["damaged"] = damaged
             ability_groups.setdefault("special", [])
+            ability_groups["wargear"] = wargear_ab_by_ds.get(did, [])
 
             ranged, melee = self._build_weapons(profiles_by_ds.get(did, []))
 
