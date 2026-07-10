@@ -10,6 +10,7 @@ Trigger: starting any task in this repo that touches data files, IDs, the army b
 | A new official-app data snapshot arrived | CODEX_ARMORUM_DATA_UPDATE.md (follow top to bottom; do not improvise the steps) |
 | Run or extend the test suite; UI test ids | tests/README.md, tests/TESTIDS.md |
 | How w40k.db is produced from the APK | scripts/w40k_exporter/w40k_export_README.md |
+| Continue the wargear-reachability backlog (unreachable legal loadouts) | docs/WARGEAR_REACHABILITY_PLAN.md (live tracker; update it as slices land) |
 
 ## PR2. The three ID systems (the number one confusion trap here)
 - "Model" means a physical mini in the catalogue, keyed by a slug string. It is NOT a game unit.

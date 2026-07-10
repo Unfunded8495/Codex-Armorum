@@ -33,6 +33,8 @@ collection. Each mini can keep its own label, wargear, paint stage, notes, and p
   still need to buy, and rosters export/import for sharing.
 - **Missions** - a matched-play reference: mission packs, primary and secondary missions,
   deployments, and battlefield layouts.
+- **How to Play** - an illustrated walkthrough of a full game for new players, from an
+  empty table to the final score, using the rulebook diagrams and deployment maps.
 - **Core Rules** - the full 11th-edition core rulebook as a searchable reader with
   cross-reference links, term tooltips, and diagrams.
 
@@ -190,8 +192,8 @@ Along the top of every page is the **navigation bar**:
 - **Purchases** - record the boxed sets you have bought.
 - **Codex Archive** - browse models along a Warhammer 40,000 edition timeline.
 - **Paint Progress** - your painting stats dashboard.
-- **☰ Tools** - a menu holding the extra tools: **Army Builder**, **Missions**, **Core Rules**,
-  **Weapon Loadouts**, and **Model Catalogue**.
+- **☰ Tools** - a menu holding the extra tools: **Army Builder**, **Missions**, **How to Play**,
+  **Core Rules**, **Weapon Loadouts**, and **Model Catalogue**.
 - **Seal Vault** - stops the app (see *Closing the app* at the end).
 
 You will also see a small running tally in the bar - how many minis you have **Bought**, how many are
@@ -274,6 +276,8 @@ wishlist.
 
 - **Missions** (under Tools) - the matched-play mission reference: packs, primary and secondary
   missions, deployments, and layouts.
+- **How to Play** (under Tools) - a new player's illustrated walkthrough of a full game,
+  from setting up the battlefield to the final score.
 - **Core Rules** (under Tools) - read the full core rulebook in the app, with clickable
   cross-references, term tooltips, and diagrams.
 - **Weapon Loadouts** (under Tools) - manage the weapon cards that power the hover pop-ups on

@@ -49,15 +49,15 @@ oracle: unreachable sheets 108 -> 76 (58 loadouts now reachable, incl. Palatine)
 
 - [x] Linking pass in `wargear.wargear_schema` (bundle-aware displaced-item computation)
 - [x] Guard: the Phase 0 oracle is the mechanical invariant (baseline shrink-only)
-- Sheets:
-  - [ ] Palatine (bolt pistol -> plasma pistol)
-  - [ ] Venom / Ynnari Venom (twin splinter rifle -> splinter cannon)
-  - [ ] Ynnari Archon (splinter pistol -> blast pistol)
-  - [ ] Sydonian Skatros (radium jezzail -> transuranic arquebus)
-  - [ ] Land Speeder (onslaught gatling cannon -> heavy flamer)
-  - [ ] Venerable Dreadnought (storm bolter -> heavy flamer; assault cannon group)
-  - [ ] Shield-Captain (guardian spear group)
-  - [ ] Armiger Helverin / Armiger Warglaive (Questoris heavy stubber -> meltagun)
+- Sheets (trued against the committed post-1a baseline, 2026-07-10):
+  - [x] Palatine (bolt pistol -> plasma pistol) - out of the baseline
+  - [x] Venom / Ynnari Venom (twin splinter rifle -> splinter cannon) - out of the baseline
+  - [x] Ynnari Archon (splinter pistol -> blast pistol) - out of the baseline
+  - [ ] Sydonian Skatros (radium jezzail -> transuranic arquebus) - STILL IN the baseline; 1a did not clear it
+  - [ ] Land Speeder (onslaught gatling cannon -> heavy flamer) - STILL IN the baseline; 1a did not clear it
+  - [x] Venerable Dreadnought (storm bolter -> heavy flamer; assault cannon group) - out of the baseline
+  - [ ] Shield-Captain (guardian spear group) - STILL IN the baseline; 1a did not clear it
+  - [x] Armiger Helverin / Armiger Warglaive (Questoris heavy stubber -> meltagun) - out of the baseline
 
 ### 1b. Quantity on either side of a swap
 "This model's 2 X can be replaced with ..." / "... replaced with 2 Y": wire
@@ -200,3 +200,9 @@ permanently where the export itself is inconsistent (record `[-]` with reason).
   run_all.py green (golden unchanged). Still open: Phase 1b quantity swaps still reproduce
   (Acastus 2x Lascannon, Contemptor 2x Infernus incinerator, Valkyrie 2x Heavy bolter);
   the cap-0 sergeant class needs a new pickable control for its choose_from (design TBD).
+- 2026-07-10: Phase 1a sheet checklist trued against the committed 76-sheet baseline.
+  Five 1a entries are out of the baseline and ticked; Sydonian Skatros, Land Speeder and
+  Shield-Captain remain IN it, so the 1a linking fix did not clear them - each needs its
+  own diagnosis in a later slice. (Absence from the baseline can also mean the sheet is
+  excluded from the audit by the oracle's guards, e.g. Gladiator Valiant; treat the
+  baseline, not this checklist, as ground truth.)

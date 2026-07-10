@@ -1,4 +1,4 @@
-# w40k_exporter — official 40k app data export
+# w40k_exporter - official 40k app data export
 
 `w40k_exporter.py` turns your own copy of the official Warhammer 40,000 mobile
 app's APK (`base.apk`) into the rules dataset Codex Armorum runs on. It reads
@@ -26,7 +26,7 @@ python scripts/w40k_exporter/w40k_exporter.py
 | `--only-sqlite` | Build only `w40k.db` (skip the JSON/CSV faction folders) |
 | `--no-json` / `--no-csv` | Drop one half of the foldered output |
 
-The first line of output is `Data version: NNN` — the snapshot identifier the
+The first line of output is `Data version: NNN` - the snapshot identifier the
 official app reports for its data. It is also stored in the db (`meta` table)
 and in `manifest.json`.
 
@@ -54,8 +54,8 @@ Everything the app knows, additively richer with each exporter revision:
   FAQs, and the **core rulebook** modelled for a reader
   (`rule_section` / `rule_block` / `rule_reference`, plus FTS tables).
 
-The authoritative description of the *current* export — table by table, with
-record counts — is the README the exporter generates into its output folder:
+The authoritative description of the *current* export - table by table, with
+record counts - is the README the exporter generates into its output folder:
 for the live dataset that is [`data/w40k/README.md`](../../data/w40k/README.md)
 (committed alongside `manifest.json` and `_reference/`; the `w40k.db` file
 itself is gitignored).
@@ -67,7 +67,7 @@ itself is gitignored).
 read-only (`immutable=1`) on start; nothing is imported into `collection.db`.
 
 To move to a new app data version, do **not** export straight over
-`data/w40k/` — export to a staging folder, diff it against the live db with
+`data/w40k/` - export to a staging folder, diff it against the live db with
 `scripts/compare_w40k_db.py`, and follow the runbook:
 [`CODEX_ARMORUM_DATA_UPDATE.md`](../../CODEX_ARMORUM_DATA_UPDATE.md).
 

@@ -56,7 +56,7 @@ Scaffolding rules (advisory on Fable/Mythos, mandatory otherwise):
 - Stack: Flask + SQLite + vanilla JS. No build step. Deployed via Docker on QNAP NAS.
 - Run: `python app.py` (dev). Stop the server after testing; leave nothing running.
 - No em dashes anywhere: not in code, comments, UI strings, docs, or commit messages.
-- Deliver complete files, not diffs or snippets, when handing code to the user.
+- If the user asks for code in chat, deliver complete files, not diffs or snippets. Otherwise edit files with tools; do not paste file contents back into the conversation.
 - Plan first: present the plan and wait for approval before writing code (PLAN.md P7 is ON).
 - Destructive operations (migrations, deletions, bulk updates) go in separate deferred scripts per IR9.
 - No new dependencies without written justification per IR6.

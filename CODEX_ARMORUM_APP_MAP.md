@@ -22,7 +22,7 @@ data, read-only) - plus hand-curated JSON/markdown reference files in `data/`.
 | Layer | Technology | Entry point |
 |---|---|---|
 | Frontend (catalogue) | Vanilla JS ES modules + hash routing (SPA) | `templates/index.html` → `static/js/app.js` |
-| Frontend (tools) | Server-rendered Jinja pages + page-specific JS | `army_builder.html`, `collection.html`, `catalogue_review.html`, `missions.html`, `rules.html`, `arsenal/*` |
+| Frontend (tools) | Server-rendered Jinja pages + page-specific JS | `army_builder.html`, `collection.html`, `catalogue_review.html`, `missions.html`, `guide.html`, `rules.html`, `arsenal/*` |
 | Backend | Flask (`app.py`) + one blueprint (`arsenal.py`) | `python app.py` → `http://127.0.0.1:5050` |
 | Data access | Python modules wrapping SQLite + reference files | `data_store.py`, `collection.py`, `box_sets.py`, … |
 | Storage | SQLite (`collection.db` user data) + `data/w40k/w40k.db` (rules, read-only) + `data/*.json` (model catalogue + editions) | `db.py` (user-data schema), `data_store.py` (rules loader) |
@@ -109,6 +109,7 @@ flowchart LR
         b4["Arsenal / Loadouts<br/>arsenal/*.html"]
         b5["Missions<br/>missions.html"]
         b6["Core Rules<br/>rules.html"]
+        b7["How to Play<br/>guide.html"]
     end
     A -.shared top bar + ledger.- B
 ```
@@ -128,6 +129,7 @@ The top bar links bridge the two worlds (note hash vs. path):
 | **Paint Progress** | `/collection` | Server page |
 | **Army Builder** | `/army-builder` | Server page |
 | **Missions** | `/missions` | Server page |
+| **How to Play** | `/how-to-play` | Server page |
 | **Core Rules** | `/rules` | Server page |
 | **Weapon Loadouts** | `/arsenal/loadouts` | Blueprint page |
 | **Model Catalogue** | `/catalogue-review` | Server page |
@@ -203,6 +205,8 @@ flowchart TD
     collectionjs["collection.js"] --> header
     missionsjs["missions.js (Missions page)"] --> utils
     rulesjs["rules.js (Core Rules page)"] --> utils
+    guidejs["guide.js (How to Play page)"] --> utils
+    guidejs --> lightbox
 
     subgraph shared["shared leaf modules"]
         utils["utils.js (esc, api, …)"]
@@ -233,9 +237,10 @@ Key roles:
   Arsenal blueprint.
 - **`datasheet-card.js`** - the shared full-datasheet profile card (statlines, weapons,
   abilities) rendered by the unit page, the army-builder roster, and the picker preview.
-- **`missions.js` / `rules.js`** - standalone page scripts for the `/missions` reference
-  and the `/rules` Core Rules reader (fetches `/api/rules`, built by
-  `scripts/build_rules.py`).
+- **`missions.js` / `rules.js` / `guide.js`** - standalone page scripts for the
+  `/missions` reference, the `/rules` Core Rules reader (fetches `/api/rules`, built by
+  `scripts/build_rules.py`), and the `/how-to-play` guide (content lives in
+  `templates/guide.html`; its editorial source document is `data/rules/how_to_play.md`).
 
 ---
 
@@ -267,7 +272,7 @@ flowchart LR
 | `box_sets.py` | Box-set definitions, purchase logging that **creates mini rows**, multikit pools | `purchases`, `minis`, `custom_box_*` |
 | `army.py` | Army points maths (incl. detachment-gated points tiers), leader attachment, duplicate caps | `data_store` (detachments + enhancements), `wargear` |
 | `wargear.py` | Wargear/loadout engine: render schema, defaults, sparse-override persistence, points, legality | `data_store.wargear_loadout` |
-| `army_validation.py` | Roster legality engine — structured `{level, code, message}` rows the builder renders | `army`, `data_store` |
+| `army_validation.py` | Roster legality engine - structured `{level, code, message}` rows the builder renders | `army`, `data_store` |
 | `eligibility.py` | Enhancement eligibility (keyword groups + exported rule flags, Epic Hero bar) | `data_store` |
 | `catalogue_review.py` | Builds the Model Catalogue payload, resolves datasheet links via `data_store.ds_by_id` | `data/model_catalogue_*.json` |
 | `editions.py` | Loads the hand-curated edition timeline for the Codex Archive | `data/editions_timeline.json` |
@@ -283,7 +288,7 @@ flowchart LR
 
 All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 
-**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /missions` · `GET /rules` · `GET /catalogue-review` · `GET /collection`
+**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /missions` · `GET /how-to-play` · `GET /rules` · `GET /catalogue-review` · `GET /collection`
 
 **Factions & units**
 - `GET /api/factions` - faction grid with owned/bought/unlogged badges
@@ -541,6 +546,7 @@ cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` a
 | Enhancement eligibility | `eligibility.py` + `/api/army-units/<auid>/enhancements` |
 | The Missions reference page | `missions.js` + `/api/missions` -> `data_store._load_missions` |
 | The Core Rules page | `rules.js` + `/api/rules` <- `scripts/build_rules.py` <- `data/rules/*.md` |
+| The How to Play guide | `templates/guide.html` (content) + `guide.js`; editorial source `data/rules/how_to_play.md` - keep the two in step |
 | Weapon-keyword tooltips | `static/weapon_keywords.json` (order-sensitive) + `ruletext.js` |
 | Wargear/weapons (Arsenal) | `arsenal.py` + `arsenal_store.py` + `templates/arsenal/` |
 | Unit stats/points source data | `data/w40k/w40k.db` -> `data_store.py` |
@@ -552,9 +558,9 @@ cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` a
 
 ---
 
-*Last reviewed: July 2026 (Missions + Core Rules pages, army-builder enforcement
-modules). Update this document when routes, frontend modules, or the request flow
-change. For data-source and migration details, see
+*Last reviewed: 2026-07-10 (How to Play guide page added; previously Missions +
+Core Rules pages, army-builder enforcement modules). Update this document when
+routes, frontend modules, or the request flow change. For data-source and migration details, see
 [`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md); for updating to
 a new official-app data version, see
 [`CODEX_ARMORUM_DATA_UPDATE.md`](CODEX_ARMORUM_DATA_UPDATE.md).*

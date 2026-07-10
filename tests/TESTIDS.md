@@ -27,7 +27,7 @@ overlay.
 | testid | element |
 |---|---|
 | `army-detail` | the army-builder detail container (3-column grid on the manual "Battle Roster sheet") |
-| `army-title` | the army name — now an editable `<input>` styled as the page title (wired to `saveArmyMeta`; also still editable from Edit Roster) |
+| `army-title` | the army name - now an editable `<input>` styled as the page title (wired to `saveArmyMeta`; also still editable from Edit Roster) |
 | `mast-rules` | the rules strip under the army name (Army Rules / Detachments / Force Disposition) |
 | `mast-rules-army` / `mast-rules-detachments` / `mast-rules-disposition` | the strip's three cells |
 | `mast-rule-chip` | a chip in the strip; click toggles its explanation panel (`toggleMastRule`) |
@@ -94,11 +94,13 @@ Used inside the Edit Roster "Detachments" sub-screen.
 | `detachment-chip` | a detachment card's clickable name (toggles it on/off; carries `style="cursor:pointer"` only when affordable -- unaffordable cards have no `style` attribute at all, which is how a test tells them apart) |
 | `detachment-disposition` | the derived Force Disposition label, shown on a card only once it's selected |
 
-## Missions (`static/js/missions.js`, `templates/_topbar.html`, untouched)
+## Topbar + Missions (`static/js/missions.js`, `templates/_topbar.html`, untouched)
 
 | testid | element |
 |---|---|
 | `nav-missions` | the Missions nav entry |
+| `nav-guide` | the How to Play nav entry |
+| `nav-rules` | the Core Rules nav entry |
 | `missions-view` | the missions reference container |
 
 ## Export (`static/js/army-detail.js`)
