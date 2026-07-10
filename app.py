@@ -421,6 +421,29 @@ def api_rules():
     return send_file(path, mimetype="application/json")
 
 
+@app.route("/rules/insights")
+def insights_page():
+    """Community rules articles (Rules Deep Dive, Ruleshammer, Hammer of
+    Math) rendered in the Core Rules reader style. The /rules commentary
+    blocks link their sources to these articles."""
+    return render_template(
+        "insights.html",
+        active_page="rules",
+        breadcrumb=[{"label": "Core Rules", "href": "/rules"},
+                    {"label": "Insights"}],
+    )
+
+
+@app.route("/api/insights")
+def api_insights():
+    """Rules Insights articles built by scripts/build_insights.py from the
+    curated markdown in data/rules/insights/."""
+    path = os.path.join(app.root_path, "data", "rules", "insights.json")
+    if not os.path.exists(path):
+        abort(404, description="Run scripts/build_insights.py first")
+    return send_file(path, mimetype="application/json")
+
+
 @app.route("/api/missions")
 def api_missions():
     """Mission reference (Phase 6): packs, primary/secondary missions,

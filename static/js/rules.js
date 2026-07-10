@@ -63,7 +63,7 @@ async function init(){
   bindTheme();
   bindTopButton();
   bindKeyboard();
-  if(location.hash) jumpTo(location.hash.slice(1), false);
+  if(location.hash) initialJump(location.hash.slice(1));
 }
 
 /* ---------------------------------------------------------------- render */
@@ -429,12 +429,37 @@ function chromeOffset(){
   return (chrome ? chrome.offsetHeight : 104) + 8;
 }
 
-function jumpTo(id, push = true){
+/* Initial-load deep link: the browser's own scroll restoration / late
+   fragment scroll can fire after our async render and stomp the position,
+   so jump instantly now and re-assert shortly after if it drifted. */
+function initialJump(id){
+  try{ history.scrollRestoration = 'manual'; }catch(e){}
+  // no requestAnimationFrame here: it never fires while the tab is hidden,
+  // and the content is already rendered synchronously by this point. Jump
+  // now, then re-assert once in case the browser's own late fragment scroll
+  // or scroll restoration stomps the position.
+  jumpTo(id, false, false);
+  // fonts and lazy images above the target keep reflowing 70k+ px of page
+  // for a while after load, so keep settling briefly until the position
+  // holds (bounded; a user scroll cancels it)
+  let ticks = 8;
+  const timer = setInterval(()=>{
+    const el = document.getElementById(id);
+    if(!el || --ticks < 0) return clearInterval(timer);
+    if(Math.abs(el.getBoundingClientRect().top - chromeOffset()) > 60){
+      jumpTo(id, false, false);
+    }
+  }, 500);
+  window.addEventListener('wheel', ()=>clearInterval(timer), {once: true, passive: true});
+  window.addEventListener('touchmove', ()=>clearInterval(timer), {once: true, passive: true});
+}
+
+function jumpTo(id, push = true, smooth = true){
   const el = document.getElementById(id);
   if(!el) return;
   if(push && ('#' + id) !== location.hash) history.pushState(null, '', '#' + id);
   const y = el.getBoundingClientRect().top + window.scrollY - chromeOffset();
-  window.scrollTo({top: Math.max(0, y), behavior: 'smooth'});
+  window.scrollTo({top: Math.max(0, y), behavior: smooth ? 'smooth' : 'auto'});
   el.classList.remove('rl-flash');
   requestAnimationFrame(()=>el.classList.add('rl-flash'));
   setTimeout(()=>el.classList.remove('rl-flash'), 1700);

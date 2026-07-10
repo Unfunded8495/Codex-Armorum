@@ -941,6 +941,43 @@ def render_seealso(seg: list[dict], rend: InlineRenderer) -> str:
 
 RE_CMT_HEAD = re.compile(r"^##\s+@(\S+)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*$")
 
+INSIGHTS_PATH = DATA / "insights.json"
+
+# commentary source names that do not slugify straight onto an article title
+# (kept short in the entries for the narrow source badge)
+CMT_SOURCE_ALIASES = {
+    "rules-deep-dive-movement": "rules-deep-dive-moving-and-the-movement-phase",
+    "rules-deep-dive-charge-and-fight": "rules-deep-dive-the-charge-and-fight-phases",
+    "ruleshammer-save-groups-precision-and-fnp":
+        "ruleshammer-save-groups-precision-and-feel-no-pain",
+    "ruleshammer-hidden-and-gone-to-ground":
+        "ruleshammer-hidden-and-gone-to-ground-guide",
+    "hammer-of-math-benefit-of-cover": "hammer-of-math-the-benefit-of-cover",
+}
+
+
+def load_article_slugs(doc: Doc) -> set[str]:
+    """Slugs of the built insight articles (scripts/build_insights.py)."""
+    if not INSIGHTS_PATH.exists():
+        doc.warnings.append("insights.json missing: commentary sources will "
+                            "not link to articles (run build_insights.py)")
+        return set()
+    payload = json.loads(INSIGHTS_PATH.read_text(encoding="utf-8"))
+    return {a["slug"] for a in payload.get("articles", [])}
+
+
+def source_link(source: str, slugs: set[str], doc: Doc) -> str:
+    """Render a commentary source name, linked to its article when known."""
+    key = slugify(source.replace("&", " and "))
+    slug = key if key in slugs else CMT_SOURCE_ALIASES.get(key)
+    if slug is None or slug not in slugs:
+        if slugs:
+            doc.warnings.append(f"commentary source not matched to an "
+                                f"article: {source!r}")
+        return f'<span class="rt-cmt-src">{esc(source)}</span>'
+    return (f'<a class="rt-cmt-src" href="/rules/insights#{slug}" '
+            f'title="Open the source article">{esc(source)}</a>')
+
 
 def load_commentary(doc: Doc, rend: InlineRenderer) -> int:
     """Parse data/rules/commentary.md (community insight, kept separate from
@@ -948,6 +985,7 @@ def load_commentary(doc: Doc, rend: InlineRenderer) -> int:
     doc.commentary = {}
     if not COMMENTARY_PATH.exists():
         return 0
+    article_slugs = load_article_slugs(doc)
 
     entries: list[dict] = []
     cur: dict | None = None
@@ -990,7 +1028,7 @@ def load_commentary(doc: Doc, rend: InlineRenderer) -> int:
             '<div class="rt-cmt-head">'
             '<span class="rt-cmt-badge">Commentary</span>'
             f'<span class="rt-cmt-title">{esc(e["title"])}</span>'
-            f'<span class="rt-cmt-src">{esc(e["source"])}</span></div>'
+            f'{source_link(e["source"], article_slugs, doc)}</div>'
             f'<div class="rt-cmt-body">{"".join(body)}</div></aside>')
         doc.commentary.setdefault(aid, []).append(html_block)
         count += 1

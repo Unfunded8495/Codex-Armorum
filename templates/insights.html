@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rules Insights · Codex Armorum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;1,500&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/rules.css') }}">
+</head>
+<body>
+  <!-- NOTE: no .scanlines overlay on this page - it would darken the light paper -->
+
+  <div class="rl-chrome">
+    {% include "_topbar.html" %}
+
+    <nav class="rl-strip" id="insStrip" aria-label="Insights navigation">
+      <a class="rl-strip-label" href="/rules" title="Back to the Core Rules reference">&larr; Core Rules</a>
+      <span class="rl-strip-div" aria-hidden="true"></span>
+      <span class="rl-strip-chips" id="insSeriesChips"></span>
+      <span class="rl-strip-spacer"></span>
+      <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="insThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="insThemeLabel">Dark</span></button>
+    </nav>
+  </div>
+
+  <div class="rl-shell" id="insShell">
+    <div class="rl-grid">
+      <aside class="rl-side" aria-label="Article contents">
+        <div class="rl-search-wrap">
+          <input type="search" id="insSearch" class="rl-search" placeholder="Search articles…  ( / )"
+                 autocomplete="off" spellcheck="false" aria-label="Search articles">
+        </div>
+        <div class="rl-side-head"><span>Articles</span><span id="insTocCount"></span></div>
+        <nav class="rl-toc" id="insToc"></nav>
+      </aside>
+
+      <main class="rl-main" id="insMain">
+        <div class="rl-loading">Consulting the archives&hellip;</div>
+      </main>
+    </div>
+  </div>
+
+  <div class="rl-tooltip" id="insTooltip" role="tooltip" hidden></div>
+
+  <button class="rl-top-btn" id="insTopBtn" title="Back to top" aria-label="Back to top">&#8679;</button>
+
+  {% include "_footer.html" %}
+
+  <script type="module" src="{{ url_for('static', filename='js/insights.js') }}"></script>
+</body>
+</html>

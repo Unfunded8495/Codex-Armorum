@@ -1,8 +1,10 @@
-/* ============================== /rules — Core Rules reference ==============
+/* ============================== /rules - Core Rules reference ==============
    "PDF style" redesign (Variant A · Manual): light green-tinted paper under
    the unchanged dark app topbar. Condensed caps, olive & black plates, green
    accents, margin notes. Light default + dark reading mode via
-   body[data-rl-theme="dark"]. Page-scoped: only /rules loads this file. */
+   body[data-rl-theme="dark"]. Page-scoped: only /rules and /rules/insights
+   load this file (the insights reader reuses the whole skin; its extras
+   live in the ins- section at the bottom). */
 
 /* ------------------------------------------------------------ theme tokens */
 body{
@@ -82,7 +84,7 @@ body[data-rl-theme="dark"]{
 .rl-shell{
   position:relative;background:var(--rl-paper);color:var(--rl-ink);
   box-shadow:inset 0 14px 22px -16px rgba(0,0,0,.55);
-  /* no `transition:background` here — with CSS vars Chromium restarts the
+  /* no `transition:background` here - with CSS vars Chromium restarts the
      shorthand transition on every var write and the theme never flips */
 }
 .rl-shell::before{
@@ -242,7 +244,7 @@ body[data-rl-theme="dark"]{
 }
 
 /* ============================================================ rule content
-   Classes below are emitted by scripts/build_rules.py — do not rename. */
+   Classes below are emitted by scripts/build_rules.py - do not rename. */
 .rl-body{
   position:relative;font-family:'PT Sans','Segoe UI',sans-serif;
   font-size:15.5px;line-height:1.66;color:var(--rl-ink);max-width:740px;
@@ -325,7 +327,7 @@ a.rt-term:hover,a.rt-ref:hover,a.rt-ability:hover{background:var(--rl-green-soft
 .rt-note p:last-child{margin-bottom:0}
 .rt-note .rt-quote{margin:12px auto 2px}
 
-/* SEE ALSO — black plate, margin rail */
+/* SEE ALSO - black plate, margin rail */
 .rt-seealso{
   background:var(--rl-black);color:#cfcdba;padding:15px 16px 12px;margin:4px 0 20px;
   box-shadow:0 2px 10px rgba(20,24,12,.18);
@@ -347,7 +349,7 @@ a.rt-term:hover,a.rt-ref:hover,a.rt-ability:hover{background:var(--rl-green-soft
 .rt-seealso a.rt-term,.rt-seealso a.rt-ability{color:#e6e4d2;border-bottom-color:rgba(230,228,210,.35)}
 .rt-seealso a:hover{background:rgba(255,255,255,.08)}
 
-/* COMMENTARY — community insight, deliberately cool/steel-blue */
+/* COMMENTARY - community insight, deliberately cool/steel-blue */
 .rt-commentary{
   border:1px solid var(--rl-cmt-edge);border-top:3px solid var(--rl-cmt);
   background:var(--rl-paper-2);margin:4px 0 20px;padding:0;
@@ -370,7 +372,7 @@ a.rt-term:hover,a.rt-ref:hover,a.rt-ability:hover{background:var(--rl-green-soft
 .rt-commentary a.rt-term,.rt-commentary a.rt-ref,.rt-commentary a.rt-ability{border-bottom-color:var(--rl-cmt-edge)}
 .rt-commentary a.rt-term:hover,.rt-commentary a.rt-ref:hover,.rt-commentary a.rt-ability:hover{background:var(--rl-cmt-soft)}
 
-/* margin rail — Tufte-style sidenotes on wide screens */
+/* margin rail - Tufte-style sidenotes on wide screens */
 .rl-body .rt-commentary,.rl-body .rt-seealso{
   float:right;clear:right;width:300px;
   margin-right:calc(0px - var(--rl-rail));margin-left:26px;margin-top:2px;
@@ -395,7 +397,7 @@ a.rt-term:hover,a.rt-ref:hover,a.rt-ability:hover{background:var(--rl-green-soft
 .rt-card .rt-list .rt-list{list-style:disc;padding-left:22px;margin-top:4px}
 .rt-card .rt-list > li{margin-bottom:8px}
 
-/* figures — black label bar with angled cut, PDF diagram style */
+/* figures - black label bar with angled cut, PDF diagram style */
 .rt-figure{border:1px solid var(--rl-edge);background:var(--rl-paper-2);padding:0 0 12px;margin:24px 0;scroll-margin-top:130px}
 .rt-fig-title{
   display:inline-flex;align-items:center;gap:9px;background:var(--rl-black);color:#fff;
@@ -543,6 +545,40 @@ a.rt-term:hover,a.rt-ref:hover,a.rt-ability:hover{background:var(--rl-green-soft
 }
 .rl-top-btn.is-shown{opacity:1;pointer-events:auto}
 .rl-top-btn:hover{color:#fff;border-color:rgba(236,233,214,.6)}
+
+/* ========================== /rules/insights - community article extras ====
+   Emitted by scripts/build_insights.py on top of the shared rt- classes. */
+.ins-part-blurb{
+  font-family:'PT Sans',sans-serif;font-size:13.5px;line-height:1.5;
+  color:rgba(236,233,214,.75);margin:10px 0 0;max-width:560px;
+}
+.ins-lede{font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:17px;color:var(--rl-ink-soft)}
+.ins-quote{
+  border-left:3px solid var(--rl-olive);border-top:1px solid var(--rl-edge-soft);
+  border-bottom:1px solid var(--rl-edge-soft);background:var(--rl-paper-2);
+  margin:0 0 14px;padding:10px 14px;font-size:.95em;
+}
+.ins-quote p{margin:0 0 8px}
+.ins-quote p:last-child{margin-bottom:0}
+.ins-quote .rt-list{margin:0 0 4px}
+.ins-figure{margin:20px 0;border:1px solid var(--rl-edge);background:var(--rl-paper-2);padding:10px}
+.ins-figure img{
+  display:block;width:100%;height:auto;border:1px solid var(--rl-edge-soft);
+  background:#f2f2e8;   /* transparent diagram PNGs must stay readable in dark mode */
+}
+.ins-fig-credit{
+  font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--rl-mute);margin-top:8px;
+}
+a.ins-xref{
+  color:var(--rl-green);text-decoration:none;
+  border-bottom:1px dotted var(--rl-green);transition:background .12s;
+}
+a.ins-xref:hover{background:var(--rl-green-soft)}
+.ins-head-ref{margin-left:2px}
+/* commentary source badge on /rules links to the matching article */
+a.rt-cmt-src{text-decoration:none;border-bottom:1px dotted var(--rl-cmt);transition:background .12s}
+a.rt-cmt-src:hover{background:var(--rl-cmt-soft)}
 
 /* ------------------------------------------------------------ responsive */
 @media (max-width:1380px){

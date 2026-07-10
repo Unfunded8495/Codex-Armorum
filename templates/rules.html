@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/rules.css') }}">
 </head>
 <body>
-  <!-- NOTE: no .scanlines overlay on this page — it would darken the light paper -->
+  <!-- NOTE: no .scanlines overlay on this page - it would darken the light paper -->
 
   <div class="rl-chrome">
     {% include "_topbar.html" %}
@@ -24,6 +24,7 @@
       <a class="rl-strip-label" href="#s05" id="rlAttackLabel" title="05 · Attack Sequence">Attack</a>
       <span class="rl-strip-chips" id="rlAttackChips"></span>
       <span class="rl-strip-spacer"></span>
+      <a class="rl-strip-btn" href="/rules/insights" title="Community rules articles behind the commentary notes">Insights</a>
       <button type="button" class="rl-strip-btn" id="rlIndexBtn" title="Index of rules &amp; terms (g)">Index <kbd>G</kbd></button>
       <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="rlThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="rlThemeLabel">Dark</span></button>
     </nav>

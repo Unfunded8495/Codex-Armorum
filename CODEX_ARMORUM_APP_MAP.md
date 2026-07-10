@@ -109,6 +109,7 @@ flowchart LR
         b4["Arsenal / Loadouts<br/>arsenal/*.html"]
         b5["Missions<br/>missions.html"]
         b6["Core Rules<br/>rules.html"]
+        b6b["Rules Insights<br/>insights.html"]
         b7["How to Play<br/>guide.html"]
     end
     A -.shared top bar + ledger.- B
@@ -131,6 +132,7 @@ The top bar links bridge the two worlds (note hash vs. path):
 | **Missions** | `/missions` | Server page |
 | **How to Play** | `/how-to-play` | Server page |
 | **Core Rules** | `/rules` | Server page |
+| *(strip button on /rules)* | `/rules/insights` | Server page |
 | **Weapon Loadouts** | `/arsenal/loadouts` | Blueprint page |
 | **Model Catalogue** | `/catalogue-review` | Server page |
 | **Seal Vault** | `POST /api/shutdown` | Stops the server |
@@ -205,6 +207,7 @@ flowchart TD
     collectionjs["collection.js"] --> header
     missionsjs["missions.js (Missions page)"] --> utils
     rulesjs["rules.js (Core Rules page)"] --> utils
+    insightsjs["insights.js (Rules Insights page)"] --> utils
     guidejs["guide.js (How to Play page)"] --> utils
     guidejs --> lightbox
 
@@ -241,6 +244,10 @@ Key roles:
   `/missions` reference, the `/rules` Core Rules reader (fetches `/api/rules`, built by
   `scripts/build_rules.py`), and the `/how-to-play` guide (content lives in
   `templates/guide.html`; its editorial source document is `data/rules/how_to_play.md`).
+- **`insights.js`** - the `/rules/insights` community-article reader (fetches
+  `/api/insights`, built by `scripts/build_insights.py` from `data/rules/insights/*.md`;
+  reuses the `rules.css` skin and pulls `/api/rules` for rule-link tooltips). The
+  commentary blocks on `/rules` link their source badges to these articles.
 
 ---
 
@@ -288,7 +295,7 @@ flowchart LR
 
 All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 
-**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /missions` · `GET /how-to-play` · `GET /rules` · `GET /catalogue-review` · `GET /collection`
+**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /missions` · `GET /how-to-play` · `GET /rules` · `GET /rules/insights` · `GET /catalogue-review` · `GET /collection`
 
 **Factions & units**
 - `GET /api/factions` - faction grid with owned/bought/unlogged badges
@@ -323,6 +330,7 @@ All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 **Reference pages**
 - `GET /api/missions` - mission packs, primary/secondary, deployments, layouts, twists
 - `GET /api/rules` - the built Core Rules dataset (`data/rules/core_rules.json`; 404s until `scripts/build_rules.py` has run)
+- `GET /api/insights` - the built Rules Insights articles (`data/rules/insights.json`; 404s until `scripts/build_insights.py` has run)
 
 **Model catalogue**
 - `GET|POST /api/model-catalogue` · `GET|PATCH|DELETE /api/model-catalogue/<id>`
@@ -546,6 +554,8 @@ cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` a
 | Enhancement eligibility | `eligibility.py` + `/api/army-units/<auid>/enhancements` |
 | The Missions reference page | `missions.js` + `/api/missions` -> `data_store._load_missions` |
 | The Core Rules page | `rules.js` + `/api/rules` <- `scripts/build_rules.py` <- `data/rules/*.md` |
+| The Rules Insights page | `insights.js` + `/api/insights` <- `scripts/build_insights.py` <- `data/rules/insights/*.md` (one-off import: `scripts/import_insight_docx.py`) |
+| Commentary blocks on /rules | `data/rules/commentary.md` -> `scripts/build_rules.py` (source badges link to the insight articles) |
 | The How to Play guide | `templates/guide.html` (content) + `guide.js`; editorial source `data/rules/how_to_play.md` - keep the two in step |
 | Weapon-keyword tooltips | `static/weapon_keywords.json` (order-sensitive) + `ruletext.js` |
 | Wargear/weapons (Arsenal) | `arsenal.py` + `arsenal_store.py` + `templates/arsenal/` |
@@ -558,8 +568,8 @@ cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` a
 
 ---
 
-*Last reviewed: 2026-07-10 (How to Play guide page added; previously Missions +
-Core Rules pages, army-builder enforcement modules). Update this document when
+*Last reviewed: 2026-07-10 (Rules Insights page added; previously How to Play guide,
+Missions + Core Rules pages, army-builder enforcement modules). Update this document when
 routes, frontend modules, or the request flow change. For data-source and migration details, see
 [`CODEX_ARMORUM_ARCHITECTURE.md`](CODEX_ARMORUM_ARCHITECTURE.md); for updating to
 a new official-app data version, see
