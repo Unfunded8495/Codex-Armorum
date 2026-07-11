@@ -19,6 +19,8 @@ const CHAPTERS = [
   ['ch-round',   'Battle Round'],
   ['ch-scoring', 'Scoring'],
   ['ch-cp',      'Command'],
+  ['ch-opp',     'Their Turn'],
+  ['ch-wrong',   'Got Wrong'],
   ['ch-first',   'First Game'],
   ['ch-ref',     'Reference'],
 ];

@@ -43,7 +43,7 @@
   <div class="rl-shell" id="gdShell">
     <div class="gd-grid">
       <aside class="rl-side" aria-label="Guide contents">
-        <div class="rl-side-head"><span>Contents</span><span>8 chapters</span></div>
+        <div class="rl-side-head"><span>Contents</span><span>10 chapters</span></div>
         <nav class="rl-toc gd-toc" id="gdToc">
           <a class="gd-toc-link" href="#ch-need"><span class="gd-toc-num">01</span>What You Need</a>
           <a class="gd-toc-link" href="#ch-muster"><span class="gd-toc-num">02</span>Muster Your Army</a>
@@ -51,8 +51,10 @@
           <a class="gd-toc-link" href="#ch-round"><span class="gd-toc-num">04</span>The Battle Round</a>
           <a class="gd-toc-link" href="#ch-scoring"><span class="gd-toc-num">05</span>Scoring &amp; Winning</a>
           <a class="gd-toc-link" href="#ch-cp"><span class="gd-toc-num">06</span>Command Points</a>
-          <a class="gd-toc-link" href="#ch-first"><span class="gd-toc-num">07</span>Your First Game</a>
-          <a class="gd-toc-link" href="#ch-ref"><span class="gd-toc-num">08</span>Quick Reference</a>
+          <a class="gd-toc-link" href="#ch-opp"><span class="gd-toc-num">07</span>Their Turn: Your Windows</a>
+          <a class="gd-toc-link" href="#ch-wrong"><span class="gd-toc-num">08</span>Rules People Get Wrong</a>
+          <a class="gd-toc-link" href="#ch-first"><span class="gd-toc-num">09</span>Your First Game</a>
+          <a class="gd-toc-link" href="#ch-ref"><span class="gd-toc-num">10</span>Quick Reference</a>
         </nav>
         <div class="gd-toc-foot">
           <p>Every rule here is Warhammer 40,000, 11th Edition. For the full text, see the <a href="/rules">Core Rules</a>.</p>
@@ -75,7 +77,7 @@
             <img class="gd-hero-logo" src="{{ url_for('static', filename='images/warhammer_40_000_logo.png') }}"
                  alt="Warhammer 40,000" width="300" height="150">
             <h1 class="gd-hero-title">How to Actually Play</h1>
-            <p class="gd-hero-sub">From a blank table to the final score. A walkthrough for your first game of 11th Edition, illustrated at every step.</p>
+            <p class="gd-hero-sub">From a blank table to the final score. A walkthrough and table companion for 11th Edition, illustrated at every step.</p>
             <div class="gd-hero-links">
               <a class="rl-btn rl-btn--solid" href="#ch-round">Jump to the battle round</a>
               <a class="rl-btn" href="#ch-first">Just tell me what to do first</a>
@@ -83,7 +85,7 @@
           </div>
         </header>
 
-        <p class="gd-lede">The <a href="/rules">Core Rules</a> explain every rule in isolation, but they never tell you what to physically do first, second and third on game day. This guide does. Section numbers in brackets (like 07.02) match the reference numbers used in the Core Rules, so you can always jump there for the fine print.</p>
+        <p class="gd-lede">The <a href="/rules">Core Rules</a> explain every rule in isolation, but they never tell you what to physically do first, second and third on game day. This guide does. It is written for players who know the shape of the game but do not play every week: alongside the walkthrough, each chapter carries the timings and traps that occasional players forget between games. Section numbers in brackets (like 07.02) match the reference numbers used in the Core Rules, and the <a href="/rules/insights">Rules Insights</a> page holds the full community articles this guide draws on.</p>
 
         <!-- ===================================================== 01 -->
         <section class="rl-section gd-section" id="ch-need">
@@ -120,7 +122,8 @@
               <tr><td>Onslaught</td><td>3,000</td><td>3</td><td>4</td><td>3</td></tr>
             </tbody>
           </table>
-          <p class="gd-prose"><b>Strike Force (2,000 points)</b> is the default for most games. Mustering means: pick an army faction, pick your detachment (its rules, enhancements and stratagems), add units up to the points limit, then choose wargear, enhancements and which unit each <b>Leader</b> will join.</p>
+          <p class="gd-prose"><b>Strike Force (2,000 points)</b> is the default for most games. Mustering means: pick an army faction (your Warlord must share its faction keyword), pick your detachment (its rules, enhancements and stratagems), add units up to the points limit (the duplicate limit is doubled for Battleline and Dedicated Transports), then choose wargear, enhancements and which unit each <b>Leader</b> will join.</p>
+          <p class="gd-prose"><b>Character attachment is permanent (19).</b> Leaders join their bodyguard unit at muster, not on game day, and the attached unit stays one unit for the whole battle, even if the leader or every bodyguard model dies. A unit can hold one <b>Leader</b> plus one <b>Support</b> character (Support characters must attach; they can never deploy alone). The attached unit shares every datasheet's keywords, but a rule needing a keyword stops working once every model with it is dead, and a leader's buffs switch off if the leader is sniped out with <b>Precision</b> attacks.</p>
 
           <div class="gd-callout">
             <span class="gd-callout-kind">On this site</span>
@@ -204,15 +207,15 @@
           </div>
 
           <h3 class="gd-h3">3 &middot; Place objectives</h3>
-          <p class="gd-prose">The map shows several objective points. Each should sit on a terrain area; that whole area <b>is</b> the objective, a <b>terrain objective</b> (14.01). A model is within range of it while it is within that area. Standing on objectives is how you win, so mark them clearly.</p>
+          <p class="gd-prose">The map shows several objective points. Each should sit on a terrain area; that whole area <b>is</b> the objective, a <b>terrain objective</b> (14.01). A model is within range of it while it is within that area. Standing on objectives is how you win, so mark them clearly. The official layouts label each objective <b>Home</b> (in a deployment zone), <b>Expansion</b> (no man's land, offset toward one player) or <b>Central</b>; missions usually pay the most for Central because it is the most dangerous to hold.</p>
           {{ fig('diagram-controlling-a-terrain-objective.jpg', 1204, 1145, 'Controlling a terrain objective', 'Each player totals the Objective Control of their models in the area; higher total controls it.') }}
 
           <h3 class="gd-h3">4 &middot; Roll off, deploy, begin</h3>
           <ol class="gd-list gd-list--ol">
             <li><b>Roll off</b> to decide Attacker and Defender (the mission says what each picks).</li>
-            <li><b>Declare Battle Formations.</b> Note the things starting off the table: units embarked in transports, units in <b>strategic reserves</b> (20.01) and units using Deep Strike or Infiltrators. Aircraft must start in reserves (23.01).</li>
+            <li><b>Declare Battle Formations.</b> Note the things starting off the table: units embarked in transports, units in <b>strategic reserves</b> (20.01) and units using Deep Strike or Infiltrators. Reserves are capped at 1,000 points at Strike Force (half your army at other sizes), one shared pool. Aircraft must start in reserves and count against the cap (23.01).</li>
             <li><b>Deploy</b> your armies, alternating units, each wholly within your own zone.</li>
-            <li><b>Resolve Pre-battle Abilities</b> (Scout moves happen here, 24.31).</li>
+            <li><b>Resolve Pre-battle Abilities</b> (Scout moves happen here, 24.31; Scouts no longer work for units deployed outside your own zone).</li>
             <li><b>Determine the first turn</b> and begin. The same player takes the first turn every battle round (07.02).</li>
           </ol>
         </section>
@@ -231,11 +234,17 @@
           </div>
 
           <h3 class="gd-h3" id="ph-command">Command phase (08)</h3>
-          <p class="gd-prose">Both players gain <b>1 Command Point</b> (yes, both, every turn). Then the active player makes a <b>battle-shock</b> roll for each unit that is at or below half strength, or already battle-shocked (08.03). While a unit is battle-shocked its Objective Control drops to zero (shown as &ldquo;-&rdquo;), so it stops holding objectives; it also cannot be targeted by its own stratagems and cannot start or finish actions. A failed unit stays shaken and keeps testing until a battle-shock roll succeeds.</p>
+          <p class="gd-prose">Both players gain <b>1 Command Point</b> (yes, both, every turn). Then the active player makes a <b>battle-shock</b> roll for each unit that is <b>at</b> or below half strength (at counts, so even two-model units test), or already battle-shocked (08.03). While a unit is battle-shocked its Objective Control becomes &ldquo;-&rdquo;, an unmodifiable zero that no +1 OC buff can rescue, so it stops holding objectives; it also cannot be targeted by its own stratagems and cannot start or finish actions. A failed unit stays shaken and keeps testing until a battle-shock roll succeeds. Insane Bravery auto-passes one test per battle, but only if used before the roll and never on an already-shocked unit (shocked units cannot be targeted by their own stratagems). Command abilities resolve <b>after</b> battle-shock, so model-returning effects will not dodge this phase's test, and the mission-scoring sub-step closes the phase after everything else.</p>
           {{ fig('diagram-battle-shock-examples.jpg', 711, 1766, 'Battle-shock examples', 'Which units test, and what failing means.') }}
 
           <h3 class="gd-h3" id="ph-move">Movement phase (09)</h3>
-          <p class="gd-prose">Move your units one at a time. Each picks a move type: <b>Remain Stationary</b>, a <b>Normal Move</b> (up to its Move characteristic), an <b>Advance</b> (Move + D6, but usually no shooting or charging after), or a <b>Fall Back</b> to escape combat at a cost. Units end moves in <b>coherency</b> and cannot move within <b>engagement range</b> (2&Prime; horizontally, 5&Prime; vertically) of the enemy. Reserves and Deep Strike units also arrive now.</p>
+          <p class="gd-prose">Move your units one at a time. Each picks a move type: <b>Remain Stationary</b> (truly stationary, not even a free pivot), a <b>Normal Move</b> (up to its Move characteristic), an <b>Advance</b> (Move + D6, then only Assault weapons can shoot and no charging or actions), or a <b>Fall Back</b> to escape combat. Falling back is modal (09.07): an <b>Ordered Retreat</b> (only if not battle-shocked) means no shooting, actions or charging this turn; a <b>Desperate Escape</b> (forced if battle-shocked or moving through enemy models) costs every model a hazard roll plus a battle-shock test.</p>
+          <p class="gd-prose">Units end moves in <b>coherency</b> (2&Prime; to a neighbour and the whole unit inside a 9&Prime; circle, 03.03) and cannot <b>end</b> a move in <b>engagement range</b> (2&Prime; horizontally, 5&Prime; vertically), though standard moves may now pass through it freely. Pivots cost nothing. Monsters and vehicles can move through non-monster, non-vehicle enemy models on a normal or advance move, so chaff rings no longer trap them; FLY models can pay 2&Prime; of movement to pass through everything and ignore vertical distance.</p>
+          <p class="gd-prose"><b>Reserves arrive here</b> with an <b>ingress move</b> (20.04): more than 8&Prime; from all enemies, wholly within 6&Prime; of a battlefield edge, and outside the enemy zone before round three; Deep Strike drops the edge and zone limits. Nothing arrives in round one, anything still in strategic reserves after round three is destroyed, and an ingressed unit cannot move again until its next Charge phase: no arriving, shooting, then stepping back behind a wall. <b>Transports (18):</b> embark by ending a move with all models within 3&Prime; (never in the same turn the unit was set up, so no hop out and back in); disembarking is itself the unit's move for the turn, before the transport moves (then move immediately) or after it moved (no charging).</p>
+          <div class="gd-callout gd-callout--warn">
+            <span class="gd-callout-kind">Their window</span>
+            <p>The end of <b>your</b> Movement phase is your opponent's moment: <b>Rapid Ingress</b> and <b>Fire Overwatch</b> both trigger there. Finish your moves expecting a unit to drop in or shoot.</p>
+          </div>
           <div class="gd-fig-grid">
             {{ fig('diagram-moving-in-a-straight-line.jpg', 713, 715, 'Moving in a straight line', 'Measure every part of the model as it moves.') }}
             {{ fig('diagram-rotating.jpg', 1207, 717, 'Rotating a model', 'Turning on the spot still counts as movement.') }}
@@ -244,7 +253,8 @@
           </div>
 
           <h3 class="gd-h3" id="ph-shoot">Shooting phase (10)</h3>
-          <p class="gd-prose">Pick each eligible unit in turn: select the weapons, select target units that are <b>visible</b> and in range, then resolve the attacks (below). A model is a valid target only if it can be seen, so line of sight and cover matter enormously.</p>
+          <p class="gd-prose">Pick each eligible unit in turn and choose its shooting type (10.04 to 10.07): <b>Normal</b> (did not advance, unengaged), <b>Assault</b> (advanced; Assault weapons only), <b>Close-Quarters</b> (engaged: monsters and vehicles can shoot anything at -1 to hit and lose the Heavy bonus; others fire only Pistol or Close-Quarters weapons at what they are engaged with) or <b>Indirect</b> (Indirect Fire weapons may target the unseen, but the target gets cover, no hit re-rolls, and only unmodified 6s hit unless you stayed stationary with a friendly spotter unit seeing the target).</p>
+          <p class="gd-prose">Select the weapons, select target units that are <b>visible</b>, in range and unengaged, then resolve the attacks (below). The visible model and the in-range model no longer need to be the same one, and <b>Rapid Fire</b> or <b>Melta</b> half-range checks happen at the Select Targets step against the unit, so resolving other weapons first cannot switch them off. Targets are locked before any dice are rolled.</p>
           <div class="gd-fig-grid">
             {{ fig('diagram-model-visible.jpg', 960, 424, 'Model visible', 'Any part seen means the model is visible.') }}
             {{ fig('diagram-model-fully-visible.jpg', 956, 425, 'Model fully visible', 'The whole model can be seen.') }}
@@ -253,16 +263,17 @@
             {{ fig('diagram-benefit-of-cover.jpg', 589, 1144, 'Benefit of cover', 'Cover worsens the shooter\'s BS by 1; it does not improve the save.') }}
             {{ fig('diagram-hidden-and-obscuring.jpg', 593, 1143, 'Hidden and obscuring', 'Dense terrain blocks sight; a hidden unit is only seen within 15 inches.') }}
           </div>
-          <p class="gd-prose">Terrain changes who can be hit. In 11th Edition the <b>benefit of cover</b> does not improve a save; instead it worsens the shooter's Ballistic Skill by 1 (a harder hit roll), and it applies to Infantry, Beasts or Swarm units in a terrain area or units screened by intervening terrain (13.08). A <b>hidden</b> Infantry, Beasts or Swarm unit sitting in dense terrain that has not shot this turn or last can only be targeted from within 15&Prime; (13.09).</p>
+          <p class="gd-prose">Terrain changes who can be hit. In 11th Edition the <b>benefit of cover</b> does not improve a save; instead it worsens the shooter's Ballistic Skill by 1 (a harder hit roll), and it applies to Infantry, Beasts or Swarm units in a terrain area or units screened by intervening terrain (13.08). Two traps: <b>every</b> model in the target unit must qualify (one model in the open strips the whole squad), and it is judged per attacking model, so an attacking unit can split into penalised and clean groups. A <b>hidden</b> Infantry, Beasts or Swarm model in a light or dense terrain area whose unit has not shot this turn or last can only be seen from within its detection range: 15&Prime;, or 12&Prime; if <b>gone to ground</b> behind solid terrain (13.09, 13.11). High ground bites back: models more than 3&Prime; up get <b>Plunging Fire</b>, +1 BS against ground-level targets, cancelling their cover (Towering models get it automatically within 12&Prime;). Shooting at an engaged monster or vehicle is always legal, at -1 to hit. Finally, a unit that shoots cannot start an action this turn, and vice versa.</p>
 
           <h4 class="gd-h4">The attack sequence (05): how every attack resolves</h4>
           <p class="gd-prose">Shooting and fighting both use the same four steps. Roll each step's dice together:</p>
           <ol class="gd-list gd-list--ol">
             <li><b>Hit rolls:</b> one D6 per attack. Meet or beat the weapon's BS (shooting) or WS (melee). An unmodified 1 always misses; an unmodified 6 is a Critical Hit.</li>
             <li><b>Wound rolls:</b> one D6 per hit, comparing Strength to Toughness (see the table in Quick Reference). Unmodified 1 fails, unmodified 6 is a Critical Wound.</li>
-            <li><b>Save rolls:</b> the defender rolls one D6 per wound, trying to beat the weapon's AP-modified save, or an invulnerable save (which ignores AP).</li>
-            <li><b>Inflict damage:</b> each failed save costs a model the weapon's Damage. At 0 wounds a model is destroyed. Excess damage does not carry to the next model.</li>
+            <li><b>Save rolls:</b> the defender groups the target's models (each character alone, then one group per identical Wounds/Save/invulnerable profile), declares the allocation order (wounded non-character group first, characters never before non-characters), then rolls one D6 per wound and resolves them lowest first (05.03). Putting worse-saved models early soaks the low dice. Invulnerable saves are not optional: the roll checks against both saves and fails only if it beats neither. <b>Precision</b> weapons can force a visible character's group to the front of the queue.</li>
+            <li><b>Inflict damage:</b> each failed save costs a model the weapon's Damage. Feel No Pain rolls happen per wound lost (Damage 3 means three dice). At 0 wounds a model is destroyed. Excess damage does not carry to the next model.</li>
           </ol>
+          <p class="gd-prose"><b>Modifiers stack in a fixed order (02.02):</b> set values first (a 0 or &ldquo;-&rdquo; stops everything), then multiply, add, divide, subtract, rounding up at the end. This is why Melta no longer beats half-damage effects, and why nothing rescues battle-shocked Objective Control.</p>
           <div class="gd-fig-grid">
             {{ fig('diagram-making-attacks.jpg', 597, 1768, 'Making attacks', 'Select weapons, select targets, resolve.') }}
             {{ fig('diagram-resolving-attack-dice.jpg', 600, 1765, 'Resolving attack dice', 'Hit, wound, save, damage in sequence.') }}
@@ -272,11 +283,19 @@
           </div>
 
           <h3 class="gd-h3" id="ph-charge">Charge phase (11)</h3>
-          <p class="gd-prose">To fight in melee a unit must charge, and the order matters. First pick an eligible unit: within 12&Prime; of an enemy, not already engaged, and it has not advanced or fallen back this turn. Then roll <b>2D6</b> for the maximum distance (11.02). <b>Only after the roll</b> do you choose targets: enemy units within 12&Prime; and within the distance you rolled (11.04). The charge succeeds only if the unit can end engaged with <b>every</b> target it chose, without touching anything it did not. Fall short and the unit does not move at all. Charging pays off: chargers strike with Fights First.</p>
+          <p class="gd-prose">To fight in melee a unit must charge, and the order matters. First pick an eligible unit: within 12&Prime; of an enemy, not already engaged, and it has not advanced or fallen back this turn. Then roll <b>2D6</b> for the maximum distance (11.02). <b>Only after the roll</b> do you choose targets: enemy units within 12&Prime; and within the distance you rolled, measured point to point (11.04). A unit 10&Prime; away is not a legal target on a roll of 9, even though 9&Prime; of movement would reach its 2&Prime; engagement bubble; once a target is legal you get about 2&Prime; of slack. There is no base-to-base requirement (staying off base contact is often right, because based models cannot pile in next phase), and you may roll, dislike your options and decline to move. The charge succeeds only if the unit can end engaged with <b>every</b> target it chose, without touching anything it did not. Fall short and the unit does not move at all. Charging pays off: chargers strike with Fights First. Deep Strike charges still need a 9, since you set up more than 8&Prime; away.</p>
+          <div class="gd-callout gd-callout--warn">
+            <span class="gd-callout-kind">No overwatch here</span>
+            <p>Overwatch moved to the end of the Movement phase. The opponent's counterplay in this phase is <b>Heroic Intervention</b> at the end of it, so your &ldquo;safe&rdquo; unit on an objective may still get counter-charged.</p>
+          </div>
           {{ fig('diagram-making-a-charge-move.jpg', 1201, 974, 'Making a charge move', 'Roll 2D6 first, then choose targets within the distance rolled.') }}
 
           <h3 class="gd-h3" id="ph-fight">Fight phase (12)</h3>
-          <p class="gd-prose">Both players act here, in three steps: <b>Pile In</b> (a 3&Prime; move to tighten combat), <b>Fight</b> (units fight one at a time, Fights First units before the rest, players alternating) and <b>Consolidate</b> (a final 3&Prime; move). Fighting uses the same attack sequence as shooting. You must fight with every unit that can.</p>
+          <p class="gd-prose">Both players act here, in three steps. <b>Pile In (12.02):</b> all pile-ins happen before any fighting; the active player moves every eligible unit, then the opponent does, often into whatever cage was just built. Up to 3&Prime;, ending closer to (and if possible engaged with) the closest target; models already in base contact cannot pile in at all. <b>Fight (12.04):</b> eligibility locks at the start of this step, so a unit whose foes were all just killed still fights, making an <b>overrun fight</b> with a bonus pile-in (12.06). Fights First units go first (charging grants it) and the <b>active player picks first</b>, alternating; then everyone else. Only models within engagement range swing, all attacks must be used, and every unit that can fight must. <b>Consolidate (12.07):</b> a final 3&Prime; move whose mode is dictated by the situation: toward the nearest engaged enemy, into an unengaged enemy within 3&Prime; (who then immediately fights, if they have not), or within an objective you are near.</p>
+          <div class="gd-callout gd-callout--warn">
+            <span class="gd-callout-kind">Chain wipes</span>
+            <p>Two units charging the same target is how massacres happen: the first wipes it, the second overruns 3&Prime; into fresh victims. Conversely, leaving exactly one enemy model alive within 2&Prime; of one of yours denies the overrun: only that model swings back.</p>
+          </div>
           <div class="gd-fig-grid">
             {{ fig('diagram-start-of-fight-phase.jpg', 1204, 872, 'Start of the fight phase', 'Who is engaged and eligible to fight.') }}
             {{ fig('diagram-pile-in-moves.jpg', 1204, 867, 'Pile-in moves', 'Move up to 3 inches to reach the enemy.') }}
@@ -302,9 +321,10 @@
           <p class="rl-intro">Kills alone do not win games; <b>victory points do</b>, and most come from holding objectives.</p>
           <div class="gd-split">
             <div class="gd-split-text">
-              <p class="gd-prose"><b>Controlling an objective (14.02):</b> at the end of each phase and turn, each player adds up the Objective Control (OC) of all their models within the objective's terrain area. Highest total controls it; a tie means nobody holds it unless it is <b>secured</b> (14.03).</p>
+              <p class="gd-prose"><b>Controlling an objective (14.02):</b> at the end of each phase and turn, each player adds up the Objective Control (OC) of all their models within the objective's terrain area. Highest total controls it; a tie means nobody holds it unless it is <b>secured</b> (14.03), in which case the previous holder keeps it, even with the garrison wiped out, until actually out-controlled. Battle-shocked models contribute nothing, and rules asking whether a <b>unit</b> controls an objective need a model with OC 1 or more from that unit in range.</p>
               <p class="gd-prose"><b>Primary mission:</b> your card says when and how you score, usually for holding objectives at the end of your turn or the battle round. The End of Turn and End of Battle Round steps exist so you remember to check (07.03).</p>
-              <p class="gd-prose"><b>Secondary missions</b> score alongside the primary, drawn as the game goes on. <b>Actions (16)</b> are battlefield tasks some missions need; a unit that starts one cannot shoot or declare a charge for the rest of the turn, and battle-shocked or OC-zero units cannot start them at all, so they are a real trade.</p>
+              <p class="gd-prose"><b>Secondary missions</b> score alongside the primary, drawn as the game goes on. <b>Actions (16)</b> are battlefield tasks some missions need. A unit cannot start one if it is battle-shocked, OC 0 or &ldquo;-&rdquo;, engaged, or it advanced, fell back or started another action this turn; starting one blocks shooting and charging for the turn (and any shooting blocks actions), and moving before it completes fails it. A real trade, so pick your task units before the Shooting phase.</p>
+              <p class="gd-prose"><b>Hold from safety:</b> the Hidden rule (13.09) is the intended way to sit on objectives. A couple of models toed into the area, behind a solid wall for Gone to Ground, force the enemy inside 12&Prime; to 15&Prime; before they can even see you.</p>
               <p class="gd-prose">The battle ends after the last round (or if an army is wiped out). Highest total victory points wins.</p>
             </div>
             {{ fig('diagram-controlling-a-terrain-objective.jpg', 1204, 1145, 'Level of control on an objective', 'The player with the higher total OC in the area controls it.') }}
@@ -315,24 +335,71 @@
         <section class="rl-section gd-section" id="ch-cp">
           <div class="rl-shead"><span class="rl-snum">06</span><span class="rl-stitle">Command Points</span><span class="rl-stag">stratagems</span></div>
           <p class="rl-intro">Command Points (CP) are your tactical currency. You gain 1 in every Command phase, including your opponent's turn, and spend them on <b>stratagems</b>: your detachment's own, plus the ten core stratagems every army has (15.02 to 15.12).</p>
-          <div class="gd-strat-grid">
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Command Re-roll</b><p>Re-roll one hit, wound, save, damage, advance, hazard, charge or attacks roll.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Epic Challenge</b><p>Give a character's melee weapons Precision to pick out enemy characters.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Insane Bravery</b><p>Auto-pass a battle-shock test. Once per battle.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Explosives</b><p>A grenades or explosives unit throws for mortal wounds instead of shooting.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Crushing Impact</b><p>A monster or vehicle that finishes a charge deals mortal wounds.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Rapid Ingress</b><p>Bring a reserves unit onto the table early, at the end of the enemy's move.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Fire Overwatch</b><p>An unengaged unit shoots in the enemy's turn, but hits only on unmodified 6s.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Smokescreen</b><p>A Smoke unit gains the benefit of cover in your opponent's Shooting phase.</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Heroic Intervention</b><p>An unengaged unit counter-charges in the enemy's Charge phase (2 CP for wider reach).</p></div>
-            <div class="gd-strat"><span class="gd-strat-cp">2 CP</span><b>Counter-offensive</b><p>An eligible unit fights next, out of the normal sequence.</p></div>
+          <div class="gd-callout gd-callout--warn">
+            <span class="gd-callout-kind">The two limits</span>
+            <p>You cannot use the <b>same stratagem</b> twice in one phase, and you cannot target the <b>same unit</b> with two stratagems in one phase. Command Re-roll is a stratagem: re-rolling a unit's charge locks that unit out of everything else this phase.</p>
           </div>
-          <p class="gd-prose">Each stratagem states when it can be used, what it targets and what it costs. Counter-offensive is the only core stratagem that costs 2 CP; the rest are 1 CP. Spend CP freely; hoarding them wins nothing.</p>
+          <div class="gd-strat-grid">
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Command Re-roll</b><p>Re-roll one hit, wound, save, damage, advance, hazard, charge or attacks roll. One die only, except charges, which re-roll in full.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Epic Challenge</b><p>When your character unit is selected to fight, one character's melee weapons gain Precision for the phase.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Insane Bravery</b><p>Auto-pass a battle-shock roll, used just before rolling. Once per battle; cannot rescue an already-shocked unit.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Explosives</b><p>An unengaged grenades unit that did not advance picks a visible enemy within 8&Prime;: six D6, each 4+ a mortal wound.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Crushing Impact</b><p>A monster or vehicle ending a charge rolls its Toughness in dice: 5+ wounds the enemy (max 6), each 1 wounds itself.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Rapid Ingress</b><p>End of the enemy's Movement phase: a reserves unit (not aircraft) ingresses early. Not in round one.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Fire Overwatch</b><p>End of the enemy's Movement phase: an unengaged unit snap-shoots one visible target within 24&Prime;. Only unmodified 6s hit, no re-rolls.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Smokescreen</b><p>Start of the enemy's Shooting phase: a Smoke unit gains cover, and so does anything screened behind its models.</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">1 CP</span><b>Heroic Intervention</b><p>End of the enemy's Charge phase: counter-charge a unit that charged, or pay +1 CP to charge anything within 6&Prime; (roll capped at 6).</p></div>
+            <div class="gd-strat"><span class="gd-strat-cp">2 CP</span><b>Counter-offensive</b><p>Just after an enemy unit fights: one of your eligible units gains Fights First and fights next.</p></div>
+          </div>
+          <p class="gd-prose">Each stratagem states when it can be used, what it targets and what it costs. Counter-offensive is the only core stratagem that costs 2 CP; the rest are 1 CP (Heroic Intervention's wide mode pays +1). Spend CP freely; hoarding them wins nothing.</p>
         </section>
 
         <!-- ===================================================== 07 -->
+        <section class="rl-section gd-section" id="ch-opp">
+          <div class="rl-shead"><span class="rl-snum">07</span><span class="rl-stitle">Their Turn: Your Windows</span><span class="rl-stag">the opponent's turn</span></div>
+          <p class="rl-intro">You are never just watching. These are the moments in your opponent's turn where you act; missing them is one of the biggest gaps between occasional and regular players. Within any shared timing window the active player resolves their rules first, so as the opposing player you always get the final say (01.03).</p>
+          <table class="gd-table">
+            <thead><tr><th>When</th><th>You can</th></tr></thead>
+            <tbody>
+              <tr><td>Their Command phase</td><td>You gain 1 CP too (08.02).</td></tr>
+              <tr><td>During their Movement phase</td><td>Nothing reactive: Overwatch is no longer triggered per move, so wait.</td></tr>
+              <tr><td class="gd-td-hi">End of their Movement phase</td><td><b>Rapid Ingress</b> a reserves unit in; <b>Fire Overwatch</b> with an unengaged unit (snap shooting).</td></tr>
+              <tr><td>Start of their Shooting phase</td><td><b>Smokescreen</b> a Smoke unit about to be shot.</td></tr>
+              <tr><td>While they shoot</td><td>You choose the save-group allocation order; invulnerable saves and Feel No Pain apply automatically.</td></tr>
+              <tr><td class="gd-td-hi">End of their Charge phase</td><td><b>Heroic Intervention</b>: counter-charge a unit that charged (1 CP), or anything within 6&Prime; (2 CP).</td></tr>
+              <tr><td>Their Fight phase</td><td>Your engaged units pile in (after theirs), fight in the alternating sequence and consolidate. <b>Counter-offensive</b> (2 CP) jumps the queue; <b>Epic Challenge</b> works when your character unit is selected to fight.</td></tr>
+              <tr><td>End of their turn</td><td>Scoring is checked per your mission; their aircraft return to reserves.</td></tr>
+            </tbody>
+          </table>
+          <p class="gd-prose">One stratagem per unit per phase applies across all of this, and battle-shocked units cannot be targeted by your stratagems at all. Remember your own units' abilities too: many detachment rules trigger in either player's turn.</p>
+        </section>
+
+        <!-- ===================================================== 08 -->
+        <section class="rl-section gd-section" id="ch-wrong">
+          <div class="rl-shead"><span class="rl-snum">08</span><span class="rl-stitle">Rules People Get Wrong</span><span class="rl-stag">settle it before it starts</span></div>
+          <p class="rl-intro">Every entry here is a genuine table dispute the community keeps having to settle. Rule numbers point at the <a href="/rules">Core Rules</a>; the long-form explanations live on <a href="/rules/insights">Rules Insights</a>.</p>
+          <ol class="gd-list gd-list--ol">
+            <li><b>Cover is a worse hit roll, not a better save (13.08).</b> It needs every model in the target unit to qualify, and it is checked per attacking model, so an attacking unit can split into penalised and clean groups.</li>
+            <li><b>Roll the charge first, pick targets second (11.02, 11.04).</b> Targets must be within the distance rolled, point to point: a unit 10&Prime; away is not a legal target on a 9, even though the move would reach engagement range.</li>
+            <li><b>Charges do not need base contact (11.04).</b> End closer, within 1&Prime; if possible, engaged if possible. Staying off base contact is often correct: based models cannot pile in next phase (12.02).</li>
+            <li><b>Command Re-roll locks the unit (15.01).</b> One stratagem per unit per phase, and the re-roll counts: nothing else on that unit this phase.</li>
+            <li><b>Invulnerable saves are not optional (05.03).</b> The roll is checked against both saves; you cannot deliberately fail to let a unit die on your terms.</li>
+            <li><b>Battle-shock tests at half strength, and recovery is not automatic (08.03).</b> Shocked units keep testing every Command phase, and Insane Bravery cannot be used on them.</li>
+            <li><b>Fight eligibility locks at the start of the Fight step (12.04).</b> Killing everything engaged with a unit does not deny its fight; it fights as an overrun fight with a bonus pile-in (12.06). The counterplay is leaving exactly one model alive within 2&Prime;.</li>
+            <li><b>The active player picks the first Fights First unit (12.04).</b> Charging a Fights First monster is no longer automatically fatal: your chargers have Fights First too, and you activate first.</li>
+            <li><b>Modifiers have a fixed order (02.02).</b> Set values first (a 0 or &ldquo;-&rdquo; stops everything), then multiply, add, divide, subtract. Melta no longer beats half-damage, and no banner rescues battle-shocked OC.</li>
+            <li><b>Arriving from reserves ends your movement for the turn (20.04).</b> An ingress move (Deep Strike included) means no further moves until your next Charge phase, nothing arrives in round one, and reserves still waiting after round three die (20.01).</li>
+            <li><b>You can move through enemy engagement range (03.04)</b>, you just cannot end there. And coherency now caps a unit inside a 9&Prime; circle (03.03): the conga line is dead.</li>
+            <li><b>Hidden breaks on shooting this turn or last (13.09)</b>, works in light terrain areas as well as dense (rules commentary), applies per model, and works on turn one. Fire Overwatch counts as shooting.</li>
+            <li><b>Overwatch happens at the end of the Movement phase (15.08), not during charges.</b> In the Charge phase the counterplay is Heroic Intervention (15.11).</li>
+            <li><b>Disembarking uses the unit's move, and no re-embarking after being set up (18.02).</b> A unit that got out this turn cannot get back in.</li>
+            <li><b>Rapid Fire and Melta check half range at the Select Targets step (04.02)</b>, against the target unit, not the model you happen to see; resolving other weapons first cannot turn them off.</li>
+          </ol>
+        </section>
+
+        <!-- ===================================================== 09 -->
         <section class="rl-section gd-section" id="ch-first">
-          <div class="rl-shead"><span class="rl-snum">07</span><span class="rl-stitle">Your First Game</span><span class="rl-stag">a suggested script</span></div>
+          <div class="rl-shead"><span class="rl-snum">09</span><span class="rl-stitle">Your First Game</span><span class="rl-stag">or first in a while</span></div>
           <div class="gd-card">
             <ol class="gd-list gd-list--ol">
               <li>Both players build a <b>1,000 point (Incursion)</b> list in the <a href="/army-builder">Army Builder</a>.</li>
@@ -346,11 +413,15 @@
             <span class="gd-callout-kind">Common first-game slips</span>
             <p>Forgetting that <b>both</b> players gain CP each Command phase. Forgetting battle-shock tests for weakened units. Treating cover as a better save instead of a worse hit roll for the shooter. Forgetting to roll the charge before picking targets. And leaving objectives bare because everything went hunting kills.</p>
           </div>
+          <div class="gd-callout">
+            <span class="gd-callout-kind">Back after a break?</span>
+            <p>The five minutes best spent before the game: re-read chapter <a href="#ch-opp">07</a> (your windows in their turn), chapter <a href="#ch-wrong">08</a> (the misplays), and your own detachment rules and stratagems. Most rust shows up as missed windows, not forgotten fundamentals.</p>
+          </div>
         </section>
 
-        <!-- ===================================================== 08 -->
+        <!-- ===================================================== 10 -->
         <section class="rl-section gd-section" id="ch-ref">
-          <div class="rl-shead"><span class="rl-snum">08</span><span class="rl-stitle">Quick Reference</span><span class="rl-stag">keep this handy</span></div>
+          <div class="rl-shead"><span class="rl-snum">10</span><span class="rl-stitle">Quick Reference</span><span class="rl-stag">keep this handy</span></div>
           <div class="gd-ref-grid">
             <div class="gd-ref">
               <h3 class="gd-h3">Turn order</h3>
@@ -361,11 +432,17 @@
               <table class="gd-table gd-table--sm">
                 <tbody>
                   <tr><td>Engagement range</td><td>2&Prime; horizontal, 5&Prime; vertical</td></tr>
+                  <tr><td>Coherency</td><td>2&Prime; to a neighbour, unit in a 9&Prime; circle</td></tr>
                   <tr><td>Charge declaration</td><td>within 12&Prime;</td></tr>
                   <tr><td>Charge move</td><td>2D6&Prime; maximum</td></tr>
                   <tr><td>Pile-in / Consolidate</td><td>3&Prime;</td></tr>
                   <tr><td>Advance bonus</td><td>+D6&Prime;</td></tr>
-                  <tr><td>Detection range (hidden unit)</td><td>15&Prime;</td></tr>
+                  <tr><td>Ingress (reserves)</td><td>&gt;8&Prime; from enemies, within 6&Prime; of an edge</td></tr>
+                  <tr><td>Deep Strike</td><td>&gt;8&Prime; from enemies, anywhere</td></tr>
+                  <tr><td>Detection range (hidden)</td><td>15&Prime;, or 12&Prime; gone to ground</td></tr>
+                  <tr><td>Snap shooting target</td><td>within 24&Prime;</td></tr>
+                  <tr><td>Heroic Intervention</td><td>within 12&Prime; (6&Prime; for Into the Fray)</td></tr>
+                  <tr><td>Plunging Fire height</td><td>more than 3&Prime; up</td></tr>
                 </tbody>
               </table>
               <p class="gd-prose"><b>Cover:</b> the benefit of cover worsens the shooter's BS by 1; it does not improve the target's save.</p>
@@ -382,9 +459,18 @@
                   <tr><td>S half T or less</td><td>6+</td></tr>
                 </tbody>
               </table>
+              <h3 class="gd-h3">Your turn, phase by phase</h3>
+              <ul class="gd-list">
+                <li><b>Command:</b> both gain 1 CP; battle-shock rolls; command abilities; mission scoring last.</li>
+                <li><b>Movement:</b> move or stay; reserves ingress (round two on); embark or disembark; end of phase is the enemy's Overwatch and Rapid Ingress window.</li>
+                <li><b>Shooting:</b> pick a shooting type per unit; all targets before any dice; check cover, hidden, plunging fire; shooting blocks actions.</li>
+                <li><b>Charge:</b> eligible within 12&Prime;; roll 2D6, then pick targets within the roll; chargers gain Fights First; enemy Heroic Intervention at the end.</li>
+                <li><b>Fight:</b> all pile-ins (you first), alternating fights (Fights First first, you pick first), then consolidations.</li>
+              </ul>
               <h3 class="gd-h3">Where to find things</h3>
               <ul class="gd-list gd-list--links">
                 <li><a href="/rules">Core Rules</a>: the full 11th Edition ruleset, searchable, with diagrams.</li>
+                <li><a href="/rules/insights">Rules Insights</a>: the community deep-dive articles behind this guide.</li>
                 <li><a href="/missions">Missions</a>: the current matched-play pack and scoring.</li>
                 <li><a href="/army-builder">Army Builder</a>: build legal lists with live points.</li>
                 <li><a href="/arsenal/loadouts">Weapon Loadouts</a>: datasheets and wargear.</li>
