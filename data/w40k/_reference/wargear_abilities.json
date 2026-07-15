@@ -1,0 +1,607 @@
+[
+  {
+    "name": "ANTI",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-chaos 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-character 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-character 3+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-character 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-character 5+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-CHARACTER 5+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-daemon 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-Epic Hero 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-fly 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-fly 3+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-fly 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-INFANTRY 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-infantry 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-INFANTRY 3+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-infantry 3+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-INFANTRY 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-infantry 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-infantry 5+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-monster 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-monster 3+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-monster 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-monster 5+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-MONSTER/VEHICLE 3+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-MONSTER/VEHICLE 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-PSYKER 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-psyker 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-psyker 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-PSYKER 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-psyker 5+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-titanic 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-vehicle 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-vehicle 3+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "ANTI-VEHICLE 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-vehicle 4+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-vehicle 5+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Anti-walker 2+",
+    "rules": "This ability always takes the form [ANTI‑X Y+]. Each time an attack is made with an [ANTI] weapon, if the target unit has the keyword denoted by X, an unmodified wound roll of Y+ is a critical wound.\nExample: An attack made with an [ANTI‑VEHICLE 4+] weapon against a VEHICLE unit will result in a critical wound on an unmodified wound roll of 4+, while an attack made with an [ANTI‑PSYKER 2+] weapon against a PSYKER unit will result in a critical wound on an unmodified wound roll of 2+.",
+    "lore": "Certain weapons are the bane of particular foes."
+  },
+  {
+    "name": "Assault",
+    "rules": "Units containing one or more models with an [ASSAULT] weapon can shoot using assault shooting (10.05).",
+    "lore": "Folding stocks, shortened barrels or lightweight construction enable some weapons to be easily fired on the move."
+  },
+  {
+    "name": "ASSAULT",
+    "rules": "Units containing one or more models with an [ASSAULT] weapon can shoot using assault shooting (10.05).",
+    "lore": "Folding stocks, shortened barrels or lightweight construction enable some weapons to be easily fired on the move."
+  },
+  {
+    "name": "BLAST",
+    "rules": "Each time you gather attack dice for a [BLAST] weapon, add one additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).\n\nIf this ability takes the form [BLAST X], each time you gather attack dice for such a weapon, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down) instead.\n\nExample: If a [BLAST 2] weapon with an A characteristic of 3 targets a unit containing 12 models, you would gather four additional attack dice for that weapon (for a total of seven for that weapon).",
+    "lore": "High‑explosive rounds can fell several warriors in a single blast, but firing them too close to comrades is unwise."
+  },
+  {
+    "name": "Blast",
+    "rules": "Each time you gather attack dice for a [BLAST] weapon, add one additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).\n\nIf this ability takes the form [BLAST X], each time you gather attack dice for such a weapon, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down) instead.\n\nExample: If a [BLAST 2] weapon with an A characteristic of 3 targets a unit containing 12 models, you would gather four additional attack dice for that weapon (for a total of seven for that weapon).",
+    "lore": "High‑explosive rounds can fell several warriors in a single blast, but firing them too close to comrades is unwise."
+  },
+  {
+    "name": "BLAST 1",
+    "rules": "Each time you gather attack dice for a [BLAST] weapon, add one additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).\n\nIf this ability takes the form [BLAST X], each time you gather attack dice for such a weapon, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down) instead.\n\nExample: If a [BLAST 2] weapon with an A characteristic of 3 targets a unit containing 12 models, you would gather four additional attack dice for that weapon (for a total of seven for that weapon).",
+    "lore": "High‑explosive rounds can fell several warriors in a single blast, but firing them too close to comrades is unwise."
+  },
+  {
+    "name": "BLAST 2",
+    "rules": "Each time you gather attack dice for a [BLAST] weapon, add one additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).\n\nIf this ability takes the form [BLAST X], each time you gather attack dice for such a weapon, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down) instead.\n\nExample: If a [BLAST 2] weapon with an A characteristic of 3 targets a unit containing 12 models, you would gather four additional attack dice for that weapon (for a total of seven for that weapon).",
+    "lore": "High‑explosive rounds can fell several warriors in a single blast, but firing them too close to comrades is unwise."
+  },
+  {
+    "name": "Bubblechukka",
+    "rules": "Before selecting targets for one or more models equipped with this weapon, roll one D6 to determine which profile models equipped with this weapon will make attacks with, comparing the result with the numbers shown.",
+    "lore": ""
+  },
+  {
+    "name": "CLEAVE",
+    "rules": "This ability always takes the form [CLEAVE X]. Each time you gather attack dice for a [CLEAVE] weapon, if you only selected one target for all of that weapon’s attacks, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).\n\nExample: If a [CLEAVE 1] weapon with an A characteristic of 3 targets one unit containing 16 models, you would gather three additional attack dice for that weapon (for a total of six for that weapon).",
+    "lore": "With sufficient might or skill, warriors may sweep blades or talons through their foes in long lethal arcs."
+  },
+  {
+    "name": "Cleave 1",
+    "rules": "This ability always takes the form [CLEAVE X]. Each time you gather attack dice for a [CLEAVE] weapon, if you only selected one target for all of that weapon’s attacks, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).\n\nExample: If a [CLEAVE 1] weapon with an A characteristic of 3 targets one unit containing 16 models, you would gather three additional attack dice for that weapon (for a total of six for that weapon).",
+    "lore": "With sufficient might or skill, warriors may sweep blades or talons through their foes in long lethal arcs."
+  },
+  {
+    "name": "CLEAVE 1",
+    "rules": "This ability always takes the form [CLEAVE X]. Each time you gather attack dice for a [CLEAVE] weapon, if you only selected one target for all of that weapon’s attacks, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).\n\nExample: If a [CLEAVE 1] weapon with an A characteristic of 3 targets one unit containing 16 models, you would gather three additional attack dice for that weapon (for a total of six for that weapon).",
+    "lore": "With sufficient might or skill, warriors may sweep blades or talons through their foes in long lethal arcs."
+  },
+  {
+    "name": "CLOSE-QUARTERS",
+    "rules": "Units containing one or more models with a [CLOSE‑QUARTERS] weapon can shoot using close‑quarters shooting (10.06).\n\nWhen using another shooting type, for each model in that unit (excluding MONSTER/VEHICLE models), you can only select one of the following to make attacks with:\n- One or more of its [CLOSE‑QUARTERS] weapons.\n- One or more of its other ranged weapons.",
+    "lore": "Weapons designed for close‑quarters fighting can be wielded effectively even in the press of melee combat."
+  },
+  {
+    "name": "Conversion",
+    "rules": "Each time an attack made with this weapon targets an enemy unit that is not within 12\", an unmodified Hit roll of 4+ scores a Critical Hit.",
+    "lore": ""
+  },
+  {
+    "name": "Conversion",
+    "rules": "Each time an attack is made with this weapon, if the target is more than 18\" away from the bearer, an unmodified successful Hit roll of 4+ scores a Critical Hit.",
+    "lore": ""
+  },
+  {
+    "name": "Conversion",
+    "rules": "Each time an attack made with this weapon targets an enemy unit that is not within 12\", an unmodified successful Hit roll of 4+ scores a Critical Hit.",
+    "lore": ""
+  },
+  {
+    "name": "CONVERSION",
+    "rules": "Each time an attack made with this weapon targets an enemy unit that is not within 12\", an unmodified successful Hit roll of 4+ scores a Critical Hit.",
+    "lore": ""
+  },
+  {
+    "name": "Conversion",
+    "rules": "Each time an attack is made with this weapon, if the target is more than 24\" from the bearer, an unmodified successful Hit roll of 4+ scores a Critical Hit.",
+    "lore": ""
+  },
+  {
+    "name": "Dead Choppy",
+    "rules": "The Attacks characteristic of this weapon is increased by 1 for each additional Dread klaw the bearer is equipped with.",
+    "lore": ""
+  },
+  {
+    "name": "Devastating Wounds",
+    "rules": "Each time an attack made with a [DEVASTATING WOUNDS] weapon results in a critical wound, the attack sequence for that attack ends and the target unit suffers a number of mortal wounds equal to the D characteristic of that weapon. These are inflicted after resolving any normal damage inflicted by those attacks.\n\nMortal wounds inflicted by [DEVASTATING WOUNDS] weapons can damage a maximum of one model for each critical wound; any remaining mortal wounds inflicted by that attack are lost.\n\nExample: An attack made with a [DEVASTATING WOUNDS] weapon with a D characteristic of 3 results in a critical wound against an Intercessor Squad, so inflicts 3 mortal wounds. The first 2 mortal wounds are sufficient to destroy 1 Intercessor model, so the remaining mortal wound is lost.",
+    "lore": "The most potent weapons strike with such power that they make a mockery of armour and can cleave through several foes."
+  },
+  {
+    "name": "DEVASTATING WOUNDS",
+    "rules": "Each time an attack made with a [DEVASTATING WOUNDS] weapon results in a critical wound, the attack sequence for that attack ends and the target unit suffers a number of mortal wounds equal to the D characteristic of that weapon. These are inflicted after resolving any normal damage inflicted by those attacks.\n\nMortal wounds inflicted by [DEVASTATING WOUNDS] weapons can damage a maximum of one model for each critical wound; any remaining mortal wounds inflicted by that attack are lost.\n\nExample: An attack made with a [DEVASTATING WOUNDS] weapon with a D characteristic of 3 results in a critical wound against an Intercessor Squad, so inflicts 3 mortal wounds. The first 2 mortal wounds are sufficient to destroy 1 Intercessor model, so the remaining mortal wound is lost.",
+    "lore": "The most potent weapons strike with such power that they make a mockery of armour and can cleave through several foes."
+  },
+  {
+    "name": "EXTRA ATTACKS",
+    "rules": "Each time a unit containing one or more models with an [EXTRA ATTACKS] weapon fights, those models will make attacks with those weapons in addition to any others. In the Select Weapons step (04.01), for each of those models, you must select:\n\n- All of that model’s [EXTRA ATTACKS] weapons.\n- One of that model’s other melee weapons, if possible.",
+    "lore": "Some warriors ride to battle atop trusty mounts that gore and trample nearby foes. Others wield combat weapons that deliver a frenzy of additional blows."
+  },
+  {
+    "name": "Extra Attacks",
+    "rules": "Each time a unit containing one or more models with an [EXTRA ATTACKS] weapon fights, those models will make attacks with those weapons in addition to any others. In the Select Weapons step (04.01), for each of those models, you must select:\n\n- All of that model’s [EXTRA ATTACKS] weapons.\n- One of that model’s other melee weapons, if possible.",
+    "lore": "Some warriors ride to battle atop trusty mounts that gore and trample nearby foes. Others wield combat weapons that deliver a frenzy of additional blows."
+  },
+  {
+    "name": "Harpooned",
+    "rules": "After the bearer has shot with this weapon, select one enemy **MONSTER** or **VEHICLE** unit hit by one or more of those attacks. Until the end of the turn, each time the bearer selects that unit as a target of a charge, add 2 to the Charge roll.",
+    "lore": ""
+  },
+  {
+    "name": "HAZARDOUS",
+    "rules": "Each time a unit is selected to shoot or selected to fight, after that unit has resolved all of its attacks, make a number of hazard rolls (06.03) for that unit equal to the number of [HAZARDOUS] weapons you selected in the Select Weapons step.",
+    "lore": "Weapons powered by unstable and dangerous energy sources pose a substantial risk to the wielder and those that stand beside them."
+  },
+  {
+    "name": "Hazardous",
+    "rules": "Each time a unit is selected to shoot or selected to fight, after that unit has resolved all of its attacks, make a number of hazard rolls (06.03) for that unit equal to the number of [HAZARDOUS] weapons you selected in the Select Weapons step.",
+    "lore": "Weapons powered by unstable and dangerous energy sources pose a substantial risk to the wielder and those that stand beside them."
+  },
+  {
+    "name": "Heavy",
+    "rules": "In your Shooting phase, each time an attack is made with a [HEAVY] weapon, add 1 to the hit roll if all of the following apply to the attacking unit:\n- That unit is unengaged.\u0007\n- That unit was not set up on the battlefield this turn.\n- No model in that unit has moved moret han 3\" this turn.",
+    "lore": "Heavy weapons are amongst the biggest guns on the battlefield, but require bracing to fire at full effect."
+  },
+  {
+    "name": "HEAVY",
+    "rules": "In your Shooting phase, each time an attack is made with a [HEAVY] weapon, add 1 to the hit roll if all of the following apply to the attacking unit:\n- That unit is unengaged.\u0007\n- That unit was not set up on the battlefield this turn.\n- No model in that unit has moved more than 3\" this turn.",
+    "lore": "Heavy weapons are amongst the biggest guns on the battlefield, but require bracing to fire at full effect."
+  },
+  {
+    "name": "Ignores Cover",
+    "rules": "Each time an attack is made with an [IGNORES COVER] weapon, the target cannot have the benefit of cover against that attack (13.08), including from rules that give a model or unit the benefit of cover (e.g. Stealth).",
+    "lore": "Some weapons are designed to root enemy formations out of entrenched positions."
+  },
+  {
+    "name": "IGNORES COVER",
+    "rules": "Each time an attack is made with an [IGNORES COVER] weapon, the target cannot have the benefit of cover against that attack (13.08), including from rules that give a model or unit the benefit of cover (e.g. Stealth).",
+    "lore": "Some weapons are designed to root enemy formations out of entrenched positions."
+  },
+  {
+    "name": "INDIRECT FIRE",
+    "rules": "Units containing one or more models with an [INDIRECT FIRE] weapon can shoot using indirect shooting (10.07).",
+    "lore": "Indirect fire weapons launch munitions over or around intervening obstacles – nowhere is safe from their fury."
+  },
+  {
+    "name": "Indirect Fire",
+    "rules": "Units containing one or more models with an [INDIRECT FIRE] weapon can shoot using indirect shooting (10.07).",
+    "lore": "Indirect fire weapons launch munitions over or around intervening obstacles – nowhere is safe from their fury."
+  },
+  {
+    "name": "LANCE",
+    "rules": "Each time an attack is made with a [LANCE] weapon, if the attacking model’s unit made a charge move this turn, add 1 to the wound roll.",
+    "lore": "With the momentum of a warrior at full‑tilt, lance weapons are deadly on the charge."
+  },
+  {
+    "name": "Lance",
+    "rules": "Each time an attack is made with a [LANCE] weapon, if the attacking model’s unit made a charge move this turn, add 1 to the wound roll.",
+    "lore": "With the momentum of a warrior at full‑tilt, lance weapons are deadly on the charge."
+  },
+  {
+    "name": "Lethal Hits",
+    "rules": "Each time an attack made with a [LETHAL HITS] weapon results in a critical hit, you can choose for that attack to automatically wound the target.\n\nDesigner’s Note: Choosing to automatically wound the target means that no wound roll is made for that attack. You may decide against this, as it means that attack cannot result in a critical wound and so cannot trigger other abilities such as [DEVASTATING WOUNDS].",
+    "lore": "Many deadly weapons can inflict fatal injuries on any foe, no matter their resilience."
+  },
+  {
+    "name": "LETHAL HITS",
+    "rules": "Each time an attack made with a [LETHAL HITS] weapon results in a critical hit, you can choose for that attack to automatically wound the target.\n\nDesigner’s Note: Choosing to automatically wound the target means that no wound roll is made for that attack. You may decide against this, as it means that attack cannot result in a critical wound and so cannot trigger other abilities such as [DEVASTATING WOUNDS].",
+    "lore": "Many deadly weapons can inflict fatal injuries on any foe, no matter their resilience."
+  },
+  {
+    "name": "Linked Fire",
+    "rules": "When selecting targets for this weapon, you can measure range and determine visibility from another friendly **FIRE PRISM** model that is visible to the bearer. When doing so, this weapon has an Attacks characteristic of 1.",
+    "lore": ""
+  },
+  {
+    "name": "MELTA",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "Melta",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "Melta 1",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "Melta 2",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "MELTA 2",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "Melta 3",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "Melta 4",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "Melta 6",
+    "rules": "This ability always takes the form [MELTA X]. Each time a model makes an attack with a [MELTA] weapon, if the target unit was within half range of that weapon in the Select Targets step, until the attacking unit’s attacks have been resolved, add X to that weapon’s D characteristic.\n\nExample: A model targets a unit that is within half range of a [MELTA 2] weapon with a D characteristic of D6. While resolving those attacks, that weapon has a D characteristic of D6+2",
+    "lore": "Melta weapons are powerful heat rays whose fury is magnified at close range."
+  },
+  {
+    "name": "ONE SHOT",
+    "rules": "Each weapon with this ability can only be selected to make attacks with once per battle.\n\nIf a destroyed model is returned to a unit, all of its [ONE SHOT] weapons that have already been selected to make attacks with during the battle cannot be selected to make attacks with again.\n\nIf a new unit is added to an army, all [ONE SHOT] weapons in that unit can be selected to make attacks with once per battle.",
+    "lore": "Some weapons are so rare, or so complex and slow to reload, that they can only be used once."
+  },
+  {
+    "name": "One Shot",
+    "rules": "Each weapon with this ability can only be selected to make attacks with once per battle.\n\nIf a destroyed model is returned to a unit, all of its [ONE SHOT] weapons that have already been selected to make attacks with during the battle cannot be selected to make attacks with again.\n\nIf a new unit is added to an army, all [ONE SHOT] weapons in that unit can be selected to make attacks with once per battle.",
+    "lore": "Some weapons are so rare, or so complex and slow to reload, that they can only be used once."
+  },
+  {
+    "name": "Overcharge",
+    "rules": "Each time the bearer takes a Hazardous test for this weapon profile, subtract 2 from the result.",
+    "lore": ""
+  },
+  {
+    "name": "Pistol",
+    "rules": "Units containing one or more models with a [CLOSE‑QUARTERS] weapon can shoot using close‑quarters shooting (10.06).\n\nWhen using another shooting type, for each model in that unit (excluding MONSTER/VEHICLE models), you can only select one of the following to make attacks with:\n- One or more of its [CLOSE‑QUARTERS] weapons.\n- One or more of its other ranged weapons.",
+    "lore": "Pistols can be wielded even at point‑blank range."
+  },
+  {
+    "name": "Plasma Warhead",
+    "rules": "The bearer can only shoot with this weapon in your Shooting phase, and only if it Remained Stationary this turn and you did not use its Deathstrike Missile ability to Designate Target or Adjust Target this phase. When the bearer shoots with this weapon, do not select a target. Instead, resolve this weapon’s attacks, rolling for each unit within 6\" of the centre of its Deathstrike Target marker individually.",
+    "lore": ""
+  },
+  {
+    "name": "Precision",
+    "rules": "While resolving attacks made with one or more [PRECISION] weapons, at the start of the Allocation Order step (05.03), if the target unit contains one or more CHARACTER models visible to one or more of the attacking models, the active player can select one allocation group that contains one of those visible CHARACTER models. If they do, until those attacks are resolved, or until that CHARACTER group is destroyed (whichever happens first), that CHARACTER group is the current allocation group.",
+    "lore": "Precision attacks can pick high‑value targets out in a crowd."
+  },
+  {
+    "name": "PRECISION",
+    "rules": "While resolving attacks made with one or more [PRECISION] weapons, at the start of the Allocation Order step (05.03), if the target unit contains one or more CHARACTER models visible to one or more of the attacking models, the active player can select one allocation group that contains one of those visible CHARACTER models. If they do, until those attacks are resolved, or until that CHARACTER group is destroyed (whichever happens first), that CHARACTER group is the current allocation group.",
+    "lore": "Precision attacks can pick high‑value targets out in a crowd."
+  },
+  {
+    "name": "PSYCHIC",
+    "rules": "Each time an attack is made with a [PSYCHIC] weapon, you can ignore any or all modifiers to that attack’s BS or WS characteristic and any or all modifiers to the hit roll. Attacks made with [PSYCHIC] weapons are known as psychic attacks (this can be important for the triggering of other rules).",
+    "lore": "Some weapons can channel the bearer’s psychic might to empower their blows."
+  },
+  {
+    "name": "Psychic",
+    "rules": "Each time an attack is made with a [PSYCHIC] weapon, you can ignore any or all modifiers to that attack’s BS or WS characteristic and any or all modifiers to the hit roll. Attacks made with [PSYCHIC] weapons are known as psychic attacks (this can be important for the triggering of other rules).",
+    "lore": "Some weapons can channel the bearer’s psychic might to empower their blows."
+  },
+  {
+    "name": "Psychic Assassin",
+    "rules": "Each time you select a **Psyker** unit as the target for this weapon, until those attacks are resolved, change the Attacks characteristic of this weapon to 6.",
+    "lore": ""
+  },
+  {
+    "name": "RAPID FIRE",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "RAPID FIRE 1",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 1",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 10",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "RAPID FIRE 2",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 2",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "RAPID FIRE 3",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 3",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 4",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 5",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 6",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire 9",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire D3",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Rapid Fire D6+3",
+    "rules": "This ability always takes the form [RAPID FIRE X]. Each time you gather attack dice for a [RAPID FIRE] weapon, add X additional attack dice if the target unit was within half range of that weapon in the Select Targets step.\n\nExample: If a [RAPID FIRE 1] weapon with an A characteristic of 1 targets a unit that is within half range, you would gather one additional attack dice for that weapon (for a total of two for that weapon).",
+    "lore": "Rapid fire weapons are capable of long‑ranged precision shots or controlled bursts at nearby targets."
+  },
+  {
+    "name": "Reverberating Summons",
+    "rules": "Each time a model is destroyed by this weapon, you can select one friendly **PLAGUEBEARERS** unit within 12\" of the bearer and return 1 destroyed Plaguebearer model to that unit.",
+    "lore": ""
+  },
+  {
+    "name": "Snagged",
+    "rules": "Each time this weapon scores a hit against a **MONSTER** or **VEHICLE** unit, until the end of the turn, if the bearer selects that unit as a target of a charge, add 2 to Charge rolls made for the bearer and enemy units cannot use the Fire Overwatch Stratagem to shoot at the bearer.",
+    "lore": ""
+  },
+  {
+    "name": "SUSTAINED HITS",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "Sustained Hits",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "SUSTAINED HITS 1",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "Sustained Hits 1",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "SUSTAINED HITS 2",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "Sustained Hits 2",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "Sustained Hits 3",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "SUSTAINED HITS 3",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "Sustained Hits D3",
+    "rules": "This ability always takes the form [SUSTAINED HITS X]. Each time an attack made with a [SUSTAINED HITS] weapon results in a critical hit, that attack results in a number of additional hits on the target as denoted by X.\n\nExample: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit. That attack therefore hits the target three times (once from the critical hit, and twice more from the [SUSTAINED HITS 2] ability).",
+    "lore": "Some weapons possess a punishing rate of fire, or can land devastating flurries of blows, tearing the foe apart with relentless ferocity."
+  },
+  {
+    "name": "TORRENT",
+    "rules": "Each time an attack is made with a [TORRENT] weapon, that attack automatically hits the target.",
+    "lore": "Torrent weapons project clouds of fire, gas or other lethal substances that few foes can hope to evade."
+  },
+  {
+    "name": "Torrent",
+    "rules": "Each time an attack is made with a [TORRENT] weapon, that attack automatically hits the target.",
+    "lore": "Torrent weapons project clouds of fire, gas or other lethal substances that few foes can hope to evade."
+  },
+  {
+    "name": "TWIN-LINKED",
+    "rules": "Each time an attack is made with a [TWIN‑LINKED] weapon, you can re‑roll the wound roll.",
+    "lore": "Dual weapons are often grafted to the same targeting system for greater lethality."
+  },
+  {
+    "name": "Twin-linked",
+    "rules": "Each time an attack is made with a [TWIN‑LINKED] weapon, you can re‑roll the wound roll.",
+    "lore": "Dual weapons are often grafted to the same targeting system for greater lethality."
+  }
+]

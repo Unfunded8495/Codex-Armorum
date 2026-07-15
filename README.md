@@ -301,7 +301,7 @@ press **Ctrl + C** in the command window, as in Step 6 above.) Your collection i
 Unit data (factions, datasheets, weapon profiles, points, detachments, enhancements, missions,
 army-building enforcement rules) comes from `data/w40k/w40k.db` - a read-only SQLite export of
 the official Warhammer 40,000 mobile app's rules database (the current snapshot is
-`data_version: 886`). `data_store.py` opens it read-only with `immutable=1` on app start; the
+`data_version: 895`). `data_store.py` opens it read-only with `immutable=1` on app start; the
 file is never written to. Mechanically, refreshing the rules data is a file-drop: replace
 `data/w40k/w40k.db` with a newer snapshot (re-exported from a fresh `base.apk` with
 `python scripts/w40k_exporter/w40k_exporter.py`) and restart the app. When the official app

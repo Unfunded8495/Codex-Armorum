@@ -1,0 +1,70 @@
+﻿name,faction,is_core_rules,is_legends,is_combat_patrol,errata_date
+Chapter Approved,,False,False,False,
+Codex Supplement: Black Templars,Black Templars,False,False,False,17 June 2026
+Codex Supplement: Blood Angels,Blood Angels,False,False,False,17 June 2026
+Codex Supplement: Dark Angels,Dark Angels,False,False,False,17 June 2026
+Codex Supplement: Space Wolves,Space Wolves,False,False,False,17 June 2026
+Codex: Adepta Sororitas,Adepta Sororitas,False,False,False,17 June 2026
+Codex: Adeptus Custodes,Adeptus Custodes,False,False,False,17 June 2026
+Codex: Adeptus Mechanicus,Adeptus Mechanicus,False,False,False,17 June 2026
+Codex: Aeldari,Asuryani,False,False,False,17 June 2026
+Codex: Astra Militarum,Astra Militarum,False,False,False,17 June 2026
+Codex: Chaos Knights,Chaos Knights,False,False,False,17 June 2026
+Codex: Chaos Space Marines,Heretic Astartes,False,False,False,06 May 2026
+Codex: Death Guard,Death Guard,False,False,False,17 June 2026
+Codex: Drukhari,Drukhari,False,False,False,17 June 2026
+Codex: Emperor’s Children,Emperor’s Children,False,False,False,17 June 2026
+Codex: Genestealer Cults,Genestealer Cults,False,False,False,17 June 2026
+Codex: Grey Knights,Grey Knights,False,False,False,17 June 2026
+Codex: Imperial Agents,Agents of the Imperium,False,False,False,17 June 2026
+Codex: Imperial Knights,Imperial Knights,False,False,False,17 June 2026
+Codex: Leagues of Votann,Leagues of Votann,False,False,False,17 June 2026
+Codex: Necrons,Necrons,False,False,False,17 June 2026
+Codex: Orks,Orks,False,False,False,17 June 2026
+Codex: Space Marines,Adeptus Astartes,False,False,False,17 June 2026
+Codex: Thousand Sons,Thousand Sons,False,False,False,17 June 2026
+Codex: Tyranids,Tyranids,False,False,False,17 June 2026
+Codex: T’au Empire,T’au Empire,False,False,False,17 June 2026
+Codex: World Eaters,World Eaters,False,False,False,17 June 2026
+Combat Patrol,,False,False,False,
+Combat Patrol: Amonhotekh’s Guard,Necrons,False,False,True,
+Combat Patrol: Askar’s Wolfpack,Space Wolves,False,False,True,
+Combat Patrol: Assault Force,Adeptus Astartes,False,False,True,
+Combat Patrol: Bane-slayer's Bulwark,Leagues of Votann,False,False,True,
+Combat Patrol: Callous Blades,Emperor’s Children,False,False,True,
+Combat Patrol: Claw of Ascension,Genestealer Cults,False,False,True,
+Combat Patrol: Coven of Agonies,Drukhari,False,False,True,
+Combat Patrol: Crowe’s Sanctifiers,Grey Knights,False,False,True,
+Combat Patrol: Drayden’s Lance,Astra Militarum,False,False,True,
+Combat Patrol: Frenzied Reavers,World Eaters,False,False,True,
+Combat Patrol: Inquisitor’s Hand,Agents of the Imperium,False,False,True,
+Combat Patrol: Kygharil’s Protectors,Asuryani,False,False,True,
+Combat Patrol: Maggot Lords,Death Guard,False,False,True,
+Combat Patrol: Prism of Zadophon,Thousand Sons,False,False,True,
+Combat Patrol: Purge Corps Deltic-9,Adeptus Mechanicus,False,False,True,
+Combat Patrol: Sanctuary Guardians,Adepta Sororitas,False,False,True,
+Combat Patrol: Sanguinary Spearhead,Blood Angels,False,False,True,
+Combat Patrol: Sudden Dawn Cadre,T’au Empire,False,False,True,
+Combat Patrol: The Vardenghast Swarm,Tyranids,False,False,True,
+Combat Patrol: The Vengeful Brethren,Dark Angels,False,False,True,
+Combat Patrol: Tristraen’s Gilded Blades,Adeptus Custodes,False,False,True,
+Combat Patrol: Vow-Sworn of Vedrenn,Black Templars,False,False,True,
+Combat Patrol: Zarkan’s Daemonkin,Heretic Astartes,False,False,True,
+Combat Patrol: ’Ardmob,Orks,False,False,True,
+Core Rules,,True,False,False,17 June 2026
+Event Companion,,False,False,False,
+Imperial Armour: Adeptus Custodes,Adeptus Custodes,False,False,False,17 June 2026
+Imperial Armour: Aeldari,Asuryani,False,False,False,
+Imperial Armour: Astartes,Adeptus Astartes,False,False,False,17 June 2026
+Imperial Armour: Astra Militarum,Astra Militarum,False,False,False,
+Imperial Armour: Chaos Knights,Chaos Knights,False,False,False,17 June 2026
+Imperial Armour: Chaos Titan Legions,Titanicus Traitoris,False,False,False,17 June 2026
+Imperial Armour: Grey Knights,Grey Knights,False,False,False,17 June 2026
+Imperial Armour: Imperial Knights,Imperial Knights,False,False,False,17 June 2026
+Imperial Armour: Necrons,Necrons,False,False,False,17 June 2026
+Imperial Armour: Orks,Orks,False,False,False,17 June 2026
+Imperial Armour: Titan Legions,Adeptus Titanicus,False,False,False,17 June 2026
+Imperial Armour: Tyranids,Tyranids,False,False,False,
+Imperial Armour: T’au Empire,T’au Empire,False,False,False,17 June 2026
+Index: Chaos Daemons,Legiones Daemonica,False,False,False,17 June 2026
+Index: Deathwatch,Deathwatch,False,False,False,17 June 2026

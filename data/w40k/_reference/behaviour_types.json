@@ -1,0 +1,135 @@
+[
+  {
+    "name": "Remain Stationary",
+    "type": "movement",
+    "rule_reference": "09.04",
+    "eligible_if": "Any unit.",
+    "effect": "No models are moved (either in straight lines or rotated). Units that remain stationary do not trigger any rules that are triggered when a unit starts or ends a move."
+  },
+  {
+    "name": "Normal Move",
+    "type": "movement",
+    "rule_reference": "09.05",
+    "eligible_if": "Your unit is on the battlefield and unengaged.",
+    "effect": "Your unit moves as described in Moving (03)."
+  },
+  {
+    "name": "Advance Move",
+    "type": "movement",
+    "rule_reference": "09.06",
+    "eligible_if": "Your unit is on the battlefield and unengaged.",
+    "effect": "Your unit moves as described in Moving (03)."
+  },
+  {
+    "name": "Fall-Back Move",
+    "type": "movement",
+    "rule_reference": "09.07",
+    "eligible_if": "Your unit is engaged.",
+    "effect": "Your unit moves as described in Moving (03)."
+  },
+  {
+    "name": "Normal Shooting",
+    "type": "shooting",
+    "rule_reference": "10.04",
+    "eligible_if": "Your unit is unengaged and did not make an advance move this turn.",
+    "effect": "Your unit shoots as described in Making Attacks (04)."
+  },
+  {
+    "name": "Assault Shooting",
+    "type": "shooting",
+    "rule_reference": "10.05",
+    "eligible_if": "All of the following apply to your unit:\n\n- Unengaged and made an advance move this turn.\n- Has one or more [ASSAULT] weapons.",
+    "effect": "Your unit shoots as described in Making Attacks (04)."
+  },
+  {
+    "name": "Close-Quarters Shooting",
+    "type": "shooting",
+    "rule_reference": "10.06",
+    "eligible_if": "All of the following apply to your unit:\n\n- Engaged and did not make an advance move this turn.\n- Has one or more [CLOSE‑QUARTERS] weapons or is a MONSTER/VEHICLE unit.",
+    "effect": "Your unit shoots as described in Making Attacks (04)."
+  },
+  {
+    "name": "Indirect Shooting",
+    "type": "shooting",
+    "rule_reference": "10.07",
+    "eligible_if": "All of the following apply to your unit:\n\n- Unengaged and did not make an advance move this turn.\n- Has one or more [INDIRECT FIRE] weapons.",
+    "effect": "Your unit shoots as described in Making Attacks (04)."
+  },
+  {
+    "name": "Charge Move",
+    "type": "movement",
+    "rule_reference": "11.04",
+    "eligible_if": "Your unit declared a charge this phase.",
+    "effect": "Your unit moves as described in Moving (03)."
+  },
+  {
+    "name": "Pile-In Move",
+    "type": "movement",
+    "rule_reference": "12.03",
+    "eligible_if": "It is the Fight phase and one or more of the following apply to your unit:\n\n- It is engaged.\n- It made a charge move this turn.\n- It was selected to make an overrun fight this phase (12.06).",
+    "effect": "Your unit moves as described in Moving (03)."
+  },
+  {
+    "name": "Normal Fight",
+    "type": "fighting",
+    "rule_reference": "12.05",
+    "eligible_if": "Your unit is engaged.",
+    "effect": "Your unit fights as described in Making Attacks (04)."
+  },
+  {
+    "name": "Overrun Fight",
+    "type": "fighting",
+    "rule_reference": "12.06",
+    "eligible_if": "Your unit is unengaged, or was unengaged at the start of the Fight step but became engaged during the Fight phase.",
+    "effect": "Your unit can make one additional pile-in move, then fights as described in Making Attacks (04)."
+  },
+  {
+    "name": "Consolidation Move",
+    "type": "movement",
+    "rule_reference": "12.08",
+    "eligible_if": "It is the Fight phase and your unit was eligible to fight this phase.",
+    "effect": "Your unit moves as described in Moving (03)."
+  },
+  {
+    "name": "Snap Shooting",
+    "type": "shooting",
+    "rule_reference": "15.09",
+    "eligible_if": "As stated in the rule allowing this shooting type.",
+    "effect": "Your unit shoots as described in Making Attacks (04)."
+  },
+  {
+    "name": "Disembark Move",
+    "type": "movement",
+    "rule_reference": "18.04",
+    "eligible_if": "All of the following apply to your unit:\n\n- Embarked within a TRANSPORT model that is on the battlefield.\n- Did not embark within that TRANSPORT this phase.\n- That TRANSPORT has not made an advance or fall-back move this phase.",
+    "effect": "Your unit is set up as described in Set Up (03.02)"
+  },
+  {
+    "name": "Emergency Disembark Move",
+    "type": "movement",
+    "rule_reference": "18.05",
+    "eligible_if": "Your unit is embarked within a TRANSPORT model that was just destroyed.",
+    "effect": "Your unit is set up as described in Set Up (03.02)"
+  },
+  {
+    "name": "Ingress Move",
+    "type": "movement",
+    "rule_reference": "20.04",
+    "eligible_if": "Your unit is in strategic reserves (excluding units that are embarked within TRANSPORTS that are themselves in strategic reserves)",
+    "effect": "Your unit is set up as described in Set Up (03.02)"
+  },
+  {
+    "name": "Surge Move",
+    "type": "movement",
+    "rule_reference": "21.02",
+    "eligible_if": "All of the following apply:\n\n- The rule allowing this move type has been triggered.\n- Your unit is not battle-shocked.\n- Your unit is unengaged.\n- Your unit has not moved this phase.",
+    "effect": "Your unit moves as described in Moving (03)."
+  },
+  {
+    "name": "Scout Move",
+    "type": "movement",
+    "rule_reference": "24.32",
+    "eligible_if": "It is the Resolve Pre-battle Abilities step, and your unit is wholly within your deployment zone.",
+    "effect": "Your unit moves as described in Moving (03)."
+  }
+]

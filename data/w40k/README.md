@@ -1,13 +1,13 @@
 # Warhammer 40,000 App Data Export
 
-Generated from `base.apk`, game data version **886**.
+Generated from `base.apk`, game data version **895**.
 
 ## Contents at a glance
 
 - Factions: **44**
 - Datasheet records: **1257** (units are filed under each faction keyword they carry, so sub faction units appear in both the parent army folder and their own)
 - Detachments: **457**, with 473 detachment rules, 1583 enhancements, 2285 stratagems
-- Reference: 1239 keywords, 121 weapon abilities, 69 publications, 33 core rule sections, 49 primary and 18 secondary missions, 728 FAQ entries
+- Reference: 1239 keywords, 121 weapon abilities, 69 publications, 34 core rule sections, 49 primary and 18 secondary missions, 730 FAQ entries
 
 Every dataset is written as both JSON (full nested fidelity) and CSV (flattened, one row per record). Text fields keep the source's light markup in the JSON `*_html` fields and a cleaned plain text version everywhere else. CSV files are UTF-8 with a BOM so they open cleanly in Excel.
 

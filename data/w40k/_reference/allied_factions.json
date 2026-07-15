@@ -132,78 +132,37 @@
     "mutually_exclusive_keyword_limit": false,
     "required_warlord_miniature_id": null,
     "required_warlord_miniature": null,
-    "allowed_warlord_miniatures": [
-      {
-        "miniature_id": "08ac7bbb-0c1a-4c98-8f4e-87ede6f200aa",
-        "miniature": "Watch Master"
-      },
-      {
-        "miniature_id": "1f775213-824e-4174-bd5a-e7538d6ff7b9",
-        "miniature": "Rogue Trader"
-      },
-      {
-        "miniature_id": "2a4ff233-56a2-4518-a957-02370ec29df1",
-        "miniature": "Watch Captain Artemis"
-      },
-      {
-        "miniature_id": "34d8ad73-f01a-41af-9688-63d0ccfbbdd5",
-        "miniature": "Inquisitor Greyfax"
-      },
-      {
-        "miniature_id": "9415de3f-736e-40c5-8a85-0ad31da763bf",
-        "miniature": "Ministorum Priest"
-      },
-      {
-        "miniature_id": "a49e014f-6a81-404c-971a-832e48bbefe8",
-        "miniature": "Navigator"
-      },
-      {
-        "miniature_id": "b5f3960e-85c3-40f6-bb06-7e8a95c29147",
-        "miniature": "Inquisitor"
-      },
-      {
-        "miniature_id": "c6c466cc-20f7-462f-a5eb-f74f38d5bdfa",
-        "miniature": "Inquisitor Coteaz"
-      },
-      {
-        "miniature_id": "f532186f-a5a3-480e-a422-5bb0a89e5923",
-        "miniature": "Inquisitor Draxus"
-      },
-      {
-        "miniature_id": "16a1f85c-d0dd-4be4-a8da-6ce297e315a5",
-        "miniature": "Inquisitor Kroyle"
-      }
-    ],
+    "allowed_warlord_miniatures": [],
     "datasheets": [
-      "Watch Master",
-      "Inquisitor Draxus",
+      "Aquila Kill Team",
       "Callidus Assassin",
-      "Sanctifiers",
-      "Eversor Assassin",
-      "Sisters of Battle Immolator",
-      "Voidsmen-at-Arms",
       "Corvus Blackstar",
-      "Imperial Rhino",
-      "Inquisitorial Chimera",
+      "Culexus Assassin",
+      "Deathwatch Kill Team",
+      "Eversor Assassin",
+      "Exaction Squad",
       "Grey Knights Terminator Squad",
-      "Vindicare Assassin",
+      "Imperial Navy Breachers",
+      "Imperial Rhino",
+      "Inquisitor",
+      "Inquisitor Coteaz",
+      "Inquisitor Draxus",
+      "Inquisitor Greyfax",
+      "Inquisitor Kroyle",
+      "Inquisitorial Agents",
+      "Inquisitorial Chimera",
+      "Ministorum Priest",
+      "Navigator",
       "Rogue Trader Entourage",
+      "Sanctifiers",
+      "Sisters of Battle Immolator",
+      "Sisters of Battle Squad",
       "Subductor Squad",
       "Vigilant Squad",
-      "Sisters of Battle Squad",
-      "Aquila Kill Team",
-      "Inquisitor Greyfax",
+      "Vindicare Assassin",
+      "Voidsmen-at-Arms",
       "Watch Captain Artemis",
-      "Navigator",
-      "Inquisitorial Agents",
-      "Imperial Navy Breachers",
-      "Culexus Assassin",
-      "Inquisitor Coteaz",
-      "Exaction Squad",
-      "Deathwatch Kill Team",
-      "Inquisitor",
-      "Ministorum Priest",
-      "Inquisitor Kroyle"
+      "Watch Master"
     ],
     "keyword_limits": [
       {
@@ -815,65 +774,32 @@
     "mutually_exclusive_keyword_limit": false,
     "required_warlord_miniature_id": null,
     "required_warlord_miniature": null,
-    "allowed_warlord_miniatures": [
-      {
-        "miniature_id": "1f775213-824e-4174-bd5a-e7538d6ff7b9",
-        "miniature": "Rogue Trader"
-      },
-      {
-        "miniature_id": "34d8ad73-f01a-41af-9688-63d0ccfbbdd5",
-        "miniature": "Inquisitor Greyfax"
-      },
-      {
-        "miniature_id": "9415de3f-736e-40c5-8a85-0ad31da763bf",
-        "miniature": "Ministorum Priest"
-      },
-      {
-        "miniature_id": "a49e014f-6a81-404c-971a-832e48bbefe8",
-        "miniature": "Navigator"
-      },
-      {
-        "miniature_id": "b5f3960e-85c3-40f6-bb06-7e8a95c29147",
-        "miniature": "Inquisitor"
-      },
-      {
-        "miniature_id": "c6c466cc-20f7-462f-a5eb-f74f38d5bdfa",
-        "miniature": "Inquisitor Coteaz"
-      },
-      {
-        "miniature_id": "f532186f-a5a3-480e-a422-5bb0a89e5923",
-        "miniature": "Inquisitor Draxus"
-      },
-      {
-        "miniature_id": "16a1f85c-d0dd-4be4-a8da-6ce297e315a5",
-        "miniature": "Inquisitor Kroyle"
-      }
-    ],
+    "allowed_warlord_miniatures": [],
     "datasheets": [
-      "Inquisitor Draxus",
       "Callidus Assassin",
-      "Sanctifiers",
+      "Culexus Assassin",
       "Eversor Assassin",
-      "Sisters of Battle Immolator",
-      "Voidsmen-at-Arms",
-      "Imperial Rhino",
-      "Inquisitorial Chimera",
+      "Exaction Squad",
       "Grey Knights Terminator Squad",
-      "Vindicare Assassin",
+      "Imperial Navy Breachers",
+      "Imperial Rhino",
+      "Inquisitor",
+      "Inquisitor Coteaz",
+      "Inquisitor Draxus",
+      "Inquisitor Greyfax",
+      "Inquisitor Kroyle",
+      "Inquisitorial Agents",
+      "Inquisitorial Chimera",
+      "Ministorum Priest",
+      "Navigator",
       "Rogue Trader Entourage",
+      "Sanctifiers",
+      "Sisters of Battle Immolator",
+      "Sisters of Battle Squad",
       "Subductor Squad",
       "Vigilant Squad",
-      "Sisters of Battle Squad",
-      "Inquisitor Greyfax",
-      "Navigator",
-      "Inquisitorial Agents",
-      "Imperial Navy Breachers",
-      "Culexus Assassin",
-      "Inquisitor Coteaz",
-      "Exaction Squad",
-      "Inquisitor",
-      "Ministorum Priest",
-      "Inquisitor Kroyle"
+      "Vindicare Assassin",
+      "Voidsmen-at-Arms"
     ],
     "keyword_limits": [
       {
@@ -1363,70 +1289,29 @@
     "mutually_exclusive_keyword_limit": false,
     "required_warlord_miniature_id": null,
     "required_warlord_miniature": null,
-    "allowed_warlord_miniatures": [
-      {
-        "miniature_id": "0362318b-d73c-4b72-99ee-1c14a7516ce3",
-        "miniature": "Master of Possession"
-      },
-      {
-        "miniature_id": "09ed0e82-6eca-4df2-a0e8-8a152bb669a5",
-        "miniature": "Chaos Lord"
-      },
-      {
-        "miniature_id": "1828e689-fa64-4a8f-9e9b-8e183a9c5fb4",
-        "miniature": "Cult Demagogue"
-      },
-      {
-        "miniature_id": "4021978f-97d9-4fd9-aca9-70b4b670c0e4",
-        "miniature": "Cultist Firebrand"
-      },
-      {
-        "miniature_id": "41510c06-4837-4f0f-9e22-f5b09ae12521",
-        "miniature": "Sorcerer in Terminator Armour"
-      },
-      {
-        "miniature_id": "65a5d45d-4b66-4acf-b36b-558ca9569191",
-        "miniature": "Dark Apostle"
-      },
-      {
-        "miniature_id": "6dffe4ce-8842-4509-a46c-9e6abbdb9f40",
-        "miniature": "Chaos Lord with Jump Pack"
-      },
-      {
-        "miniature_id": "c82c17cd-f91b-48ae-8b41-fbcb9b0e0fb3",
-        "miniature": "Traitor Enforcer"
-      },
-      {
-        "miniature_id": "cead3a70-aa9a-453d-85ed-521b919036a1",
-        "miniature": "Chaos Lord in Terminator Armour"
-      },
-      {
-        "miniature_id": "ead0ac42-5578-4683-b26d-f14f046610b7",
-        "miniature": "Sorcerer"
-      }
-    ],
+    "allowed_warlord_miniatures": [],
     "datasheets": [
-      "Legionaries",
-      "Raptors",
+      "Accursed Cultists",
+      "Chaos Lord",
+      "Chaos Lord in Terminator Armour",
+      "Chaos Lord with Jump Pack",
+      "Chaos Terminator Squad",
+      "Chosen",
       "Cultist Firebrand",
-      "Traitor Guardsmen Squad",
+      "Cultist Mob",
+      "Dark Apostle",
+      "Dark Commune",
+      "Fellgor Beastmen",
+      "Havocs",
+      "Legionaries",
+      "Master of Possession",
+      "Possessed",
+      "Raptors",
       "Sorcerer",
       "Sorcerer in Terminator Armour",
-      "Fellgor Beastmen",
-      "Accursed Cultists",
-      "Chaos Lord in Terminator Armour",
       "Traitor Enforcer",
-      "Possessed",
-      "Chosen",
-      "Chaos Lord",
-      "Master of Possession",
-      "Cultist Mob",
-      "Havocs",
-      "Dark Apostle",
-      "Warp Talons",
-      "Chaos Terminator Squad",
-      "Dark Commune",
-      "Chaos Lord with Jump Pack"
+      "Traitor Guardsmen Squad",
+      "Warp Talons"
     ],
     "keyword_limits": [],
     "points_limits": [

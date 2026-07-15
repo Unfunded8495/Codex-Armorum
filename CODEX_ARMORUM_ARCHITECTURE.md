@@ -24,7 +24,7 @@ swap, verify) has its own runbook:
 
 ## Track 1: Official 40k app export
 
-**Source:** `data/w40k/w40k.db` - a SQLite export of the official Warhammer 40,000 mobile app's rules database. The current snapshot is `data_version: 886`. The file is git-ignored; refresh procedure is in `data/w40k/README.md`.
+**Source:** `data/w40k/w40k.db` - a SQLite export of the official Warhammer 40,000 mobile app's rules database. The current snapshot is `data_version: 895`. The file is git-ignored; refresh procedure is in `data/w40k/README.md`.
 
 **Loader:** `data_store.py`
 - Opens the DB with `mode=ro&immutable=1` so the file can be swapped under a running app.
@@ -376,6 +376,18 @@ from the curated `data/rules/` track instead - see Track 2c).
 
 ## Migration history
 
+- **July 2026 (data refresh: 886 to 895).** First runbook-driven refresh from
+  a new `base.apk`. Small balance pass: Veiled Blade assassin points tiers up,
+  13 new Space Marines / Black Templars leader groups (Black Templars
+  Sternguard now generically leadable; Eradicator Squad with Heavy Bolters
+  leadable at all), Tyranids Frame keyword baked in, Kairos Infernal Gateway
+  D3+6 to D6+6, new core rule 09.05.01 (one Normal Move per phase, merged to
+  /rules), new Deployment Card Key rule section (not merged; mission-card
+  icon legend), 2 net new FAQs. Two enforcement-data removals to know about:
+  `allied_faction.allowed_warlord_miniatures` and the Murdermind / Exemplar
+  of Duty `grants_leader_attachment` lists were emptied at source. No schema,
+  faction, or datasheet add/removes; goldens byte-identical. Full field-level
+  record: `docs/data_updates/886_to_895.md`.
 - **July 2026 (w40k.db re-export: army-building enforcement data).** Third
   exporter revision, run against the same `base.apk` (`data_version: 886`,
   additive). Exports the full enforcement surface: `leader_group` conditions

@@ -1,0 +1,554 @@
+[
+  {
+    "name": "Chapter Approved",
+    "faction": null,
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": null
+  },
+  {
+    "name": "Codex Supplement: Black Templars",
+    "faction": "Black Templars",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex Supplement: Blood Angels",
+    "faction": "Blood Angels",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex Supplement: Dark Angels",
+    "faction": "Dark Angels",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex Supplement: Space Wolves",
+    "faction": "Space Wolves",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Adepta Sororitas",
+    "faction": "Adepta Sororitas",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Adeptus Custodes",
+    "faction": "Adeptus Custodes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Adeptus Mechanicus",
+    "faction": "Adeptus Mechanicus",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Aeldari",
+    "faction": "Asuryani",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Astra Militarum",
+    "faction": "Astra Militarum",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Chaos Knights",
+    "faction": "Chaos Knights",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Chaos Space Marines",
+    "faction": "Heretic Astartes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "06 May 2026"
+  },
+  {
+    "name": "Codex: Death Guard",
+    "faction": "Death Guard",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Drukhari",
+    "faction": "Drukhari",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Emperor’s Children",
+    "faction": "Emperor’s Children",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Genestealer Cults",
+    "faction": "Genestealer Cults",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Grey Knights",
+    "faction": "Grey Knights",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Imperial Agents",
+    "faction": "Agents of the Imperium",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Imperial Knights",
+    "faction": "Imperial Knights",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Leagues of Votann",
+    "faction": "Leagues of Votann",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Necrons",
+    "faction": "Necrons",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Orks",
+    "faction": "Orks",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Space Marines",
+    "faction": "Adeptus Astartes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Thousand Sons",
+    "faction": "Thousand Sons",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: Tyranids",
+    "faction": "Tyranids",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: T’au Empire",
+    "faction": "T’au Empire",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Codex: World Eaters",
+    "faction": "World Eaters",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Combat Patrol",
+    "faction": null,
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Amonhotekh’s Guard",
+    "faction": "Necrons",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Askar’s Wolfpack",
+    "faction": "Space Wolves",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Assault Force",
+    "faction": "Adeptus Astartes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Bane-slayer's Bulwark",
+    "faction": "Leagues of Votann",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Callous Blades",
+    "faction": "Emperor’s Children",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Claw of Ascension",
+    "faction": "Genestealer Cults",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Coven of Agonies",
+    "faction": "Drukhari",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Crowe’s Sanctifiers",
+    "faction": "Grey Knights",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Drayden’s Lance",
+    "faction": "Astra Militarum",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Frenzied Reavers",
+    "faction": "World Eaters",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Inquisitor’s Hand",
+    "faction": "Agents of the Imperium",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Kygharil’s Protectors",
+    "faction": "Asuryani",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Maggot Lords",
+    "faction": "Death Guard",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Prism of Zadophon",
+    "faction": "Thousand Sons",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Purge Corps Deltic-9",
+    "faction": "Adeptus Mechanicus",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Sanctuary Guardians",
+    "faction": "Adepta Sororitas",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Sanguinary Spearhead",
+    "faction": "Blood Angels",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Sudden Dawn Cadre",
+    "faction": "T’au Empire",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: The Vardenghast Swarm",
+    "faction": "Tyranids",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: The Vengeful Brethren",
+    "faction": "Dark Angels",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Tristraen’s Gilded Blades",
+    "faction": "Adeptus Custodes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Vow-Sworn of Vedrenn",
+    "faction": "Black Templars",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: Zarkan’s Daemonkin",
+    "faction": "Heretic Astartes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Combat Patrol: ’Ardmob",
+    "faction": "Orks",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": true,
+    "errata_date": null
+  },
+  {
+    "name": "Core Rules",
+    "faction": null,
+    "is_core_rules": true,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Event Companion",
+    "faction": null,
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": null
+  },
+  {
+    "name": "Imperial Armour: Adeptus Custodes",
+    "faction": "Adeptus Custodes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Aeldari",
+    "faction": "Asuryani",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": null
+  },
+  {
+    "name": "Imperial Armour: Astartes",
+    "faction": "Adeptus Astartes",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Astra Militarum",
+    "faction": "Astra Militarum",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": null
+  },
+  {
+    "name": "Imperial Armour: Chaos Knights",
+    "faction": "Chaos Knights",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Chaos Titan Legions",
+    "faction": "Titanicus Traitoris",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Grey Knights",
+    "faction": "Grey Knights",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Imperial Knights",
+    "faction": "Imperial Knights",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Necrons",
+    "faction": "Necrons",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Orks",
+    "faction": "Orks",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Titan Legions",
+    "faction": "Adeptus Titanicus",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Imperial Armour: Tyranids",
+    "faction": "Tyranids",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": null
+  },
+  {
+    "name": "Imperial Armour: T’au Empire",
+    "faction": "T’au Empire",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Index: Chaos Daemons",
+    "faction": "Legiones Daemonica",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  },
+  {
+    "name": "Index: Deathwatch",
+    "faction": "Deathwatch",
+    "is_core_rules": false,
+    "is_legends": false,
+    "is_combat_patrol": false,
+    "errata_date": "17 June 2026"
+  }
+]

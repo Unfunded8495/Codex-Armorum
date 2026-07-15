@@ -1249,6 +1249,7 @@ Rules that are triggered at the end of the Movement phase are resolved now.
 * **Eligible If:** Your unit is on the battlefield and **unengaged**.
 * **Effect:** Your unit moves as described in Moving (03).
 * **After Moving:** Your unit must be **unengaged**.
+* **More Than One Normal Move in a Phase:** A unit cannot make more than one Normal Move in a phase (09.05.01).
 
 ## ADVANCE MOVE (09.06)
 

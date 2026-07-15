@@ -1,0 +1,20 @@
+﻿name,type,rule_reference,eligible_if,effect
+Remain Stationary,movement,09.04,Any unit.,No models are moved (either in straight lines or rotated). Units that remain stationary do not trigger any rules that are triggered when a unit starts or ends a move.
+Normal Move,movement,09.05,Your unit is on the battlefield and unengaged.,Your unit moves as described in Moving (03).
+Advance Move,movement,09.06,Your unit is on the battlefield and unengaged.,Your unit moves as described in Moving (03).
+Fall-Back Move,movement,09.07,Your unit is engaged.,Your unit moves as described in Moving (03).
+Normal Shooting,shooting,10.04,Your unit is unengaged and did not make an advance move this turn.,Your unit shoots as described in Making Attacks (04).
+Assault Shooting,shooting,10.05,All of the following apply to your unit: | - Unengaged and made an advance move this turn. | - Has one or more [ASSAULT] weapons.,Your unit shoots as described in Making Attacks (04).
+Close-Quarters Shooting,shooting,10.06,All of the following apply to your unit: | - Engaged and did not make an advance move this turn. | - Has one or more [CLOSE‑QUARTERS] weapons or is a MONSTER/VEHICLE unit.,Your unit shoots as described in Making Attacks (04).
+Indirect Shooting,shooting,10.07,All of the following apply to your unit: | - Unengaged and did not make an advance move this turn. | - Has one or more [INDIRECT FIRE] weapons.,Your unit shoots as described in Making Attacks (04).
+Charge Move,movement,11.04,Your unit declared a charge this phase.,Your unit moves as described in Moving (03).
+Pile-In Move,movement,12.03,It is the Fight phase and one or more of the following apply to your unit: | - It is engaged. | - It made a charge move this turn. | - It was selected to make an overrun fight this phase (12.06).,Your unit moves as described in Moving (03).
+Normal Fight,fighting,12.05,Your unit is engaged.,Your unit fights as described in Making Attacks (04).
+Overrun Fight,fighting,12.06,"Your unit is unengaged, or was unengaged at the start of the Fight step but became engaged during the Fight phase.","Your unit can make one additional pile-in move, then fights as described in Making Attacks (04)."
+Consolidation Move,movement,12.08,It is the Fight phase and your unit was eligible to fight this phase.,Your unit moves as described in Moving (03).
+Snap Shooting,shooting,15.09,As stated in the rule allowing this shooting type.,Your unit shoots as described in Making Attacks (04).
+Disembark Move,movement,18.04,All of the following apply to your unit: | - Embarked within a TRANSPORT model that is on the battlefield. | - Did not embark within that TRANSPORT this phase. | - That TRANSPORT has not made an advance or fall-back move this phase.,Your unit is set up as described in Set Up (03.02)
+Emergency Disembark Move,movement,18.05,Your unit is embarked within a TRANSPORT model that was just destroyed.,Your unit is set up as described in Set Up (03.02)
+Ingress Move,movement,20.04,Your unit is in strategic reserves (excluding units that are embarked within TRANSPORTS that are themselves in strategic reserves),Your unit is set up as described in Set Up (03.02)
+Surge Move,movement,21.02,All of the following apply: | - The rule allowing this move type has been triggered. | - Your unit is not battle-shocked. | - Your unit is unengaged. | - Your unit has not moved this phase.,Your unit moves as described in Moving (03).
+Scout Move,movement,24.32,"It is the Resolve Pre-battle Abilities step, and your unit is wholly within your deployment zone.",Your unit moves as described in Moving (03).

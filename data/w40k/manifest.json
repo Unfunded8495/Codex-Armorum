@@ -1,226 +1,628 @@
 {
-  "data_version": 886,
+  "data_version": 895,
   "source_apk": "base.apk",
   "factions": {
     "Adepta Sororitas": {
       "datasheets": 37,
       "detachments": 9,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Adeptus Astartes": {
       "datasheets": 204,
       "detachments": 16,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Adeptus Custodes": {
       "datasheets": 35,
       "detachments": 10,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Adeptus Mechanicus": {
       "datasheets": 38,
       "detachments": 11,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Adeptus Titanicus": {
       "datasheets": 4,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "Aeldari": {
       "datasheets": 0,
       "detachments": 5,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Agents of the Imperium": {
       "datasheets": 34,
       "detachments": 6,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Astra Militarum": {
       "datasheets": 76,
       "detachments": 12,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Asuryani": {
       "datasheets": 58,
       "detachments": 15,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Black Templars": {
       "datasheets": 22,
       "detachments": 20,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Blood Angels": {
       "datasheets": 19,
       "detachments": 24,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Blood Legions": {
       "datasheets": 5,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "Chaos Knights": {
       "datasheets": 20,
       "detachments": 8,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Dark Angels": {
       "datasheets": 20,
       "detachments": 24,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Death Guard": {
       "datasheets": 34,
       "detachments": 10,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Deathwatch": {
       "datasheets": 10,
       "detachments": 16,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Drukhari": {
       "datasheets": 28,
       "detachments": 10,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Emperor’s Children": {
       "datasheets": 22,
       "detachments": 11,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Genestealer Cults": {
       "datasheets": 29,
       "detachments": 10,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Grey Knights": {
       "datasheets": 30,
       "detachments": 10,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Harlequins": {
       "datasheets": 8,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "Heretic Astartes": {
       "datasheets": 58,
       "detachments": 18,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Imperial Fists": {
       "datasheets": 3,
       "detachments": 16,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Imperial Knights": {
       "datasheets": 22,
       "detachments": 8,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Iron Hands": {
       "datasheets": 2,
       "detachments": 16,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Leagues of Votann": {
       "datasheets": 26,
       "detachments": 11,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Legiones Daemonica": {
       "datasheets": 53,
       "detachments": 9,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Legions of Excess": {
       "datasheets": 5,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "Necrons": {
       "datasheets": 57,
       "detachments": 13,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Orks": {
       "datasheets": 64,
       "detachments": 13,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Plague Legions": {
       "datasheets": 6,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "Raven Guard": {
       "datasheets": 2,
       "detachments": 16,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Salamanders": {
       "datasheets": 2,
       "detachments": 16,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Scintillating Legions": {
       "datasheets": 6,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "Space Wolves": {
       "datasheets": 25,
       "detachments": 23,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Thousand Sons": {
       "datasheets": 32,
       "detachments": 10,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Titanicus Traitoris": {
       "datasheets": 4,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "Tyranids": {
       "datasheets": 58,
       "detachments": 11,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "T’au Empire": {
       "datasheets": 47,
       "detachments": 8,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Ultramarines": {
       "datasheets": 8,
       "detachments": 17,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Unaligned": {
       "datasheets": 2,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     },
     "White Scars": {
       "datasheets": 2,
       "detachments": 16,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "World Eaters": {
       "datasheets": 29,
       "detachments": 9,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv",
+        "detachments.csv",
+        "detachment_rules.csv",
+        "enhancements.csv",
+        "stratagems.csv"
+      ]
     },
     "Ynnari": {
       "datasheets": 11,
       "detachments": 0,
-      "files": []
+      "files": [
+        "faction.json",
+        "datasheets.json",
+        "detachments.json",
+        "datasheets.csv",
+        "wargear_loadouts.csv"
+      ]
     }
   },
   "reference": {
@@ -229,10 +631,10 @@
     "publications": 69,
     "battle_sizes": 3,
     "behaviour_types": 19,
-    "core_rules_sections": 33,
+    "core_rules_sections": 34,
     "primary_missions": 49,
     "secondary_missions": 18,
-    "faqs": 728,
+    "faqs": 730,
     "allied_factions": 21
   },
   "totals": {

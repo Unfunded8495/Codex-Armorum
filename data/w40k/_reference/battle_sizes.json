@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Onslaught",
+    "points_limit": 3000,
+    "detachment_points_limit": 3,
+    "enhancement_limit": 4,
+    "duplicate_unit_limit": 3
+  },
+  {
+    "name": "Strike Force",
+    "points_limit": 2000,
+    "detachment_points_limit": 3,
+    "enhancement_limit": 4,
+    "duplicate_unit_limit": 3
+  },
+  {
+    "name": "Incursion",
+    "points_limit": 1000,
+    "detachment_points_limit": 2,
+    "enhancement_limit": 2,
+    "duplicate_unit_limit": 2
+  }
+]
