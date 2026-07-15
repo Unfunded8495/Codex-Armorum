@@ -135,6 +135,7 @@ The top bar links bridge the two worlds (note hash vs. path):
 | *(strip button on /rules)* | `/rules/insights` | Server page |
 | **Weapon Loadouts** | `/arsenal/loadouts` | Blueprint page |
 | **Model Catalogue** | `/catalogue-review` | Server page |
+| **Changelog** | `/changelog` | Server page |
 | **Seal Vault** | `POST /api/shutdown` | Stops the server |
 
 ---
@@ -248,6 +249,11 @@ Key roles:
   `/api/insights`, built by `scripts/build_insights.py` from `data/rules/insights/*.md`;
   reuses the `rules.css` skin and pulls `/api/rules` for rule-link tooltips). The
   commentary blocks on `/rules` link their source badges to these articles.
+- **`changelog.js`** - the `/changelog` data-update history reader (fetches
+  `/api/changelog`, built by `scripts/build_changelog.py` from
+  `docs/data_updates/*.md`; reuses the `rules.css` skin plus `changelog.css`
+  extras). One record per data refresh or source migration, newest first;
+  the runbook's Step 6 writes each new record.
 
 ---
 
@@ -295,7 +301,7 @@ flowchart LR
 
 All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 
-**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /missions` · `GET /how-to-play` · `GET /rules` · `GET /rules/insights` · `GET /catalogue-review` · `GET /collection`
+**Pages (HTML):** `GET /` · `GET /army-builder` · `GET /missions` · `GET /how-to-play` · `GET /rules` · `GET /rules/insights` · `GET /changelog` · `GET /catalogue-review` · `GET /collection`
 
 **Factions & units**
 - `GET /api/factions` - faction grid with owned/bought/unlogged badges
@@ -331,6 +337,7 @@ All JSON unless noted. Source: `app.py` route table + the `/arsenal` blueprint.
 - `GET /api/missions` - mission packs, primary/secondary, deployments, layouts, twists
 - `GET /api/rules` - the built Core Rules dataset (`data/rules/core_rules.json`; 404s until `scripts/build_rules.py` has run)
 - `GET /api/insights` - the built Rules Insights articles (`data/rules/insights.json`; 404s until `scripts/build_insights.py` has run)
+- `GET /api/changelog` - the built data-update changelog (`data/changelog.json`; 404s until `scripts/build_changelog.py` has run)
 
 **Model catalogue**
 - `GET|POST /api/model-catalogue` · `GET|PATCH|DELETE /api/model-catalogue/<id>`
@@ -555,6 +562,7 @@ cleanly. Refreshing the rules data is a file-drop: replace `data/w40k/w40k.db` a
 | The Missions reference page | `missions.js` + `/api/missions` -> `data_store._load_missions` |
 | The Core Rules page | `rules.js` + `/api/rules` <- `scripts/build_rules.py` <- `data/rules/*.md` |
 | The Rules Insights page | `insights.js` + `/api/insights` <- `scripts/build_insights.py` <- `data/rules/insights/*.md` (one-off import: `scripts/import_insight_docx.py`) |
+| The Changelog page | `changelog.js` + `/api/changelog` <- `scripts/build_changelog.py` <- `docs/data_updates/*.md` (one record per data refresh; runbook Step 6) |
 | Commentary blocks on /rules | `data/rules/commentary.md` -> `scripts/build_rules.py` (source badges link to the insight articles) |
 | The How to Play guide | `templates/guide.html` (content) + `guide.js`; editorial source `data/rules/how_to_play.md` - keep the two in step |
 | Weapon-keyword tooltips | `static/weapon_keywords.json` (order-sensitive) + `ruletext.js` |

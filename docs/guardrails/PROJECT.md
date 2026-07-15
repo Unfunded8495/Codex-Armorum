@@ -24,6 +24,7 @@ Trigger: starting any task in this repo that touches data files, IDs, the army b
 | Any catalogue JSON in data/, or any migration script | `python scripts/find_datasheet_gaps.py --verify` (locations registry: catalogue_id_locations.py). Broken refs are quarantined, never kept-old. |
 | Markdown under data/rules/ | `python scripts/build_rules.py`, then load /rules and check the edited section renders |
 | Markdown under data/rules/insights/ | `python scripts/build_insights.py`, then `python scripts/build_rules.py` (commentary source links), then load /rules/insights |
+| Markdown under docs/data_updates/ | `python scripts/build_changelog.py`, then load /changelog and check the entry renders |
 | Army-builder logic (army.py, army_validation.py, data_store.py, static/js/army_builder.js) | `python tests/run_all.py` |
 | Any template or JS the browser renders | `python tests/run_all.py --ui` (Playwright; it starts its own isolated app.py and stops it itself, so do not start a server for it) |
 

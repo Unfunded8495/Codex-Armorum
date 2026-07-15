@@ -444,6 +444,29 @@ def api_insights():
     return send_file(path, mimetype="application/json")
 
 
+@app.route("/changelog")
+def changelog_page():
+    """Data changelog: one entry per rules-data update or source migration,
+    newest first, rendered in the Core Rules reader style. Entries are the
+    per-update records in docs/data_updates/ (one file per refresh, written
+    as Step 6 of CODEX_ARMORUM_DATA_UPDATE.md)."""
+    return render_template(
+        "changelog.html",
+        active_page="changelog",
+        breadcrumb=[{"label": "Changelog"}],
+    )
+
+
+@app.route("/api/changelog")
+def api_changelog():
+    """Changelog entries built by scripts/build_changelog.py from the
+    per-update records in docs/data_updates/."""
+    path = os.path.join(app.root_path, "data", "changelog.json")
+    if not os.path.exists(path):
+        abort(404, description="Run scripts/build_changelog.py first")
+    return send_file(path, mimetype="application/json")
+
+
 @app.route("/api/missions")
 def api_missions():
     """Mission reference (Phase 6): packs, primary/secondary missions,

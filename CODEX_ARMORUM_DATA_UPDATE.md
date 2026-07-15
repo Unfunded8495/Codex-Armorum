@@ -194,15 +194,36 @@ points total matches what the official app computes for the same list.
 
 ## Step 6 - Commit and record
 
+Write the field-level change record first - it feeds the site's /changelog
+page, so it is part of the update, not optional paperwork:
+
+1. Create `docs/data_updates/<old>_to_<new>.md`. Start from the compare
+   report and note every change (old -> new values for points, per-datasheet
+   content diffs, core-rules/FAQ text, anything the generic tables moved).
+   The existing records in that folder are the template; the file must open
+   with `# Title` followed by meta lines:
+   ```
+   Date: YYYY-MM-DD
+   Kind: data update
+   Versions: <old> -> <new>
+   Summary: one-line hook shown on the /changelog entry.
+   ```
+2. Rebuild the page dataset and eyeball it:
+   ```powershell
+   python scripts/build_changelog.py
+   ```
+   then load `/changelog` and check the new entry renders at the top.
+
 ```powershell
-git add data/w40k/README.md data/w40k/manifest.json data/w40k/_reference tests/golden data/datasheet_gaps_baseline.json
+git add data/w40k/README.md data/w40k/manifest.json data/w40k/_reference tests/golden data/datasheet_gaps_baseline.json docs/data_updates data/changelog.json
 git commit -m "Refresh w40k data to data_version NNN"
 ```
 
 Also, in the same commit or alongside it:
 
 - Add a **Migration history** entry to `CODEX_ARMORUM_ARCHITECTURE.md`
-  (date, old → new data_version, anything notable from the compare report).
+  (date, old → new data_version, anything notable from the compare report,
+  linking the record file).
 - Update the data_version mentioned in `README.md` / architecture docs if it
   is stated there.
 - Delete `data\w40k\w40k.db.prev` once you are confident (or keep it until
@@ -237,5 +258,6 @@ its first-apply backups (`collection.db` + the JSON catalogues, suffixed
    tests/run_all.py                    (review golden diffs; --golden-build)
    weapon_keywords.json                (if keywords changed)
    data/rules + build_rules.py         (if core rules text changed)
-6  commit + migration-history entry in CODEX_ARMORUM_ARCHITECTURE.md
+6  write docs/data_updates/<old>_to_<new>.md + build_changelog.py
+   commit + migration-history entry in CODEX_ARMORUM_ARCHITECTURE.md
 ```

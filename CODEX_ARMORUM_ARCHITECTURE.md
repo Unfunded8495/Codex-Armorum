@@ -376,6 +376,11 @@ from the curated `data/rules/` track instead - see Track 2c).
 
 ## Migration history
 
+The per-update records in `docs/data_updates/` carry the field-level detail
+behind these entries and are rendered on the site's `/changelog` page
+(`scripts/build_changelog.py` -> `data/changelog.json`). Keep both in step:
+one record file per refresh (runbook Step 6), one summary bullet here.
+
 - **July 2026 (data refresh: 886 to 895).** First runbook-driven refresh from
   a new `base.apk`. Small balance pass: Veiled Blade assassin points tiers up,
   13 new Space Marines / Black Templars leader groups (Black Templars

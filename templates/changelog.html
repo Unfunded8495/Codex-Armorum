@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog · Codex Armorum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;1,500&family=Oswald:wght@300;400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/rules.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/changelog.css') }}">
+</head>
+<body>
+  <!-- NOTE: no .scanlines overlay on this page - it would darken the light paper -->
+
+  <div class="rl-chrome">
+    {% include "_topbar.html" %}
+
+    <nav class="rl-strip" id="clStrip" aria-label="Changelog navigation">
+      <span class="rl-strip-label">Data Changelog</span>
+      <span class="rl-strip-div" aria-hidden="true"></span>
+      <span class="rl-strip-chips" id="clVersionChip"></span>
+      <span class="rl-strip-spacer"></span>
+      <button type="button" class="rl-strip-btn rl-strip-btn--ghost" id="clThemeBtn" title="Toggle light / dark reading mode"><span class="rl-theme-dot" aria-hidden="true"></span><span id="clThemeLabel">Dark</span></button>
+    </nav>
+  </div>
+
+  <div class="rl-shell" id="clShell">
+    <div class="rl-grid">
+      <aside class="rl-side" aria-label="Changelog contents">
+        <div class="rl-side-head"><span>Updates</span><span id="clTocCount"></span></div>
+        <nav class="rl-toc" id="clToc"></nav>
+      </aside>
+
+      <main class="rl-main" id="clMain">
+        <div class="rl-loading">Consulting the archives&hellip;</div>
+      </main>
+    </div>
+  </div>
+
+  <button class="rl-top-btn" id="clTopBtn" title="Back to top" aria-label="Back to top">&#8679;</button>
+
+  {% include "_footer.html" %}
+
+  <script type="module" src="{{ url_for('static', filename='js/changelog.js') }}"></script>
+</body>
+</html>

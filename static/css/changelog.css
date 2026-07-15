@@ -1,0 +1,58 @@
+/* /changelog page extras, layered over the Core Rules reader skin
+   (rules.css). All additions use the cl- prefix; the rl-/rt- classes come
+   from rules.css unchanged. */
+
+/* entry plate: kind badge + version range + one-line summary */
+.cl-plate{
+  display:flex;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:8px 10px;
+  margin:0 0 14px;
+  padding-bottom:10px;
+  border-bottom:1px solid color-mix(in srgb, var(--rl-ink, #2b2318) 14%, transparent);
+}
+.cl-kind{
+  font-family:"Oswald", sans-serif;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:2px 8px 1px;
+  border:1px solid currentColor;
+  border-radius:2px;
+  white-space:nowrap;
+}
+.cl-kind--data-update{ color:#7a1f1f; }
+.cl-kind--migration{ color:#274d2b; }
+.cl-kind--tooling{ color:#3d3a63; }
+body[data-rl-theme="dark"] .cl-kind--data-update{ color:#d98f8f; }
+body[data-rl-theme="dark"] .cl-kind--migration{ color:#9cc4a1; }
+body[data-rl-theme="dark"] .cl-kind--tooling{ color:#a8a4d8; }
+
+.cl-versions{
+  font-family:"Oswald", sans-serif;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.04em;
+  white-space:nowrap;
+  opacity:.75;
+}
+.cl-summary{
+  flex:1 1 100%;
+  font-size:14.5px;
+  opacity:.85;
+}
+
+/* ### sub-headings inside an entry (below the anchored ## sections) */
+.cl-subhead{
+  font-family:"Oswald", sans-serif;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin:18px 0 6px;
+  opacity:.9;
+}
+
+.cl-version-chip{ pointer-events:none; }
