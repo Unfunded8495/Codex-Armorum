@@ -12,6 +12,9 @@ import { wireHomeButton } from './header.js';
 
 /* ---- routing ------------------------------------------------------------ */
 function router(){
+  // Hash routes replace the whole SPA view, so each destination should start
+  // at its own top instead of inheriting the previous screen's scroll offset.
+  window.scrollTo(0, 0);
   const h = location.hash.slice(1) || '/';
   const p = h.split('/').filter(Boolean);
   // Paper views (home / faction / unit) each set their own body scope in their

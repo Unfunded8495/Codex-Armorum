@@ -2,6 +2,7 @@ import { esc, api } from './utils.js';
 
 const breadcrumb = document.getElementById('breadcrumb');
 const ledger = document.getElementById('ledger');
+let ledgerRequest = null;
 
 export function updateLedger(s){
   if(!ledger) return;
@@ -19,9 +20,15 @@ export function updateLedger(s){
 }
 
 export async function refreshLedger(){
-  const summary = await api('/api/collection/summary');
-  updateLedger(summary);
-  return summary;
+  if(ledgerRequest) return ledgerRequest;
+
+  ledgerRequest = api('/api/collection/summary')
+    .then(summary => {
+      updateLedger(summary);
+      return summary;
+    })
+    .finally(() => { ledgerRequest = null; });
+  return ledgerRequest;
 }
 
 export function setBreadcrumb(items){

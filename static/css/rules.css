@@ -170,7 +170,7 @@ body[data-rl-theme="dark"]{
 .rl-toc-none{font-style:italic;font-size:13px;color:var(--rl-mute);padding:10px 14px}
 
 /* ------------------------------------------------------------------ main */
-.rl-main{min-width:0;max-width:calc(740px + var(--rl-rail))}
+.rl-main{min-width:0;max-width:calc(740px + var(--rl-rail));margin:0;padding:0}
 .rl-loading{
   font-family:'EB Garamond',serif;font-style:italic;font-size:15px;
   color:var(--rl-mute);padding:60px 0;

@@ -19,6 +19,7 @@ import { refreshLedger } from './header.js';
 // Both screens sit on the manual (paper) surface; body.ab-roster scopes the
 // roster-detail extras (3-col layout, strip chips, component-var remap).
 function router(){
+  window.scrollTo(0, 0);
   const h = location.hash.slice(1) || '/';
   const p = h.split('/').filter(Boolean);
   const isRoster = p[0]==='army' && !!p[1];

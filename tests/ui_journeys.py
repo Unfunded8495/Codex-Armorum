@@ -264,6 +264,12 @@ def run():
                 if missions.count() == 0:
                     missions = page.get_by_role("link", name="Missions")
                 if missions.count():
+                    # The desktop header collapses secondary navigation behind
+                    # Tools when the full ledger would otherwise make it wrap.
+                    if not missions.first.is_visible():
+                        tools = page.locator("#toolsToggle")
+                        if tools.count():
+                            tools.click()
                     missions.first.click()
                     page.wait_for_selector("[data-testid='missions-view']", timeout=4000)
                     r.check("journey: missions reference page renders", True)

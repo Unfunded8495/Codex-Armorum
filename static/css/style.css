@@ -148,7 +148,7 @@ textarea:focus-visible,
 .breadcrumb .sep{color:rgba(156,150,134,.42);font-size:11px}
 .breadcrumb .cur{color:var(--gold-bright);text-transform:uppercase;padding:3px 0}
 
-.ledger{display:flex;gap:0;font-family:'Oswald',sans-serif;flex-shrink:0}
+.ledger{display:flex;justify-content:center;gap:0;min-width:313px;font-family:'Oswald',sans-serif;flex-shrink:0}
 .ledger .stat{
   text-align:center;line-height:1;padding:4px 14px;
   border-left:1px solid rgba(44,42,53,.8);
@@ -1220,6 +1220,7 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
   .brand-text h1{font-size:17px;letter-spacing:3px}
   .breadcrumb{font-size:11px;letter-spacing:.75px;min-width:170px}
   .ledger .stat{padding:4px 9px}
+  .ledger{min-width:273px}
   .ledger .stat b{font-size:18px}
   .nav-army-btn{padding:5px 8px;font-size:11px;letter-spacing:.75px}
   .top-actions--primary{gap:6px}
@@ -1229,11 +1230,10 @@ table.wargear tr:hover td{background:rgba(199,154,58,.04)}
   .nav-army-btn{padding:5px 9px;font-size:11px;letter-spacing:.75px}
   .ledger .stat{padding:4px 9px}
 }
-/* The full double-nav bar needs ~1240px; below that the secondary nav
+/* The full double-nav bar needs a wide desktop; below that the secondary nav
    collapses behind the Tools toggle and the address bar drops to its own row
-   (previously this only kicked in at 860px, leaving an 860-1240px band where
-   the buttons wrapped into a clipped jumble). */
-@media(max-width:1240px){
+   so the primary actions and collection ledger remain one clean row. */
+@media(max-width:1600px){
   .topbar{flex-wrap:wrap}
   .breadcrumb.addressbar{order:3;flex-basis:100%}
   .top-actions--primary{margin-left:auto}
@@ -2410,7 +2410,14 @@ a.brand{text-decoration:none;color:inherit}
 
 /* ===================== History view (Codex Archive) ===================== */
 .hist-timeline-section{margin:0 0 30px}
-.tl-track{overflow-x:auto;padding:6px 2px 14px;scrollbar-width:thin}
+.tl-track{
+  overflow-x:auto;padding:6px 2px 14px;scrollbar-width:thin;color-scheme:dark;
+  scrollbar-color:rgba(199,154,58,.55) rgba(255,255,255,.04);
+}
+.tl-track::-webkit-scrollbar{height:7px}
+.tl-track::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:4px}
+.tl-track::-webkit-scrollbar-thumb{background:rgba(199,154,58,.42);border-radius:4px}
+.tl-track::-webkit-scrollbar-thumb:hover{background:rgba(199,154,58,.68)}
 .tl-list{
   list-style:none;margin:0;padding:0;display:flex;gap:0;min-width:min-content;
   position:relative;
@@ -2424,6 +2431,10 @@ a.brand{text-decoration:none;color:inherit}
   position:relative;flex:0 0 122px;display:flex;flex-direction:column;align-items:center;
   gap:7px;cursor:pointer;padding:4px 6px 0;background:none;border:0;color:inherit;
   font-family:'Oswald',sans-serif;
+}
+@media(min-width:1100px){
+  .tl-list{min-width:0;width:100%}
+  .tl-node{flex:1 1 0;min-width:0}
 }
 .tl-year{font-size:13px;letter-spacing:1px;color:var(--gold-bright);font-weight:600}
 .tl-dot{
@@ -2504,6 +2515,7 @@ a.brand{text-decoration:none;color:inherit}
   border-top:2px solid var(--cardaccent);background:linear-gradient(180deg,var(--panel-2),var(--panel));
 }
 .hfc-name{font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:.4px;line-height:1.2}
+.hfc-source{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);opacity:.82}
 .hfc-meta{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--parch-dim)}
 .hfc-meta b{color:var(--gold-bright);font-weight:600}
 

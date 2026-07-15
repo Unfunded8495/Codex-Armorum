@@ -122,6 +122,15 @@ export async function showHistory(){
     [editions, cards] = await Promise.all([loadEditions(), loadCards()]);
   }catch(e){ return loadError(e); }
 
+  const displayCounts = cards.reduce((counts, card) => {
+    counts.set(card.display_name, (counts.get(card.display_name) || 0) + 1);
+    return counts;
+  }, new Map());
+  const labelledCards = cards.map(card => ({
+    ...card,
+    source_label: displayCounts.get(card.display_name) > 1 ? card.faction_label : '',
+  }));
+
   view.innerHTML = `
     <h2 class="view-title">Codex Archive</h2>
     <p class="view-sub">Forty years of war, edition by edition</p>
@@ -142,12 +151,12 @@ export async function showHistory(){
 
     <h3 class="army-list-title">Factions</h3>
     <div class="faction-grid hist-card-grid" id="histCardGrid">
-      ${cards.map((c,i)=>factionCard(c,i)).join('')}
+      ${labelledCards.map((c,i)=>factionCard(c,i)).join('')}
     </div>
     <p class="hist-empty" id="histCardEmpty" hidden>No factions match that search.</p>`;
 
   wireTimeline(editions);
-  wirePageSearch(cards);
+  wirePageSearch(labelledCards);
 }
 
 function renderTimeline(editions){
@@ -226,10 +235,13 @@ function factionCard(c, i){
     ? `<img class="hfc-img" src="${esc(c.image_url)}" alt="" loading="lazy"
             onerror="this.classList.add('is-broken');this.removeAttribute('src')">`
     : '';
+  const source = c.source_label ? `${c.source_label} catalogue` : '';
+  const ariaName = source ? `${c.display_name} (${source})` : c.display_name;
   return `
     <button type="button" class="hist-faction-card" data-label="${esc(c.faction_label)}"
+        data-search="${esc(`${c.display_name} ${c.faction_label}`.toLowerCase())}"
         style="--cardarmy:${c.primary};--cardaccent:${c.accent};animation-delay:${i*0.025}s"
-        aria-label="${esc(c.display_name)} — ${c.count} models">
+        aria-label="${esc(ariaName)} — ${c.count} models">
       <span class="hfc-media" aria-hidden="true">
         ${img}
         <span class="hfc-fallback">${esc(c.initial)}</span>
@@ -237,6 +249,7 @@ function factionCard(c, i){
       </span>
       <span class="hfc-body">
         <span class="hfc-name" style="color:${ink}">${esc(c.display_name)}</span>
+        ${source ? `<span class="hfc-source">${esc(source)}</span>` : ''}
         <span class="hfc-meta"><b>${c.count}</b> model${c.count===1?'':'s'}${years?` · ${years}`:''}</span>
       </span>
     </button>`;
@@ -260,7 +273,7 @@ function wirePageSearch(cards){
   const filterCards = q => {
     let shown = 0;
     grid.querySelectorAll('.hist-faction-card').forEach(btn=>{
-      const hit = !q || btn.dataset.label.toLowerCase().includes(q);
+      const hit = !q || btn.dataset.search.includes(q);
       btn.style.display = hit ? '' : 'none';
       if(hit) shown++;
     });
