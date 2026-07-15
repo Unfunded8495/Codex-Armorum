@@ -67,6 +67,8 @@ Place terrain features on the table following the mission layout, or by agreemen
 
 If in doubt, err on the side of more dense terrain, and leave room around it for big models to move (the core rules explicitly recommend this).
 
+The official Event Companion publishes the exact terrain area footprints used at Games Workshop events: four 6" x 4", two 10" x 2.5", four 6" x 2", four 7" x 11.5" and two 8" x 11.5" polygonal areas, with each feature designated light or dense. It also deliberately leaves space between a feature and the edge of its area so a line of models can stand on the area "from the outside": that gap is what makes toeing onto objectives possible. Copying that pattern gives you a table that plays the way the designers intended.
+
 Terrain also decides who can see whom and how hard units are to hit. Four rules matter every turn:
 
 - **Benefit of cover (13.08):** in 11th Edition, cover does not improve a save. Instead, it worsens the attacker's Ballistic Skill by 1, so the shooter needs a higher hit roll. A unit has the benefit of cover against a ranged attack if every model in it is either an INFANTRY, BEASTS or SWARM model within a terrain area, or not fully visible to the shooter because of intervening terrain or an obscuring terrain area. Two traps: it takes **every** model in the target unit to qualify (one model drifting into the open strips cover from the whole squad), and it is judged **per attacking model**, so half of an attacking unit may suffer the penalty while the other half does not, resolved as separate groups.
@@ -80,14 +82,19 @@ The deployment map shows several objective points. Each one should coincide with
 
 ### 3.4 Roll off, pick sides, deploy
 
-1. **Roll off** to determine Attacker and Defender (your mission states what each chooses; typically one picks the deployment zone).
-2. **Declare Battle Formations.** Before deploying, both players declare the things that exist "off the table": units embarked in transports (18), units placed in **strategic reserves** (20.01), and units using deployment abilities such as Deep Strike or Infiltrators. Reserves are capped at 1,000 points at Strike Force (half your army at other sizes), in one shared pool. Aircraft must start in strategic reserves (23.01) and count against that cap.
-3. **Deploy your armies.** Alternate setting up units wholly within your own deployment zone, as your mission instructs.
-4. **Resolve Pre-battle Abilities.** This step comes after Declare Battle Formations and before the battle begins; Scout moves happen here (24.31). Scouts no longer work for units deployed outside your deployment zone.
-5. **Determine the first turn** as the mission instructs (usually a roll-off). The same player takes the first turn in every battle round (07.02).
-6. **Begin the Battle.**
+This is the official pre-battle order from the Event Companion, the sequence used verbatim at Games Workshop events and the shape every matched play game should follow:
+
+1. **Roll off** to determine Attacker and Defender (your mission states what each chooses; typically one picks the deployment zone, or at events you agree which battlefield edges match the layout card first).
+2. **Declare Battle Formations.** Both players note down **secretly**, then reveal together: which units start embarked in which transports (18), and which units are in **strategic reserves** (20.01), including those using deployment abilities such as Deep Strike. Reserves are capped at 1,000 points at Strike Force (half your army at other sizes), in one shared pool. Aircraft must start in strategic reserves (23.01) and count against that cap.
+3. **Deploy your armies.** Players alternate setting up one unit at a time, wholly within their own deployment zone, **starting with the Defender**. Setting up a TITANIC unit costs you your next set-up turn. When one player finishes, the other sets up all their remaining units.
+4. **Redeploy units.** Rules that let you redeploy after both armies are set up resolve now, alternating, starting with the Attacker. A unit placed into strategic reserves by a redeploy does not count against the reserves points cap.
+5. **Determine the first turn**: roll off, the winner takes it. The same player takes the first turn in every battle round (07.02).
+6. **Resolve Pre-battle Rules.** Players alternate resolving pre-battle rules, starting with the player taking the first turn; Scout moves happen here (24.31). Scouts no longer work for units deployed outside your deployment zone.
+7. **Begin the Battle.**
 
 At the start of the battle, no objective is controlled by either player, and both players start with the CP their mission gives them.
+
+**Playing at an event?** Warhammer Events do not use Deployment or Twist cards. Instead, when mustering you select one of the **Force Disposition** cards available to your detachment and record it on your roster; at the table you find your opponent's disposition symbol on your own card, and the primary mission listed under it is yours. Each pairing of primary missions has three fixed layouts (A, B and C). Those pairings and layouts are exactly the mission presets on the Missions page.
 
 ---
 
@@ -192,11 +199,13 @@ Kills alone do not win games; **victory points (VP) do**, and most VP come from 
 
 - **Controlling an objective (14.02):** at the end of each phase and each turn, each player adds up the OC (Objective Control) characteristic of all their models within the objective's terrain area. Highest total controls it; a tie means nobody controls it (unless it is **secured**, 14.03, in which case the previous holder keeps it until actually beaten, even if the garrison is wiped out). Battle-shocked models contribute nothing, and a rule that asks whether a specific **unit** controls an objective needs that unit to have a model with OC 1 or more in range, so an OC 0 unit never satisfies it.
 - **Primary mission:** your mission card says when and how you score, usually at the end of battle rounds or turns for holding objectives, with the exact timing on the card. The "End of Battle Round" and "End of Turn" steps exist precisely so you remember to check your mission then (07.03).
-- **Secondary missions:** if your pack uses them, you score these alongside the primary, drawing new ones as you complete or discard them.
+- **Secondary missions:** if your pack uses them, you score these alongside the primary. Before the battle each player secretly notes whether they will play **Fixed** or **Tactical** secondaries, then both reveal. Fixed: pick two Fixed-marked cards, display them face up; they stay active all battle and cannot be discarded. Tactical: shuffle the secondary deck and draw two face up at the start of each of your Command phases; once per battle, at the end of your Command phase, you can spend 1 CP to discard one active card and draw a replacement. At the end of **each player's turn** (the scorer first), check your active cards: score any you achieved (Tactical cards are then discarded), and if it is your turn you may discard one or more unwanted Tactical cards to gain 1 CP. "When Drawn" sections on cards only apply if you are playing Tactical.
 - **Actions (16):** some missions and secondaries require units to perform battlefield tasks (raise banners, gather intel). A unit is eligible to start an action unless it is off the battlefield, an AIRCRAFT or FORTIFICATION, battle-shocked, OC 0 or "-", engaged (TITANIC units excepted), it advanced or fell back this turn, or it already started an action this turn (16.01). A unit that starts one cannot shoot or declare a charge for the rest of the turn (and any type of shooting likewise blocks starting an action), and moving before it completes fails it, so actions are a real tactical trade.
 - **Hold from safety:** the Hidden rule (13.09) is the intended way to sit on objectives without being shot off them. A couple of models toed into the objective area, behind a solid wall for Gone to Ground, force the enemy to come to within 12 to 15" before they can even see you.
 
-The battle ends after the last battle round (or if one army is wiped out). Compare final VP; highest wins.
+**The end of the battle and the caps.** The battle ends after the last battle round; being tabled does not end it early, so even with no models left, players play out their remaining turns (your opponent can still score, and so can any of your scoring already banked). Under the official scoring used at events, VP cap out at **45 from the primary** (up to 15 per battle round), **45 from secondaries** (up to 15 per battle round, and up to 20 per Fixed card), and **10 for bringing a Battle Ready painted army**, so 100 is a perfect score and paint is worth real points. Highest total wins; a tie is a draw.
+
+**Reading mission cards.** The Event Companion settles the common wording disputes: a "cumulative" condition scores in addition to the normal condition, but "or" conditions never stack with it or each other; a unit "leaves the battlefield" if it is destroyed, embarks in a transport or is removed by a rule; an underlined "one" means exactly one, not one or more; and "up to XVP" is a hard ceiling, excess is ignored.
 
 ---
 
@@ -306,6 +315,8 @@ Common first-game mistakes to avoid: forgetting both players gain CP in every Co
 | Plunging Fire height | more than 3" up |
 
 **Cover:** the benefit of cover worsens the shooter's Ballistic Skill by 1; it does not improve the target's save.
+
+**Victory point caps (official event scoring):** primary 45 (up to 15 per round), secondaries 45 (up to 15 per round, 20 per Fixed card), Battle Ready paint 10. Perfect score 100.
 
 **Stratagem windows in your opponent's turn:** Rapid Ingress and Fire Overwatch at the end of their Movement phase; Smokescreen at the start of their Shooting phase; Heroic Intervention at the end of their Charge phase; Counter-offensive after an enemy unit fights.
 

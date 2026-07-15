@@ -3231,7 +3231,7 @@
       "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
       "release_date": "2010-06",
       "release_year": 2010,
-      "material": "",
+      "material": "Plastic",
       "status": "current_or_unknown",
       "note": "",
       "flags": [],
@@ -3952,47 +3952,6 @@
       }
     },
     {
-      "id": "MD-50132",
-      "name": "Minka Lesk",
-      "faction_label": "Astra Militarum",
-      "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
-      "release_date": "2023-01",
-      "release_year": 2023,
-      "material": "",
-      "status": "current_or_unknown",
-      "note": "",
-      "flags": [],
-      "datasheet_links": [
-        {
-          "datasheet_id": "",
-          "datasheet_name": "Hell's Last",
-          "faction_id": "unresolved",
-          "matched_from": "statline",
-          "matched_name": "MINKA LESK",
-          "confidence": 1.0,
-          "match_method": "exact",
-          "cross_faction": false,
-          "_legacy_id": "000003922"
-        },
-        {
-          "datasheet_id": "",
-          "datasheet_name": "Hell's Last",
-          "faction_id": "unresolved",
-          "matched_from": "statline",
-          "matched_name": "MINKA LESK",
-          "confidence": 1.0,
-          "match_method": "exact",
-          "cross_faction": true,
-          "_legacy_id": "000003947"
-        }
-      ],
-      "source": {
-        "workbook": "40K_-_Current_model_range_release_dates_Updated.xlsx",
-        "sheet": "Astra Militarum",
-        "row": 81
-      }
-    },
-    {
       "id": "MD-50133",
       "name": "Rogal Dorn Battle Tank",
       "faction_label": "Astra Militarum",
@@ -4204,24 +4163,6 @@
         "workbook": "40K_-_Current_model_range_release_dates_Updated.xlsx",
         "sheet": "Astra Militarum",
         "row": 94
-      }
-    },
-    {
-      "id": "MD-50141",
-      "name": "Cadian 101st",
-      "faction_label": "Astra Militarum",
-      "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
-      "release_date": "2025-01",
-      "release_year": 2025,
-      "material": "Plastic",
-      "status": "current_or_unknown",
-      "note": "Minka Lesk",
-      "flags": [],
-      "datasheet_links": [],
-      "source": {
-        "workbook": "40K_-_Current_model_range_release_dates_Updated.xlsx",
-        "sheet": "Astra Militarum",
-        "row": 98
       }
     },
     {
@@ -27759,7 +27700,7 @@
       "release_year": 2026,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "",
+      "note": "Kill Team: Celestian Insidiants",
       "flags": [],
       "datasheet_links": [],
       "source": {
@@ -27770,14 +27711,14 @@
     },
     {
       "id": "MD-50922",
-      "name": "Adjuror",
+      "name": "Abjuror",
       "faction_label": "Adepta Sororitas",
       "faction_id": "aee1b46d-3461-4d5d-a612-0efd05dd843d",
       "release_date": "2026-02",
       "release_year": 2026,
       "material": "Plastic",
       "status": "current_or_unknown",
-      "note": "",
+      "note": "Kill Team: Celestian Insidiants",
       "flags": [],
       "datasheet_links": [],
       "source": {
@@ -29049,6 +28990,96 @@
         "row": 0
       },
       "status": "current_or_unknown"
+    },
+    {
+      "id": "MD-50985",
+      "name": "Captain Minka Lesk",
+      "faction_label": "Astra Militarum",
+      "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
+      "release_date": "2025-03",
+      "release_year": 2025,
+      "material": "Plastic",
+      "status": "discontinued",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Astra Militarum",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50986",
+      "name": "Commissar Shand",
+      "faction_label": "Astra Militarum",
+      "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
+      "release_date": "2025-03",
+      "release_year": 2025,
+      "material": "Plastic",
+      "status": "discontinued",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Astra Militarum",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50987",
+      "name": "Veteren Trooper Jaromir",
+      "faction_label": "Astra Militarum",
+      "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
+      "release_date": "2025-03",
+      "release_year": 2025,
+      "material": "Plastic",
+      "status": "current_or_unknown",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Astra Militarum",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50988",
+      "name": "Confessor Talbeas",
+      "faction_label": "Astra Militarum",
+      "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
+      "release_date": "2025-03",
+      "release_year": 2025,
+      "material": "Plastic",
+      "status": "discontinued",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Astra Militarum",
+        "row": 0
+      }
+    },
+    {
+      "id": "MD-50989",
+      "name": "Veteren Sergeant Gawnya",
+      "faction_label": "Astra Militarum",
+      "faction_id": "9b847488-9663-48dc-b819-08ab93ac4382",
+      "release_date": "2025-03",
+      "release_year": 2025,
+      "material": "Plastic",
+      "status": "discontinued",
+      "note": "",
+      "flags": [],
+      "datasheet_links": [],
+      "source": {
+        "workbook": "manual",
+        "sheet": "Astra Militarum",
+        "row": 0
+      }
     }
   ]
 }

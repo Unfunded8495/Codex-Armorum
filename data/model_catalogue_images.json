@@ -212,6 +212,12 @@
       "source": "Lexicanum miniature gallery"
     },
     {
+      "catalogue_model_id": "MD-50086",
+      "local_path": "cache/images/catalogue/MD-50086.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
       "catalogue_model_id": "MD-50087",
       "model_name": "Hellhammer",
       "faction_label": "Astra Militarum",
@@ -471,6 +477,12 @@
       "source": "Lexicanum miniature gallery"
     },
     {
+      "catalogue_model_id": "MD-50105",
+      "local_path": "cache/images/catalogue/MD-50105.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
       "catalogue_model_id": "MD-50107",
       "model_name": "Basilisk",
       "faction_label": "Astra Militarum",
@@ -507,6 +519,12 @@
       "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b0/IGChimera5th.jpg",
       "local_path": "cache/images/catalogue/MD-50108-9395b4da.jpg",
       "source": "Lexicanum miniature gallery"
+    },
+    {
+      "catalogue_model_id": "MD-50109",
+      "local_path": "cache/images/catalogue/MD-50109.jpg",
+      "source": "user",
+      "caption": ""
     },
     {
       "catalogue_model_id": "MD-50111",
@@ -680,6 +698,12 @@
       "source": "Lexicanum miniature gallery"
     },
     {
+      "catalogue_model_id": "MD-50120",
+      "local_path": "cache/images/catalogue/MD-50120.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
       "catalogue_model_id": "MD-50121",
       "model_name": "Wyvern",
       "faction_label": "Astra Militarum",
@@ -797,23 +821,10 @@
       "source": "Lexicanum miniature gallery"
     },
     {
-      "catalogue_model_id": "MD-50132",
-      "model_name": "Minka Lesk",
-      "faction_label": "Astra Militarum",
-      "release_year": 2023,
-      "match_confidence": 1.0,
-      "caption": "[[Minka Lesk]] (Black Library miniature)",
-      "caption_names": [
-        "Minka Lesk",
-        "Minka Lesk (Black Library miniature)"
-      ],
-      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
-      "lexicanum_file": "MinaMini.jpg",
-      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:MinaMini.jpg",
-      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/0/03/MinaMini.jpg/120px-MinaMini.jpg",
-      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/0/03/MinaMini.jpg",
-      "local_path": "cache/images/catalogue/MD-50132-2a2a78d4.jpg",
-      "source": "Lexicanum miniature gallery"
+      "catalogue_model_id": "MD-50131",
+      "local_path": "cache/images/catalogue/MD-50131.jpg",
+      "source": "user",
+      "caption": ""
     },
     {
       "catalogue_model_id": "MD-50133",
@@ -969,25 +980,6 @@
       "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/3/37/SiegeCannon.jpg/120px-SiegeCannon.jpg",
       "image_url": "https://wh40k.lexicanum.com/mediawiki/images/3/37/SiegeCannon.jpg",
       "local_path": "cache/images/catalogue/MD-50140-e1df2377.jpg",
-      "source": "Lexicanum miniature gallery"
-    },
-    {
-      "catalogue_model_id": "MD-50141",
-      "model_name": "Cadian 101st",
-      "faction_label": "Astra Militarum",
-      "release_year": 2025,
-      "match_confidence": 1.0,
-      "caption": "[[Cadian 101st]]",
-      "caption_names": [
-        "Cadian 101st",
-        "Cadian 101st"
-      ],
-      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
-      "lexicanum_file": "Cadian-101st.jpg",
-      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:Cadian-101st.jpg",
-      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/b/b4/Cadian-101st.jpg/120px-Cadian-101st.jpg",
-      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/b/b4/Cadian-101st.jpg",
-      "local_path": "cache/images/catalogue/MD-50141-e69a9b3c.jpg",
       "source": "Lexicanum miniature gallery"
     },
     {
@@ -1185,23 +1177,9 @@
     },
     {
       "catalogue_model_id": "MD-50153",
-      "model_name": "Commissar Graves",
-      "faction_label": "Astra Militarum",
-      "release_year": 2026,
-      "match_confidence": 0.909,
-      "caption": "[[Commissar Cain]] and [[Jurgen]]",
-      "caption_names": [
-        "Commissar Cain",
-        "Jurgen",
-        "Commissar Cain and Jurgen"
-      ],
-      "lexicanum_page": "https://wh40k.lexicanum.com/wiki/Miniatures:_Astra_Militarum",
-      "lexicanum_file": "CainJurgenMini.jpg",
-      "file_page_url": "https://wh40k.lexicanum.com/wiki/File:CainJurgenMini.jpg",
-      "thumbnail_url": "https://wh40k.lexicanum.com/mediawiki/images/thumb/1/18/CainJurgenMini.jpg/120px-CainJurgenMini.jpg",
-      "image_url": "https://wh40k.lexicanum.com/mediawiki/images/1/18/CainJurgenMini.jpg",
-      "local_path": "cache/images/catalogue/MD-50153-07f3a13c.jpg",
-      "source": "Lexicanum miniature gallery"
+      "local_path": "cache/images/catalogue/MD-50153.jpg",
+      "source": "user",
+      "caption": ""
     },
     {
       "catalogue_model_id": "MD-50222",
@@ -4395,6 +4373,18 @@
       "caption": ""
     },
     {
+      "catalogue_model_id": "MD-50921",
+      "local_path": "cache/images/catalogue/MD-50921.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50922",
+      "local_path": "cache/images/catalogue/MD-50922.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
       "catalogue_model_id": "MD-50924",
       "local_path": "cache/images/catalogue/MD-50924.png",
       "source": "user",
@@ -4667,6 +4657,36 @@
     {
       "catalogue_model_id": "MD-50984",
       "local_path": "cache/images/catalogue/MD-50984.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50985",
+      "local_path": "cache/images/catalogue/MD-50985.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50986",
+      "local_path": "cache/images/catalogue/MD-50986.png",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50987",
+      "local_path": "cache/images/catalogue/MD-50987.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50988",
+      "local_path": "cache/images/catalogue/MD-50988.jpg",
+      "source": "user",
+      "caption": ""
+    },
+    {
+      "catalogue_model_id": "MD-50989",
+      "local_path": "cache/images/catalogue/MD-50989.jpg",
       "source": "user",
       "caption": ""
     }

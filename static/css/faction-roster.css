@@ -50,7 +50,15 @@ body.faction-roster .fc-unit-stats{color:var(--rl-mute)}
 body.faction-roster .fc-unit-stats span:last-child{color:var(--rl-ink-soft)}
 body.faction-roster .fc-unit-stats.is-tri b{color:var(--rl-ink)}
 body.faction-roster .fc-unit-bar-wrap{background:var(--rl-paper-3)}
-body.faction-roster .fc-shared-note{color:var(--cardarmy,var(--rl-ink-soft))}
+/* shared-kit note: base skin paints it with the dark page's --gold, which
+   never swaps with the reading mode. Derive one tint from the faction colour
+   mixed toward --rl-ink so it darkens on light paper and lightens on dark. */
+body.faction-roster .fc-shared-note{
+  --fc-note-ink:color-mix(in srgb,var(--cardarmy,var(--rl-ink-soft)) 45%,var(--rl-ink));
+  color:var(--fc-note-ink);
+  border-color:color-mix(in srgb,var(--fc-note-ink) 45%,transparent);
+  background:color-mix(in srgb,var(--fc-note-ink) 10%,transparent);
+}
 /* the faction watermark behind the tile body is too heavy on light paper */
 body.faction-roster .unit-body .faction-bg-mark{opacity:.06}
 
