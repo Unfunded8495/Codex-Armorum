@@ -397,6 +397,7 @@ button.ab-val-row:hover .ab-val-go { opacity:1; }
 .wrc-die { width:22px; height:22px; flex-shrink:0; vertical-align:middle; }
 .wrc-die rect { fill:var(--rl-black); }
 .wrc-die circle { fill:var(--rl-paper); }
+body[data-rl-theme="dark"] .wrc-die rect { fill:var(--rl-ink); }
 
 /* ---- roster quick list ---- */
 .ab-ql-list { padding:2px 0 12px; max-height:320px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--rl-edge) transparent; }
