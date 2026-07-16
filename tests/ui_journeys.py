@@ -255,7 +255,33 @@ def run():
                 r.check("journey: a Leader and a support Lieutenant both nest under the bodyguard",
                         False, repr(e))
 
-            # Journey 5: missions reference renders (Phase 6).
+            # Journey 5: a selected-loadout datasheet card keeps weapons whose
+            # resolved loadout label carries a quantity prefix. Venomcrawler is
+            # always equipped with two Excruciator cannons, reported as
+            # "2× Excruciator cannon" by the loadout engine.
+            try:
+                page.goto(f"{BASE}/army-builder")
+                sel(page, "new-army-button", "text=New Army").click()
+                sel(page, "faction-select").select_option(label="Chaos Space Marines")
+                sel(page, "battle-size-select").select_option(value="Strike Force")
+                sel(page, "create-army-confirm", "text=Create").click()
+                page.wait_for_selector("[data-testid='army-detail']", timeout=5000)
+                add_unit(page, "Venomcrawler", "Other Datasheets")
+                row = page.locator("[data-testid='unit-row']").filter(has_text="Venomcrawler").first
+                row.locator(".uc-name-link").click()
+                page.locator("[data-testid='datasheet-card-overlay']").wait_for(
+                    state="visible", timeout=5000)
+                page.locator("[data-testid='dsc-loadout-toggle']").wait_for(
+                    state="visible", timeout=5000)
+                cannon = page.locator("#dsCardBody .dsc-w-base").filter(
+                    has_text="Excruciator cannon")
+                r.check("journey: selected Venomcrawler card keeps its Excruciator cannon",
+                        cannon.count() > 0)
+            except Exception as e:
+                r.check("journey: selected Venomcrawler card keeps its Excruciator cannon",
+                        False, repr(e))
+
+            # Journey 6: missions reference renders (Phase 6).
             try:
                 page.goto(f"{BASE}/army-builder")
                 # A locator can't mix the css and text engines in one comma list;

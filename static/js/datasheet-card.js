@@ -57,7 +57,9 @@ function statBadges(model, invuln){
 }
 
 function profileName(n){return (n||"").replace(/\s[-–—]\s/," – ");}
-export function weaponBase(n){return (n||"").split(/\s[-–—]\s/)[0].trim();}
+export function weaponBase(n){
+  return (n||"").replace(/^\s*\d+\s*×\s*/,"").split(/\s[-–—]\s/)[0].trim();
+}
 function rangeCell(v){if(!v) return "-"; if(String(v).toLowerCase()==="melee") return "Melee"; return esc(v)+'"';}
 function kwTag(k){
   if(!k) return "";
