@@ -62,7 +62,64 @@ body.faction-roster .fc-shared-note{
 /* the faction watermark behind the tile body is too heavy on light paper */
 body.faction-roster .unit-body .faction-bg-mark{opacity:.06}
 
+/* ---- display-niche thumb on paper (light mode) ------------------------
+   style.css paints the niche box for the dark app skin: a hard-coded
+   #322d39->#111017 gradient, near-black chips, and heavy black shadows.
+   In the roster's light reading mode that box ignores the paper tokens
+   entirely, so re-derive the well, seam, and shadows from --rl-* (with a
+   faint --cardarmy tint so the tile still carries its faction colour).
+   Dark reading mode falls through to the base skin untouched. */
+body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche{
+  background:radial-gradient(ellipse 135% 100% at 50% 20%,
+    color-mix(in srgb,var(--cardarmy,var(--rl-mute)) 9%,var(--rl-paper-2)) 0%,
+    color-mix(in srgb,var(--cardarmy,var(--rl-mute)) 7%,var(--rl-paper-3)) 54%,
+    color-mix(in srgb,var(--rl-ink) 9%,var(--rl-paper-3)) 100%);
+  border-bottom:1px solid var(--rl-edge-soft);
+}
+body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche::before{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--rl-ink) 7%,transparent),transparent);
+}
+body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche .niche-shadow{
+  background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,var(--rl-ink) 30%,transparent),transparent 72%);
+}
+body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche img{
+  filter:drop-shadow(0 10px 12px color-mix(in srgb,var(--rl-ink) 22%,transparent));
+}
+body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb .role-tag,
+body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb .pts{
+  background:var(--rl-ink);color:var(--rl-paper-2);
+}
+/* chip edges: the models-count chip is flush at the box's bottom-left but
+   the rites chip floated 9px off bottom-right and ran 2px shorter; square
+   both chips to the box corners at equal height (applies in both themes) */
+body.faction-roster .unit-thumb.is-niche .bench-tag{
+  bottom:0;right:0;padding:4px 10px;
+}
+
 /* ---- browse-all + empty state on paper ---- */
+/* the browse tiles' photo thumb keeps the dark app's #0c0b10 well behind
+   letterboxed or still-loading datasheet photos; give it the same paper
+   treatment as the niche in light mode (dark mode falls through) */
+body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb:not(.is-niche){
+  background:var(--rl-paper-3);
+}
+/* no-image browse tiles: the image endpoint's SVG fallback is baked dark,
+   so units without a reference image render this token-driven plate
+   instead; being plain CSS it follows the light/dark toggle live */
+body.faction-roster .fc-ph{
+  position:absolute;inset:0;z-index:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  background:radial-gradient(circle at 50% 32%,
+    color-mix(in srgb,var(--cardarmy,var(--rl-mute)) 16%,var(--rl-paper-3)),var(--rl-paper-3) 78%);
+}
+body.faction-roster .fc-ph-letter{
+  font-family:'Cinzel',serif;font-weight:900;font-size:64px;line-height:1;
+  color:color-mix(in srgb,var(--cardarmy,var(--rl-ink)) 55%,var(--rl-ink));opacity:.3;
+}
+body.faction-roster .fc-ph-label{
+  font-family:'Oswald',sans-serif;font-size:10.5px;font-weight:500;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--rl-mute);
+}
 body.faction-roster .view-title{color:var(--rl-ink);font-family:'Cinzel',serif;letter-spacing:.5px}
 body.faction-roster .fc-summary{color:var(--rl-mute)}
 body.faction-roster .fc-summary b{color:var(--rl-ink)}

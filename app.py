@@ -574,6 +574,9 @@ def api_faction_units(fid):
         u["owned"]    = owned.get(u["id"], 0)
         u["bought"]   = info["totals"].get(u["id"], 0)
         u["unlogged"] = ul_map.get(u["id"], 0)
+        # Lets the browse grid draw a theme-aware CSS plate instead of the
+        # image endpoint's dark SVG fallback when no real image exists.
+        u["has_image"] = bool(_ref_path(u["id"]) or catalogue_image_for_datasheet(u["id"]))
         # Squad-size span for the add-unit picker's "N models" line, plus the
         # min/max-size prices so the card can show the unit's real cost range
         # (u["points"] is the default-size price, which may be either end).
