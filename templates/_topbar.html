@@ -1,55 +1,103 @@
 <header class="topbar">
-  <a class="brand" id="homeBtn" href="/">
-    <span class="brand-mark">&#10016;</span>
-    <div class="brand-text">
-      <h1>Codex Armorum</h1>
-      <p>Personal Battle-Roster &amp; Reliquary</p>
-    </div>
-  </a>
-  <nav class="breadcrumb addressbar" id="breadcrumb" aria-label="Current location">
-    {% if breadcrumb is defined and breadcrumb %}
-      {% for item in breadcrumb %}
-        {% if not loop.first %}<span class="sep">&gt;</span>{% endif %}
-        {% if item.href is defined %}
-          <a class="crumb" href="{{ item.href }}">{{ item.label }}</a>
-        {% else %}
-          <span class="cur">{{ item.label }}</span>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  </nav>
-  <div class="ledger" id="ledger"></div>
-  <nav class="top-actions top-actions--primary" aria-label="Primary navigation">
-    <a href="/" data-nav-page="armies" class="nav-army-btn{% if active_page == 'armies' %} is-current{% endif %}">My Armies</a>
-    <a href="/#/purchases" data-nav-page="purchases" class="nav-army-btn{% if active_page == 'purchases' %} is-current{% endif %}">Purchases</a>
-    <a href="/#/history" data-nav-page="history" class="nav-army-btn{% if active_page == 'history' %} is-current{% endif %}">Codex Archive</a>
-    <a href="/collection" data-nav-page="collection" class="nav-army-btn nav-collection-btn{% if active_page == 'collection' %} is-current{% endif %}">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="vertical-align:-1px;margin-right:4px">
-        <rect x="1" y="1" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
-        <rect x="8" y="1" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
-        <rect x="1" y="8" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
-        <rect x="8" y="8" width="5" height="5" stroke="currentColor" stroke-width="1.2"/>
-      </svg>
-      Paint Progress
+  <div class="topbar-frame">
+    <a class="brand" id="homeBtn" href="/" aria-label="Codex Armorum home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" focusable="false">
+          <path class="brand-mark-ring" d="M32 4 52 16v30L32 60 12 46V16Z"/>
+          <path class="brand-mark-blade" d="M32 10v39M21 22h22M25 49h14M28 10l4-6 4 6"/>
+          <path class="brand-mark-wings" d="m12 27 13 6-13 5M52 27l-13 6 13 5"/>
+          <circle cx="32" cy="27" r="5"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-kicker">The private armoury</span>
+        <h1>Codex Armorum</h1>
+        <span class="brand-subtitle">Battle-roster &amp; reliquary</span>
+      </span>
     </a>
-  </nav>
-  <span class="topbar-divider" aria-hidden="true"></span>
-  <nav class="top-actions top-actions--secondary" id="secondaryNav" aria-label="Tools">
-    <a href="/army-builder" data-nav-page="army_builder" class="nav-army-btn{% if active_page == 'army_builder' %} is-current{% endif %}">Army Builder</a>
-    <a href="/missions" data-nav-page="missions" class="nav-army-btn{% if active_page == 'missions' %} is-current{% endif %}" data-testid="nav-missions">Missions</a>
-    <a href="/how-to-play" data-nav-page="guide" class="nav-army-btn{% if active_page == 'guide' %} is-current{% endif %}" data-testid="nav-guide">How to Play</a>
-    <a href="/rules" data-nav-page="rules" class="nav-army-btn{% if active_page == 'rules' %} is-current{% endif %}" data-testid="nav-rules">Core Rules</a>
-    <a href="/arsenal/loadouts" data-nav-page="arsenal_loadouts" class="nav-army-btn{% if active_page == 'arsenal_loadouts' %} is-current{% endif %}">Weapon Loadouts</a>
-    <a href="/catalogue-review" data-nav-page="catalogue" class="nav-army-btn{% if active_page == 'catalogue' %} is-current{% endif %}">Model Catalogue</a>
-    <a href="/changelog" data-nav-page="changelog" class="nav-army-btn{% if active_page == 'changelog' %} is-current{% endif %}" data-testid="nav-changelog">Changelog</a>
-  </nav>
-  <div class="topbar-vault">
-    <button class="tools-toggle nav-army-btn" id="toolsToggle"
-            aria-expanded="false" aria-controls="secondaryNav"
-            title="More tools">
-      &#9776; Tools
-    </button>
-    <button type="button" class="nav-army-btn shutdown-btn" data-shutdown-btn title="Stop Codex Armorum">Seal Vault</button>
+
+    <section class="ledger-shell" aria-label="Collection tally">
+      <span class="ledger-kicker">Collection tally</span>
+      <div class="ledger" id="ledger" aria-live="polite">
+        <div class="stat is-loading"><b>&mdash;</b><span>Models</span></div>
+        <div class="stat is-loading"><b>&mdash;</b><span>Unbuilt</span></div>
+        <div class="stat is-loading"><b>&mdash;</b><span>In paint</span></div>
+        <div class="stat is-loading"><b>&mdash;</b><span>Finished</span></div>
+      </div>
+    </section>
+
+    <nav class="command-nav" aria-label="Primary navigation">
+      <a href="/" data-nav-page="armies" class="command-link{% if active_page == 'armies' %} is-current{% endif %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.8 8.2 7 10 4.2-1.8 7-5.2 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-5"/></svg>
+        <span>Armies</span>
+      </a>
+      <a href="/#/purchases" data-nav-page="purchases" class="command-link{% if active_page == 'purchases' %} is-current{% endif %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 8 8-4 8 4-8 4-8-4Z"/><path d="M4 8v9l8 4 8-4V8M12 12v9"/></svg>
+        <span>Purchases</span>
+      </a>
+      <a href="/collection" data-nav-page="collection" class="command-link nav-collection-btn{% if active_page == 'collection' %} is-current{% endif %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5 5 14m2-6 9 9M4 17l3 3 3-3-3-3-3 3Zm11-13 5 5M17 3l4 4"/></svg>
+        <span>Paint</span>
+      </a>
+      <a href="/army-builder" data-nav-page="army_builder" class="command-link{% if active_page == 'army_builder' %} is-current{% endif %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 20 4M8 4h12v12M5 14l5 5M4 18l2 2"/></svg>
+        <span>Builder</span>
+      </a>
+      <a href="/missions" data-nav-page="missions" class="command-link{% if active_page == 'missions' %} is-current{% endif %}" data-testid="nav-missions">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>
+        <span>Missions</span>
+      </a>
+      <a href="/rules" data-nav-page="rules" class="command-link{% if active_page == 'rules' %} is-current{% endif %}" data-testid="nav-rules">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H11v18H7.5A3.5 3.5 0 0 0 4 23V5.5Zm16 0A3.5 3.5 0 0 0 16.5 2H13v18h3.5a3.5 3.5 0 0 1 3.5 3V5.5Z"/></svg>
+        <span>Rules</span>
+      </a>
+      <a href="/#/history" data-nav-page="history" class="command-link{% if active_page == 'history' %} is-current{% endif %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M8 3v4c0 2 1.4 3.8 4 5-2.6 1.2-4 3-4 5v4m8-18v4c0 2-1.4 3.8-4 5 2.6 1.2 4 3 4 5v4"/></svg>
+        <span>Archive</span>
+      </a>
+    </nav>
+
+    <div class="topbar-vault">
+      <button class="tools-toggle command-link{% if active_page in ['guide', 'arsenal_loadouts', 'catalogue', 'changelog'] %} is-current{% endif %}" id="toolsToggle" type="button"
+              aria-expanded="false" aria-controls="secondaryNav" title="Open tools">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="12" cy="18" r="1.5"/></svg>
+        <span>Tools</span>
+      </button>
+      <button type="button" class="seal-vault shutdown-btn" data-shutdown-btn title="Stop Codex Armorum">
+        <span class="seal-vault-mark" aria-hidden="true"></span>
+        <span>Seal vault</span>
+      </button>
+
+      <nav class="top-actions--secondary" id="secondaryNav" aria-label="Tools">
+        <span class="tools-drawer-title">Armoury tools</span>
+        <a href="/how-to-play" data-nav-page="guide" class="tool-link{% if active_page == 'guide' %} is-current{% endif %}" data-testid="nav-guide"><span>02</span>How to Play</a>
+        <a href="/arsenal/loadouts" data-nav-page="arsenal_loadouts" class="tool-link{% if active_page == 'arsenal_loadouts' %} is-current{% endif %}"><span>03</span>Weapon Loadouts</a>
+        <a href="/catalogue-review" data-nav-page="catalogue" class="tool-link{% if active_page == 'catalogue' %} is-current{% endif %}"><span>04</span>Model Catalogue</a>
+        <a href="/changelog" data-nav-page="changelog" class="tool-link{% if active_page == 'changelog' %} is-current{% endif %}" data-testid="nav-changelog"><span>05</span>Changelog</a>
+      </nav>
+    </div>
+
+    <div class="context-rail">
+      <span class="context-label" aria-hidden="true">
+        <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.5"/></svg>
+        Current location
+      </span>
+      <nav class="breadcrumb" id="breadcrumb" aria-label="Current location">
+        {% if breadcrumb is defined and breadcrumb %}
+          {% for item in breadcrumb %}
+            {% if not loop.first %}<span class="sep">/</span>{% endif %}
+            {% if item.href is defined %}
+              <a class="crumb" href="{{ item.href }}">{{ item.label }}</a>
+            {% else %}
+              <span class="cur">{{ item.label }}</span>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <span class="cur">My Armies</span>
+        {% endif %}
+      </nav>
+      <span class="context-status" aria-hidden="true"><i></i> Vault online</span>
+    </div>
   </div>
 </header>
 
@@ -59,11 +107,13 @@
   if (toolsToggle && secondaryNav) {
     toolsToggle.addEventListener('click', () => {
       const open = secondaryNav.classList.toggle('is-open');
+      toolsToggle.classList.toggle('is-open', open);
       toolsToggle.setAttribute('aria-expanded', open);
     });
     document.addEventListener('click', e => {
       if (!toolsToggle.contains(e.target) && !secondaryNav.contains(e.target)) {
         secondaryNav.classList.remove('is-open');
+        toolsToggle.classList.remove('is-open');
         toolsToggle.setAttribute('aria-expanded', false);
       }
     });

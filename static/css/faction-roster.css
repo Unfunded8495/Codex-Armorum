@@ -4,9 +4,10 @@
    Shared paper skin lives in spa-shell.css (body.rl-spa). This file adds
    the roster-only pieces: the hero ghost button on the dark hero art, the
    paint-stage legend, the role-section spacing, and - the key part - the
-   theme-agnostic repaint of the shared unit tile. buildUnitTiles emits the
-   same .unit-card markup used on the dark Purchases page; here, under
-   body.faction-roster, we repaint its surfaces to paper tokens. No fork.
+   theme-agnostic repaint of the shared unit tile emitted by buildUnitTiles.
+   The purchase detail (#/purchases) shows the same tiles, so every tile
+   rule is scoped to :is(body.faction-roster, body.purchases-ledger) - one
+   repaint, both pages. No fork.
    ===================================================================== */
 
 /* hero: the ghost action button sits on the dark hero art, so give it light
@@ -27,40 +28,213 @@
 .fac-role-section:first-of-type{margin-top:12px}
 
 /* ---- theme-agnostic unit tile ----------------------------------------
-   Same markup as the dark Purchases tiles; repainted to paper only inside
-   the roster scope. Faction colour still arrives inline as --cardarmy. */
-body.faction-roster .unit-grid{grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:12px}
-body.faction-roster .unit-card{
+   Repainted to paper inside the roster and purchases-ledger scopes only.
+   Faction colour still arrives inline as --cardarmy. */
+:is(body.faction-roster, body.purchases-ledger) .unit-grid{grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:12px}
+:is(body.faction-roster, body.purchases-ledger) .unit-card{
   background:var(--rl-paper-2);border:1px solid var(--rl-edge);
   border-left:3px solid var(--cardarmy,#333);
   box-shadow:0 1px 6px rgba(20,24,12,.06);
   transition:transform .16s ease,box-shadow .16s ease;
   animation:rlFadeIn .35s ease both;
 }
-body.faction-roster .unit-card:hover{
+:is(body.faction-roster, body.purchases-ledger) .unit-card:hover{
   transform:translateY(-3px);box-shadow:0 8px 18px rgba(20,24,12,.14);
 }
-body.faction-roster .unit-body.faction-surface{
+:is(body.faction-roster, body.purchases-ledger) .unit-body.faction-surface{
   background:var(--rl-paper-2);border-top:1px solid var(--rl-edge-soft);
 }
-body.faction-roster .unit-body.faction-surface::after{display:none}
-body.faction-roster .unit-name{color:var(--rl-ink)}
-body.faction-roster .unit-name:hover{color:var(--cardarmy,var(--rl-ink))}
-body.faction-roster .fc-unit-stats{color:var(--rl-mute)}
-body.faction-roster .fc-unit-stats span:last-child{color:var(--rl-ink-soft)}
-body.faction-roster .fc-unit-stats.is-tri b{color:var(--rl-ink)}
-body.faction-roster .fc-unit-bar-wrap{background:var(--rl-paper-3)}
+:is(body.faction-roster, body.purchases-ledger) .unit-body.faction-surface::after{display:none}
+:is(body.faction-roster, body.purchases-ledger) .unit-name{color:var(--rl-ink)}
+:is(body.faction-roster, body.purchases-ledger) .unit-name:hover{color:var(--cardarmy,var(--rl-ink))}
+:is(body.faction-roster, body.purchases-ledger) .fc-unit-stats{color:var(--rl-mute)}
+:is(body.faction-roster, body.purchases-ledger) .fc-unit-stats span:last-child{color:var(--rl-ink-soft)}
+:is(body.faction-roster, body.purchases-ledger) .fc-unit-stats.is-tri b{color:var(--rl-ink)}
+:is(body.faction-roster, body.purchases-ledger) .fc-unit-bar-wrap{background:var(--rl-paper-3)}
 /* shared-kit note: base skin paints it with the dark page's --gold, which
    never swaps with the reading mode. Derive one tint from the faction colour
    mixed toward --rl-ink so it darkens on light paper and lightens on dark. */
-body.faction-roster .fc-shared-note{
+:is(body.faction-roster, body.purchases-ledger) .fc-shared-note{
   --fc-note-ink:color-mix(in srgb,var(--cardarmy,var(--rl-ink-soft)) 45%,var(--rl-ink));
   color:var(--fc-note-ink);
   border-color:color-mix(in srgb,var(--fc-note-ink) 45%,transparent);
   background:color-mix(in srgb,var(--fc-note-ink) 10%,transparent);
 }
 /* the faction watermark behind the tile body is too heavy on light paper */
-body.faction-roster .unit-body .faction-bg-mark{opacity:.06}
+:is(body.faction-roster, body.purchases-ledger) .unit-body .faction-bg-mark{opacity:.06}
+
+/* ---- owned-unit relic cards ------------------------------------------
+   Portrait collection cards inspired by the gilded physical-card layout:
+   role cap, miniature display well, status rail, parchment nameplate and
+   three ceremonial paint-stage counters. Browse-all cards keep the compact
+   shared tile treatment below. */
+:is(body.faction-roster, body.purchases-ledger) .fac-role-section .unit-grid{
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),320px));
+  justify-content:start;gap:22px;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card{
+  --fc-gold:#bd9347;
+  --fc-gold-hi:#dec078;
+  --fc-olive:color-mix(in srgb,var(--cardarmy,#333) 24%,#262719);
+  --fc-parchment:#f2eedf;
+  --fc-parchment-deep:#e2dac1;
+  --fc-card-ink:#2b2a1b;
+  width:100%;max-width:320px;
+  background:var(--fc-parchment);color:var(--fc-card-ink);
+  border:1px solid var(--fc-gold);border-left:1px solid var(--fc-gold);
+  border-radius:14px 14px 10px 10px;overflow:hidden;
+  box-shadow:
+    0 13px 27px rgba(25,24,15,.2),
+    0 2px 5px rgba(25,24,15,.16),
+    inset 0 0 0 2px rgba(255,249,218,.62);
+  isolation:isolate;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card::before{
+  content:"";position:absolute;inset:5px;z-index:10;pointer-events:none;
+  border:1px solid rgba(189,147,71,.45);border-radius:9px 9px 6px 6px;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card:hover{
+  border-color:var(--fc-gold-hi);
+  transform:translateY(-5px);
+  box-shadow:0 19px 34px rgba(25,24,15,.25),0 3px 7px rgba(25,24,15,.17),inset 0 0 0 2px rgba(255,249,218,.72);
+}
+
+:is(body.faction-roster, body.purchases-ledger) .fc-card-cap{
+  position:relative;z-index:3;height:53px;flex:0 0 53px;
+  display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;
+  padding:0 18px;
+  background:
+    linear-gradient(rgba(255,255,255,.025),rgba(0,0,0,.12)),
+    repeating-linear-gradient(118deg,transparent 0 7px,rgba(255,255,255,.012) 7px 8px),
+    var(--fc-olive);
+  border-bottom:2px solid var(--fc-gold);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-role{
+  font-family:'Oswald',sans-serif;font-size:14px;font-weight:500;line-height:1;
+  letter-spacing:3.2px;text-align:center;text-transform:uppercase;color:#f1ebd7;
+  text-shadow:0 1px 2px rgba(0,0,0,.8);white-space:nowrap;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-cap-sigil{
+  display:flex;align-items:center;justify-content:center;width:34px;height:34px;
+  color:var(--fc-gold-hi);font-family:'Cinzel',serif;font-weight:900;font-size:22px;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-cap-sigil .faction-bg-letter{
+  font-size:22px;line-height:1;color:var(--fc-gold-hi);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-cap-sigil img{
+  width:100%;height:100%;object-fit:contain;
+  filter:sepia(1) saturate(.75) brightness(1.45) drop-shadow(0 1px 1px rgba(0,0,0,.55));
+  opacity:.88;
+}
+
+:is(body.faction-roster, body.purchases-ledger) .fac-role-section .fc-army-card .unit-thumb.is-niche{
+  height:260px;flex:0 0 260px;
+  background:
+    radial-gradient(circle at 50% 46%,transparent 0 31%,rgba(111,100,68,.1) 31.3% 31.7%,transparent 32% 43%,rgba(111,100,68,.08) 43.3% 43.7%,transparent 44%),
+    linear-gradient(135deg,rgba(255,255,255,.55),transparent 42%),
+    var(--fc-parchment-deep);
+  border-bottom:1px solid var(--fc-gold);
+}
+:is(body.faction-roster, body.purchases-ledger) .fac-role-section .fc-army-card .unit-thumb.is-niche::before{
+  inset:0;height:auto;
+  background:
+    linear-gradient(32deg,transparent 49.7%,rgba(112,101,68,.07) 50%,transparent 50.3%),
+    linear-gradient(148deg,transparent 49.7%,rgba(112,101,68,.055) 50%,transparent 50.3%);
+}
+:is(body.faction-roster, body.purchases-ledger) .fac-role-section .fc-army-card .unit-thumb.is-niche .niche-shadow{
+  bottom:17px;width:68%;height:22px;
+  background:radial-gradient(ellipse at 50% 50%,rgba(40,36,23,.34),transparent 72%);
+}
+:is(body.faction-roster, body.purchases-ledger) .fac-role-section .fc-army-card .unit-thumb.is-niche img{
+  padding:19px 13px 5px;
+  filter:drop-shadow(0 12px 12px rgba(35,31,20,.34));
+}
+
+:is(body.faction-roster, body.purchases-ledger) .fc-card-status{
+  position:relative;z-index:4;display:grid;grid-template-columns:43% 57%;height:38px;
+  flex:0 0 38px;border-bottom:1px solid var(--fc-gold);
+  font-family:'Oswald',sans-serif;text-transform:uppercase;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-models,
+:is(body.faction-roster, body.purchases-ledger) .fc-card-stage{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:0 11px;letter-spacing:1.5px;font-size:11px;font-weight:500;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-models{
+  position:relative;z-index:2;justify-content:flex-start;padding-left:22px;
+  color:#f3edd9;background:var(--fc-olive);
+  clip-path:polygon(0 0,91% 0,100% 50%,91% 100%,0 100%);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-models b{font-family:'Cinzel',serif;font-size:18px;line-height:1;color:var(--fc-gold-hi)}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-stage{
+  margin-left:-13px;padding-left:23px;color:#252417;background:var(--fc-gold-hi);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-stage.is-done{background:#98a979}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-stage.is-raw{background:#c8bd99}
+
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .unit-body.faction-surface{
+  position:relative;z-index:1;min-height:204px;box-sizing:border-box;
+  padding:25px 20px 18px;gap:9px;
+  background:
+    radial-gradient(circle at 12% 15%,rgba(111,100,68,.07) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 88% 72%,rgba(111,100,68,.055) 0 1px,transparent 1.5px),
+    linear-gradient(105deg,rgba(255,255,255,.42),transparent 54%),
+    var(--fc-parchment);
+  background-size:23px 19px,29px 27px,auto,auto;
+  border-top:0;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .unit-body .faction-bg-mark{
+  width:190px;left:86%;top:58%;opacity:.06;filter:sepia(1) saturate(.35);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .unit-name{
+  position:relative;z-index:1;display:flex;align-items:center;justify-content:center;
+  min-height:38px;margin:0;text-align:center;
+  font-family:'Cinzel',serif;font-size:18px;font-weight:800;line-height:1.18;
+  letter-spacing:.15px;color:var(--fc-card-ink);text-transform:uppercase;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .unit-name:hover{color:var(--fc-card-ink)}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-divider{
+  position:relative;z-index:1;display:flex;align-items:center;gap:11px;margin:0 0 2px;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-divider::before,
+:is(body.faction-roster, body.purchases-ledger) .fc-card-divider::after{content:"";height:1px;flex:1;background:var(--fc-gold)}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-divider span{
+  width:34px;height:23px;display:flex;align-items:center;justify-content:center;
+  color:var(--fc-gold);font-family:'Cinzel',serif;font-weight:900;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-divider img{
+  width:100%;height:100%;object-fit:contain;
+  filter:sepia(1) saturate(1.2) brightness(.92);opacity:.72;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-card-divider .faction-bg-letter{
+  font-size:20px;line-height:1;color:var(--fc-gold);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-shared-note{
+  position:relative;z-index:1;align-self:center;max-width:100%;box-sizing:border-box;
+  margin:7px 0 0;
+  font-size:9.5px;letter-spacing:.65px;text-transform:uppercase;
+  color:#67592f;border-color:rgba(103,89,47,.32);background:rgba(189,147,71,.08);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-unit-bar-wrap{
+  position:relative;z-index:1;width:86%;height:2px;margin:0 auto 2px;background:rgba(68,62,39,.16);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-unit-stats.is-tri{
+  position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);
+  align-items:stretch;gap:0;margin-top:auto;color:var(--fc-card-ink);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-unit-stats.is-tri .fc-card-stat{
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;
+  min-width:0;padding:3px 6px 0;text-align:center;color:var(--fc-card-ink);
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-card-stat + .fc-card-stat{border-left:1px solid rgba(78,72,48,.24)}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-card-stat .ul-dot{width:11px;height:11px;margin:0 0 1px}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-card-stat small{
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;line-height:1;
+  letter-spacing:1.5px;text-transform:uppercase;color:#4b4932;
+}
+:is(body.faction-roster, body.purchases-ledger) .fc-army-card .fc-card-stat b{
+  font-family:'Cinzel',serif;font-size:31px;font-weight:500;line-height:1;color:var(--fc-card-ink);
+}
 
 /* ---- display-niche thumb on paper (light mode) ------------------------
    style.css paints the niche box for the dark app skin: a hard-coded
@@ -69,30 +243,30 @@ body.faction-roster .unit-body .faction-bg-mark{opacity:.06}
    entirely, so re-derive the well, seam, and shadows from --rl-* (with a
    faint --cardarmy tint so the tile still carries its faction colour).
    Dark reading mode falls through to the base skin untouched. */
-body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche{
+:is(body.faction-roster, body.purchases-ledger):not([data-rl-theme="dark"]) .unit-thumb.is-niche{
   background:radial-gradient(ellipse 135% 100% at 50% 20%,
     color-mix(in srgb,var(--cardarmy,var(--rl-mute)) 9%,var(--rl-paper-2)) 0%,
     color-mix(in srgb,var(--cardarmy,var(--rl-mute)) 7%,var(--rl-paper-3)) 54%,
     color-mix(in srgb,var(--rl-ink) 9%,var(--rl-paper-3)) 100%);
   border-bottom:1px solid var(--rl-edge-soft);
 }
-body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche::before{
+:is(body.faction-roster, body.purchases-ledger):not([data-rl-theme="dark"]) .unit-thumb.is-niche::before{
   background:linear-gradient(180deg,color-mix(in srgb,var(--rl-ink) 7%,transparent),transparent);
 }
-body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche .niche-shadow{
+:is(body.faction-roster, body.purchases-ledger):not([data-rl-theme="dark"]) .unit-thumb.is-niche .niche-shadow{
   background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,var(--rl-ink) 30%,transparent),transparent 72%);
 }
-body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb.is-niche img{
+:is(body.faction-roster, body.purchases-ledger):not([data-rl-theme="dark"]) .unit-thumb.is-niche img{
   filter:drop-shadow(0 10px 12px color-mix(in srgb,var(--rl-ink) 22%,transparent));
 }
-body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb .role-tag,
-body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb .pts{
+:is(body.faction-roster, body.purchases-ledger):not([data-rl-theme="dark"]) .unit-thumb .role-tag,
+:is(body.faction-roster, body.purchases-ledger):not([data-rl-theme="dark"]) .unit-thumb .pts{
   background:var(--rl-ink);color:var(--rl-paper-2);
 }
 /* chip edges: the models-count chip is flush at the box's bottom-left but
    the rites chip floated 9px off bottom-right and ran 2px shorter; square
    both chips to the box corners at equal height (applies in both themes) */
-body.faction-roster .unit-thumb.is-niche .bench-tag{
+:is(body.faction-roster, body.purchases-ledger) .unit-thumb.is-niche .bench-tag{
   bottom:0;right:0;padding:4px 10px;
 }
 
@@ -100,31 +274,46 @@ body.faction-roster .unit-thumb.is-niche .bench-tag{
 /* the browse tiles' photo thumb keeps the dark app's #0c0b10 well behind
    letterboxed or still-loading datasheet photos; give it the same paper
    treatment as the niche in light mode (dark mode falls through) */
-body.faction-roster:not([data-rl-theme="dark"]) .unit-thumb:not(.is-niche){
+:is(body.faction-roster, body.purchases-ledger):not([data-rl-theme="dark"]) .unit-thumb:not(.is-niche){
   background:var(--rl-paper-3);
 }
 /* no-image browse tiles: the image endpoint's SVG fallback is baked dark,
    so units without a reference image render this token-driven plate
    instead; being plain CSS it follows the light/dark toggle live */
-body.faction-roster .fc-ph{
+:is(body.faction-roster, body.purchases-ledger) .fc-ph{
   position:absolute;inset:0;z-index:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   background:radial-gradient(circle at 50% 32%,
     color-mix(in srgb,var(--cardarmy,var(--rl-mute)) 16%,var(--rl-paper-3)),var(--rl-paper-3) 78%);
 }
-body.faction-roster .fc-ph-letter{
+:is(body.faction-roster, body.purchases-ledger) .fc-ph-letter{
   font-family:'Cinzel',serif;font-weight:900;font-size:64px;line-height:1;
   color:color-mix(in srgb,var(--cardarmy,var(--rl-ink)) 55%,var(--rl-ink));opacity:.3;
 }
-body.faction-roster .fc-ph-label{
+:is(body.faction-roster, body.purchases-ledger) .fc-ph-label{
   font-family:'Oswald',sans-serif;font-size:10.5px;font-weight:500;letter-spacing:1.4px;
   text-transform:uppercase;color:var(--rl-mute);
 }
-body.faction-roster .view-title{color:var(--rl-ink);font-family:'Cinzel',serif;letter-spacing:.5px}
-body.faction-roster .fc-summary{color:var(--rl-mute)}
-body.faction-roster .fc-summary b{color:var(--rl-ink)}
-body.faction-roster .fc-sep{color:var(--rl-edge)}
-body.faction-roster .fc-empty{color:var(--rl-ink-soft)}
-body.faction-roster .fc-empty strong{color:var(--rl-ink)}
-body.faction-roster .fc-empty-or,
-body.faction-roster .fc-empty .fc-empty-hint{color:var(--rl-mute)}
+:is(body.faction-roster, body.purchases-ledger) .view-title{color:var(--rl-ink);font-family:'Cinzel',serif;letter-spacing:.5px}
+:is(body.faction-roster, body.purchases-ledger) .fc-summary{color:var(--rl-mute)}
+:is(body.faction-roster, body.purchases-ledger) .fc-summary b{color:var(--rl-ink)}
+:is(body.faction-roster, body.purchases-ledger) .fc-sep{color:var(--rl-edge)}
+:is(body.faction-roster, body.purchases-ledger) .fc-empty{color:var(--rl-ink-soft)}
+:is(body.faction-roster, body.purchases-ledger) .fc-empty strong{color:var(--rl-ink)}
+:is(body.faction-roster, body.purchases-ledger) .fc-empty-or,
+:is(body.faction-roster, body.purchases-ledger) .fc-empty .fc-empty-hint{color:var(--rl-mute)}
+
+@media (max-width:420px){
+  :is(body.faction-roster, body.purchases-ledger) .fac-role-section .unit-grid{grid-template-columns:1fr}
+  :is(body.faction-roster, body.purchases-ledger) .fc-army-card{max-width:none}
+  :is(body.faction-roster, body.purchases-ledger) .fc-card-cap{
+    grid-template-columns:30px 1fr 30px;gap:5px;padding-inline:14px;
+  }
+  :is(body.faction-roster, body.purchases-ledger) .fc-card-cap-sigil{width:27px;height:27px}
+  :is(body.faction-roster, body.purchases-ledger) .fc-card-role{font-size:12px;letter-spacing:2px}
+  :is(body.faction-roster, body.purchases-ledger) .fac-role-section .fc-army-card .unit-thumb.is-niche{
+    height:240px;flex-basis:240px;
+  }
+  :is(body.faction-roster, body.purchases-ledger) .fc-card-models{padding-left:16px;gap:5px;letter-spacing:1px}
+  :is(body.faction-roster, body.purchases-ledger) .fc-card-stage{font-size:10px;letter-spacing:1px}
+}

@@ -1,6 +1,7 @@
 import { esc, api, jsStr, intOr } from './utils.js';
 import { clearFactionCache, buildUnitTiles } from './home.js';
 import { setActiveNav, setBreadcrumb, updateLedger } from './header.js';
+import { rlThemeMode, rlThemeToggleHtml, rlWireThemeToggle } from './rl-theme.js';
 
 const view       = document.getElementById('view');
 
@@ -11,6 +12,7 @@ let _lastPurchases= [];
 let activeTab     = 'purchases';
 let purchViewMode = 'grid';
 let purchSortMode = 'name';
+let purchArmyFilter = '';
 let selectedPurchaseId = null;
 let boxCatalogueLoading = null;
 let pageFactions = [];
@@ -28,7 +30,12 @@ export async function showPurchases(){
     {label:'My Armies', href:'#/'},
     {label:'Purchases'},
   ]);
-  view.innerHTML = `<div class="loading">Checking the armoury…</div>`;
+  document.body.classList.add('rl-spa', 'purchases-ledger');
+  document.body.setAttribute('data-rl-theme', rlThemeMode());
+  view.innerHTML = _stripHtml() + _shellHtml(
+    `<div class="rl-load"><div class="rl-load-bar"></div>` +
+    `<div class="rl-load-note">Checking the armoury…</div></div>`);
+  rlWireThemeToggle(document);
   let boxes, data, factions;
   try{
     data = await api('/api/purchases/page-data');
@@ -37,21 +44,51 @@ export async function showPurchases(){
     pageFactions = factions;
     pageFactionNames = data.faction_names || {};
   }catch(e){
-    view.innerHTML = `<div class="loading load-error">Failed to load purchases.<br><small>${esc(e.message)}</small></div>`;
+    view.innerHTML = _stripHtml() + _shellHtml(
+      `<div class="rl-error">Failed to load purchases.<small>${esc(e.message)}</small></div>`);
+    rlWireThemeToggle(document);
     return;
   }
 
   _lastPurchases = data.purchases || [];
+  if(purchArmyFilter && !_lastPurchases.some(p=>_purchaseArmyIds(p).includes(purchArmyFilter))){
+    purchArmyFilter = '';
+  }
   if(data.summary) updateLedger(data.summary);
 
-  view.innerHTML = _buildPage(boxes, data, factions);
+  view.innerHTML = _stripHtml(_lastPurchases.length, boxes.length) + _shellHtml(_buildPage(boxes, data, factions));
   _wireTabs();
   _wireCatalogue(boxes);
   _wirePurchEditToggle();
   _wirePurchControls();
-  _schedulePurchaseCards(_sortPurchases(_lastPurchases, purchSortMode));
+  _schedulePurchaseCards(_purchaseViewItems());
   if(activeTab === 'catalogue') document.getElementById('catSearch')?.dispatchEvent(new Event('input'));
   wireBoxEditor();
+  rlWireThemeToggle(document);
+}
+
+/* ---- paper shell + reading strip (shared skin: spa-shell.css) --------
+   The four tabs live as strip chips; each also carries the legacy
+   .al-tab class + data-tab so the existing tab wiring works as-is. */
+function _shellHtml(inner){
+  return `<div class="rl-shell"><div class="rl-wrap">${inner}</div></div>`;
+}
+function _stripHtml(purchCount = null, boxCount = null){
+  const chip = (tab, label, count) =>
+    `<button type="button" class="rl-chip al-tab${activeTab===tab?' is-active':''}" data-tab="${tab}">` +
+    `${label}${count!==null && count!==undefined ? `<b>${count}</b>` : ''}</button>`;
+  const chips = (purchCount === null && boxCount === null) ? '' :
+    chip('purchases', 'Purchases', purchCount) +
+    chip('catalogue', 'Box Catalogue', boxCount) +
+    chip('editor', 'Define Box', null) +
+    chip('summary', 'Model Summary', null);
+  return `
+    <nav class="rl-strip" aria-label="Armoury ledger">
+      <span class="rl-strip-label">The Armoury Ledger</span>
+      ${chips}
+      <span class="rl-strip-spacer"></span>
+      ${rlThemeToggleHtml()}
+    </nav>`;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -60,6 +97,7 @@ export async function showPurchases(){
 
 function _buildPage(boxes, data, factions){
   const purchases = data.purchases || [];
+  const visiblePurchases = _filterPurchasesByArmy(purchases, purchArmyFilter);
   return `
   <div class="al-header">
     <div>
@@ -75,20 +113,17 @@ function _buildPage(boxes, data, factions){
     </div>
   </div>
 
-  <nav class="al-tabs">
-    <button class="al-tab${activeTab==='purchases'?' is-active':''}" data-tab="purchases">Purchases</button>
-    <button class="al-tab${activeTab==='catalogue'?' is-active':''}" data-tab="catalogue">Box Catalogue</button>
-    <button class="al-tab${activeTab==='editor'?' is-active':''}" data-tab="editor">Define Box</button>
-    <button class="al-tab${activeTab==='summary'?' is-active':''}" data-tab="summary">Model Summary</button>
-  </nav>
-
   <!-- ── PURCHASES TAB ── -->
   <div class="al-panel" id="tab-purchases"${activeTab!=='purchases'?' hidden':''}>
     <div id="purchGridWrap">
       ${_renderQuickAdd(boxes)}
       <div class="al-plist-head">
-        <span class="al-plist-count">${purchases.length} record${purchases.length===1?'':'s'}</span>
+        <span class="al-plist-count" id="purchCount">${_purchaseCountLabel(visiblePurchases.length, purchases.length)}</span>
         <div class="al-plist-controls">
+          <select id="purchArmy" class="al-sort-sel al-army-sel" aria-label="Filter purchases by army" title="Filter purchases by army">
+            <option value="">All armies</option>
+            ${_purchaseArmyOptions(purchases).map(f=>`<option value="${esc(f.id)}"${purchArmyFilter===f.id?' selected':''}>${esc(f.name)}</option>`).join('')}
+          </select>
           <select id="purchSort" class="al-sort-sel">
             <option value="name"${purchSortMode==='name'?' selected':''}>A–Z</option>
             <option value="release"${purchSortMode==='release'?' selected':''}>Release date</option>
@@ -100,7 +135,7 @@ function _buildPage(boxes, data, factions){
           <button class="al-edit-toggle${purchEditMode?' is-active':''}" id="purchEditToggle">${purchEditMode?'Done':'Edit'}</button>
         </div>
       </div>
-      <div id="purchaseList" class="al-plist${purchEditMode?' is-editing':''}">${_renderPurchaseList(purchases)}</div>
+      <div id="purchaseList" class="al-plist${purchEditMode?' is-editing':''}">${_renderPurchaseList(visiblePurchases)}</div>
     </div>
     <div id="purchDetailWrap" hidden></div>
   </div>
@@ -320,6 +355,36 @@ function _sortPurchases(purchases, sort){
   return list;
 }
 
+// A mixed box belongs to every army represented by its contents. For older or
+// datasheet-less purchase records, fall back to the box-level army.
+function _purchaseArmyIds(purchase){
+  const contentIds = [...new Set((purchase.contents || []).map(i=>i.faction_id).filter(Boolean))];
+  if(contentIds.length) return contentIds;
+  return purchase.faction_id ? [purchase.faction_id] : [];
+}
+
+function _purchaseArmyOptions(purchases){
+  const ids = new Set();
+  purchases.forEach(p=>_purchaseArmyIds(p).forEach(fid=>ids.add(fid)));
+  return [...ids]
+    .map(id=>({id, name:_factionName(id)}))
+    .sort((a,b)=>a.name.localeCompare(b.name));
+}
+
+function _filterPurchasesByArmy(purchases, factionId){
+  if(!factionId) return purchases;
+  return purchases.filter(p=>_purchaseArmyIds(p).includes(factionId));
+}
+
+function _purchaseViewItems(){
+  return _sortPurchases(_filterPurchasesByArmy(_lastPurchases, purchArmyFilter), purchSortMode);
+}
+
+function _purchaseCountLabel(visible, total){
+  if(visible === total) return `${total} record${total===1?'':'s'}`;
+  return `${visible} of ${total} records`;
+}
+
 function _renderModelSummary(purchases, factions){
   if(!purchases.length) return `<div class="al-sum-empty">No purchases recorded yet.</div>`;
 
@@ -446,7 +511,12 @@ function _sortBoxes(boxes, sort){
 
 function _renderPurchaseList(purchases){
   const sorted = _sortPurchases(purchases, purchSortMode);
-  if(!sorted.length) return `<div class="al-plist-empty">No purchases recorded yet. Use the form above to log a box.</div>`;
+  if(!sorted.length){
+    const message = purchArmyFilter
+      ? 'No purchases match this army.'
+      : 'No purchases recorded yet. Use the form above to log a box.';
+    return `<div class="al-plist-empty">${message}</div>`;
+  }
   if(purchViewMode === 'list') return _renderPurchaseListView(sorted);
   return `<div id="purchaseCards" class="al-ptile-grid">${sorted.slice(0, CARD_CHUNK_SIZE).map(p=>_renderPurchaseTile(p)).join('')}</div>`;
 }
@@ -581,17 +651,17 @@ function _renderPurchaseDetail(p){
           <button class="al-pd-del" onclick='deletePurchase(${jsStr(p.id)})'>Remove purchase</button>
         </div>
       </div>
+      <aside class="al-pd-summary">
+        <div class="al-pd-sec-label">Summary</div>
+        ${_renderPurchaseSummaryList(p)}
+        <div class="al-pd-sumtot">${p.total_physical_miniatures} physical &middot; ${p.total_datasheet_models} tracked</div>
+      </aside>
     </div>
     <div class="al-pd-content">
       <div class="al-pd-main">
         <div class="al-pd-sec-label">Models in this box</div>
         <div id="pdCards" class="al-pd-cards"><p class="empty-note">Loading models…</p></div>
       </div>
-      <aside class="al-pd-aside">
-        <div class="al-pd-sec-label">Summary</div>
-        ${_renderPurchaseSummaryList(p)}
-        <div class="al-pd-sumtot">${p.total_physical_miniatures} physical &middot; ${p.total_datasheet_models} tracked</div>
-      </aside>
     </div>
   </div>`;
 }
@@ -639,6 +709,10 @@ export function closePurchaseDetail(){
 // if we're arriving fresh, then syncs the detail open/closed to match the route
 // — so navigating between grid and detail never refetches or rebuilds.
 export async function routePurchases(openPid = null){
+  // The router clears every paper scope before dispatching, including on the
+  // grid<->detail hash hops that skip the rebuild below — re-assert it here.
+  document.body.classList.add('rl-spa', 'purchases-ledger');
+  document.body.setAttribute('data-rl-theme', rlThemeMode());
   if(!document.getElementById('purchGridWrap')){
     await showPurchases();
   }
@@ -795,24 +869,33 @@ export async function switchToEditor(boxId){
 }
 
 // ══════════════════════════════════════════════════════════════
-//  PURCHASE CONTROLS (sort + view toggle)
+//  PURCHASE CONTROLS (army filter + sort + view toggle)
 // ══════════════════════════════════════════════════════════════
 
 function _wirePurchControls(){
+  const armySel = document.getElementById('purchArmy');
   const sortSel = document.getElementById('purchSort');
+  const refresh = ()=>{
+    const items = _purchaseViewItems();
+    const listEl = document.getElementById('purchaseList');
+    const countEl = document.getElementById('purchCount');
+    if(listEl) listEl.innerHTML = _renderPurchaseList(items);
+    if(countEl) countEl.textContent = _purchaseCountLabel(items.length, _lastPurchases.length);
+    if(purchViewMode === 'grid') _schedulePurchaseCards(items);
+  };
+  if(armySel) armySel.addEventListener('change', ()=>{
+    purchArmyFilter = armySel.value;
+    refresh();
+  });
   if(sortSel) sortSel.addEventListener('change', ()=>{
     purchSortMode = sortSel.value;
-    const listEl = document.getElementById('purchaseList');
-    if(listEl) listEl.innerHTML = _renderPurchaseList(_lastPurchases);
-    if(purchViewMode === 'grid') _schedulePurchaseCards(_sortPurchases(_lastPurchases, purchSortMode));
+    refresh();
   });
   document.querySelectorAll('.al-view-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       purchViewMode = btn.dataset.view;
       document.querySelectorAll('.al-view-btn').forEach(b=>b.classList.toggle('is-active', b===btn));
-      const listEl = document.getElementById('purchaseList');
-      if(listEl) listEl.innerHTML = _renderPurchaseList(_lastPurchases);
-      if(purchViewMode === 'grid') _schedulePurchaseCards(_sortPurchases(_lastPurchases, purchSortMode));
+      refresh();
     });
   });
 }

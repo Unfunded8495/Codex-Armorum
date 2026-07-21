@@ -3768,12 +3768,12 @@
     {
       "catalogue_model_id": "MD-50563",
       "action": "link_datasheet",
-      "catalogue_type": "model_release",
+      "catalogue_type": "",
       "datasheet_ids": [
         "01474b35-18d2-4231-9e9d-c175829eec3d"
       ],
       "notes": "",
-      "updated_at": 1781555124.4949365
+      "updated_at": 1784585243.2459428
     },
     {
       "catalogue_model_id": "MD-50564",

@@ -175,13 +175,35 @@ function compositionLine(r){
   return esc(name);
 }
 
+// Base-size strings from w40k.db come in three shapes: a single value
+// ("32mm"), a comma list ("32mm, 40mm"), or a per-model breakdown with one
+// model per line ("Boss Nob: 40mm\nBreaka Boyz: 32mm"). Split the breakdown so
+// each model's base can be rendered on its own line.
+export function baseSizeLines(raw){
+  return String(raw||'').split('\n').map(l=>l.trim()).filter(Boolean);
+}
+
+// Compact size-only summary for tight spots (the card header chip): the distinct
+// sizes with the per-model labels dropped. Single-value and comma-list strings
+// carry no ':' so they pass through unchanged; the full breakdown still shows in
+// the composition block.
+export function baseSizeSummary(raw){
+  const seen = [];
+  for(const line of baseSizeLines(raw)){
+    const i = line.indexOf(':');
+    const size = (i>=0 ? line.slice(i+1) : line).trim();
+    if(size && !seen.includes(size)) seen.push(size);
+  }
+  return seen.join(', ');
+}
+
 export function renderUnitComposition(rows,loadout,ledBy,baseSize){
   if((!rows||!rows.length)&&!loadout&&(!ledBy||!ledBy.length)&&!baseSize) return '';
   return `<div class="section"><h2>Unit Composition</h2>
     ${rows&&rows.length?`<ul class="comp-list">
       ${rows.map(r=>`<li>${compositionLine(r)}</li>`).join('')}</ul>`:''}
     ${loadout?`<div class="loadout-block">${renderLoadout(loadout)}</div>`:''}
-    ${baseSize?`<div class="base-size-block"><h3>Base Size</h3><p>${esc(baseSize)}</p></div>`:''}
+    ${baseSize?`<div class="base-size-block"><h3>Base Size</h3><p>${baseSizeLines(baseSize).map(esc).join('<br>')}</p></div>`:''}
     ${ledBy&&ledBy.length?renderLedBy(ledBy):''}
   </div>`;
 }

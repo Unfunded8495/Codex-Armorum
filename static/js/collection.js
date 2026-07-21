@@ -1,5 +1,6 @@
 import { esc, api } from './utils.js';
 import { refreshLedger, setBreadcrumb } from './header.js';
+import { rlThemeMode, rlWireThemeToggle } from './rl-theme.js';
 
 /* ---- constants ---- */
 const STAGES = ['unbuilt','assembled','primed','base_coated','washed','highlighted','finished','display'];
@@ -7,11 +8,8 @@ const STAGE_LABELS = {
   unbuilt:'Unbuilt', assembled:'Assembled', primed:'Primed', base_coated:'Base Coated',
   washed:'Washed', highlighted:'Highlighted', finished:'Finished', display:'Display',
 };
-const STAGE_COLOURS = {
-  unbuilt:'rgba(44,42,53,0.7)', assembled:'rgba(70,65,80,0.8)', primed:'rgba(100,98,105,0.75)',
-  base_coated:'rgba(90,70,20,0.7)', washed:'rgba(80,55,18,0.7)', highlighted:'rgba(120,90,20,0.65)',
-  finished:'rgba(50,90,36,0.7)', display:'rgba(24,80,110,0.7)',
-};
+/* stage bar hues live in collection.css (--cs-stage-*), keyed by data-stage,
+   so they follow the light/dark reading toggle */
 
 /* ---- DOM ---- */
 const statsBody = document.getElementById('colStatsBody');
@@ -23,6 +21,12 @@ async function init(){
     {label:'Paint Progress'},
   ]);
   refreshLedger();
+  /* reading mode: the template applies the stored theme pre-paint; here we
+     correct the toggle's label and wire the shared flip handler */
+  document.body.setAttribute('data-rl-theme', rlThemeMode());
+  const themeLabel = document.querySelector('#rlThemeToggle .rl-toggle-label');
+  if(themeLabel) themeLabel.textContent = rlThemeMode() === 'dark' ? 'Light' : 'Dark';
+  rlWireThemeToggle(document);
   try{
     const [minis, factions] = await Promise.all([
       api('/api/collection'),
@@ -30,7 +34,7 @@ async function init(){
     ]);
     renderStats(minis, factions);
   }catch(e){
-    statsBody.innerHTML = `<div class="loading load-error">Could not load collection data.</div>`;
+    statsBody.innerHTML = `<div class="rl-error">Could not load collection data.<small>Make sure app.py is running, then refresh.</small></div>`;
   }
 }
 
@@ -39,7 +43,7 @@ function renderStats(minis, factions){
     statsBody.innerHTML = `
       <div class="col-stats-empty">
         <p>No minis in your collection yet.</p>
-        <a href="/#/purchases" class="btn-secondary" style="text-decoration:none">+ Record Purchase</a>
+        <a href="/#/purchases" class="rl-btn">+ Record Purchase</a>
       </div>`;
     return;
   }
@@ -60,7 +64,7 @@ function renderStats(minis, factions){
     return `<div class="csp-stage-row">
       <span class="csp-stage-label">${STAGE_LABELS[s]}</span>
       <div class="csp-stage-bar-wrap">
-        <div class="csp-stage-bar" style="width:${barPct}%;background:${STAGE_COLOURS[s]}"></div>
+        <div class="csp-stage-bar" data-stage="${s}" style="width:${barPct}%"></div>
       </div>
       <span class="csp-stage-count">${count}</span>
     </div>`;

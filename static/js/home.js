@@ -648,6 +648,8 @@ export function buildUnitTiles({ fid, minis, units, primary, accent, facMark }){
     }).length;
     const buildable = Math.max(0, purchased - sharedComplete - wip);
     const uPct = purchased > 0 ? Math.round(complete/purchased*100) : 0;
+    const stageClass = wip > 0 ? 'is-wip' : (complete >= purchased && purchased > 0 ? 'is-done' : 'is-raw');
+    const stageLabel = wip > 0 ? 'Undergoing Rites' : (complete >= purchased && purchased > 0 ? 'Blessed' : 'Awaiting the Forge');
     const repCid = unit.minis.find(m => !m.is_potential_build && m.catalogue_model_id)?.catalogue_model_id;
     const baseImg = repCid ? `/api/model-catalogue/${encodeURIComponent(repCid)}/image` : `/api/units/${esc(unit.id)}/image`;
     const unitImg = `/api/units/${esc(unit.id)}/image`;
@@ -671,25 +673,32 @@ export function buildUnitTiles({ fid, minis, units, primary, accent, facMark }){
           </div>` : '';
 
     const html = `
-      <div class="unit-card fc-mini-tile" data-role="${esc(role)}" style="--cardarmy:${primary};--cardaccent:${accent};--cardglow:${accent}" onclick="location.hash='/mini/${esc(unit.id)}'">
+      <div class="unit-card fc-mini-tile fc-army-card" data-role="${esc(role)}" style="--cardarmy:${primary};--cardaccent:${accent};--cardglow:${accent}" onclick="location.hash='/mini/${esc(unit.id)}'">
+        <div class="fc-card-cap">
+          <span class="fc-card-cap-sigil" aria-hidden="true">${facMark}</span>
+          <span class="fc-card-role">${esc(role)}</span>
+        </div>
         <div class="unit-thumb is-niche">
           <div class="niche-shadow"></div>
           <img src="${cutImg}" onerror="${onerr}" alt="${esc(unit.name)}" loading="lazy">
-          <span class="role-tag">${esc(role)}</span>
-          <span class="pts">${purchased} models</span>
-          ${wip>0?`<span class="bench-tag">Undergoing Rites</span>`:''}
+        </div>
+        <div class="fc-card-status">
+          <span class="fc-card-models"><b>${purchased}</b> ${purchased===1?'model':'models'}</span>
+          <span class="fc-card-stage ${stageClass}">${stageLabel}</span>
         </div>
         <div class="unit-body faction-surface">
           <div class="faction-bg-mark" aria-hidden="true">${facMark}</div>
-          <div class="unit-name">${esc(unit.name)}</div>${sharedNote}
+          <div class="unit-name">${esc(unit.name)}</div>
+          <div class="fc-card-divider" aria-hidden="true"><span>${facMark}</span></div>
           <div class="fc-unit-bar-wrap">
             <div class="fc-unit-bar" style="width:${uPct}%;background:${accent}"></div>
           </div>
           <div class="fc-unit-stats is-tri">
-            <span><i class="ul-dot is-done"></i><b>${complete}</b> Blessed</span>
-            <span><i class="ul-dot is-wip"></i><b>${wip}</b> Rites</span>
-            <span><i class="ul-dot is-raw"></i><b>${buildable}</b> Forge</span>
+            <span class="fc-card-stat is-done"><i class="ul-dot is-done"></i><small>Blessed</small><b>${complete}</b></span>
+            <span class="fc-card-stat is-wip"><i class="ul-dot is-wip"></i><small>Rites</small><b>${wip}</b></span>
+            <span class="fc-card-stat is-raw"><i class="ul-dot is-raw"></i><small>Forge</small><b>${buildable}</b></span>
           </div>
+          ${sharedNote}
         </div>
       </div>`;
     return { id: unit.id, faction_id: fid, role, html };

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,28 +6,41 @@
   <title>Paint Progress · Codex Armorum</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;1,500&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;1,500&family=Oswald:wght@300;400;500;600&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/spa-shell.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/collection.css') }}">
 </head>
-<body>
-  <div class="scanlines" aria-hidden="true"></div>
+<body class="rl-spa collection-page">
+  <script>try{if(localStorage.getItem('caRules.theme')==='dark')document.body.setAttribute('data-rl-theme','dark');}catch(e){}</script>
 
-    {% include "_topbar.html" %}
+  {% include "_topbar.html" %}
 
-  <main id="colMain">
+  <nav class="rl-strip" aria-label="Paint progress">
+    <span class="rl-strip-label">The Painting Ledger</span>
+    <span class="rl-strip-spacer"></span>
+    <button type="button" class="rl-toggle" id="rlThemeToggle" title="Toggle light / dark reading mode">
+      <span class="rl-toggle-dot"></span><span class="rl-toggle-label">Dark</span>
+    </button>
+  </nav>
 
-    <div class="col-page-head">
-      <div class="col-page-title-row">
-        <h2 class="view-title">Paint Progress</h2>
-        <a href="/#/purchases" class="btn-secondary" style="text-decoration:none">+ Record Purchase</a>
+  <main id="colMain" class="rl-shell">
+    <div class="rl-wrap">
+
+      <div class="col-page-head">
+        <div class="col-page-title-row">
+          <h2 class="view-title">Paint Progress</h2>
+          <a href="/#/purchases" class="rl-btn rl-btn--ghost">+ Record Purchase</a>
+        </div>
       </div>
-    </div>
 
-    <div id="colStatsBody">
-      <div class="loading">Counting the fallen&hellip;</div>
-    </div>
+      <div id="colStatsBody">
+        <div class="rl-load"><div class="rl-load-bar"></div>
+        <div class="rl-load-note">Counting the fallen&hellip;</div></div>
+      </div>
 
+    </div>
   </main>
 
   <!-- Lightbox -->
@@ -42,4 +55,3 @@
   <script type="module" src="{{ url_for('static', filename='js/collection.js') }}"></script>
 </body>
 </html>
-

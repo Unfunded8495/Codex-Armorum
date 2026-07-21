@@ -1,6 +1,6 @@
 import { esc } from './utils.js';
 import { optionMarkup, wrapKeywords } from './ruletext.js';
-import { pointsStepNote } from './datasheet.js';
+import { pointsStepNote, baseSizeLines, baseSizeSummary } from './datasheet.js';
 
 /* The card's base colour comes straight from the API payload's `primary`, which
    the backend resolves from the official faction colours in factions_theme.py —
@@ -164,7 +164,7 @@ function compositionBlock(d){
     (items ? `<ul class="dsc-opt">${items}</ul>` : '') +
     (d.loadout ? `<p class="dsc-loadout">${clean(d.loadout)}</p>` : '') +
     (stepNote ? `<p class="dsc-step-note">${esc(stepNote)}</p>` : '') +
-    (d.base_size ? `<p class="dsc-base-size"><span class="dsc-k">Base Size:</span> ${esc(d.base_size)}</p>` : '') +
+    (d.base_size ? `<p class="dsc-base-size"><span class="dsc-k">Base Size:</span> ${baseSizeLines(d.base_size).map(esc).join('<br>')}</p>` : '') +
     `</div>`;
 }
 
@@ -223,7 +223,7 @@ export function renderDatasheetCard(d, opts){
         <div class="dsc-hdr-logo" style="-webkit-mask-image:url('/api/factions/${esc(d.faction_id)}/icon');mask-image:url('/api/factions/${esc(d.faction_id)}/icon');"></div>
         <div class="dsc-hdr-rule"></div>
         <div class="dsc-hdr-main">
-          <h2 class="dsc-name">${esc(d.name)}${baseSize ? ` <span class="dsc-base">(Ø${esc(baseSize)})</span>` : ''}</h2>
+          <h2 class="dsc-name">${esc(d.name)}${baseSize ? ` <span class="dsc-base">(Ø${esc(baseSizeSummary(baseSize))})</span>` : ''}</h2>
           <div class="dsc-models">${statBlocks}</div>
         </div>
         ${legendBlock(d)}

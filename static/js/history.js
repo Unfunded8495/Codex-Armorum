@@ -7,6 +7,7 @@
    model catalogue. */
 import { esc, api, readableInk, withTimeout } from './utils.js';
 import { refreshLedger, setActiveNav, setBreadcrumb } from './header.js';
+import { rlThemeMode, rlThemeToggleHtml, rlWireThemeToggle } from './rl-theme.js';
 
 const view = document.getElementById('view');
 
@@ -37,13 +38,29 @@ async function loadItems(){
   return itemsCache;
 }
 
-function loadError(e){
+/* ---- paper shell + reading strip (shared skin: spa-shell.css) ------------ */
+function histShell(inner){
+  return `<div class="rl-shell"><div class="rl-wrap">${inner}</div></div>`;
+}
+function histStrip(backToAll){
+  return `
+    <nav class="rl-strip" aria-label="Codex Archive">
+      ${backToAll
+        ? `<a class="rl-back" href="#/history">&lsaquo; Codex Archive</a>`
+        : `<span class="rl-strip-label">The Codex Archive</span>`}
+      <span class="rl-strip-spacer"></span>
+      ${rlThemeToggleHtml()}
+    </nav>`;
+}
+
+function loadError(e, backToAll = false){
   const isTimeout = e && e.message === 'timeout';
-  view.innerHTML = `<div class="loading load-error">
+  view.innerHTML = histStrip(backToAll) + histShell(`<div class="rl-error">
     ${isTimeout
-      ? 'Taking too long to load.<br><small>Is app.py still running in your terminal?</small>'
-      : 'Could not reach the server.<br><small>Make sure app.py is running, then refresh.</small>'}
-  </div>`;
+      ? 'Taking too long to load.<small>Is app.py still running in your terminal?</small>'
+      : 'Could not reach the server.<small>Make sure app.py is running, then refresh.</small>'}
+  </div>`);
+  rlWireThemeToggle(document);
 }
 
 /* ---- date / edition helpers ---------------------------------------------- */
@@ -115,7 +132,12 @@ export async function showHistory(){
   setActiveNav('history');
   setBreadcrumb([{label:'Codex Archive'}]);
   refreshLedger();
-  view.innerHTML = `<div class="loading">Unsealing the archives…</div>`;
+  document.body.classList.add('rl-spa', 'codex-archive');
+  document.body.setAttribute('data-rl-theme', rlThemeMode());
+  view.innerHTML = histStrip(false) + histShell(
+    `<div class="rl-load"><div class="rl-load-bar"></div>` +
+    `<div class="rl-load-note">Unsealing the archives…</div></div>`);
+  rlWireThemeToggle(document);
 
   let editions, cards;
   try{
@@ -131,11 +153,15 @@ export async function showHistory(){
     source_label: displayCounts.get(card.display_name) > 1 ? card.faction_label : '',
   }));
 
-  view.innerHTML = `
+  view.innerHTML = histStrip(false) + histShell(`
     <h2 class="view-title">Codex Archive</h2>
     <p class="view-sub">Forty years of war, edition by edition</p>
-    <div class="rule"></div>
 
+    <div class="rl-sect-head">
+      <span class="rl-sect-tag">Edition Timeline</span>
+      <span class="rl-sect-note">${editions.length} editions &middot; select one for its chronicle</span>
+      <span class="rl-sect-rule"></span>
+    </div>
     <section class="hist-timeline-section" aria-label="Edition timeline">
       ${renderTimeline(editions)}
       <div class="tl-detail" id="tlDetail" hidden></div>
@@ -149,14 +175,19 @@ export async function showHistory(){
 
     <div class="hist-results" id="histResults" hidden></div>
 
-    <h3 class="army-list-title">Factions</h3>
+    <div class="rl-sect-head">
+      <span class="rl-sect-tag">Factions</span>
+      <span class="rl-sect-note">${labelledCards.length} catalogued</span>
+      <span class="rl-sect-rule"></span>
+    </div>
     <div class="faction-grid hist-card-grid" id="histCardGrid">
       ${labelledCards.map((c,i)=>factionCard(c,i)).join('')}
     </div>
-    <p class="hist-empty" id="histCardEmpty" hidden>No factions match that search.</p>`;
+    <p class="hist-empty" id="histCardEmpty" hidden>No factions match that search.</p>`);
 
   wireTimeline(editions);
   wirePageSearch(labelledCards);
+  rlWireThemeToggle(document);
 }
 
 function renderTimeline(editions){
@@ -321,12 +352,17 @@ function wirePageSearch(cards){
 export async function showHistoryFaction(label){
   setActiveNav('history');
   refreshLedger();
-  view.innerHTML = `<div class="loading">Consulting the archives…</div>`;
+  document.body.classList.add('rl-spa', 'codex-archive');
+  document.body.setAttribute('data-rl-theme', rlThemeMode());
+  view.innerHTML = histStrip(true) + histShell(
+    `<div class="rl-load"><div class="rl-load-bar"></div>` +
+    `<div class="rl-load-note">Consulting the archives…</div></div>`);
+  rlWireThemeToggle(document);
 
   let editions, items, cards;
   try{
     [editions, items, cards] = await Promise.all([loadEditions(), loadItems(), loadCards()]);
-  }catch(e){ return loadError(e); }
+  }catch(e){ return loadError(e, true); }
 
   const card = cards.find(c=>c.faction_label === label);
   const facItems = items.filter(it => it.faction_label === label);
@@ -341,9 +377,8 @@ export async function showHistoryFaction(label){
     {label: display},
   ]);
 
-  view.innerHTML = `
+  view.innerHTML = histStrip(true) + histShell(`
     <div class="hist-faction-head" style="--cardaccent:${accent};--cardarmy:${primary}">
-      <button type="button" class="hist-back" id="histBack">&larr; All factions</button>
       <h2 class="view-title hist-faction-title" style="color:${ink}">${esc(display)}</h2>
       <div class="hist-faction-search">
         <input id="histFacSearch" class="ff-input" type="search"
@@ -354,10 +389,10 @@ export async function showHistoryFaction(label){
       <span><b>${facItems.length}</b> model${facItems.length===1?'':'s'} catalogued</span>
     </div>
     <div class="rule" style="background:linear-gradient(90deg,transparent,${accent},transparent)"></div>
-    <div class="hist-drill" id="histDrill">${renderGroups(editions, facItems, accent)}</div>`;
+    <div class="hist-drill" id="histDrill">${renderGroups(editions, facItems, accent)}</div>`);
 
-  document.getElementById('histBack').addEventListener('click', ()=>{ location.hash = '/history'; });
   wireFactionSearch(label, editions, facItems, accent);
+  rlWireThemeToggle(document);
 
   // Delegated so it keeps working after the drill body is re-rendered (search / edits).
   const drill = document.getElementById('histDrill');

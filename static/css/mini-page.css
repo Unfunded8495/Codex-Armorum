@@ -90,6 +90,7 @@ body.mini-sheet .mp-page .stage-sel{
   background:var(--rl-paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a6a24'/%3E%3C/svg%3E") no-repeat right 11px center;
   border-color:var(--rl-edge);color:var(--rl-ink);
 }
+body.mini-sheet .mp-page .mc-stage-row > .stage-sel{min-width:160px}
 body.mini-sheet .mp-page .stage-sel:hover{border-color:color-mix(in srgb,var(--gold) 55%,transparent)}
 body.mini-sheet .mp-page .stage-sel:focus{border-color:var(--gold)}
 body.mini-sheet .mp-page .stage-sel.is-multikit{border-color:color-mix(in srgb,var(--gold) 60%,transparent)}

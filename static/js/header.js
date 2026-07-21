@@ -13,10 +13,10 @@ export function updateLedger(s){
   const pct = bought > 0 ? Math.round((finished / bought) * 100) : 0;
   const wipPct = bought > 0 ? Math.round((wip / bought) * 100) : 0;
   ledger.innerHTML = `
-    <div class="stat"><b>${bought}</b><span>Bought</span></div>
+    <div class="stat"><b>${bought}</b><span>Models</span></div>
     <div class="stat"><b>${unbuilt}</b><span>Unbuilt</span></div>
-    <div class="stat"><b>${wip}</b><span>WIP ${wipPct}%</span></div>
-    <div class="stat"><b>${finished}</b><span>Finished ${pct}%</span></div>`;
+    <div class="stat" title="${wipPct}% of the collection is in paint"><b>${wip}</b><span>In paint</span></div>
+    <div class="stat" title="${pct}% of the collection is finished"><b>${finished}</b><span>Finished</span></div>`;
 }
 
 export async function refreshLedger(){
@@ -34,7 +34,7 @@ export async function refreshLedger(){
 export function setBreadcrumb(items){
   if(!breadcrumb) return;
   breadcrumb.innerHTML = items.map((item, idx) => {
-    const sep = idx === 0 ? '' : '<span class="sep">&gt;</span>';
+    const sep = idx === 0 ? '' : '<span class="sep">/</span>';
     const label = esc(item.label || '');
     const title = item.title ? ` title="${esc(item.title)}"` : '';
     if(item.href){

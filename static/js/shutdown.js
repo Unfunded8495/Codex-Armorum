@@ -1,10 +1,15 @@
 const shutdownBtn = document.querySelector('[data-shutdown-btn]');
 let confirmTimer = null;
 
+function setShutdownLabel(label){
+  if(!shutdownBtn) return;
+  shutdownBtn.innerHTML = `<span class="seal-vault-mark" aria-hidden="true"></span><span>${label}</span>`;
+}
+
 function showSealedState(){
   if(!shutdownBtn) return;
   document.body.classList.add('app-sealed');
-  shutdownBtn.textContent = 'Vault Sealed';
+  setShutdownLabel('Vault Sealed');
 
   const banner = document.createElement('div');
   banner.className = 'shutdown-banner';
@@ -18,10 +23,10 @@ async function sealVault(){
 
   if(!shutdownBtn.classList.contains('is-confirming')){
     shutdownBtn.classList.add('is-confirming');
-    shutdownBtn.textContent = 'Confirm?';
+    setShutdownLabel('Confirm?');
     confirmTimer = setTimeout(() => {
       shutdownBtn.classList.remove('is-confirming');
-      shutdownBtn.textContent = 'Seal Vault';
+      setShutdownLabel('Seal Vault');
     }, 3000);
     return;
   }
@@ -29,7 +34,7 @@ async function sealVault(){
   clearTimeout(confirmTimer);
   shutdownBtn.classList.remove('is-confirming');
   shutdownBtn.disabled = true;
-  shutdownBtn.textContent = 'Sealing...';
+  setShutdownLabel('Sealing...');
 
   try{
     const response = await fetch('/api/shutdown', {
@@ -41,7 +46,7 @@ async function sealVault(){
     showSealedState();
   }catch(err){
     shutdownBtn.disabled = false;
-    shutdownBtn.textContent = 'Seal Vault';
+    setShutdownLabel('Seal Vault');
     window.alert('The shutdown rite failed. Check the terminal.');
   }
 }

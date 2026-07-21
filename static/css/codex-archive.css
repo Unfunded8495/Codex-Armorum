@@ -1,0 +1,267 @@
+/* =====================================================================
+   codex-archive.css - Codex Archive (#/history + #/history/<label>)
+   ---------------------------------------------------------------------
+   The archive runs in the shared SPA paper skin: spa-shell.css supplies
+   the --rl-* tokens, reading strip, shell and section headers under
+   body.rl-spa; history.js sets body.codex-archive alongside it. This
+   file holds the archive-only components - the edition timeline, page
+   search, faction cards and the edition/year/model drill-in - painted
+   with the tokens so both reading modes work. Faction colour arrives
+   inline as --cardarmy / --cardaccent. Card and drill-in titles arrive
+   with inline readableInk colours tuned for dark surfaces, so light
+   mode re-derives them from the accent; dark falls through unchanged.
+   ===================================================================== */
+
+/* archive accents: gold + blood, nudged brighter in dark reading mode */
+body.codex-archive{--ca-gold:#c79a3a;--ca-blood:#a02028}
+body.codex-archive[data-rl-theme="dark"]{--ca-gold:#d9ad4a;--ca-blood:#e05860}
+
+/* ------------------------------------------- shared classes, repainted */
+body.codex-archive .view-title{color:var(--rl-ink);letter-spacing:2px}
+body.codex-archive .view-sub{color:var(--rl-mute);opacity:1}
+body.codex-archive .loading{color:var(--rl-mute)}
+body.codex-archive .loading::before{color:var(--ca-gold);opacity:.5}
+body.codex-archive .ff-input{background:var(--rl-paper-2);border-color:var(--rl-edge);color:var(--rl-ink)}
+body.codex-archive .ff-input:focus{border-color:var(--rl-green)}
+body.codex-archive .ff-input::placeholder{color:var(--rl-mute)}
+body.codex-archive .fc-summary{color:var(--rl-mute)}
+body.codex-archive .fc-summary b{color:var(--rl-ink)}
+/* the drill-in accent rule keeps its inline gradient; re-seat the cross
+   glyph on paper instead of the dark app background */
+body.codex-archive .rule::before{background:var(--rl-paper);color:var(--ca-gold)}
+
+/* ---------------------------------------------------- edition timeline */
+.hist-timeline-section{margin:0 0 30px}
+.tl-track{
+  overflow-x:auto;padding:6px 2px 14px;scrollbar-width:thin;
+  scrollbar-color:var(--rl-edge) transparent;
+}
+body.codex-archive[data-rl-theme="dark"] .tl-track{color-scheme:dark}
+.tl-track::-webkit-scrollbar{height:7px}
+.tl-track::-webkit-scrollbar-track{background:var(--rl-edge-soft)}
+.tl-track::-webkit-scrollbar-thumb{background:var(--rl-edge)}
+.tl-track::-webkit-scrollbar-thumb:hover{background:var(--rl-mute)}
+.tl-list{
+  list-style:none;margin:0;padding:0;display:flex;gap:0;min-width:min-content;
+  position:relative;
+}
+.tl-list::before{
+  content:"";position:absolute;left:0;right:0;top:46px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--ca-gold) 6%,var(--ca-gold) 94%,transparent);
+  opacity:.55;
+}
+.tl-node{
+  position:relative;flex:0 0 122px;display:flex;flex-direction:column;align-items:center;
+  gap:7px;cursor:pointer;padding:4px 6px 0;background:none;border:0;color:inherit;
+  font-family:'Oswald',sans-serif;
+}
+@media(min-width:1100px){
+  .tl-list{min-width:0;width:100%}
+  .tl-node{flex:1 1 0;min-width:0}
+}
+.tl-year{font-size:13px;letter-spacing:1px;color:var(--rl-ink-soft);font-weight:600}
+.tl-dot{
+  width:13px;height:13px;border-radius:50%;background:var(--rl-paper-2);
+  border:2px solid var(--ca-gold);box-shadow:0 0 0 4px var(--rl-paper);transition:.18s;
+}
+.tl-node:hover .tl-dot,.tl-node:focus-visible .tl-dot{background:var(--ca-gold);transform:scale(1.18)}
+.tl-node.is-open .tl-dot{background:var(--ca-gold);transform:scale(1.25)}
+.tl-node.is-current .tl-dot{
+  background:var(--ca-blood);border-color:var(--ca-blood);
+  box-shadow:0 0 10px color-mix(in srgb,var(--ca-blood) 55%,transparent),0 0 0 4px var(--rl-paper);
+}
+.tl-name{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--rl-ink-soft);text-align:center;line-height:1.25}
+.tl-node.is-open .tl-name{color:var(--rl-ink)}
+.tl-flag{
+  font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--ca-blood);
+  border:1px solid color-mix(in srgb,var(--ca-blood) 50%,transparent);padding:1px 6px;
+}
+.tl-node:focus-visible{outline:none}
+.tl-detail{margin-top:12px;animation:rlFadeIn .25s ease both}
+.tl-detail-card{
+  background:var(--rl-paper-2);border:1px solid var(--rl-edge);border-left:3px solid var(--ca-gold);
+  padding:16px 20px;box-shadow:0 1px 6px rgba(20,24,12,.08);
+}
+.tl-d-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.tl-d-head h3{margin:0;font-family:'Cinzel',serif;font-size:18px;color:var(--rl-ink);letter-spacing:.5px}
+.tl-d-era{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;color:var(--rl-mute);text-transform:uppercase}
+.tl-d-line{margin:4px 0;font-size:13px;color:var(--rl-ink-soft);line-height:1.5}
+.tl-d-line b{color:var(--rl-ink)}
+.tl-projected{color:color-mix(in srgb,var(--ca-gold) 60%,var(--rl-ink))}
+.tl-d-summary{margin:10px 0;font-family:'EB Garamond',serif;font-size:15px;color:var(--rl-ink);line-height:1.55}
+.tl-d-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;margin:6px 0}
+.tl-d-cols h4{margin:6px 0 4px;font-family:'Oswald',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--rl-mute)}
+.tl-d-list{margin:0;padding-left:18px}
+.tl-d-list li{font-size:13px;color:var(--rl-ink-soft);line-height:1.5;margin:2px 0}
+.tl-d-hook{margin:10px 0 0;font-family:'EB Garamond',serif;font-style:italic;font-size:14px;color:color-mix(in srgb,var(--ca-gold) 55%,var(--rl-ink));line-height:1.5}
+
+/* --------------------------------------------------------- page search */
+.hist-search-wrap{position:relative;max-width:460px;margin:0 0 22px}
+.hist-search{width:100%;padding-right:34px}
+.hist-search-clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:none;border:0;color:var(--rl-mute);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;
+}
+.hist-search-clear:hover{color:var(--rl-ink)}
+.hist-results{margin:0 0 26px;border:1px solid var(--rl-edge);background:var(--rl-paper-2);overflow:hidden}
+.hist-results-head{
+  padding:9px 14px;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;color:var(--rl-cream);background:var(--rl-olive-2);
+}
+.hist-results-list{max-height:320px;overflow-y:auto}
+.hist-result-row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;width:100%;
+  padding:9px 14px;background:none;border:0;border-bottom:1px solid var(--rl-edge-soft);
+  cursor:pointer;text-align:left;color:inherit;
+}
+.hist-result-row:hover{background:var(--rl-green-soft)}
+.hrr-name{font-family:'Cinzel',serif;font-size:14px;color:var(--rl-ink)}
+.hrr-meta{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--rl-mute);white-space:nowrap}
+.hist-err{color:var(--ca-blood)}
+.hist-empty{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:var(--rl-mute);padding:8px 2px}
+
+/* ------------------------------------------------------- faction cards */
+.hist-card-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.hist-faction-card{
+  position:relative;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;
+  border:1px solid var(--rl-edge);padding:0;background:var(--rl-paper-2);
+  color:inherit;text-align:left;isolation:isolate;animation:rlFadeIn .35s ease both;
+  box-shadow:0 2px 12px rgba(20,24,12,.1);transition:transform .15s,border-color .15s,box-shadow .15s;
+}
+.hist-faction-card:hover{transform:translateY(-3px);border-color:var(--cardaccent);box-shadow:0 8px 18px rgba(20,24,12,.16)}
+.hist-faction-card:focus-visible{outline:2px solid var(--rl-green);outline-offset:2px}
+.hfc-media{position:relative;display:block;height:128px;background:var(--cardarmy);overflow:hidden}
+.hfc-img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05)}
+.hfc-img.is-broken{display:none}
+.hfc-fallback{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:54px;font-weight:700;color:var(--cardaccent);opacity:.4;z-index:-1;
+}
+.hfc-scrim{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.55) 100%)}
+.hfc-body{
+  display:flex;flex-direction:column;gap:3px;padding:11px 14px 13px;
+  border-top:2px solid var(--cardaccent);background:var(--rl-paper-2);
+}
+.hfc-name{font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:.4px;line-height:1.2}
+.hfc-source{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--rl-mute)}
+.hfc-meta{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--rl-mute)}
+.hfc-meta b{color:var(--rl-ink);font-weight:600}
+/* the card name arrives inline-coloured by readableInk for dark surfaces;
+   on light paper derive a reading ink from the faction accent instead
+   (dark reading mode falls through to the inline colour unchanged) */
+body.codex-archive:not([data-rl-theme="dark"]) .hfc-name{
+  color:color-mix(in srgb,var(--cardaccent,var(--rl-ink)) 40%,var(--rl-ink)) !important;
+}
+
+/* ----------------------------------------------------- faction drill-in */
+.hist-faction-head{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin-bottom:4px}
+.hist-faction-title{margin:0}
+body.codex-archive:not([data-rl-theme="dark"]) .hist-faction-title{
+  color:color-mix(in srgb,var(--cardaccent,var(--rl-ink)) 42%,var(--rl-ink)) !important;
+}
+.hist-faction-search{margin-left:auto;min-width:240px;flex:1;max-width:360px}
+.hist-faction-search .ff-input{width:100%}
+.hist-faction-summary{margin-top:10px}
+.hist-drill{margin-top:8px}
+.hist-edition-group{margin:0 0 30px}
+.hist-edition-head{
+  margin:0 0 14px;font-family:'Cinzel',serif;font-size:19px;color:var(--rl-ink);
+  letter-spacing:.5px;padding-bottom:7px;border-bottom:2px solid var(--rl-black);
+}
+.hist-era{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;color:var(--rl-mute);text-transform:uppercase;font-weight:400}
+.hist-year-group{display:grid;grid-template-columns:64px 1fr;gap:14px;margin:0 0 16px}
+.hist-year{
+  font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--rl-ink-soft);
+  text-align:right;padding-top:8px;position:sticky;top:84px;height:max-content;
+}
+.hist-rows{display:flex;flex-direction:column;gap:8px}
+.hist-undated-label{
+  font-family:'Oswald',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--rl-mute);margin:4px 0 0;
+}
+.hist-model-row{
+  display:flex;align-items:center;gap:13px;padding:8px 12px;cursor:pointer;
+  background:var(--rl-paper-2);border:1px solid var(--rl-edge-soft);
+  box-shadow:0 1px 4px rgba(20,24,12,.05);transition:border-color .15s;
+}
+.hist-model-row:hover,.hist-model-row:focus-visible{border-color:var(--rl-green);outline:none}
+.hist-row-edit{
+  margin-left:auto;flex:0 0 auto;font-family:'Oswald',sans-serif;font-size:12px;
+  text-transform:uppercase;letter-spacing:1px;color:var(--rl-ink-soft);opacity:0;
+  border:1px solid var(--rl-edge);padding:3px 9px;transition:opacity .15s;
+}
+.hist-model-row:hover .hist-row-edit,.hist-model-row:focus-visible .hist-row-edit{opacity:.95}
+.hist-disc + .hist-row-edit{margin-left:10px}
+.hist-thumb{
+  flex:0 0 46px;width:46px;height:46px;overflow:hidden;
+  border:1px solid var(--rl-edge);background:var(--rl-paper-3);
+}
+.hist-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.hist-thumb-ph{
+  width:100%;height:100%;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:20px;color:var(--rl-mute);
+}
+.hist-model-main{flex:1;min-width:0}
+.hist-model-name{font-family:'Cinzel',serif;font-size:15px;color:var(--rl-ink);line-height:1.3}
+.hist-model-meta{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--rl-mute);margin-top:2px}
+.hist-disc{
+  font-family:'Oswald',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--ca-blood);border:1px solid color-mix(in srgb,var(--ca-blood) 45%,transparent);
+  padding:2px 7px;white-space:nowrap;
+}
+
+/* ---- model editor overlay - image section ----------------------------
+   The overlay reuses the catalogue editor's dark .cfe-* / .am-* parts;
+   these are the archive-only image controls inside it (dark baseline,
+   light repaint follows below with the rest of the box). */
+.he-img-section{margin-top:16px;border-top:1px solid rgba(44,42,53,.75);padding-top:14px}
+.he-img-section .ref-search{font-size:11px;padding:6px 10px;margin:6px 0 2px}
+.he-img-row{display:flex;gap:14px;align-items:flex-start;margin-top:10px}
+.he-img-frame{
+  flex:0 0 96px;width:96px;height:96px;border:1px solid rgba(199,154,58,.4);border-radius:4px;
+  overflow:hidden;background:var(--ink-2);display:flex;align-items:center;justify-content:center;
+}
+.he-img-preview{width:100%;height:100%;object-fit:cover;display:block}
+.he-img-empty{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--parch-dim);text-align:center}
+.he-img-controls{flex:1;min-width:0}
+.he-img-controls .ref-row{margin-top:0}
+.he-img-msg{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.5px;margin:6px 0 0;min-height:14px;color:var(--good,#7faa5a)}
+.he-img-msg.is-err{color:var(--blood-bright)}
+.he-img-clear{margin-left:10px;padding:4px 10px;font-size:11px}
+
+/* ---- model editor overlay - light reading mode -----------------------
+   Dark reading mode keeps the shared dark editor untouched; on light
+   paper repaint the box and its controls with the paper tokens. */
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box{background:var(--rl-paper);border-color:var(--rl-edge);color:var(--rl-ink)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .am-head,
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .am-foot{border-color:var(--rl-edge-soft)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .am-title{color:var(--rl-ink)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .am-close{color:var(--rl-mute)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .am-close:hover{color:var(--rl-ink)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .am-label{color:var(--rl-ink-soft)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .cfe-hint{color:var(--rl-mute)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .cfe-input{background:var(--rl-paper-2);border-color:var(--rl-edge);color:var(--rl-ink)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .cfe-input:focus{border-color:var(--rl-green)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .cfe-err{color:var(--ca-blood)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .btn-ghost{border-color:var(--rl-edge);color:var(--rl-ink-soft)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .btn-ghost:hover{border-color:var(--rl-green);color:var(--rl-ink)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .ref-search{border-color:var(--rl-edge);color:var(--rl-ink-soft);background:transparent}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .ref-search:hover{border-color:var(--rl-green);background:var(--rl-green-soft)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .ref-row input{background:var(--rl-paper-2);border-color:var(--rl-edge);color:var(--rl-ink)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .ref-alt{color:var(--rl-ink-soft)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .link-btn{color:var(--rl-ink-soft)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .link-btn:hover{color:var(--rl-green)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .he-img-section{border-top-color:var(--rl-edge-soft)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .he-img-frame{background:var(--rl-paper-3);border-color:var(--rl-edge)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .he-img-empty{color:var(--rl-mute)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .he-img-msg{color:var(--rl-green)}
+body.codex-archive:not([data-rl-theme="dark"]) .cfe-box .he-img-msg.is-err{color:var(--ca-blood)}
+
+/* ------------------------------------------------------------ responsive */
+@media(max-width:760px){
+  .tl-d-cols{grid-template-columns:1fr}
+  .hist-faction-search{margin-left:0;max-width:none}
+  .hist-year-group{grid-template-columns:48px 1fr;gap:10px}
+  .hist-year{font-size:16px;position:static}
+  .he-img-row{flex-direction:column}
+}
